@@ -2687,7 +2687,7 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
           La competition se deroule en deux phases :
         </p>
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
-          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} equipes, round-robin en BO1. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
+          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} equipes, round-robin en BO3. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
           <li><strong>Bracket a elimination directe</strong> — ${isMSI ? 'Demi-finales et finale en BO5.' : 'Quarts de finale, demi-finales et grande finale, tous en BO5.'}</li>
         </ul>
       </div>
@@ -3216,7 +3216,7 @@ function renderInternationalGroups(el, intl) {
 
   el.innerHTML = `
     <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase de groupes (journee ${intl.groupMatchday}/${intl.totalGroupRounds})</h3>
-    <p class="card__count">Prochain match : ${getTeamName('player')} vs ${getTeamName(pm.opponentTeamId)} (BO1)</p>
+    <p class="card__count">Prochain match : ${getTeamName('player')} vs ${getTeamName(pm.opponentTeamId)} (BO3)</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-international-action">${actionLabel}</button>
     </div>
@@ -3231,7 +3231,7 @@ function renderInternationalGroups(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, 'BO1', 'off');
+        startMatchSeries(pm.opponentTeamId, 'BO3', 'off');
       } else {
         showView('match');
       }
