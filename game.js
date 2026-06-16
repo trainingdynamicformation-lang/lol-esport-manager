@@ -2275,10 +2275,10 @@ function startPlayoffs() {
   season.playoffs = {
     seeds,
     matches: {
-      qf1: { home: seeds[2], away: seeds[5], format: 'BO3', result: null },
-      qf2: { home: seeds[3], away: seeds[4], format: 'BO3', result: null },
-      sf1: { home: seeds[0], away: null, format: 'BO3', result: null },
-      sf2: { home: seeds[1], away: null, format: 'BO3', result: null },
+      qf1: { home: seeds[2], away: seeds[5], format: 'BO5', result: null },
+      qf2: { home: seeds[3], away: seeds[4], format: 'BO5', result: null },
+      sf1: { home: seeds[0], away: null, format: 'BO5', result: null },
+      sf2: { home: seeds[1], away: null, format: 'BO5', result: null },
       final: { home: null, away: null, format: 'BO5', result: null }
     },
     round: 'qf',
@@ -2523,7 +2523,7 @@ function careerProgressionHtml(entries) {
 /* ------------------------------------------------------------
    Competitions internationales : MSI et Worlds
    Apres chaque split (Spring -> MSI, Summer -> Worlds), les meilleures
-   equipes de chaque region s'affrontent en phase de groupes (BO1)
+   equipes de chaque region s'affrontent en phase de groupes (BO3)
    puis en bracket a elimination directe (BO5, Fearless Draft).
    ------------------------------------------------------------ */
 function eventLabel(intl) {
@@ -2921,7 +2921,7 @@ function renderRegularSeasonCalendar(el, season) {
   let fixtureLabel;
   if (fixture) {
     const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
-    fixtureLabel = `Journee ${season.matchday}/${totalMatchdays} : ${getTeamName('player')} vs ${getTeamName(opponentId)} (BO1)`;
+    fixtureLabel = `Journee ${season.matchday}/${totalMatchdays} : ${getTeamName('player')} vs ${getTeamName(opponentId)} (BO3)`;
   } else {
     fixtureLabel = `Journee ${season.matchday}/${totalMatchdays} : pas de match pour votre equipe (journee de repos)`;
   }
@@ -2965,7 +2965,7 @@ function renderRegularSeasonCalendar(el, season) {
         const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
         season.pendingMatch = { type: 'regular', opponentTeamId: opponentId };
         saveGame();
-        startMatchSeries(opponentId, 'BO1', 'off');
+        startMatchSeries(opponentId, 'BO3', 'off');
       } else {
         const pairings = season.schedule[season.matchday - 1] || [];
         pairings.forEach((p) => {
