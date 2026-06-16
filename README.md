@@ -69,7 +69,7 @@ git clone https://github.com/trainingdynamicformation-lang/lol-esport-manager.gi
 open index.html
 ```
 
-Ou directement en ligne : [trainingdynamicformation-lang.github.io/lol-esport-manager](https://trainingdynamicformation-lang.github.io/lol-esport-manager)
+Ou directement en ligne : [lol-esport-manager.com](https://lol-esport-manager.com/)
 
 ---
 
