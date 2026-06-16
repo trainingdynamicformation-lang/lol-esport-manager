@@ -2621,8 +2621,27 @@ function startInternational(eventType) {
 
   const numGroups = eventType === 'msi' ? 2 : 4;
   const groups = Array.from({ length: numGroups }, () => []);
+
+  // Repartir les equipes en s'assurant que deux equipes de meme region ne sont pas dans le meme groupe.
+  // On trie par puissance decroissante puis on place chaque equipe dans le groupe le moins rempli
+  // qui ne contient pas encore de representant de sa region.
+  const getTeamAiRegion = (id) => {
+    if (id === 'player') return playerAiRegion;
+    const t = AI_TEAMS.find((t) => t.id === id);
+    return t ? t.region : 'UNK';
+  };
   const ranked = teams.slice().sort((a, b) => teamPowerRating(b) - teamPowerRating(a));
-  ranked.forEach((id, i) => groups[i % numGroups].push(id));
+  for (const id of ranked) {
+    const teamRegion = getTeamAiRegion(id);
+    // Cherche le groupe eligible : pas encore de meme region, et le moins plein
+    const eligible = groups
+      .map((g, i) => ({ i, size: g.length, hasRegion: g.some((tid) => getTeamAiRegion(tid) === teamRegion) }))
+      .filter((g) => !g.hasRegion)
+      .sort((a, b) => a.size - b.size);
+    // Si aucun groupe eligible (trop d'equipes d'une meme region), on prend le moins plein
+    const target = eligible.length > 0 ? eligible[0].i : groups.reduce((mi, g, i) => g.length < groups[mi].length ? i : mi, 0);
+    groups[target].push(id);
+  }
 
   const groupSchedules = groups.map((g) => generateRoundRobin(g));
   const groupStandings = {};
