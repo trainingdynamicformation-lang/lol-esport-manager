@@ -5,6 +5,25 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.1.0] — 2026-06-16
+
+### Ajouté
+- **Marché des transferts** — recrutement de joueurs libres et issus des équipes IA, comparaison de stats, gestion budget, modal de confirmation
+- **PWA** — installation sur iOS (Safari) et Android (Chrome), mode hors-ligne via Service Worker, icônes natives
+- **Popups de début de compétition** — explication du format au lancement de chaque split et des tournois internationaux (MSI/Worlds)
+- **Footer légal** — badge BETA, copyright © 2026 Thierry Demorest, mention stockage localStorage
+
+### Modifié
+- **Formats de match** — saison régulière en BO3 (était BO1), tous les matchs playoffs en BO5
+- **Tirage groupes MSI/Worlds** — deux équipes de la même région ne peuvent plus être dans le même groupe
+- **Navigation** — sidebar fixe sur desktop, barre horizontale sur mobile
+
+### Corrigé
+- Joueur signé depuis le marché : `level`, `form`, `nationality` manquants → affichage `undefined` dans le roster
+- Tous les labels et appels BO1 remplacés par BO3 dans le flux de saison et les tournois internationaux
+
+---
+
 ## [0.1.0-beta] — 2026-06-16
 
 ### Ajouté
