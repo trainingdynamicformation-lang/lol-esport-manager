@@ -2169,6 +2169,56 @@ function splitLabel(split) {
   return split === 'summer' ? 'Summer' : 'Spring';
 }
 
+function showSeasonIntroModal(split, year, teamIds) {
+  const splitName = split === 'summer' ? 'Summer Split' : 'Spring Split';
+  const intlEvent = split === 'summer' ? 'Worlds' : 'MSI';
+  const totalMatchdays = teamIds.length - 1;
+  const teamListHtml = teamIds.map((id, i) => {
+    const t = getTeamRef(id);
+    const name = t ? t.name : id;
+    const isPlayer = id === 'player';
+    return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : ''}">${i + 1}. ${name}${isPlayer ? ' (vous)' : ''}</li>`;
+  }).join('');
+
+  showModal(`
+    <h2 class="panel-title" style="margin-bottom:16px;">&#127942; ${splitName} ${year} — Bienvenue !</h2>
+    <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#128197; Saison reguliere</h3>
+        <p style="color:var(--color-text-muted);line-height:1.6;">
+          Vous affrontez <strong>${teamIds.length - 1} equipes</strong> en round-robin complet : chaque equipe joue contre toutes les autres une fois.
+          Cela represente <strong>${totalMatchdays} journees</strong>. Chaque match se joue en <strong>BO3</strong>.
+          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la difference d'or.
+        </p>
+      </div>
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#9876;&#65039; Playoffs</h3>
+        <p style="color:var(--color-text-muted);line-height:1.6;">
+          Les <strong>6 meilleures equipes</strong> se qualifient pour les playoffs.
+          Les seeds 3-6 s'affrontent en quarts de finale (BO5), les vainqueurs rejoignent les seeds 1 et 2 en demi-finales (BO5).
+          La grande finale se joue en <strong>BO5</strong>.
+        </p>
+      </div>
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127758; Qualification ${intlEvent}</h3>
+        <p style="color:var(--color-text-muted);line-height:1.6;">
+          Les <strong>2 meilleures equipes</strong> de votre region se qualifient pour le <strong>${intlEvent}</strong>.
+          Terminez dans le top 2 du classement final (apres playoffs) pour representer votre region sur la scene internationale.
+        </p>
+      </div>
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Equipes participantes</h3>
+        <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;">
+          ${teamListHtml}
+        </ul>
+      </div>
+    </div>
+    <div class="modal-content__actions" style="margin-top:20px;">
+      <button class="btn-primary" onclick="closeModal();showView('calendar');">Lancer la saison !</button>
+    </div>
+  `);
+}
+
 function startSeason(split, year) {
   initAIRosters();
   split = split || 'spring';
@@ -2191,6 +2241,7 @@ function startSeason(split, year) {
   };
   state.international = null;
   saveGame();
+  showSeasonIntroModal(split, year, teamIds);
 }
 
 function getSortedStandings() {
@@ -2593,7 +2644,64 @@ function startInternational(eventType) {
     log: [`${eventType === 'msi' ? 'MSI' : 'Worlds'} ${season.year} : phase de groupes (${groups.length} groupes de ${groups[0].length}).`]
   };
   saveGame();
-  processInternationalGroupMatchday();
+  showInternationalIntroModal(eventType, season.year, teams, groups);
+}
+
+function showInternationalIntroModal(eventType, year, teams, groups) {
+  const isMSI = eventType === 'msi';
+  const eventName = isMSI ? 'MSI' : 'Worlds';
+  const emoji = isMSI ? '&#127775;' : '&#127758;';
+  const numGroups = groups.length;
+  const teamsPerGroup = groups[0].length;
+  const qualifiersPerGroup = isMSI ? 2 : 2;
+
+  const groupsHtml = groups.map((g, gi) => {
+    const rows = g.map((id) => {
+      const t = getTeamRef(id);
+      const name = t ? t.name : id;
+      const region = t ? (t.region || t.aiRegion || '') : '';
+      const isPlayer = id === 'player';
+      return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : 'color:var(--color-text-muted);'};font-size:13px;">${name}${region ? ` <span style="opacity:0.5;">(${region})</span>` : ''}${isPlayer ? ' &#9733;' : ''}</li>`;
+    }).join('');
+    return `
+      <div>
+        <div style="font-weight:700;color:var(--color-seafoam);margin-bottom:4px;">Groupe ${String.fromCharCode(65 + gi)}</div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;">${rows}</ul>
+      </div>`;
+  }).join('');
+
+  const teamCount = teams.length;
+  const playerQualified = teams.includes('player');
+  const qualifMsg = playerQualified
+    ? `<p style="color:var(--color-gold);font-weight:700;margin-top:4px;">&#10003; Vous etes qualifie pour le ${eventName} !</p>`
+    : `<p style="color:#e05;margin-top:4px;">&#10007; Votre equipe n'est pas qualifiee pour cette edition.</p>`;
+
+  showModal(`
+    <h2 class="panel-title" style="margin-bottom:16px;">${emoji} ${eventName} ${year}</h2>
+    <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
+      ${qualifMsg}
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127942; Format de la competition</h3>
+        <p style="color:var(--color-text-muted);line-height:1.6;">
+          <strong>${teamCount} equipes</strong> issues de toutes les regions du monde s'affrontent.
+          La competition se deroule en deux phases :
+        </p>
+        <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
+          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} equipes, round-robin en BO1. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
+          <li><strong>Bracket a elimination directe</strong> — ${isMSI ? 'Demi-finales et finale en BO5.' : 'Quarts de finale, demi-finales et grande finale, tous en BO5.'}</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--color-gold);margin-bottom:10px;">&#127937; Equipes qualifiees par groupe</h3>
+        <div style="display:grid;grid-template-columns:repeat(${Math.min(numGroups, 2)}, 1fr);gap:14px;">
+          ${groupsHtml}
+        </div>
+      </div>
+    </div>
+    <div class="modal-content__actions" style="margin-top:20px;">
+      <button class="btn-primary" onclick="closeModal();showView('calendar');processInternationalGroupMatchday();">C'est parti !</button>
+    </div>
+  `);
 }
 
 function recordInternationalResult(intl, homeId, awayId, winnerId, goldDiffForHome) {
