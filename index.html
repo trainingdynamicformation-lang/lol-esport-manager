@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LOL Esport Manager</title>
   <link rel="icon" type="image/png" href="img/logo.png" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#080C14" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -297,6 +300,11 @@
   </footer>
 
   <!-- ===================== SCRIPTS ===================== -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
   <script src="data_teams.js"></script>
   <script src="data_champions.js"></script>
   <script src="data_counters.js"></script>
