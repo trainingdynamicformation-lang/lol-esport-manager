@@ -1,6 +1,6 @@
 {
   "name": "LOL Esport Manager",
-  "short_name": "Esport MGR",
+  "short_name": "LOL Esport Manager",
   "description": "Gérez votre équipe esport League of Legends — draft, transferts, matchs.",
   "start_url": "/",
   "display": "standalone",
