@@ -1,0 +1,4 @@
+.DS_Store
+.claude/
+_server.js
+node_modules/

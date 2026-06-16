@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOL Esport Manager</title>
+  <link rel="icon" type="image/png" href="img/logo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="app-header">
+    <div class="app-logo">
+      <img src="img/logo.png" alt="LOL Esport Manager" class="app-logo__img" />
+    </div>
+    <div class="resource-bar">
+      <div class="resource-chip resource-chip--coaching" id="chip-coaching">
+        <span class="resource-chip__icon">&#128218;</span>
+        <span id="resource-coaching">0</span> Points coaching
+      </div>
+      <div class="resource-chip resource-chip--budget" id="chip-budget">
+        <span class="resource-chip__icon">&#128176;</span>
+        <span id="resource-budget">0</span> Budget
+      </div>
+      <div class="resource-chip resource-chip--prestige" id="chip-prestige">
+        <span class="resource-chip__icon">&#11088;</span>
+        <span id="resource-prestige">0</span> Prestige
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== SELECTION DE REGION ===================== -->
+  <div id="region-select-overlay" class="region-select-overlay" style="display:none;">
+    <div id="region-select-content"></div>
+  </div>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="app-main">
+
+    <!-- ===================== NAVIGATION SIDEBAR ===================== -->
+    <nav class="main-nav">
+      <button class="nav-btn" data-view="home">Accueil</button>
+      <button class="nav-btn" data-view="roster">Roster</button>
+      <button class="nav-btn" data-view="training">Entrainement</button>
+      <button class="nav-btn" data-view="calendar">Calendrier</button>
+      <button class="nav-btn" data-view="draft">Draft</button>
+      <button class="nav-btn" data-view="counters">Counters</button>
+      <button class="nav-btn" data-view="match">Match</button>
+      <button class="nav-btn" data-view="scouting">Scouting</button>
+      <button class="nav-btn" data-view="transfers">Transferts</button>
+      <button class="nav-btn" data-view="progression">Progression</button>
+    </nav>
+
+    <!-- ===================== CONTENU DES VUES ===================== -->
+    <div class="app-content">
+
+    <!-- ----------- HOME ----------- -->
+    <section id="view-home" class="view">
+      <div class="home-hero">
+        <img src="img/logo.png" alt="LOL Esport Manager" class="home-hero__logo" />
+        <p>Preparez vos joueurs, drafrez vos compositions et menez votre equipe vers les Worlds.</p>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Equipe</h3>
+        <div class="team-widget">
+          <div class="team-widget__avatars" id="home-team-avatars"></div>
+          <div>
+            <div class="card__count player-team-name" id="home-team-name"></div>
+            <div id="home-team-region"></div>
+          </div>
+          <div class="match-card--next" id="home-next-match">
+            <div class="match-card--next__label">Prochain match</div>
+            <div class="match-card--next__teams">A definir</div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="btn-secondary" data-view-link="roster">Roster</button>
+          <button class="btn-secondary" data-view-link="training">Entrainement</button>
+          <button class="btn-secondary" data-view-link="calendar">Calendrier</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Derniers resultats</h3>
+        <div class="recent-results" id="home-recent-results">
+          <p class="card__count">Aucun match joue pour le moment.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------- ROSTER ----------- -->
+    <section id="view-roster" class="view">
+      <h2 class="panel-title">Roster</h2>
+      <div class="panel" id="roster-content">
+        <div class="empty-state">Aucun joueur dans le roster pour le moment.</div>
+      </div>
+    </section>
+
+    <!-- ----------- TRAINING / SCRIMS ----------- -->
+    <section id="view-training" class="view">
+      <h2 class="panel-title">Entrainement &amp; scrims</h2>
+      <div class="panel" id="training-content">
+        <div class="empty-state">Aucune session d'entrainement disponible pour le moment.</div>
+      </div>
+    </section>
+
+    <!-- ----------- CALENDAR / SAISON ----------- -->
+    <section id="view-calendar" class="view">
+      <h2 class="panel-title">Calendrier de la saison</h2>
+      <div class="panel" id="calendar-content">
+        <div class="empty-state">La saison n'a pas encore commence.</div>
+      </div>
+    </section>
+
+    <!-- ----------- DRAFT ----------- -->
+    <section id="view-draft" class="view">
+      <h2 class="panel-title">Draft</h2>
+      <div class="panel" id="draft-content">
+        <div class="empty-state">Aucune draft en cours.</div>
+      </div>
+    </section>
+
+    <!-- ----------- COUNTERS ----------- -->
+    <section id="view-counters" class="view">
+      <h2 class="panel-title">Counters</h2>
+      <div class="panel">
+        <div class="counters-filters">
+          <input type="text" id="counters-search" class="counters-search" placeholder="Rechercher un champion (counter ou cible)..." />
+          <select id="counters-role-filter">
+            <option value="">Tous les roles</option>
+            <option value="TOP">TOP</option>
+            <option value="JUNGLE">JUNGLE</option>
+            <option value="MID">MID</option>
+            <option value="ADC">ADC</option>
+            <option value="SUPPORT">SUPPORT</option>
+          </select>
+          <select id="counters-confidence-filter">
+            <option value="">Toute confiance</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="panel" id="counters-content">
+        <div class="empty-state">Recherchez un champion pour voir ses matchups.</div>
+      </div>
+    </section>
+
+    <!-- ----------- MATCH ----------- -->
+    <section id="view-match" class="view">
+      <div id="match-setup" class="panel">
+        <h2 class="panel-title">Preparer un match</h2>
+        <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">Aucun match disponible pour le moment.</p>
+      </div>
+
+      <div id="match-arena" class="panel" style="display:none;">
+        <p id="match-series-label" class="card__count" style="margin-bottom: 8px;"></p>
+        <div class="match-time-bar">
+          <div class="progress-bar">
+            <div class="progress-bar__fill" id="match-time-fill" style="width:0%"></div>
+          </div>
+          <div class="match-time-label">
+            <span id="match-time-current">0:00</span>
+            <span id="match-time-total">Early game</span>
+          </div>
+        </div>
+
+        <div class="scoreboard">
+          <div class="scoreboard__team-block">
+            <div class="scoreboard__team player-team-name side-blue" id="match-team-home-name">Votre equipe</div>
+            <div class="scoreboard__team-league" id="match-team-home-league"></div>
+          </div>
+          <div class="scoreboard__score" id="match-score">0 - 0</div>
+          <div class="scoreboard__team-block">
+            <div class="scoreboard__team side-red" id="match-team-away-name">Adversaire</div>
+            <div class="scoreboard__team-league" id="match-team-away-league"></div>
+          </div>
+        </div>
+
+        <div class="match-objectives" id="match-objectives">
+          <div class="match-objectives__row">
+            <span class="match-objectives__label">Dragons</span>
+            <span class="match-objectives__value side-blue" id="match-obj-dragons-blue">0</span>
+            <span class="match-objectives__sep">/</span>
+            <span class="match-objectives__value side-red" id="match-obj-dragons-red">0</span>
+          </div>
+          <div class="match-objectives__row">
+            <span class="match-objectives__label">Void Grubs</span>
+            <span class="match-objectives__value side-blue" id="match-obj-grubs-blue">0</span>
+            <span class="match-objectives__sep">/</span>
+            <span class="match-objectives__value side-red" id="match-obj-grubs-red">0</span>
+          </div>
+          <div class="match-objectives__row">
+            <span class="match-objectives__label">Ame du Dragon</span>
+            <span class="match-objectives__value" id="match-obj-soul">-</span>
+          </div>
+          <div class="match-objectives__row">
+            <span class="match-objectives__label">Buff Baron actif</span>
+            <span class="match-objectives__value" id="match-obj-baron-buff">-</span>
+          </div>
+          <div class="match-objectives__row">
+            <span class="match-objectives__label">Buff Elder actif</span>
+            <span class="match-objectives__value" id="match-obj-elder-buff">-</span>
+          </div>
+        </div>
+
+        <div id="match-map" class="match-map"></div>
+
+        <div class="speed-selector" id="match-speed-selector">
+          <button class="speed-btn" data-speed="1">x1</button>
+          <button class="speed-btn" data-speed="2">x2</button>
+          <button class="speed-btn" data-speed="3">x3</button>
+          <button class="speed-btn" data-speed="5">x5</button>
+        </div>
+
+        <div class="match-log" id="match-log"></div>
+
+        <div class="match-controls">
+          <button class="btn-secondary" id="btn-pause-match">Pause</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------- TRANSFERTS ----------- -->
+    <section id="view-transfers" class="view">
+      <h2 class="panel-title">Marche des transferts</h2>
+      <div id="transfers-content">
+        <div class="empty-state">Chargement du marche...</div>
+      </div>
+    </section>
+
+    <!-- ----------- SCOUTING ----------- -->
+    <section id="view-scouting" class="view">
+      <h2 class="panel-title">Scouting</h2>
+      <div class="panel" id="scouting-content">
+        <div class="empty-state">Aucun rapport de scouting disponible pour le moment.</div>
+      </div>
+    </section>
+
+    <!-- ----------- PROGRESSION ----------- -->
+    <section id="view-progression" class="view">
+      <h2 class="panel-title">Progression</h2>
+
+      <div class="panel">
+        <h3 class="panel-title">Statistiques globales</h3>
+        <div class="stats-grid" id="progression-stats"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Evolution des joueurs</h3>
+        <div id="progression-career" class="career-progression-list">
+          <p class="card__count">Aucune evolution pour le moment.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Historique des matchs</h3>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Competition</th>
+              <th>Adversaire</th>
+              <th>Score</th>
+              <th>Resultat</th>
+            </tr>
+          </thead>
+          <tbody id="progression-history"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">Sauvegarde</h3>
+        <div class="quick-actions">
+          <button class="btn-secondary" id="btn-export-save">Exporter ma sauvegarde</button>
+          <label class="btn-secondary" style="display:inline-block;">
+            Importer une sauvegarde
+            <input type="file" id="input-import-save" accept="application/json" style="display:none;" />
+          </label>
+          <button class="btn-danger" id="btn-reset-game">Reinitialiser la partie</button>
+        </div>
+      </div>
+    </section>
+
+    </div><!-- /app-content -->
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="app-footer">
+    <span class="footer-beta">BETA</span>
+    LOL Esport Manager v1.0 &mdash; Jeu de gestion d'equipe esport League of Legends
+    <span class="footer-copy">&copy; 2026 Thierry Demorest &mdash; Tous droits reserves. Concept et design proteges par la propriete intellectuelle.</span>
+    <span class="footer-copy">Les donnees de progression sont stockees localement dans votre navigateur (localStorage) et ne sont jamais transmises a des tiers.</span>
+  </footer>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script src="data_teams.js"></script>
+  <script src="data_champions.js"></script>
+  <script src="data_counters.js"></script>
+  <script src="map.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
