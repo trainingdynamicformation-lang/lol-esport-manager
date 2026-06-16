@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.0] — 2026-06-16
+
+### Ajouté
+- **Sauvegarde cloud GitHub Gist** — synchronisation optionnelle inter-appareils via GitHub Gist (ID + token), tuto intégré, fonctionne en parallèle du mode local
+
+---
+
 ## [1.1.0] — 2026-06-16
 
 ### Ajouté
