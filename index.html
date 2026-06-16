@@ -276,7 +276,7 @@
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Sauvegarde</h3>
+        <h3 class="panel-title">Sauvegarde locale</h3>
         <div class="quick-actions">
           <button class="btn-secondary" id="btn-export-save">Exporter ma sauvegarde</button>
           <label class="btn-secondary" style="display:inline-block;">
@@ -285,6 +285,50 @@
           </label>
           <button class="btn-danger" id="btn-reset-game">Reinitialiser la partie</button>
         </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="panel-title">&#9729;&#65039; Sauvegarde cloud <span style="font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:8px;">(optionnel)</span></h3>
+        <p style="color:var(--color-text-muted);font-size:13px;margin-bottom:16px;line-height:1.6;">
+          Synchronisez votre progression sur tous vos appareils via GitHub Gist.
+          Si non configure, le jeu fonctionne normalement en local.
+        </p>
+
+        <div class="cloud-save-fields">
+          <div class="cloud-save-field">
+            <label class="cloud-save-label" for="gist-id-input">ID du Gist</label>
+            <input type="text" id="gist-id-input" class="cloud-save-input" placeholder="ex: 29b42f7478f58cb55af4f76f6614c641" />
+          </div>
+          <div class="cloud-save-field">
+            <label class="cloud-save-label" for="gist-token-input">Token GitHub</label>
+            <input type="password" id="gist-token-input" class="cloud-save-input" placeholder="ghp_..." />
+          </div>
+        </div>
+
+        <div class="quick-actions" style="margin-top:12px;">
+          <button class="btn-secondary" id="btn-save-gist-config">Enregistrer la configuration</button>
+          <button class="btn-primary" id="btn-cloud-export">&#8593; Envoyer vers le cloud</button>
+          <button class="btn-secondary" id="btn-cloud-import">&#8595; Charger depuis le cloud</button>
+        </div>
+
+        <div id="cloud-save-status" style="margin-top:10px;font-size:13px;"></div>
+
+        <details style="margin-top:16px;">
+          <summary style="cursor:pointer;color:var(--color-gold);font-size:13px;font-weight:600;">&#10067; Comment configurer GitHub Gist ?</summary>
+          <div style="color:var(--color-text-muted);font-size:13px;line-height:1.8;margin-top:10px;padding:12px;background:var(--color-surface-alt);border-radius:var(--radius);">
+            <strong style="color:var(--color-text);">Etape 1 — Creer un Gist</strong><br>
+            Rendez-vous sur <strong>gist.github.com</strong> (compte GitHub gratuit requis).<br>
+            Filename : <code>save.json</code> &bull; Contenu : <code>{}</code> &bull; Cliquez <strong>"Create secret gist"</strong>.<br>
+            Copiez l'ID dans l'URL : gist.github.com/votrenom/<strong>cet-id-ici</strong><br><br>
+            <strong style="color:var(--color-text);">Etape 2 — Creer un token</strong><br>
+            GitHub &rarr; votre avatar &rarr; <strong>Settings</strong> &rarr; (menu gauche, tout en bas) <strong>Developer settings</strong><br>
+            &rarr; <strong>Personal access tokens</strong> &rarr; <strong>Tokens (classic)</strong> &rarr; <strong>Generate new token (classic)</strong><br>
+            Note : <code>LOL Esport Manager</code> &bull; Expiration : <strong>No expiration</strong> &bull; Permission : cochez uniquement <strong>gist</strong><br>
+            Cliquez <strong>"Generate token"</strong> et copiez le token <strong>immediatement</strong> (commence par <code>ghp_</code>).<br><br>
+            <strong style="color:var(--color-text);">Etape 3 — Configurer dans le jeu</strong><br>
+            Collez l'ID du Gist et le token dans les champs ci-dessus, puis cliquez <strong>"Enregistrer la configuration"</strong>.
+          </div>
+        </details>
       </div>
     </section>
 

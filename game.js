@@ -216,6 +216,94 @@ function resetGame() {
 /* ------------------------------------------------------------
    Export / Import
    ------------------------------------------------------------ */
+const GIST_CONFIG_KEY = 'lol_esport_gist_config';
+
+function loadGistConfig() {
+  try { return JSON.parse(localStorage.getItem(GIST_CONFIG_KEY)) || {}; } catch { return {}; }
+}
+
+function saveGistConfig(gistId, token) {
+  localStorage.setItem(GIST_CONFIG_KEY, JSON.stringify({ gistId, token }));
+}
+
+function setCloudStatus(msg, type) {
+  const el = document.getElementById('cloud-save-status');
+  if (!el) return;
+  const color = type === 'success' ? 'var(--color-gold)' : type === 'error' ? '#e05252' : 'var(--color-text-muted)';
+  el.innerHTML = `<span style="color:${color};">${msg}</span>`;
+}
+
+async function cloudExport() {
+  const { gistId, token } = loadGistConfig();
+  if (!gistId || !token) { setCloudStatus('⚠ Configuration manquante. Renseignez l\'ID Gist et le token.', 'error'); return; }
+  setCloudStatus('Envoi en cours...', 'info');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ files: { 'save.json': { content: JSON.stringify(state, null, 2) } } })
+    });
+    if (!res.ok) throw new Error(`Erreur ${res.status}`);
+    const now = new Date().toLocaleTimeString('fr-FR');
+    setCloudStatus(`✓ Sauvegarde envoyee le ${new Date().toLocaleDateString('fr-FR')} a ${now}`, 'success');
+    showToast('Sauvegarde envoyee vers le cloud', 'success');
+  } catch (err) {
+    setCloudStatus(`✗ Echec : ${err.message}`, 'error');
+    showToast('Echec de l\'envoi cloud', 'error');
+  }
+}
+
+async function cloudImport() {
+  const { gistId, token } = loadGistConfig();
+  if (!gistId || !token) { setCloudStatus('⚠ Configuration manquante. Renseignez l\'ID Gist et le token.', 'error'); return; }
+  setCloudStatus('Chargement depuis le cloud...', 'info');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      headers: { Authorization: `token ${token}` }
+    });
+    if (!res.ok) throw new Error(`Erreur ${res.status}`);
+    const data = await res.json();
+    const content = data.files?.['save.json']?.content;
+    if (!content) throw new Error('Fichier save.json introuvable dans le Gist');
+    const parsed = JSON.parse(content);
+    if (!parsed.resources || !parsed.roster) throw new Error('Format de sauvegarde invalide');
+    state = parsed;
+    saveGame();
+    updateResourceBar();
+    showView('home');
+    if (typeof renderHome === 'function') renderHome();
+    setCloudStatus('✓ Sauvegarde chargee depuis le cloud', 'success');
+    showToast('Sauvegarde cloud chargee avec succes', 'success');
+  } catch (err) {
+    setCloudStatus(`✗ Echec : ${err.message}`, 'error');
+    showToast('Echec du chargement cloud', 'error');
+  }
+}
+
+function initCloudSaveUI() {
+  const cfg = loadGistConfig();
+  const gistInput = document.getElementById('gist-id-input');
+  const tokenInput = document.getElementById('gist-token-input');
+  if (gistInput && cfg.gistId) gistInput.value = cfg.gistId;
+  if (tokenInput && cfg.token) tokenInput.value = cfg.token;
+
+  const saveConfigBtn = document.getElementById('btn-save-gist-config');
+  if (saveConfigBtn) saveConfigBtn.addEventListener('click', () => {
+    const gistId = gistInput?.value.trim();
+    const token = tokenInput?.value.trim();
+    if (!gistId || !token) { setCloudStatus('⚠ Les deux champs sont requis.', 'error'); return; }
+    saveGistConfig(gistId, token);
+    setCloudStatus('✓ Configuration enregistree', 'success');
+    showToast('Configuration cloud sauvegardee', 'success');
+  });
+
+  const exportBtn = document.getElementById('btn-cloud-export');
+  if (exportBtn) exportBtn.addEventListener('click', cloudExport);
+
+  const importBtn = document.getElementById('btn-cloud-import');
+  if (importBtn) importBtn.addEventListener('click', cloudImport);
+}
+
 function exportSave() {
   const dataStr = JSON.stringify(state, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -4779,9 +4867,12 @@ function setupNavigation() {
     });
   }
 
-  // Export / Import
+  // Export / Import local
   const exportBtn = document.getElementById('btn-export-save');
   if (exportBtn) exportBtn.addEventListener('click', exportSave);
+
+  // Cloud save
+  initCloudSaveUI();
 
   const importInput = document.getElementById('input-import-save');
   if (importInput) {

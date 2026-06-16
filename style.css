@@ -316,6 +316,48 @@ img { max-width: 100%; height: auto; }
   color: var(--color-seafoam);
 }
 
+.cloud-save-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cloud-save-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cloud-save-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cloud-save-input {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 9px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.cloud-save-input:focus {
+  outline: none;
+  border-color: var(--color-seafoam);
+}
+
+.cloud-save-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
 .btn-danger {
   background: var(--color-danger);
   color: var(--color-text);
