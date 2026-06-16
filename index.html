@@ -34,8 +34,8 @@
   </header>
 
   <!-- ===================== SELECTION DE REGION ===================== -->
-  <div id="region-select-overlay" class="region-select-overlay" style="display:none;">
-    <div id="region-select-content"></div>
+  <div id="région-select-overlay" class="région-select-overlay" style="display:none;">
+    <div id="région-select-content"></div>
   </div>
 
   <!-- ===================== MAIN ===================== -->
@@ -45,7 +45,7 @@
     <nav class="main-nav">
       <button class="nav-btn" data-view="home">Accueil</button>
       <button class="nav-btn" data-view="roster">Roster</button>
-      <button class="nav-btn" data-view="training">Entrainement</button>
+      <button class="nav-btn" data-view="training">Entraînement</button>
       <button class="nav-btn" data-view="calendar">Calendrier</button>
       <button class="nav-btn" data-view="draft">Draft</button>
       <button class="nav-btn" data-view="counters">Counters</button>
@@ -62,16 +62,16 @@
     <section id="view-home" class="view">
       <div class="home-hero">
         <img src="img/logo.png" alt="LOL Esport Manager" class="home-hero__logo" />
-        <p>Preparez vos joueurs, drafrez vos compositions et menez votre equipe vers les Worlds.</p>
+        <p>Preparez vos joueurs, drafrez vos compositions et menez votre équipe vers les Worlds.</p>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Equipe</h3>
+        <h3 class="panel-title">Équipe</h3>
         <div class="team-widget">
           <div class="team-widget__avatars" id="home-team-avatars"></div>
           <div>
             <div class="card__count player-team-name" id="home-team-name"></div>
-            <div id="home-team-region"></div>
+            <div id="home-team-région"></div>
           </div>
           <div class="match-card--next" id="home-next-match">
             <div class="match-card--next__label">Prochain match</div>
@@ -80,13 +80,13 @@
         </div>
         <div class="quick-actions">
           <button class="btn-secondary" data-view-link="roster">Roster</button>
-          <button class="btn-secondary" data-view-link="training">Entrainement</button>
+          <button class="btn-secondary" data-view-link="training">Entraînement</button>
           <button class="btn-secondary" data-view-link="calendar">Calendrier</button>
         </div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Derniers resultats</h3>
+        <h3 class="panel-title">Derniers résultats</h3>
         <div class="recent-results" id="home-recent-results">
           <p class="card__count">Aucun match joue pour le moment.</p>
         </div>
@@ -103,9 +103,9 @@
 
     <!-- ----------- TRAINING / SCRIMS ----------- -->
     <section id="view-training" class="view">
-      <h2 class="panel-title">Entrainement &amp; scrims</h2>
+      <h2 class="panel-title">Entraînement &amp; scrims</h2>
       <div class="panel" id="training-content">
-        <div class="empty-state">Aucune session d'entrainement disponible pour le moment.</div>
+        <div class="empty-state">Aucune session d'entraînement disponible pour le moment.</div>
       </div>
     </section>
 
@@ -155,12 +155,12 @@
     <!-- ----------- MATCH ----------- -->
     <section id="view-match" class="view">
       <div id="match-setup" class="panel">
-        <h2 class="panel-title">Preparer un match</h2>
+        <h2 class="panel-title">Préparer un match</h2>
         <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">Aucun match disponible pour le moment.</p>
       </div>
 
       <div id="match-arena" class="panel" style="display:none;">
-        <p id="match-series-label" class="card__count" style="margin-bottom: 8px;"></p>
+        <p id="match-séries-label" class="card__count" style="margin-bottom: 8px;"></p>
         <div class="match-time-bar">
           <div class="progress-bar">
             <div class="progress-bar__fill" id="match-time-fill" style="width:0%"></div>
@@ -173,7 +173,7 @@
 
         <div class="scoreboard">
           <div class="scoreboard__team-block">
-            <div class="scoreboard__team player-team-name side-blue" id="match-team-home-name">Votre equipe</div>
+            <div class="scoreboard__team player-team-name side-blue" id="match-team-home-name">Votre équipe</div>
             <div class="scoreboard__team-league" id="match-team-home-league"></div>
           </div>
           <div class="scoreboard__score" id="match-score">0 - 0</div>
@@ -265,10 +265,10 @@
           <thead>
             <tr>
               <th>Date</th>
-              <th>Competition</th>
+              <th>Compétition</th>
               <th>Adversaire</th>
               <th>Score</th>
-              <th>Resultat</th>
+              <th>Résultat</th>
             </tr>
           </thead>
           <tbody id="progression-history"></tbody>
@@ -283,7 +283,7 @@
             Importer une sauvegarde
             <input type="file" id="input-import-save" accept="application/json" style="display:none;" />
           </label>
-          <button class="btn-danger" id="btn-reset-game">Reinitialiser la partie</button>
+          <button class="btn-danger" id="btn-reset-game">Réinitialiser la partie</button>
         </div>
       </div>
 
@@ -291,7 +291,7 @@
         <h3 class="panel-title">&#9729;&#65039; Sauvegarde cloud <span style="font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:8px;">(optionnel)</span></h3>
         <p style="color:var(--color-text-muted);font-size:13px;margin-bottom:16px;line-height:1.6;">
           Synchronisez votre progression sur tous vos appareils via GitHub Gist.
-          Si non configure, le jeu fonctionne normalement en local.
+          Si non configuré, le jeu fonctionne normalement en local.
         </p>
 
         <div class="cloud-save-fields">
@@ -316,11 +316,11 @@
         <details style="margin-top:16px;">
           <summary style="cursor:pointer;color:var(--color-gold);font-size:13px;font-weight:600;">&#10067; Comment configurer GitHub Gist ?</summary>
           <div style="color:var(--color-text-muted);font-size:13px;line-height:1.8;margin-top:10px;padding:12px;background:var(--color-surface-alt);border-radius:var(--radius);">
-            <strong style="color:var(--color-text);">Etape 1 — Creer un Gist</strong><br>
+            <strong style="color:var(--color-text);">Étape 1 — Créer un Gist</strong><br>
             Rendez-vous sur <strong>gist.github.com</strong> (compte GitHub gratuit requis).<br>
             Filename : <code>save.json</code> &bull; Contenu : <code>{}</code> &bull; Cliquez <strong>"Create secret gist"</strong>.<br>
             Copiez l'ID dans l'URL : gist.github.com/votrenom/<strong>cet-id-ici</strong><br><br>
-            <strong style="color:var(--color-text);">Etape 2 — Creer un token GitHub</strong><br>
+            <strong style="color:var(--color-text);">Étape 2 — Créer un token GitHub</strong><br>
             1. Sur GitHub, cliquez sur votre <strong>avatar</strong> en haut a droite &rarr; <strong>"Your GitHub profile"</strong><br>
             2. Sur votre page profil, cliquez a nouveau sur votre <strong>avatar</strong> en haut a droite<br>
             3. Cette fois, cliquez sur <strong>"Settings"</strong> dans la liste<br>
@@ -332,8 +332,8 @@
             &nbsp;&nbsp;&bull; <strong>Expiration</strong> : <code>No expiration</code><br>
             &nbsp;&nbsp;&bull; <strong>Permission</strong> : cochez uniquement la case <code>gist</code><br>
             8. Cliquez <strong>"Generate token"</strong> en bas de page<br>
-            9. <strong style="color:var(--color-gold);">Copiez immediatement le token affiche</strong> (commence par <code>ghp_</code>) — il ne sera plus visible apres avoir quitte la page.<br><br>
-            <strong style="color:var(--color-text);">Etape 3 — Configurer dans le jeu</strong><br>
+            9. <strong style="color:var(--color-gold);">Copiez immédiatement le token affiche</strong> (commence par <code>ghp_</code>) — il ne sera plus visible après avoir quitte la page.<br><br>
+            <strong style="color:var(--color-text);">Étape 3 — Configurer dans le jeu</strong><br>
             Collez l'ID du Gist et le token dans les champs ci-dessus, puis cliquez <strong>"Enregistrer la configuration"</strong>.
           </div>
         </details>
@@ -346,9 +346,9 @@
   <!-- ===================== FOOTER ===================== -->
   <footer class="app-footer">
     <span class="footer-beta">BETA</span>
-    LOL Esport Manager v1.2 &mdash; Jeu de gestion d'equipe esport League of Legends
-    <span class="footer-copy">&copy; 2026 Thierry Demorest &mdash; Tous droits reserves. Concept et design proteges par la propriete intellectuelle.</span>
-    <span class="footer-copy">Les donnees de progression sont stockees localement dans votre navigateur (localStorage) et ne sont jamais transmises a des tiers.</span>
+    LOL Esport Manager v1.2.1 &mdash; Jeu de gestion d'équipe esport League of Legends
+    <span class="footer-copy">&copy; 2026 Thierry Demorest &mdash; Tous droits réservés. Concept et design proteges par la propriete intellectuelle.</span>
+    <span class="footer-copy">Les donnees de progression sont stockées localement dans votre navigateur (localStorage) et ne sont jamais transmises a des tiers.</span>
   </footer>
 
   <!-- ===================== SCRIPTS ===================== -->

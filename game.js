@@ -1,6 +1,6 @@
 /* ============================================================
    LOL ESPORT MANAGER - game.js
-   Etat global, persistance localStorage, navigation, utilitaires
+   État global, persistance localStorage, navigation, utilitaires
    (squelette repris d'AquaStrike, adapte au CDC LOL Esport Manager v1.0)
    ============================================================ */
 
@@ -10,10 +10,10 @@ const SETTINGS_KEY = 'lol_esport_manager_settings';
 const CURRENT_VERSION = '1.0';
 
 /* ------------------------------------------------------------
-   Regions (CDC 2.2 / 9.1)
+   Régions (CDC 2.2 / 9.1)
    ------------------------------------------------------------ */
 const REGIONS = [
-  { id: 'LEC', name: 'LEC', inspiration: 'Europe', style: 'Equipes polyvalentes, draft creative', aiRegion: 'LEC' },
+  { id: 'LEC', name: 'LEC', inspiration: 'Europe', style: 'Équipes polyvalentes, draft creative', aiRegion: 'LEC' },
   { id: 'LCK', name: 'LCK', inspiration: 'Coree', style: 'Rigueur, macro et discipline', aiRegion: 'LCK' },
   { id: 'LPL', name: 'LPL', inspiration: 'Chine', style: 'Agressivite et teamfights precoces', aiRegion: 'LPL' },
   { id: 'LTA', name: 'LTA', inspiration: 'Ameriques', style: 'Individualisme et carry early', aiRegion: 'LTAN' },
@@ -23,16 +23,16 @@ const REGIONS = [
 ];
 
 /* ------------------------------------------------------------
-   Acces aux equipes IA (data_teams.js, CDC 11.1)
+   Accès aux équipes IA (data_teams.js, CDC 11.1)
    ------------------------------------------------------------ */
 function getAITeamsForRegion(regionId) {
-  const region = REGIONS.find(r => r.id === regionId);
-  if (!region || typeof AI_TEAMS === 'undefined') return [];
-  return AI_TEAMS.filter(team => team.region === region.aiRegion);
+  const région = REGIONS.find(r => r.id === regionId);
+  if (!région || typeof AI_TEAMS === 'undefined') return [];
+  return AI_TEAMS.filter(team => team.région === région.aiRegion);
 }
 
 /* ------------------------------------------------------------
-   Maitrise champion (CDC 3.2 / 14)
+   Maîtrise champion (CDC 3.2 / 14)
    ------------------------------------------------------------ */
 const MASTERY_TIERS = [
   { id: 'decouverte', label: 'Decouverte', min: 0, max: 24 },
@@ -47,9 +47,9 @@ function getMasteryTier(mastery) {
 }
 
 /**
- * Initialise la maitrise champion de chaque joueur a partir de son championPool
+ * Initialise la maîtrise champion de chaque joueur a partir de son championPool
  * (CDC 2.2 championProgress / CDC 3.2 ChampionMastery). Le premier champion
- * du pool est le plus maitrise, puis la maitrise decroit pour les suivants.
+ * du pool est le plus maîtrise, puis la maîtrise decroit pour les suivants.
  */
 function initChampionProgress() {
   const progress = {};
@@ -74,7 +74,7 @@ function initChampionProgress() {
 }
 
 /**
- * Recupere la ChampionMastery d'un joueur pour un champion donne (par nom).
+ * Récupéré la ChampionMastery d'un joueur pour un champion donne (par nom).
  */
 function getChampionMastery(playerId, champName) {
   const champion = getChampionByName(champName);
@@ -84,7 +84,7 @@ function getChampionMastery(playerId, champName) {
 }
 
 /* ------------------------------------------------------------
-   Nom d'equipe par defaut
+   Nom d'équipe par defaut
    ------------------------------------------------------------ */
 const DEFAULT_TEAM_NAMES = [
   'Hextech Wardens', 'Void Surge', 'Frost Dragons', 'Crimson Rift',
@@ -96,7 +96,7 @@ function randomDefaultTeamName() {
 }
 
 /* ------------------------------------------------------------
-   Etat par defaut (CDC 2.2)
+   État par defaut (CDC 2.2)
    ------------------------------------------------------------ */
 function createDefaultState() {
   return {
@@ -104,7 +104,7 @@ function createDefaultState() {
     teamName: randomDefaultTeamName(),
     teamShortName: null,
     aiTeamId: null,
-    region: null,
+    région: null,
     resources: {
       coachingPoints: 100,
       budget: 50,
@@ -146,7 +146,7 @@ function createDefaultState() {
 }
 
 /* ------------------------------------------------------------
-   Etat global en memoire
+   État global en memoire
    ------------------------------------------------------------ */
 let state = createDefaultState();
 
@@ -168,14 +168,14 @@ function loadGame() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createDefaultState();
     const parsed = JSON.parse(raw);
-    // fusion avec l'etat par defaut pour assurer la compatibilite ascendante
+    // fusion avec l'état par defaut pour assurer la compatibilite ascendante
     const defaults = createDefaultState();
     return {
       version: CURRENT_VERSION,
       teamName: parsed.teamName || defaults.teamName,
       teamShortName: parsed.teamShortName !== undefined ? parsed.teamShortName : defaults.teamShortName,
       aiTeamId: parsed.aiTeamId !== undefined ? parsed.aiTeamId : defaults.aiTeamId,
-      region: parsed.region !== undefined ? parsed.region : defaults.region,
+      région: parsed.région !== undefined ? parsed.région : defaults.région,
       resources: Object.assign({}, defaults.resources, parsed.resources),
       roster: parsed.roster || defaults.roster,
       staff: Object.assign({}, defaults.staff, parsed.staff),
@@ -205,7 +205,7 @@ function resetGame() {
   state = createDefaultState();
   saveGame();
   updateResourceBar();
-  if (!state.region && typeof showRegionSelection === 'function') {
+  if (!state.région && typeof showRegionSelection === 'function') {
     showRegionSelection();
   } else {
     showView('home');
@@ -248,8 +248,8 @@ async function cloudExport() {
     setCloudStatus(`✓ Sauvegarde envoyee le ${new Date().toLocaleDateString('fr-FR')} a ${now}`, 'success');
     showToast('Sauvegarde envoyee vers le cloud', 'success');
   } catch (err) {
-    setCloudStatus(`✗ Echec : ${err.message}`, 'error');
-    showToast('Echec de l\'envoi cloud', 'error');
+    setCloudStatus(`✗ Échec : ${err.message}`, 'error');
+    showToast('Échec de l\'envoi cloud', 'error');
   }
 }
 
@@ -273,10 +273,10 @@ async function cloudImport() {
     showView('home');
     if (typeof renderHome === 'function') renderHome();
     setCloudStatus('✓ Sauvegarde chargee depuis le cloud', 'success');
-    showToast('Sauvegarde cloud chargee avec succes', 'success');
+    showToast('Sauvegarde cloud chargee avec succès', 'success');
   } catch (err) {
-    setCloudStatus(`✗ Echec : ${err.message}`, 'error');
-    showToast('Echec du chargement cloud', 'error');
+    setCloudStatus(`✗ Échec : ${err.message}`, 'error');
+    showToast('Échec du chargement cloud', 'error');
   }
 }
 
@@ -293,7 +293,7 @@ function initCloudSaveUI() {
     const token = tokenInput?.value.trim();
     if (!gistId || !token) { setCloudStatus('⚠ Les deux champs sont requis.', 'error'); return; }
     saveGistConfig(gistId, token);
-    setCloudStatus('✓ Configuration enregistree', 'success');
+    setCloudStatus('✓ Configuration enregistrée', 'success');
     showToast('Configuration cloud sauvegardee', 'success');
   });
 
@@ -316,7 +316,7 @@ function exportSave() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('Sauvegarde exportee', 'success');
+  showToast('Sauvegarde exportée', 'success');
 }
 
 function importSave(file) {
@@ -332,7 +332,7 @@ function importSave(file) {
       updateResourceBar();
       showView('home');
       if (typeof renderHome === 'function') renderHome();
-      showToast('Sauvegarde importee avec succes', 'success');
+      showToast('Sauvegarde importée avec succès', 'success');
     } catch (err) {
       showToast('Fichier de sauvegarde invalide', 'error');
     }
@@ -355,7 +355,7 @@ function showView(viewName) {
     btn.classList.toggle('nav-btn--active', btn.dataset.view === viewName);
   });
 
-  // Rendu specifique a chaque vue
+  // Rendu spécifique a chaque vue
   switch (viewName) {
     case 'home':
       if (typeof renderHome === 'function') renderHome();
@@ -480,7 +480,7 @@ function getInitials(name) {
 }
 
 /* ------------------------------------------------------------
-   Nom d'equipe - propagation
+   Nom d'équipe - propagation
    ------------------------------------------------------------ */
 function updateAllTeamNameDisplays() {
   document.querySelectorAll('.player-team-name').forEach((el) => {
@@ -585,7 +585,7 @@ function getTeamDraftPriorityList(team) {
 }
 
 /**
- * Construit le corps HTML du rapport de scouting (CDC 11.2) pour une equipe,
+ * Construit le corps HTML du rapport de scouting (CDC 11.2) pour une équipe,
  * reutilise par l'ecran Scouting et par le panneau de conseil de la Draft.
  */
 function buildScoutingReportBody(team) {
@@ -597,15 +597,15 @@ function buildScoutingReportBody(team) {
   const form = getTeamRecentForm(team.id);
   const formHtml = form ? (() => {
     const streakLabel = form.streakWin ? `<span class="level-delta level-delta--up">&#9650; ${form.streakLen}V</span>` : `<span class="level-delta level-delta--down">&#9660; ${form.streakLen}D</span>`;
-    return `<p>Forme recente (${form.total} matchs) : ${form.wins}V/${form.total - form.wins}D &mdash; ${form.winRate}% victoires &mdash; serie actuelle : ${streakLabel}</p>`;
+    return `<p>Forme recente (${form.total} matchs) : ${form.wins}V/${form.total - form.wins}D &mdash; ${form.winRate}% victoires &mdash; série actuelle : ${streakLabel}</p>`;
   })() : '';
 
   let html = `
     <div class="progress-bar"><div class="progress-bar__fill" style="width:${report.confidence}%"></div></div>
-    <p class="card__count">Confiance scouting : ${report.confidence}/100 &mdash; ${report.scrimsPlayed || 0} scrim(s) de preparation, matchs deja affrontes inclus.</p>
+    <p class="card__count">Confiance scouting : ${report.confidence}/100 &mdash; ${report.scrimsPlayed || 0} scrim(s) de préparation, matchs déjà affrontes inclus.</p>
 
     <h4>Rapport basique</h4>
-    <p>Style general : ${formatStyle(team.style)}.</p>
+    <p>Style général : ${formatStyle(team.style)}.</p>
     <p>Niveau moyen de l'effectif : ${avgLevel}/100.</p>
     <p>Champions les plus joues (pool) : ${topChamps.join(', ')}.</p>
     ${formHtml}
@@ -626,7 +626,7 @@ function buildScoutingReportBody(team) {
       ${recentChampsHtml}
     `;
   } else {
-    html += `<div class="objective-description">Realisez des scrims de preparation (ou affrontez cette equipe) pour debloquer le rapport avance : priorites de draft, bans probables et faiblesses de matchup.</div>`;
+    html += `<div class="objective-description">Realisez des scrims de préparation (ou affrontez cette équipe) pour debloquer le rapport avance : priorites de draft, bans probables et faiblesses de matchup.</div>`;
   }
 
   if (tier === 'premium') {
@@ -640,7 +640,7 @@ function buildScoutingReportBody(team) {
       const avg = Math.round((p.laning + p.teamfight + p.mechanics) / 3);
       const myP = state.roster.find((r) => r.role === role);
       const myAvg = myP ? Math.round((myP.laning + myP.teamfight + myP.mechanics) / 3) : null;
-      const advantage = myAvg !== null ? (myAvg >= avg ? `<span class="level-delta level-delta--up">&#9650; avantage</span>` : `<span class="level-delta level-delta--down">&#9660; desavantage</span>`) : '';
+      const advantage = myAvg !== null ? (myAvg >= avg ? `<span class="level-delta level-delta--up">&#9650; avantage</span>` : `<span class="level-delta level-delta--down">&#9660; désavantage</span>`) : '';
       return `
         <div class="career-progression-row">
           <span class="career-progression-row__name">${p.name} <span class="career-progression-row__role">${role}</span></span>
@@ -653,24 +653,24 @@ function buildScoutingReportBody(team) {
       <h4>Rapport premium</h4>
       <div class="career-progression-list" style="margin-bottom:10px;">${playerRows}</div>
       <p>Plan de draft suggere : misez sur un pick fort en ${ROLE_NAMES[weak.role]}${myPlayer ? ` pour ${myPlayer.name}` : ''} et bannissez ${topBan || 'leur pick signature'} en priorite.</p>
-      <p>Scrim de preparation recommande : "Preparation matchup" cible sur le ${ROLE_NAMES[weak.role]} adverse.</p>
+      <p>Scrim de préparation recommande : "Préparation matchup" cible sur le ${ROLE_NAMES[weak.role]} adverse.</p>
     `;
   } else if (tier === 'advanced') {
-    html += `<div class="objective-description">Continuez le scouting pour debloquer le rapport premium : suggestion de plan de draft et scrim de preparation recommande.</div>`;
+    html += `<div class="objective-description">Continuez le scouting pour debloquer le rapport premium : suggestion de plan de draft et scrim de préparation recommande.</div>`;
   }
 
   return html;
 }
 
 /* ------------------------------------------------------------
-   Scrims et entrainement (CDC 5)
+   Scrims et entraînement (CDC 5)
    ------------------------------------------------------------ */
 const SCRIM_OBJECTIVES = [
-  { id: 'champion_mastery', label: 'Champion cible', description: "Entrainer un joueur sur un nouveau champion ou approfondir sa maitrise.", risk: 'Fatigue et mauvais resultat si le champion est trop difficile.' },
+  { id: 'champion_mastery', label: 'Champion cible', description: "Entraîner un joueur sur un nouveau champion ou approfondir sa maîtrise.", risk: 'Fatigue et mauvais résultat si le champion est trop difficile.' },
   { id: 'composition_test', label: 'Composition', description: 'Tester un style de jeu (engage, poke, scaling, dive, protect ADC...).', risk: 'Peu de progression individuelle.' },
-  { id: 'matchup_prep', label: 'Preparation matchup', description: 'Preparer un adversaire specifique et ameliorer le scouting.', risk: 'Necessite un rapport adversaire pour etre vraiment efficace.' },
+  { id: 'matchup_prep', label: 'Préparation matchup', description: 'Préparer un adversaire spécifique et améliorer le scouting.', risk: 'Necessite un rapport adversaire pour etre vraiment efficace.' },
   { id: 'macro_objectives', label: 'Macro / objectifs', description: 'Travailler dragons, Baron, vision et rotations.', risk: 'Progression champion faible.' },
-  { id: 'free_scrim', label: 'Scrim libre', description: "Match d'entrainement general, bon pour la forme et la cohesion.", risk: 'Moins rentable.' }
+  { id: 'free_scrim', label: 'Scrim libre', description: "Match d'entraînement général, bon pour la forme et la cohesion.", risk: 'Moins rentable.' }
 ];
 
 const COMP_TAGS = ['engage', 'poke', 'scaling', 'splitpush', 'pick', 'protect', 'dive', 'disengage'];
@@ -698,7 +698,7 @@ const STAT_LABELS = {
   shotcalling: 'Macro / Objectifs',
   laning: 'Phase de lane',
   teamfight: 'Teamfight',
-  mechanics: 'Mecanique',
+  mechanics: 'Mécanique',
   mental: 'Mental',
   form: 'Forme'
 };
@@ -756,12 +756,12 @@ function buildScrimReport(plan, opponent, win, before, after) {
   if (!win) {
     const weak = pickWeakLink(focusStats);
     if (weak) {
-      lines.push(`Analyse : ${weak.player.name} a montre des difficultes en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la defaite.`);
+      lines.push(`Analyse : ${weak.player.name} a montre des difficultés en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la défaite.`);
     }
   } else {
     const strong = pickStrongLink(focusStats);
     if (strong) {
-      lines.push(`Analyse : ${strong.player.name} a porte l'equipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
+      lines.push(`Analyse : ${strong.player.name} a porte l'équipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
     }
   }
 
@@ -772,9 +772,9 @@ function buildScrimReport(plan, opponent, win, before, after) {
       const currentVal = after[player.id][lastWeak.statKey];
       const delta = currentVal - lastWeak.value;
       if (delta > 0) {
-        lines.push(`Suivi : depuis le dernier debrief, ${player.name} a progresse en ${STAT_LABELS[lastWeak.statKey]} (${lastWeak.value} -> ${currentVal}, +${delta}). L'entrainement cible porte ses fruits.`);
+        lines.push(`Suivi : depuis le dernier debrief, ${player.name} a progresse en ${STAT_LABELS[lastWeak.statKey]} (${lastWeak.value} -> ${currentVal}, +${delta}). L'entraînement cible porte ses fruits.`);
       } else {
-        lines.push(`Suivi : ${player.name} reste a ${currentVal}/100 en ${STAT_LABELS[lastWeak.statKey]}, aucune amelioration nette depuis le dernier debrief malgre cet entrainement cible.`);
+        lines.push(`Suivi : ${player.name} reste a ${currentVal}/100 en ${STAT_LABELS[lastWeak.statKey]}, aucune amélioration nette depuis le dernier debrief malgre cet entraînement cible.`);
       }
     }
   }
@@ -849,13 +849,13 @@ const BALANCE_CONFIG = {
     roleSkillWeight: 0.12,
     formWeight: 0.08,
     fatiguePenaltyMax: 12,
-    // Garde-fou 13.1 : un champion non maitrise ne doit pas devenir optimal
+    // Garde-fou 13.1 : un champion non maîtrise ne doit pas devenir optimal
     // uniquement grace au matchup -> le bonus de matchup reste sous l'ecart
-    // de maitrise type entre un pick confort et un pick non maitrise.
+    // de maîtrise type entre un pick confort et un pick non maîtrise.
     matchupBonus: 1.5,
     // Bonus base sur les donnees de counter explicites (data_counters.js).
     // counterScore (0-100) est ramene a [0, counterBonusMax], reste sous
-    // matchupBonus + ecart de maitrise type pour respecter le garde-fou 13.1.
+    // matchupBonus + ecart de maîtrise type pour respecter le garde-fou 13.1.
     counterBonusMax: 2
   },
   mentalPressure: {
@@ -875,16 +875,16 @@ const BALANCE_CONFIG = {
   mastery: {
     diminishingFloor: 0.25
   },
-  fatigue: {
-    // Garde-fou 13.1 : les scrims intensifs doivent creer une vraie fatigue,
+  fatigué: {
+    // Garde-fou 13.1 : les scrims intensifs doivent créer une vraie fatigué,
     // mais celle-ci doit pouvoir etre recuperee entre deux matchs.
     trainingPenaltyDivisor: 200,
     matchRecovery: 15
   },
   events: {
     matchVariance: 3,
-    // Garde-fou 13.1 : les evenements dramatiques sont rares en saison
-    // reguliere et plus presents en playoffs/Worlds/EWC.
+    // Garde-fou 13.1 : les événements dramatiques sont rares en saison
+    // régulière et plus presents en playoffs/Worlds/EWC.
     dramaticWeight: { regular: 1, playoffs: 3 }
   }
 };
@@ -898,7 +898,7 @@ function getMatchStakes() {
 }
 
 function fatiguePenaltyFactor(player) {
-  return 1 - player.fatigue / BALANCE_CONFIG.fatigue.trainingPenaltyDivisor;
+  return 1 - player.fatigué / BALANCE_CONFIG.fatigué.trainingPenaltyDivisor;
 }
 
 function potentialMultiplier(player) {
@@ -911,7 +911,7 @@ function diminishingReturns(mastery) {
 
 /**
  * Modificateur de pression mentale (CDC 13.2 mentalPressureModifier).
- * Un mental eleve donne un leger bonus, un mental faible une penalite,
+ * Un mental eleve donne un leger bonus, un mental faible une pénalité,
  * amplifiee en playoffs/Worlds et pour les joueurs "tiltable", attenuee
  * (et inversee positivement) pour les joueurs "clutch".
  */
@@ -930,7 +930,7 @@ function computeMentalPressureModifier(player, stakes) {
 
 /**
  * Modificateur de traits (CDC 13.2 traitModifier) : bonus contextuel selon
- * la categorie d'evenement (igl/mechanical) et le leadership (leader).
+ * la categorie d'événement (igl/mechanical) et le leadership (leader).
  */
 function computeTraitModifier(player, category) {
   const cfg = BALANCE_CONFIG.traits;
@@ -945,11 +945,11 @@ function computeTraitModifier(player, category) {
 }
 
 /**
- * Penalite de fatigue (CDC 13.2 fatiguePenalty), attenuee pour les joueurs
+ * Pénalité de fatigué (CDC 13.2 fatiguePenalty), attenuee pour les joueurs
  * "veteran".
  */
 function computeFatiguePenalty(player) {
-  let penalty = (player.fatigue / 100) * BALANCE_CONFIG.power.fatiguePenaltyMax;
+  let penalty = (player.fatigué / 100) * BALANCE_CONFIG.power.fatiguePenaltyMax;
   if ((player.traits || []).includes('veteran')) {
     penalty *= (1 - BALANCE_CONFIG.traits.veteran.fatigueResistance);
   }
@@ -957,8 +957,8 @@ function computeFatiguePenalty(player) {
 }
 
 /**
- * Multiplicateur de variance applique aux evenements de match : les
- * "rookie" sont plus inconstants, les "consistant" plus reguliers.
+ * Multiplicateur de variance applique aux événements de match : les
+ * "rookie" sont plus inconstants, les "consistant" plus réguliers.
  */
 function getVarianceMultiplier(player) {
   const cfg = BALANCE_CONFIG.traits;
@@ -1006,28 +1006,28 @@ function ensureChampionMasteryEntry(playerId, champion) {
 }
 
 /* ------------------------------------------------------------
-   Selection de region puis d'equipe (CDC 11.1)
-   Le joueur ne cree pas son equipe : il prend les commandes
-   d'une equipe existante recuperee dans data_teams.js.
+   Sélection de région puis d'équipe (CDC 11.1)
+   Le joueur ne créé pas son équipe : il prend les commandes
+   d'une équipe existante recuperee dans data_teams.js.
    ------------------------------------------------------------ */
 function showRegionSelection() {
   renderRegionStep();
 }
 
 function renderRegionStep() {
-  const overlay = document.getElementById('region-select-overlay');
-  const content = document.getElementById('region-select-content');
+  const overlay = document.getElementById('région-select-overlay');
+  const content = document.getElementById('région-select-content');
   if (!overlay || !content) return;
 
   content.innerHTML = `
-    <h2 class="region-select-title">Choisissez votre region</h2>
-    <p class="region-select-warning">Ce choix definit la ligue regionale dans laquelle votre equipe evoluera.</p>
-    <div class="region-grid" id="region-grid">
+    <h2 class="région-select-title">Choisissez votre région</h2>
+    <p class="région-select-warning">Ce choix definit la ligue regionale dans laquelle votre équipe evoluera.</p>
+    <div class="région-grid" id="région-grid">
       ${REGIONS.map((r) => `
-        <div class="region-card" data-region="${r.id}">
-          <div class="region-badge region-badge--${r.id}">${r.name}</div>
-          <div class="region-card__name">${r.inspiration}</div>
-          <div class="region-card__inspiration">${r.style}</div>
+        <div class="région-card" data-région="${r.id}">
+          <div class="région-badge région-badge--${r.id}">${r.name}</div>
+          <div class="région-card__name">${r.inspiration}</div>
+          <div class="région-card__inspiration">${r.style}</div>
         </div>
       `).join('')}
     </div>
@@ -1035,34 +1035,34 @@ function renderRegionStep() {
 
   overlay.style.display = 'flex';
 
-  content.querySelectorAll('.region-card').forEach((card) => {
+  content.querySelectorAll('.région-card').forEach((card) => {
     card.addEventListener('click', () => {
-      renderTeamStep(card.dataset.region);
+      renderTeamStep(card.dataset.région);
     });
   });
 }
 
 function renderTeamStep(regionId) {
-  const content = document.getElementById('region-select-content');
+  const content = document.getElementById('région-select-content');
   if (!content) return;
 
-  const region = REGIONS.find((r) => r.id === regionId);
+  const région = REGIONS.find((r) => r.id === regionId);
   const teams = getAITeamsForRegion(regionId);
 
   content.innerHTML = `
-    <h2 class="region-select-title">Choisissez votre equipe (${region.name})</h2>
-    <p class="region-select-warning">Vous prendrez les commandes de cette equipe pour la saison.</p>
+    <h2 class="région-select-title">Choisissez votre équipe (${région.name})</h2>
+    <p class="région-select-warning">Vous prendrez les commandes de cette équipe pour la saison.</p>
     <div class="team-select-grid" id="team-select-grid">
       ${teams.map((t) => `
         <div class="team-select-card" data-team="${t.id}">
-          <div class="region-badge region-badge--${regionId}">${t.shortName}</div>
+          <div class="région-badge région-badge--${regionId}">${t.shortName}</div>
           <div class="team-select-card__name">${t.name}</div>
           <div class="team-select-card__meta">Tier ${t.tier} &mdash; ${formatStyle(t.style)}</div>
         </div>
       `).join('')}
     </div>
     <div class="quick-actions" style="justify-content:center;">
-      <button class="btn-secondary" id="btn-back-to-regions">Retour aux regions</button>
+      <button class="btn-secondary" id="btn-back-to-régions">Retour aux régions</button>
     </div>
   `;
 
@@ -1073,7 +1073,7 @@ function renderTeamStep(regionId) {
     });
   });
 
-  content.querySelector('#btn-back-to-regions').addEventListener('click', renderRegionStep);
+  content.querySelector('#btn-back-to-régions').addEventListener('click', renderRegionStep);
 }
 
 function showTeamConfirmModal(team, regionId) {
@@ -1090,8 +1090,8 @@ function showTeamConfirmModal(team, regionId) {
   `).join('');
 
   showModal(`
-    <h2 class="region-select-title">${team.name} (${team.shortName})</h2>
-    <p class="region-select-warning">Tier ${team.tier} &mdash; Style : ${formatStyle(team.style)}</p>
+    <h2 class="région-select-title">${team.name} (${team.shortName})</h2>
+    <p class="région-select-warning">Tier ${team.tier} &mdash; Style : ${formatStyle(team.style)}</p>
     <table class="history-table">
       <thead>
         <tr><th>Role</th><th>Joueur</th><th>Nationalite</th><th>Niveau</th></tr>
@@ -1100,7 +1100,7 @@ function showTeamConfirmModal(team, regionId) {
     </table>
     <div class="modal-content__actions">
       <button class="btn-secondary" id="btn-cancel-team">Revenir en arriere</button>
-      <button class="btn-primary" id="btn-confirm-team">Valider cette equipe</button>
+      <button class="btn-primary" id="btn-confirm-team">Valider cette équipe</button>
     </div>
   `);
 
@@ -1111,7 +1111,7 @@ function showTeamConfirmModal(team, regionId) {
 }
 
 function confirmTeamSelection(team, regionId) {
-  state.region = regionId;
+  state.région = regionId;
   state.teamName = team.name;
   state.teamShortName = team.shortName;
   state.aiTeamId = team.id;
@@ -1119,7 +1119,7 @@ function confirmTeamSelection(team, regionId) {
   initChampionProgress();
 
   closeModal();
-  const overlay = document.getElementById('region-select-overlay');
+  const overlay = document.getElementById('région-select-overlay');
   if (overlay) overlay.style.display = 'none';
 
   saveGame();
@@ -1134,10 +1134,10 @@ function confirmTeamSelection(team, regionId) {
 function renderHome() {
   updateAllTeamNameDisplays();
 
-  const regionEl = document.getElementById('home-team-region');
+  const regionEl = document.getElementById('home-team-région');
   if (regionEl) {
-    regionEl.innerHTML = state.region
-      ? `<span class="region-badge region-badge--${state.region}">${state.region}</span>`
+    regionEl.innerHTML = state.région
+      ? `<span class="région-badge région-badge--${state.région}">${state.région}</span>`
       : '';
   }
 
@@ -1164,7 +1164,7 @@ function renderHome() {
 }
 
 /* ------------------------------------------------------------
-   Vues encore vides (squelette, completees aux etapes suivantes)
+   Vues encore vides (squelette, completees aux étapes suivantes)
    ------------------------------------------------------------ */
 function renderRoster() {
   const el = document.getElementById('roster-content');
@@ -1178,14 +1178,14 @@ function renderRoster() {
   const roleOrder = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
   const sorted = [...state.roster].sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role));
 
-  const avgFatigue = Math.round(state.roster.reduce((sum, p) => sum + p.fatigue, 0) / state.roster.length);
+  const avgFatigue = Math.round(state.roster.reduce((sum, p) => sum + p.fatigué, 0) / state.roster.length);
 
   el.innerHTML = `
     <div class="panel-subsection rest-panel">
-      <h3 class="panel-title">Repos de l'equipe</h3>
+      <h3 class="panel-title">Repos de l'équipe</h3>
       <p class="card__count">Fatigue moyenne actuelle : ${avgFatigue}/100</p>
       <div class="training-form__actions">
-        ${REST_OPTIONS.map((o) => `<button class="btn-secondary" data-rest="${o.id}">${o.label} (-${o.fatigueReduction} fatigue, ${o.cost} pts coaching)</button>`).join('')}
+        ${REST_OPTIONS.map((o) => `<button class="btn-secondary" data-rest="${o.id}">${o.label} (-${o.fatigueReduction} fatigué, ${o.cost} pts coaching)</button>`).join('')}
       </div>
     </div>
     <div class="player-grid">${sorted.map(playerCardHtml).join('')}</div>
@@ -1207,13 +1207,13 @@ function restTeam(optionId) {
 
   state.resources.coachingPoints -= option.cost;
   state.roster.forEach((p) => {
-    p.fatigue = clamp(p.fatigue - option.fatigueReduction, 0, 100);
+    p.fatigué = clamp(p.fatigué - option.fatigueReduction, 0, 100);
   });
 
   saveGame();
   updateResourceBar();
   renderRoster();
-  showToast(`Repos (${option.label}) effectue : fatigue de l'equipe reduite.`, 'success');
+  showToast(`Repos (${option.label}) effectué : fatigué de l'équipe reduite.`, 'success');
 }
 
 function playerStatRow(label, value) {
@@ -1246,12 +1246,12 @@ function playerCardHtml(p) {
       </div>
       <div class="player-card__stats">
         ${playerStatRow('Forme', p.form)}
-        ${playerStatRow('Fatigue', p.fatigue)}
+        ${playerStatRow('Fatigue', p.fatigué)}
         ${playerStatRow('Mental', p.mental)}
         ${playerStatRow('Shotcalling', p.shotcalling)}
         ${playerStatRow('Laning', p.laning)}
         ${playerStatRow('Teamfight', p.teamfight)}
-        ${playerStatRow('Mecaniques', p.mechanics)}
+        ${playerStatRow('Mécaniques', p.mechanics)}
       </div>
       <div class="player-card__pool">
         <span class="player-card__pool-label">Champion pool</span>
@@ -1278,7 +1278,7 @@ function renderTraining() {
   if (!el) return;
 
   if (state.roster.length === 0) {
-    el.innerHTML = '<div class="empty-state">Constituez votre roster avant de planifier un entrainement.</div>';
+    el.innerHTML = '<div class="empty-state">Constituez votre roster avant de planifier un entraînement.</div>';
     return;
   }
 
@@ -1294,9 +1294,9 @@ function renderTraining() {
       </div>
 
       <div class="training-form__group">
-        <label for="scrim-region">Region adverse</label>
-        <select id="scrim-region">
-          ${REGIONS.map((r) => `<option value="${r.id}" ${r.id === state.region ? 'selected' : ''}>${r.name}</option>`).join('')}
+        <label for="scrim-région">Région adverse</label>
+        <select id="scrim-région">
+          ${REGIONS.map((r) => `<option value="${r.id}" ${r.id === state.région ? 'selected' : ''}>${r.name}</option>`).join('')}
         </select>
       </div>
 
@@ -1308,7 +1308,7 @@ function renderTraining() {
       <div class="training-form__group">
         <label for="scrim-intensity">Intensite</label>
         <select id="scrim-intensity">
-          ${SCRIM_INTENSITIES.map((i) => `<option value="${i.id}">${i.label} (cout ${i.cost} pts)</option>`).join('')}
+          ${SCRIM_INTENSITIES.map((i) => `<option value="${i.id}">${i.label} (coût ${i.cost} pts)</option>`).join('')}
         </select>
       </div>
 
@@ -1353,7 +1353,7 @@ function setupTrainingFormHandlers() {
   const objectiveSelect = document.getElementById('scrim-objective');
   const focusPlayerSelect = document.getElementById('scrim-focus-player');
   const intensitySelect = document.getElementById('scrim-intensity');
-  const regionSelect = document.getElementById('scrim-region');
+  const regionSelect = document.getElementById('scrim-région');
   const opponentSelect = document.getElementById('scrim-opponent');
   const runBtn = document.getElementById('btn-run-scrim');
 
@@ -1382,7 +1382,7 @@ function setupTrainingFormHandlers() {
     const candidates = getChampionsForRole(player.role);
     champSelect.innerHTML = candidates.map((c) => {
       const mastery = getChampionMastery(player.id, c.name);
-      const label = mastery ? `${c.name} (maitrise ${mastery.mastery})` : `${c.name} (nouveau)`;
+      const label = mastery ? `${c.name} (maîtrise ${mastery.mastery})` : `${c.name} (nouveau)`;
       return `<option value="${c.id}">${label}</option>`;
     }).join('');
   }
@@ -1390,7 +1390,7 @@ function setupTrainingFormHandlers() {
   function updateCostLabel() {
     const intensity = SCRIM_INTENSITIES.find((i) => i.id === intensitySelect.value);
     document.getElementById('scrim-cost-label').textContent =
-      `Cout : ${intensity.cost} points de coaching (disponible : ${state.resources.coachingPoints})`;
+      `Coût : ${intensity.cost} points de coaching (disponible : ${state.resources.coachingPoints})`;
   }
 
   objectiveSelect.addEventListener('change', updateObjectiveVisibility);
@@ -1430,7 +1430,7 @@ function renderScrimHistory() {
   wrapper.innerHTML = `
     <table class="history-table">
       <thead>
-        <tr><th>Adversaire</th><th>Objectif</th><th>Intensite</th><th>Resultat</th><th>Gains</th><th>CR</th></tr>
+        <tr><th>Adversaire</th><th>Objectif</th><th>Intensite</th><th>Résultat</th><th>Gains</th><th>CR</th></tr>
       </thead>
       <tbody>
         ${state.scrims.history.map((s, index) => {
@@ -1441,7 +1441,7 @@ function renderScrimHistory() {
               <td>${s.opponentName}</td>
               <td>${objLabel}</td>
               <td>${intLabel}</td>
-              <td><span class="result-tag ${s.win ? 'result-tag--win' : 'result-tag--loss'}">${s.win ? 'Victoire' : 'Defaite'}</span></td>
+              <td><span class="result-tag ${s.win ? 'result-tag--win' : 'result-tag--loss'}">${s.win ? 'Victoire' : 'Défaite'}</span></td>
               <td>${s.summary}</td>
               <td>${s.report ? `<button class="btn-secondary btn-view-report" data-history-index="${index}">Voir CR</button>` : ''}</td>
             </tr>
@@ -1482,7 +1482,7 @@ function runScrim(plan) {
   const win = Math.random() < winProbability;
 
   state.roster.forEach((p) => {
-    p.fatigue = clamp(p.fatigue + intensity.fatigueGain, 0, 100);
+    p.fatigué = clamp(p.fatigué + intensity.fatigueGain, 0, 100);
   });
 
   const before = snapshotRosterStats();
@@ -1530,7 +1530,7 @@ function applyScrimObjective(plan, opponent, intensity, win) {
 function applyChampionMasteryGain(plan, intensity, resultFactor) {
   const player = state.roster.find((p) => p.id === plan.focusPlayerId);
   const champion = getChampionById(plan.focusChampionId);
-  if (!player || !champion) return 'Cible d\'entrainement invalide.';
+  if (!player || !champion) return 'Cible d\'entraînement invalide.';
 
   if (!player.championPool.includes(champion.name)) {
     player.championPool.push(champion.name);
@@ -1553,12 +1553,12 @@ function applyChampionMasteryGain(plan, intensity, resultFactor) {
     player.mechanics = clamp(player.mechanics + 1, 0, 100);
   }
 
-  return `${player.name} : maitrise ${champion.name} +${gain} (-> ${entry.mastery})`;
+  return `${player.name} : maîtrise ${champion.name} +${gain} (-> ${entry.mastery})`;
 }
 
 function applyCompositionGain(plan, intensity, resultFactor) {
   const tags = plan.targetCompTags || [];
-  if (tags.length === 0) return 'Aucun style de composition selectionne.';
+  if (tags.length === 0) return 'Aucun style de composition sélectionné.';
 
   let affected = 0;
   state.roster.forEach((player) => {
@@ -1627,7 +1627,7 @@ function applyMacroGain(plan, intensity, resultFactor) {
     }
     player.mental = clamp(player.mental + (resultFactor > 1 ? 1 : 0), 0, 100);
   });
-  return `Travail macro/objectifs : +${total} shotcalling cumule sur l'equipe.`;
+  return `Travail macro/objectifs : +${total} shotcalling cumule sur l'équipe.`;
 }
 
 function applyFreeScrimGain(intensity, win) {
@@ -1636,7 +1636,7 @@ function applyFreeScrimGain(intensity, win) {
     player.form = clamp(player.form + formDelta, 0, 100);
     player.mental = clamp(player.mental + (win ? 1 : 0), 0, 100);
   });
-  return `Scrim libre ${win ? 'gagne' : 'perdu'} : forme d'equipe ${formDelta >= 0 ? '+' : ''}${formDelta}.`;
+  return `Scrim libre ${win ? 'gagne' : 'perdu'} : forme d'équipe ${formDelta >= 0 ? '+' : ''}${formDelta}.`;
 }
 
 /* ------------------------------------------------------------
@@ -1661,13 +1661,13 @@ const DRAFT_TURN_SEQUENCE = [
 ];
 
 function startDraft(opponentTeamId, playerSide, mapSide) {
-  const series = state.matchSeries;
+  const séries = state.matchSeries;
   state.draft = {
     opponentTeamId,
     playerSide,
     mapSide: mapSide || playerSide,
-    format: series ? series.format : 'BO1',
-    fearlessMode: series ? series.fearlessMode : 'off',
+    format: séries ? séries.format : 'BO1',
+    fearlessMode: séries ? séries.fearlessMode : 'off',
     turnIndex: 0,
     blueBans: [],
     redBans: [],
@@ -1675,7 +1675,7 @@ function startDraft(opponentTeamId, playerSide, mapSide) {
     redPicks: {},
     blueFearlessLocked: [],
     redFearlessLocked: [],
-    globalFearlessLocked: series ? series.globalFearlessLocked.slice() : [],
+    globalFearlessLocked: séries ? séries.globalFearlessLocked.slice() : [],
     log: [],
     status: 'in_progress',
     result: null
@@ -1715,7 +1715,7 @@ function aiChooseBan(draft) {
   // Ban proactif : un champion que l'IA redoute pour son propre plan de draft
   const proactive = profile ? (profile.banPriorities || []).find((c) => !isChampionTaken(draft, c)) : null;
 
-  // Ban reactif : le champion le plus maitrise disponible cote joueur
+  // Ban reactif : le champion le plus maîtrise disponible côté joueur
   let reactive = null;
   state.roster.forEach((player) => {
     player.championPool.forEach((champName) => {
@@ -1782,7 +1782,7 @@ function resolveAiTurnsUntilPlayer() {
       const pick = aiChoosePick(draft);
       if (pick) {
         draft[turn.side + 'Picks'][pick.role] = pick.champName;
-        draft.log.push(`${sideLabel} (IA) selectionne ${pick.champName} (${ROLE_NAMES[pick.role]}).`);
+        draft.log.push(`${sideLabel} (IA) sélectionné ${pick.champName} (${ROLE_NAMES[pick.role]}).`);
       }
     }
     draft.turnIndex++;
@@ -1832,13 +1832,13 @@ function finalizeDraft() {
   const draft = state.draft;
   draft.status = 'done';
   draft.result = computeDraftScore(draft);
-  draft.log.push('Draft terminee.');
+  draft.log.push('Draft terminée.');
 
   if (state.matchSeries && state.matchSeries.fearlessMode === 'on') {
-    const series = state.matchSeries;
+    const séries = state.matchSeries;
     [...Object.values(draft.bluePicks), ...Object.values(draft.redPicks)].forEach((champName) => {
-      if (champName && !series.globalFearlessLocked.includes(champName)) {
-        series.globalFearlessLocked.push(champName);
+      if (champName && !séries.globalFearlessLocked.includes(champName)) {
+        séries.globalFearlessLocked.push(champName);
       }
     });
   }
@@ -1861,7 +1861,7 @@ function computeDraftScore(draft) {
     teamComfortScore += Math.round(mastery / 5);
     if (mastery < 25) riskPenalty += 3;
     else if (mastery < 50) riskPenalty += 1;
-    comfortDetails.push(`${player.name} sur ${champName} (maitrise ${mastery}).`);
+    comfortDetails.push(`${player.name} sur ${champName} (maîtrise ${mastery}).`);
   });
 
   let matchupScore = 0;
@@ -1928,7 +1928,7 @@ function getDraftSuggestion(draft) {
       });
     });
     if (best && best.mastery >= 50) {
-      return `Suggestion : surveillez ${best.champName}, un champion fort qui pourrait revenir cote adverse.`;
+      return `Suggestion : surveillez ${best.champName}, un champion fort qui pourrait revenir côté adverse.`;
     }
     return 'Suggestion : bannissez un champion cle de la composition adverse ou un contre-pick dangereux.';
   }
@@ -1950,7 +1950,7 @@ function getDraftSuggestion(draft) {
   });
 
   if (best) {
-    let suggestion = `Suggestion : ${best.player.name} sur ${best.champName} (${ROLE_NAMES[best.role]}, maitrise ${best.mastery}) pour un pick confort.`;
+    let suggestion = `Suggestion : ${best.player.name} sur ${best.champName} (${ROLE_NAMES[best.role]}, maîtrise ${best.mastery}) pour un pick confort.`;
     const opponent = getOpponentTeam(draft);
     const report = getScoutingReport(opponent.id);
     if (getScoutingTier(report.confidence) === 'premium') {
@@ -1961,7 +1961,7 @@ function getDraftSuggestion(draft) {
     }
     return suggestion;
   }
-  return `Suggestion : completez le role ${ROLE_NAMES[roles[0]]}, meme avec un champion peu maitrise pour l'instant.`;
+  return `Suggestion : completez le role ${ROLE_NAMES[roles[0]]}, même avec un champion peu maîtrise pour l'instant.`;
 }
 
 function renderBansRow(draft, side) {
@@ -2028,10 +2028,10 @@ function renderDraft() {
       el.innerHTML = '<div class="empty-state">Constituez votre roster avant de lancer une draft.</div>';
       return;
     }
-    const opponents = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
+    const opponents = getAITeamsForRegion(state.région).filter((t) => t.id !== state.aiTeamId);
     el.innerHTML = `
       <div class="panel">
-        <h3 class="panel-title">Preparer une draft</h3>
+        <h3 class="panel-title">Préparer une draft</h3>
         <div class="training-form">
           <div class="training-form__group">
             <label>ADVERSAIRE</label>
@@ -2152,7 +2152,7 @@ function renderDraft() {
     <div class="panel">
       <h3 class="panel-title">Journal de draft</h3>
       <div class="scrim-report">
-        ${draft.log.length ? draft.log.slice().reverse().map((l) => `<p>${l}</p>`).join('') : '<p>Aucun evenement.</p>'}
+        ${draft.log.length ? draft.log.slice().reverse().map((l) => `<p>${l}</p>`).join('') : '<p>Aucun événement.</p>'}
       </div>
     </div>
   `;
@@ -2200,16 +2200,16 @@ function renderDraft() {
 }
 
 /* ------------------------------------------------------------
-   Saison : calendrier, classement et playoffs (CDC 9.2-9.3, Etape 8)
+   Saison : calendrier, classement et playoffs (CDC 9.2-9.3, Étape 8)
    ------------------------------------------------------------ */
 function getSeasonTeamIds() {
-  const aiTeams = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
+  const aiTeams = getAITeamsForRegion(state.région).filter((t) => t.id !== state.aiTeamId);
   return ['player', ...aiTeams.map((t) => t.id)];
 }
 
 function getTeamRef(teamId) {
   if (teamId === 'player') {
-    return { id: 'player', name: state.teamName || 'Votre equipe', shortName: state.teamShortName || 'YOU', roster: state.roster, region: state.region };
+    return { id: 'player', name: state.teamName || 'Votre équipe', shortName: state.teamShortName || 'YOU', roster: state.roster, région: state.région };
   }
   const base = AI_TEAMS.find((t) => t.id === teamId);
   if (!base) return null;
@@ -2272,17 +2272,17 @@ function showSeasonIntroModal(split, year, teamIds) {
     <h2 class="panel-title" style="margin-bottom:16px;">&#127942; ${splitName} ${year} — Bienvenue !</h2>
     <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#128197; Saison reguliere</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#128197; Saison régulière</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Vous affrontez <strong>${teamIds.length - 1} equipes</strong> en round-robin complet : chaque equipe joue contre toutes les autres une fois.
-          Cela represente <strong>${totalMatchdays} journees</strong>. Chaque match se joue en <strong>BO3</strong>.
-          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la difference d'or.
+          Vous affrontez <strong>${teamIds.length - 1} équipes</strong> en round-robin complet : chaque équipe joue contre toutes les autres une fois.
+          Cela représente <strong>${totalMatchdays} journées</strong>. Chaque match se joue en <strong>BO3</strong>.
+          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la différence d'or.
         </p>
       </div>
       <div>
         <h3 style="color:var(--color-gold);margin-bottom:6px;">&#9876;&#65039; Playoffs</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Les <strong>6 meilleures equipes</strong> se qualifient pour les playoffs.
+          Les <strong>6 meilleures équipes</strong> se qualifient pour les playoffs.
           Les seeds 3-6 s'affrontent en quarts de finale (BO5), les vainqueurs rejoignent les seeds 1 et 2 en demi-finales (BO5).
           La grande finale se joue en <strong>BO5</strong>.
         </p>
@@ -2290,12 +2290,12 @@ function showSeasonIntroModal(split, year, teamIds) {
       <div>
         <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127758; Qualification ${intlEvent}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Les <strong>2 meilleures equipes</strong> de votre region se qualifient pour le <strong>${intlEvent}</strong>.
-          Terminez dans le top 2 du classement final (apres playoffs) pour representer votre region sur la scene internationale.
+          Les <strong>2 meilleures équipes</strong> de votre région se qualifient pour le <strong>${intlEvent}</strong>.
+          Terminez dans le top 2 du classement final (après playoffs) pour representer votre région sur la scene internationale.
         </p>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Equipes participantes</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Équipes participantes</h3>
         <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;">
           ${teamListHtml}
         </ul>
@@ -2317,7 +2317,7 @@ function startSeason(split, year) {
   state.season = {
     year,
     split,
-    region: state.region,
+    région: state.région,
     teamIds,
     standings,
     schedule: generateRoundRobin(teamIds),
@@ -2426,7 +2426,7 @@ function startPlayoffs() {
   season.log.unshift(`Phase de playoffs ! Seeds : ${seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(', ')}.`);
   const playerRank = ranked.indexOf('player') + 1;
   if (playerRank > 6) {
-    season.log.unshift(`Vous terminez ${playerRank}e de la saison reguliere et n'etes pas qualifie pour les playoffs.`);
+    season.log.unshift(`Vous terminez ${playerRank}e de la saison régulière et n'etes pas qualifié pour les playoffs.`);
   }
   processPlayoffRound();
 }
@@ -2469,7 +2469,7 @@ function processPlayoffRound() {
     const res = simulateAISeries(m.home, m.away, m.format);
     recordAIMatchResult(m.home, m.away, res.winner);
     m.result = { winner: res.winner, loser: res.loser, scoreA: res.scoreA, scoreB: res.scoreB };
-    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${getTeamName(res.winner)} elimine ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${getTeamName(res.winner)} éliminé ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
   }
 
   advancePlayoffBracket();
@@ -2503,7 +2503,7 @@ function placementLabel(placement) {
   if (placement === 2) return '2e - Finaliste';
   if (placement === 3) return '3e-4e - Demi-finaliste';
   if (placement === 5) return '5e-6e - Quart de finaliste';
-  return `${placement}e de la saison reguliere`;
+  return `${placement}e de la saison régulière`;
 }
 
 function finishSeason() {
@@ -2515,9 +2515,9 @@ function finishSeason() {
   state.resources.budget += rewards.budget;
   state.resources.prestige += rewards.prestige;
   if (placement === 1) {
-    state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.region})`);
+    state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.région})`);
   }
-  season.log.unshift(`Fin de saison ! Classement final : ${placementLabel(placement)}. Recompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
+  season.log.unshift(`Fin de saison ! Classement final : ${placementLabel(placement)}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
   applyCareerProgression();
   applyAICareerProgression();
   saveGame();
@@ -2660,10 +2660,10 @@ function careerProgressionHtml(entries) {
 }
 
 /* ------------------------------------------------------------
-   Competitions internationales : MSI et Worlds
-   Apres chaque split (Spring -> MSI, Summer -> Worlds), les meilleures
-   equipes de chaque region s'affrontent en phase de groupes (BO3)
-   puis en bracket a elimination directe (BO5, Fearless Draft).
+   Compétitions internationales : MSI et Worlds
+   Après chaque split (Spring -> MSI, Summer -> Worlds), les meilleures
+   équipes de chaque région s'affrontent en phase de groupes (BO3)
+   puis en bracket a élimination directe (BO5, Fearless Draft).
    ------------------------------------------------------------ */
 function eventLabel(intl) {
   return intl.event === 'worlds' ? 'Worlds' : 'MSI';
@@ -2680,19 +2680,19 @@ function getRegionRepCounts(eventType, playerAiRegion) {
   const counts = {};
   if (eventType === 'msi') {
     allAiRegions.forEach((r) => { counts[r] = 1; });
-    counts[playerAiRegion] += 1; // 6*1 + 2 = 8 equipes
+    counts[playerAiRegion] += 1; // 6*1 + 2 = 8 équipes
   } else {
     allAiRegions.forEach((r) => { counts[r] = 2; });
     counts[playerAiRegion] += 1; // base 14 + 1 = 15
     const extra = playerAiRegion === 'LPL' ? 'LCK' : 'LPL';
-    counts[extra] += 1; // + 1 = 16 equipes
+    counts[extra] += 1; // + 1 = 16 équipes
   }
   return counts;
 }
 
 function startInternational(eventType) {
   const season = state.season;
-  const playerRegion = REGIONS.find((r) => r.id === state.region);
+  const playerRegion = REGIONS.find((r) => r.id === state.région);
   const playerAiRegion = playerRegion ? playerRegion.aiRegion : 'LEC';
   const repCounts = getRegionRepCounts(eventType, playerAiRegion);
 
@@ -2702,7 +2702,7 @@ function startInternational(eventType) {
     if (ar === playerAiRegion) {
       teams = teams.concat(getSortedStandings().slice(0, count));
     } else {
-      const regionTeams = AI_TEAMS.filter((t) => t.region === ar).slice().sort((a, b) => a.tier - b.tier);
+      const regionTeams = AI_TEAMS.filter((t) => t.région === ar).slice().sort((a, b) => a.tier - b.tier);
       teams = teams.concat(regionTeams.slice(0, count).map((t) => t.id));
     }
   });
@@ -2710,23 +2710,23 @@ function startInternational(eventType) {
   const numGroups = eventType === 'msi' ? 2 : 4;
   const groups = Array.from({ length: numGroups }, () => []);
 
-  // Repartir les equipes en s'assurant que deux equipes de meme region ne sont pas dans le meme groupe.
-  // On trie par puissance decroissante puis on place chaque equipe dans le groupe le moins rempli
-  // qui ne contient pas encore de representant de sa region.
+  // Repartir les équipes en s'assurant que deux équipes de même région ne sont pas dans le même groupe.
+  // On trie par puissance decroissante puis on place chaque équipe dans le groupe le moins rempli
+  // qui ne contient pas encore de representant de sa région.
   const getTeamAiRegion = (id) => {
     if (id === 'player') return playerAiRegion;
     const t = AI_TEAMS.find((t) => t.id === id);
-    return t ? t.region : 'UNK';
+    return t ? t.région : 'UNK';
   };
   const ranked = teams.slice().sort((a, b) => teamPowerRating(b) - teamPowerRating(a));
   for (const id of ranked) {
     const teamRegion = getTeamAiRegion(id);
-    // Cherche le groupe eligible : pas encore de meme region, et le moins plein
+    // Cherche le groupe eligible : pas encore de même région, et le moins plein
     const eligible = groups
       .map((g, i) => ({ i, size: g.length, hasRegion: g.some((tid) => getTeamAiRegion(tid) === teamRegion) }))
       .filter((g) => !g.hasRegion)
       .sort((a, b) => a.size - b.size);
-    // Si aucun groupe eligible (trop d'equipes d'une meme region), on prend le moins plein
+    // Si aucun groupe eligible (trop d'équipes d'une même région), on prend le moins plein
     const target = eligible.length > 0 ? eligible[0].i : groups.reduce((mi, g, i) => g.length < groups[mi].length ? i : mi, 0);
     groups[target].push(id);
   }
@@ -2766,9 +2766,9 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
     const rows = g.map((id) => {
       const t = getTeamRef(id);
       const name = t ? t.name : id;
-      const region = t ? (t.region || t.aiRegion || '') : '';
+      const région = t ? (t.région || t.aiRegion || '') : '';
       const isPlayer = id === 'player';
-      return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : 'color:var(--color-text-muted);'};font-size:13px;">${name}${region ? ` <span style="opacity:0.5;">(${region})</span>` : ''}${isPlayer ? ' &#9733;' : ''}</li>`;
+      return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : 'color:var(--color-text-muted);'};font-size:13px;">${name}${région ? ` <span style="opacity:0.5;">(${région})</span>` : ''}${isPlayer ? ' &#9733;' : ''}</li>`;
     }).join('');
     return `
       <div>
@@ -2780,26 +2780,26 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
   const teamCount = teams.length;
   const playerQualified = teams.includes('player');
   const qualifMsg = playerQualified
-    ? `<p style="color:var(--color-gold);font-weight:700;margin-top:4px;">&#10003; Vous etes qualifie pour le ${eventName} !</p>`
-    : `<p style="color:#e05;margin-top:4px;">&#10007; Votre equipe n'est pas qualifiee pour cette edition.</p>`;
+    ? `<p style="color:var(--color-gold);font-weight:700;margin-top:4px;">&#10003; Vous etes qualifié pour le ${eventName} !</p>`
+    : `<p style="color:#e05;margin-top:4px;">&#10007; Votre équipe n'est pas qualifiée pour cette edition.</p>`;
 
   showModal(`
     <h2 class="panel-title" style="margin-bottom:16px;">${emoji} ${eventName} ${year}</h2>
     <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
       ${qualifMsg}
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127942; Format de la competition</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127942; Format de la compétition</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          <strong>${teamCount} equipes</strong> issues de toutes les regions du monde s'affrontent.
-          La competition se deroule en deux phases :
+          <strong>${teamCount} équipes</strong> issues de toutes les régions du monde s'affrontent.
+          La compétition se deroule en deux phases :
         </p>
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
-          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} equipes, round-robin en BO3. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
-          <li><strong>Bracket a elimination directe</strong> — ${isMSI ? 'Demi-finales et finale en BO5.' : 'Quarts de finale, demi-finales et grande finale, tous en BO5.'}</li>
+          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} équipes, round-robin en BO3. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
+          <li><strong>Bracket a élimination directe</strong> — ${isMSI ? 'Demi-finales et finale en BO5.' : 'Quarts de finale, demi-finales et grande finale, tous en BO5.'}</li>
         </ul>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:10px;">&#127937; Equipes qualifiees par groupe</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:10px;">&#127937; Équipes qualifiées par groupe</h3>
         <div style="display:grid;grid-template-columns:repeat(${Math.min(numGroups, 2)}, 1fr);gap:14px;">
           ${groupsHtml}
         </div>
@@ -2850,7 +2850,7 @@ function processInternationalGroupMatchday(startGroup) {
       recordInternationalResult(intl, p.home, p.away, res.winner, res.goldDiffForA);
     }
   }
-  intl.log.unshift(`${eventLabel(intl)} : journee ${intl.groupMatchday}/${intl.totalGroupRounds} de phase de groupes terminee.`);
+  intl.log.unshift(`${eventLabel(intl)} : journée ${intl.groupMatchday}/${intl.totalGroupRounds} de phase de groupes terminée.`);
   intl.groupMatchday++;
   if (intl.groupMatchday > intl.totalGroupRounds) {
     finishGroupStage();
@@ -2885,7 +2885,7 @@ function finishGroupStage() {
     const ranked = sortGroupStandings(group, intl.groupStandings);
     winners.push(ranked[0]);
     runnersup.push(ranked[1]);
-    intl.log.unshift(`Groupe ${String.fromCharCode(65 + idx)} : 1. ${getTeamShortName(ranked[0])}, 2. ${getTeamShortName(ranked[1])} qualifies.`);
+    intl.log.unshift(`Groupe ${String.fromCharCode(65 + idx)} : 1. ${getTeamShortName(ranked[0])}, 2. ${getTeamShortName(ranked[1])} qualifiés.`);
   });
   const seedsOrdered = winners.concat(runnersup);
   const built = buildInternationalBracket(seedsOrdered);
@@ -2942,7 +2942,7 @@ function processInternationalBracketRound() {
     const res = simulateAISeries(m.home, m.away, m.format);
     recordAIMatchResult(m.home, m.away, res.winner);
     m.result = { winner: res.winner, loser: res.loser, scoreA: res.scoreA, scoreB: res.scoreB };
-    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${getTeamName(res.winner)} elimine ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${getTeamName(res.winner)} éliminé ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
   }
 
   advanceInternationalBracket(bracket);
@@ -2983,9 +2983,9 @@ function finishInternational() {
     if (placement === 1) {
       state.progress.titlesEarned.push(`Champion ${eventLabel(intl)} ${intl.year}`);
     }
-    intl.log.unshift(`${eventLabel(intl)} termine ! Classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Recompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
+    intl.log.unshift(`${eventLabel(intl)} terminé ! Classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
   } else {
-    intl.log.unshift(`${eventLabel(intl)} ${intl.year} termine. Champion : ${getTeamName(intl.bracket.champion)}.`);
+    intl.log.unshift(`${eventLabel(intl)} ${intl.year} terminé. Champion : ${getTeamName(intl.bracket.champion)}.`);
   }
   saveGame();
 }
@@ -3011,7 +3011,7 @@ function resolveInternationalSeries(rt) {
     const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
     const winnerId = won ? 'player' : pm.opponentTeamId;
     recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, pm.isHome ? goldDiff : -goldDiff);
-    intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Defaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     const finishedGroup = pm.groupIndex;
     intl.pendingMatch = null;
     processInternationalGroupMatchday(finishedGroup + 1);
@@ -3024,7 +3024,7 @@ function resolveInternationalSeries(rt) {
       scoreA: scoreFor,
       scoreB: scoreAgainst
     };
-    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${won ? 'Victoire' : 'Defaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     intl.pendingMatch = null;
     processInternationalBracketRound();
   }
@@ -3044,7 +3044,7 @@ function resolveSeasonSeries(rt) {
     const opponentId = pm.opponentTeamId;
     const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
     recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff);
-    season.log.unshift(`J${season.matchday} : ${won ? 'Victoire' : 'Defaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(opponentId)}.`);
+    season.log.unshift(`J${season.matchday} : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(opponentId)}.`);
 
     const pairings = season.schedule[season.matchday - 1] || [];
     pairings.forEach((p) => {
@@ -3069,7 +3069,7 @@ function resolveSeasonSeries(rt) {
       scoreA: scoreFor,
       scoreB: scoreAgainst
     };
-    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${won ? 'Victoire' : 'Defaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     season.pendingMatch = null;
     processPlayoffRound();
   }
@@ -3136,9 +3136,9 @@ function renderRegularSeasonCalendar(el, season) {
   let fixtureLabel;
   if (fixture) {
     const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
-    fixtureLabel = `Journee ${season.matchday}/${totalMatchdays} : ${getTeamName('player')} vs ${getTeamName(opponentId)} (BO3)`;
+    fixtureLabel = `Journée ${season.matchday}/${totalMatchdays} : ${getTeamName('player')} vs ${getTeamName(opponentId)} (BO3)`;
   } else {
-    fixtureLabel = `Journee ${season.matchday}/${totalMatchdays} : pas de match pour votre equipe (journee de repos)`;
+    fixtureLabel = `Journée ${season.matchday}/${totalMatchdays} : pas de match pour votre équipe (journée de repos)`;
   }
 
   let actionLabel;
@@ -3147,28 +3147,28 @@ function renderRegularSeasonCalendar(el, season) {
     actionLabel = 'Continuer le match en cours';
     actionType = 'resume';
   } else if (fixture) {
-    actionLabel = 'Jouer la journee';
+    actionLabel = 'Jouer la journée';
     actionType = 'play';
   } else {
-    actionLabel = 'Simuler la journee';
+    actionLabel = 'Simuler la journée';
     actionType = 'simulate';
   }
 
   const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Saison reguliere</h3>
+    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.région} - Saison régulière</h3>
     <p class="card__count">${fixtureLabel}</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-calendar-action">${actionLabel}</button>
     </div>
     <h3 class="panel-title">Classement</h3>
     <table class="history-table">
-      <thead><tr><th>#</th><th>Equipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
+      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
       <tbody>${standingsRows}</tbody>
     </table>
-    <h3 class="panel-title">Derniers resultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun resultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">Derniers résultats</h3>
+    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
 
   const actionBtn = document.getElementById('btn-calendar-action');
@@ -3208,7 +3208,7 @@ function renderPlayoffsCalendar(el, season) {
     const awayName = m.away ? getTeamShortName(m.away) : 'TBD';
     let scoreLabel = 'A venir';
     if (m.result) {
-      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifie)`;
+      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifié)`;
     }
     return `<div class="result-chip">${label} : ${homeName} vs ${awayName} - ${m.format} - ${scoreLabel}</div>`;
   };
@@ -3227,20 +3227,20 @@ function renderPlayoffsCalendar(el, season) {
   if (season.pendingMatch) {
     const pm = season.pendingMatch;
     actionHtml = `
-      <p class="card__count">Prochaine serie : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
-      <div class="training-form__actions"><button class="btn-primary" id="btn-play-playoff">Jouer la serie</button></div>
+      <p class="card__count">Prochaine série : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
+      <div class="training-form__actions"><button class="btn-primary" id="btn-play-playoff">Jouer la série</button></div>
     `;
   } else {
     actionHtml = '<p class="card__count">Playoffs en cours...</p>';
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Playoffs</h3>
+    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.région} - Playoffs</h3>
     <p class="card__count">Seeds : ${po.seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(' / ')}</p>
     <div class="recent-results">${bracketHtml}</div>
     ${actionHtml}
-    <h3 class="panel-title">Derniers resultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun resultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">Derniers résultats</h3>
+    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
 
   const playBtn = document.getElementById('btn-play-playoff');
@@ -3260,17 +3260,17 @@ function renderSeasonRecap(el, season) {
   const progressionHtml = careerProgressionHtml(state.lastCareerProgression);
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Terminee</h3>
+    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.région} - Terminee</h3>
     <p class="card__count">Classement final : ${placementLabel(placement)}</p>
-    <p class="card__count">Recompenses obtenues : +${rewards.coaching} points coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.</p>
+    <p class="card__count">Récompenses obtenues : +${rewards.coaching} points coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.</p>
     <div class="recent-results">${logHtml}</div>
     ${progressionHtml}
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-next-competition">${nextLabel}</button>
+      <button class="btn-primary" id="btn-next-compétition">${nextLabel}</button>
     </div>
   `;
 
-  const btn = document.getElementById('btn-next-competition');
+  const btn = document.getElementById('btn-next-compétition');
   if (btn) {
     btn.addEventListener('click', () => {
       startInternational(season.split === 'spring' ? 'msi' : 'worlds');
@@ -3311,7 +3311,7 @@ function renderInternationalGroups(el, intl) {
     return `
       <h3 class="panel-title">Groupe ${String.fromCharCode(65 + i)}</h3>
       <table class="history-table">
-        <thead><tr><th>#</th><th>Equipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
+        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
@@ -3322,14 +3322,14 @@ function renderInternationalGroups(el, intl) {
   const actionLabel = pm.started ? 'Continuer le match en cours' : 'Jouer le match';
 
   el.innerHTML = `
-    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase de groupes (journee ${intl.groupMatchday}/${intl.totalGroupRounds})</h3>
+    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase de groupes (journée ${intl.groupMatchday}/${intl.totalGroupRounds})</h3>
     <p class="card__count">Prochain match : ${getTeamName('player')} vs ${getTeamName(pm.opponentTeamId)} (BO3)</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-international-action">${actionLabel}</button>
     </div>
     ${groupsHtml}
-    <h3 class="panel-title">Derniers resultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun resultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">Derniers résultats</h3>
+    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
 
   const btn = document.getElementById('btn-international-action');
@@ -3355,7 +3355,7 @@ function renderInternationalBracket(el, intl) {
     const awayName = m.away ? getTeamShortName(m.away) : 'TBD';
     let scoreLabel = 'A venir';
     if (m.result) {
-      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifie)`;
+      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifié)`;
     }
     return `<div class="result-chip">${label} : ${homeName} vs ${awayName} - ${m.format} - ${scoreLabel}</div>`;
   };
@@ -3370,9 +3370,9 @@ function renderInternationalBracket(el, intl) {
   let actionHtml;
   if (intl.pendingMatch) {
     const pm = intl.pendingMatch;
-    const actionLabel = pm.started ? 'Continuer la serie en cours' : 'Jouer la serie';
+    const actionLabel = pm.started ? 'Continuer la série en cours' : 'Jouer la série';
     actionHtml = `
-      <p class="card__count">Prochaine serie : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
+      <p class="card__count">Prochaine série : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
       <div class="training-form__actions"><button class="btn-primary" id="btn-international-action">${actionLabel}</button></div>
     `;
   } else {
@@ -3384,8 +3384,8 @@ function renderInternationalBracket(el, intl) {
     <p class="card__count">Qualifies : ${b.seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(' / ')}</p>
     <div class="recent-results">${bracketHtml}</div>
     ${actionHtml}
-    <h3 class="panel-title">Derniers resultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun resultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">Derniers résultats</h3>
+    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
 
   const btn = document.getElementById('btn-international-action');
@@ -3409,11 +3409,11 @@ function renderInternationalRecap(el, intl) {
 
   let placementHtml = '';
   if (placement !== null && intl.rewards) {
-    placementHtml = `<p class="card__count">Votre classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Recompenses : +${intl.rewards.coaching} coaching, +${intl.rewards.budget} budget, +${intl.rewards.prestige} prestige.</p>`;
+    placementHtml = `<p class="card__count">Votre classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${intl.rewards.coaching} coaching, +${intl.rewards.budget} budget, +${intl.rewards.prestige} prestige.</p>`;
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Termine</h3>
+    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Terminé</h3>
     <p class="card__count">Champion : ${getTeamName(intl.bracket.champion)}</p>
     ${placementHtml}
     <div class="recent-results">${logHtml}</div>
@@ -3780,7 +3780,7 @@ function sideTeamLabel(side) {
 function buildEventText(template, winnerLabel, role, kills) {
   switch (template.id) {
     case 'lane_kill': return `${winnerLabel} remporte un duel en lane (${ROLE_NAMES[role]}) et prend l'avantage.`;
-    case 'gank': return `${winnerLabel} reussit un gank et obtient un kill.`;
+    case 'gank': return `${winnerLabel} réussit un gank et obtient un kill.`;
     case 'dragon': return `${winnerLabel} prend le Dragon.`;
     case 'herald': return `${winnerLabel} prend l'Herald de la Faille.`;
     case 'grubs': return `${winnerLabel} prend le controle des Void Grubs.`;
@@ -3788,7 +3788,7 @@ function buildEventText(template, winnerLabel, role, kills) {
     case 'teamfight': return `${winnerLabel} gagne un teamfight (${kills} kills) !`;
     case 'baron': return `${winnerLabel} prend le Baron Nashor !`;
     case 'elder': return `${winnerLabel} terrasse le Dragon Ancien (Elder) !`;
-    case 'dramatic': return `${winnerLabel} realise une action decisive en fin de partie !`;
+    case 'dramatic': return `${winnerLabel} réalisé une action decisive en fin de partie !`;
     default: return `${winnerLabel} prend l'avantage.`;
   }
 }
@@ -4000,7 +4000,7 @@ function applyMatchOutcome(win) {
   const resultFactor = win ? 1.15 : 0.9;
 
   state.roster.forEach((player) => {
-    player.fatigue = clamp(player.fatigue + 18, 0, 100);
+    player.fatigué = clamp(player.fatigué + 18, 0, 100);
     player.form = clamp(player.form + (win ? 3 : -2), 0, 100);
     player.mental = clamp(player.mental + (win ? 1 : -1), 0, 100);
 
@@ -4037,12 +4037,12 @@ function buildMatchReport(opponent, win, before, after, eventHistory) {
   if (!win) {
     const weak = pickWeakLink(focusStats);
     if (weak) {
-      lines.push(`Analyse : ${weak.player.name} a montre des difficultes en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la defaite.`);
+      lines.push(`Analyse : ${weak.player.name} a montre des difficultés en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la défaite.`);
     }
   } else {
     const strong = pickStrongLink(focusStats);
     if (strong) {
-      lines.push(`Analyse : ${strong.player.name} a porte l'equipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
+      lines.push(`Analyse : ${strong.player.name} a porte l'équipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
     }
   }
 
@@ -4077,19 +4077,19 @@ function finishMatch() {
   const playerScore = rt.score[rt.picks.playerSide];
   const opponentScore = rt.score[rt.picks.playerSide === 'blue' ? 'red' : 'blue'];
 
-  const series = state.matchSeries;
+  const séries = state.matchSeries;
 
   if (!state.scouting[rt.opponent.id]) state.scouting[rt.opponent.id] = { confidence: 0, scrimsPlayed: 0 };
   state.scouting[rt.opponent.id].confidence = clamp(state.scouting[rt.opponent.id].confidence + VIDEO_REVIEW_CONFIDENCE_GAIN, 0, 100);
 
-  // Garde-fou CDC 13.1.2 : le repos post-match attenue la fatigue accumulee
+  // Garde-fou CDC 13.1.2 : le repos post-match attenue la fatigué accumulee
   state.roster.forEach((player) => {
-    player.fatigue = clamp(player.fatigue - BALANCE_CONFIG.fatigue.matchRecovery, 0, 100);
+    player.fatigué = clamp(player.fatigué - BALANCE_CONFIG.fatigué.matchRecovery, 0, 100);
   });
 
   state.matchHistory.unshift({
     date: Date.now(),
-    competition: series ? `${series.format} - Game ${series.gameNumber}` : 'Scrim officiel',
+    compétition: séries ? `${séries.format} - Game ${séries.gameNumber}` : 'Scrim officiel',
     opponent: rt.opponent.name,
     scoreHome: playerScore,
     scoreAway: opponentScore,
@@ -4109,16 +4109,16 @@ function finishMatch() {
   }
 
   rt.seriesEvent = null;
-  if (series) {
-    if (win) series.scoreFor++; else series.scoreAgainst++;
-    const winsNeeded = series.format === 'BO3' ? 2 : (series.format === 'BO5' ? 3 : 1);
-    if (series.scoreFor >= winsNeeded || series.scoreAgainst >= winsNeeded) {
-      rt.seriesEvent = { type: 'done', won: series.scoreFor >= winsNeeded, scoreFor: series.scoreFor, scoreAgainst: series.scoreAgainst, format: series.format };
+  if (séries) {
+    if (win) séries.scoreFor++; else séries.scoreAgainst++;
+    const winsNeeded = séries.format === 'BO3' ? 2 : (séries.format === 'BO5' ? 3 : 1);
+    if (séries.scoreFor >= winsNeeded || séries.scoreAgainst >= winsNeeded) {
+      rt.seriesEvent = { type: 'done', won: séries.scoreFor >= winsNeeded, scoreFor: séries.scoreFor, scoreAgainst: séries.scoreAgainst, format: séries.format };
       state.matchSeries = null;
       state.draft = null;
     } else {
-      series.gameNumber++;
-      rt.seriesEvent = { type: 'next', gameNumber: series.gameNumber };
+      séries.gameNumber++;
+      rt.seriesEvent = { type: 'next', gameNumber: séries.gameNumber };
       state.draft = null;
     }
   }
@@ -4131,7 +4131,7 @@ function finishMatch() {
 
   saveGame();
   updateResourceBar();
-  renderMatchEvent(win ? 'Victoire ! GG.' : 'Defaite. GG.', 'dramatic');
+  renderMatchEvent(win ? 'Victoire ! GG.' : 'Défaite. GG.', 'dramatic');
 
   const pauseBtn = document.getElementById('btn-pause-match');
   if (pauseBtn) {
@@ -4139,8 +4139,8 @@ function finishMatch() {
       pauseBtn.textContent = `Draft Game ${rt.seriesEvent.gameNumber}`;
     } else if (rt.seriesEvent && rt.seriesEvent.type === 'done') {
       pauseBtn.textContent = rt.seriesEvent.won
-        ? `Serie remportee (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`
-        : `Serie perdue (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`;
+        ? `Série remportee (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`
+        : `Série perdue (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`;
     } else {
       pauseBtn.textContent = 'Retour';
     }
@@ -4156,19 +4156,19 @@ function renderMatchArena() {
   arenaEl.style.display = '';
 
   const rt = matchRuntime;
-  const blueLabel = rt.picks.playerSide === 'blue' ? (state.teamName || 'Votre equipe') : rt.opponent.name;
-  const redLabel = rt.picks.playerSide === 'red' ? (state.teamName || 'Votre equipe') : rt.opponent.name;
+  const blueLabel = rt.picks.playerSide === 'blue' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
+  const redLabel = rt.picks.playerSide === 'red' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
 
   document.getElementById('match-team-home-name').textContent = blueLabel;
-  document.getElementById('match-team-home-league').textContent = rt.picks.playerSide === 'blue' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-home-league').textContent = rt.picks.playerSide === 'blue' ? (state.région || '') : rt.opponent.région;
   document.getElementById('match-team-away-name').textContent = redLabel;
-  document.getElementById('match-team-away-league').textContent = rt.picks.playerSide === 'red' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-away-league').textContent = rt.picks.playerSide === 'red' ? (state.région || '') : rt.opponent.région;
 
-  const seriesLabelEl = document.getElementById('match-series-label');
+  const seriesLabelEl = document.getElementById('match-séries-label');
   if (seriesLabelEl) {
-    const series = state.matchSeries;
-    seriesLabelEl.textContent = series
-      ? `${series.format} - Game ${series.gameNumber} (score de la serie : ${series.scoreFor}-${series.scoreAgainst})`
+    const séries = state.matchSeries;
+    seriesLabelEl.textContent = séries
+      ? `${séries.format} - Game ${séries.gameNumber} (score de la série : ${séries.scoreFor}-${séries.scoreAgainst})`
       : '';
   }
 
@@ -4223,31 +4223,31 @@ function renderMatchSetup() {
 
   if (state.roster.length === 0) {
     setupEl.innerHTML = `
-      <h2 class="panel-title">Preparer un match</h2>
+      <h2 class="panel-title">Préparer un match</h2>
       <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">Constituez votre roster avant de lancer un match.</p>
     `;
     return;
   }
 
   if (state.matchSeries) {
-    const series = state.matchSeries;
-    const opponent = getTeamRef(series.opponentTeamId);
+    const séries = state.matchSeries;
+    const opponent = getTeamRef(séries.opponentTeamId);
     setupEl.innerHTML = `
-      <h2 class="panel-title">Serie en cours</h2>
+      <h2 class="panel-title">Série en cours</h2>
       <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">
-        ${series.format} contre ${opponent.name} &mdash; score ${series.scoreFor}-${series.scoreAgainst}, Game ${series.gameNumber}.
+        ${séries.format} contre ${opponent.name} &mdash; score ${séries.scoreFor}-${séries.scoreAgainst}, Game ${séries.gameNumber}.
       </p>
-      ${scoutingPreviewHtml(series.opponentTeamId)}
+      ${scoutingPreviewHtml(séries.opponentTeamId)}
       <div class="training-form__actions">
-        <button class="btn-primary" id="btn-resume-series">Continuer la serie</button>
+        <button class="btn-primary" id="btn-resume-séries">Continuer la série</button>
       </div>
     `;
-    const resumeBtn = document.getElementById('btn-resume-series');
+    const resumeBtn = document.getElementById('btn-resume-séries');
     if (resumeBtn) {
       resumeBtn.addEventListener('click', () => {
         if (!state.draft) {
-          const nextPickOrder = series.gameNumber % 2 === 1 ? 'blue' : 'red';
-          startDraft(series.opponentTeamId, nextPickOrder, nextPickOrder);
+          const nextPickOrder = séries.gameNumber % 2 === 1 ? 'blue' : 'red';
+          startDraft(séries.opponentTeamId, nextPickOrder, nextPickOrder);
         }
         showView('draft');
       });
@@ -4255,10 +4255,10 @@ function renderMatchSetup() {
     return;
   }
 
-  const opponents = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
+  const opponents = getAITeamsForRegion(state.région).filter((t) => t.id !== state.aiTeamId);
 
   setupEl.innerHTML = `
-    <h2 class="panel-title">Preparer un match</h2>
+    <h2 class="panel-title">Préparer un match</h2>
     <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">
       Chaque match commence par une draft. Les picks influencent directement le deroulement de la partie.
     </p>
@@ -4280,13 +4280,13 @@ function renderMatchSetup() {
       <div class="training-form__group">
         <label>FEARLESS DRAFT</label>
         <select id="match-fearless">
-          <option value="off">Desactive</option>
+          <option value="off">Désactivé</option>
           <option value="on">Active (champions verrouilles entre les games)</option>
         </select>
       </div>
     </div>
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-start-match">Commencer la serie (Draft)</button>
+      <button class="btn-primary" id="btn-start-match">Commencer la série (Draft)</button>
     </div>
     <div id="match-scouting-preview"></div>
   `;
@@ -4405,11 +4405,11 @@ function renderCounters() {
   el.innerHTML = `
     <div class="panel">
       <h3 class="panel-title">Champions contres par "${search}"</h3>
-      ${champCounters.length ? champCounters.map((e) => renderRow(e, 'counter')).join('') : '<div class="empty-state">Aucun resultat.</div>'}
+      ${champCounters.length ? champCounters.map((e) => renderRow(e, 'counter')).join('') : '<div class="empty-state">Aucun résultat.</div>'}
     </div>
     <div class="panel">
       <h3 class="panel-title">Champions qui contrent "${search}"</h3>
-      ${champCountered.length ? champCountered.map((e) => renderRow(e, 'target')).join('') : '<div class="empty-state">Aucun resultat.</div>'}
+      ${champCountered.length ? champCountered.map((e) => renderRow(e, 'target')).join('') : '<div class="empty-state">Aucun résultat.</div>'}
     </div>
   `;
 }
@@ -4423,12 +4423,12 @@ function renderScouting() {
     return;
   }
 
-  const selectedRegion = state._scoutingRegion || state.region;
+  const selectedRegion = state._scoutingRegion || state.région;
   state._scoutingRegion = selectedRegion;
 
   const opponents = getAITeamsForRegion(selectedRegion).filter((t) => t.id !== state.aiTeamId);
   if (opponents.length === 0) {
-    el.innerHTML = '<div class="empty-state">Aucune equipe adverse disponible dans cette region.</div>';
+    el.innerHTML = '<div class="empty-state">Aucune équipe adverse disponible dans cette région.</div>';
     return;
   }
 
@@ -4447,10 +4447,10 @@ function renderScouting() {
 
   el.innerHTML = `
     <div class="panel">
-      <h3 class="panel-title">Equipes adverses</h3>
-      <div class="scouting-region-filter">
-        <label for="scouting-region">Region</label>
-        <select id="scouting-region">${regionSelectHtml}</select>
+      <h3 class="panel-title">Équipes adverses</h3>
+      <div class="scouting-région-filter">
+        <label for="scouting-région">Région</label>
+        <select id="scouting-région">${regionSelectHtml}</select>
       </div>
       <div class="draft-role-filter">${listHtml}</div>
     </div>
@@ -4460,7 +4460,7 @@ function renderScouting() {
     </div>
   `;
 
-  document.getElementById('scouting-region').addEventListener('change', (e) => {
+  document.getElementById('scouting-région').addEventListener('change', (e) => {
     state._scoutingRegion = e.target.value;
     state._scoutingSelected = null;
     renderScouting();
@@ -4493,7 +4493,7 @@ function getPlayerAvg(player) {
   return Math.round((player.laning + player.teamfight + player.mechanics + (player.shotcalling || 60)) / 4);
 }
 
-function generateFreeAgent(role, region) {
+function generateFreeAgent(role, région) {
   const level = 55 + Math.floor(Math.random() * 30);
   const spread = 12;
   const name = FREE_AGENT_NAMES[Math.floor(Math.random() * FREE_AGENT_NAMES.length)];
@@ -4503,14 +4503,14 @@ function generateFreeAgent(role, region) {
     id: `fa_${role}_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,
     name: `${name}${suffix}`,
     role,
-    region: region || 'LEC',
+    région: région || 'LEC',
     laning: Math.min(99, level + Math.floor(Math.random() * spread) - spread / 2),
     teamfight: Math.min(99, level + Math.floor(Math.random() * spread) - spread / 2),
     mechanics: Math.min(99, level + Math.floor(Math.random() * spread) - spread / 2),
     shotcalling: Math.min(99, level + Math.floor(Math.random() * spread) - spread / 2),
     mental: Math.min(99, level + Math.floor(Math.random() * spread) - spread / 2),
     forme: 60 + Math.floor(Math.random() * 30),
-    fatigue: 0,
+    fatigué: 0,
     championPool: champs.length ? champs : ['Jinx'],
     traits: [],
     isFreeAgent: true,
@@ -4544,7 +4544,7 @@ function generateTransferMarket() {
     const existing = candidates.filter(c => c.role === role).length;
     const needed = Math.max(0, 2 - existing);
     for (let i = 0; i < needed; i++) {
-      candidates.push(generateFreeAgent(role, state.region));
+      candidates.push(generateFreeAgent(role, state.région));
     }
   });
 
@@ -4632,7 +4632,7 @@ function renderTransfers() {
           <p class="card__count">Budget disponible : <strong>${budget}</strong></p>
           <p class="card__count" style="font-size:12px;color:var(--color-text-muted);">Le marche se renouvelle automatiquement a chaque nouveau split.</p>
         </div>
-        <button class="btn-secondary btn-small" id="btn-refresh-market">Rafraichir le marche (gratuit)</button>
+        <button class="btn-secondary btn-small" id="btn-refresh-market">Rafraîchir le marche (gratuit)</button>
       </div>
       ${filterHtml}
     </div>
@@ -4695,9 +4695,9 @@ function showSignModal(candidate) {
     <div class="transfer-card__stats" style="margin-bottom:12px;">
       <span>Role : <strong>${candidate.role}</strong></span>
       <span>Niveau moy. : <strong>${avg}</strong></span>
-      <span>Cout : <strong>💰 ${cost} budget</strong></span>
+      <span>Coût : <strong>💰 ${cost} budget</strong></span>
     </div>
-    <p style="margin-bottom:10px;">Choisissez le joueur a liberer :</p>
+    <p style="margin-bottom:10px;">Choisissez le joueur a libérer :</p>
     <div class="transfer-release-list">${releaseOptions}</div>
     <div class="modal-content__actions" style="margin-top:16px;">
       <button class="btn-primary" id="btn-confirm-sign">Confirmer la signature</button>
@@ -4705,7 +4705,7 @@ function showSignModal(candidate) {
     </div>
   `);
 
-  // Pré-selectionner le premier
+  // Pré-sélectionner le premier
   const firstRadio = document.querySelector('input[name="release-player"]');
   if (firstRadio) firstRadio.checked = true;
 
@@ -4713,7 +4713,7 @@ function showSignModal(candidate) {
 
   document.getElementById('btn-confirm-sign').addEventListener('click', () => {
     const selected = document.querySelector('input[name="release-player"]:checked');
-    if (!selected) { showToast('Selectionnez un joueur a liberer.', 'error'); return; }
+    if (!selected) { showToast('Selectionnez un joueur a libérer.', 'error'); return; }
     signPlayer(candidate, selected.value);
     closeModal();
   });
@@ -4731,15 +4731,15 @@ function signPlayer(candidate, releasePlayerId) {
 
   const released = state.roster[idx];
 
-  // Preparer le nouveau joueur (nettoyer les champs de marche)
+  // Préparer le nouveau joueur (nettoyer les champs de marche)
   const avg = Math.round((candidate.laning + candidate.teamfight + candidate.mechanics + (candidate.shotcalling || 60)) / 4);
   const newPlayer = Object.assign({}, candidate, {
     id: `player_${candidate.role.toLowerCase()}_${Date.now()}`,
-    fatigue: 0,
+    fatigué: 0,
     level: candidate.level || avg,
     potential: candidate.potential || Math.min(99, avg + 10),
     form: candidate.form || candidate.forme || 70,
-    nationality: candidate.nationality || candidate.region || 'EU',
+    nationality: candidate.nationality || candidate.région || 'EU',
     traits: candidate.traits || [],
     isFreeAgent: undefined,
     fromTeam: undefined,
@@ -4757,7 +4757,7 @@ function signPlayer(candidate, releasePlayerId) {
 
   saveGame();
   updateResourceBar();
-  showToast(`${candidate.name} signe ! ${released.name} libere. -${cost} budget.`, 'success');
+  showToast(`${candidate.name} signé ! ${released.name} libéré. -${cost} budget.`, 'success');
   renderTransfers();
 }
 
@@ -4772,18 +4772,18 @@ function renderProgression() {
     <div class="stat-card"><div class="stat-card__value">${p.matchesPlayed}</div><div class="stat-card__label">Matchs joues</div></div>
     <div class="stat-card"><div class="stat-card__value">${p.wins}</div><div class="stat-card__label">Victoires</div></div>
     <div class="stat-card"><div class="stat-card__value">${winRate}%</div><div class="stat-card__label">Taux de victoire</div></div>
-    <div class="stat-card"><div class="stat-card__value">${p.bestWinStreak}</div><div class="stat-card__label">Meilleure serie de victoires</div></div>
+    <div class="stat-card"><div class="stat-card__value">${p.bestWinStreak}</div><div class="stat-card__label">Meilleure série de victoires</div></div>
   `;
 
   const historyEl = document.getElementById('progression-history');
   historyEl.innerHTML = state.matchHistory.slice(0, 10).map((m) => {
     const cls = m.result === 'win' ? 'result-tag--win' : 'result-tag--loss';
-    const label = m.result === 'win' ? 'Victoire' : 'Defaite';
+    const label = m.result === 'win' ? 'Victoire' : 'Défaite';
     const date = new Date(m.date).toLocaleDateString('fr-FR');
     return `
       <tr>
         <td>${date}</td>
-        <td>${m.competition || 'Scrim'}</td>
+        <td>${m.compétition || 'Scrim'}</td>
         <td>${m.opponent}</td>
         <td>${m.scoreHome} - ${m.scoreAway}</td>
         <td><span class="result-tag ${cls}">${label}</span></td>
@@ -4816,7 +4816,7 @@ function initGame() {
   state = loadGame();
   updateResourceBar();
   setupNavigation();
-  if (!state.region) {
+  if (!state.région) {
     showRegionSelection();
   } else {
     showView('home');
@@ -4855,13 +4855,13 @@ function setupNavigation() {
       if (confirmReset) {
         resetGame();
         confirmReset = false;
-        resetBtn.textContent = 'Reinitialiser la partie';
+        resetBtn.textContent = 'Réinitialiser la partie';
       } else {
         confirmReset = true;
         resetBtn.textContent = 'Cliquer a nouveau pour confirmer';
         setTimeout(() => {
           confirmReset = false;
-          resetBtn.textContent = 'Reinitialiser la partie';
+          resetBtn.textContent = 'Réinitialiser la partie';
         }, 3000);
       }
     });

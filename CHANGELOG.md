@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.1] — 2026-06-16
+
+### Corrigé
+- **Accents français** — tous les textes du jeu corrigés avec les accents manquants (é, è, ê, à, î, ç, etc.) dans `game.js` et `index.html` (~400 remplacements)
+
+---
+
 ## [1.2.0] — 2026-06-16
 
 ### Ajouté
