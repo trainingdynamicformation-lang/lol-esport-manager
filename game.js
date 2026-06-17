@@ -2156,8 +2156,10 @@ function renderDraft() {
       `;
     } else {
       const roles = emptyRoles(draft[draft.playerSide + 'Picks']);
-      const activeRole = draft._pendingRole && roles.includes(draft._pendingRole) ? draft._pendingRole : roles[0];
       const pickFilter = draft._pickRoleFilter || 'ALL';
+      const activeRole = (pickFilter !== 'ALL' && roles.includes(pickFilter))
+        ? pickFilter
+        : (draft._pendingRole && roles.includes(draft._pendingRole) ? draft._pendingRole : roles[0]);
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
@@ -2222,7 +2224,10 @@ function renderDraft() {
         playerBan(champName);
       } else {
         const roles = emptyRoles(currentDraft[currentDraft.playerSide + 'Picks']);
-        const role = currentDraft._pendingRole && roles.includes(currentDraft._pendingRole) ? currentDraft._pendingRole : roles[0];
+        const pf = currentDraft._pickRoleFilter;
+        const role = (pf && pf !== 'ALL' && roles.includes(pf))
+          ? pf
+          : (currentDraft._pendingRole && roles.includes(currentDraft._pendingRole) ? currentDraft._pendingRole : roles[0]);
         delete currentDraft._pendingRole;
         playerPick(role, champName);
       }
