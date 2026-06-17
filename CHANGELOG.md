@@ -27,7 +27,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 ## [1.2.3] — 2026-06-17
 
 ### Corrigé
-- **Timings objectifs neutres** : Baron (Nashor) spawn à 20:00 (1200s), respawn 6 min après sa mort ; Herald spawn à 14:00 (840s) — impossible de tuer le Baron avant 20h00 ou deux fois en 20 secondes
+- **Timings objectifs neutres** : Baron (Nashor) apparaît à la minute 20 de jeu, réapparaît 6 min après sa mort ; Herald apparaît à la minute 14 — la simulation respecte ces délais et empêche tout événement Baron avant ces seuils
 - **Fearless en saison** : mode Fearless Draft actif pour tous les matchs de saison régulière (BO3)
 - **Changelog** : le lien en pied de page ouvre une fenêtre modale formatée (plus de lien 404)
 
