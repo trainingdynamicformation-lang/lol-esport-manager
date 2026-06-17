@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.6] — 2026-06-17
+
+### Ajouté
+- **Recherche de champion en draft** : un champ de saisie à droite des filtres de rôle (bans ET picks) — la liste se réduit en temps réel aux champions dont le nom contient le texte tapé
+
+### Corrigé
+- **Cohérence des côtés en simulation** : tout l'écran de match est désormais indexé sur le côté de carte. La couleur du nom d'équipe fait foi — si Karmine Corp est en bleu, c'est qu'elle est Blue Side, donc ses kills, son or, ses objectifs (dragons, grubs…) et ses structures s'affichent en bleu. Fini l'inversion bleu/rouge entre le bandeau et les compteurs
+- **Compteur de drakes / objectifs** : les compteurs au-dessus de la carte correspondent exactement aux événements du journal (plus de 3 drakes annoncés mais 2 comptés)
+- **Structures carte ↔ journal** : quand le journal annonce « détruit la Tour 3 (Top) », c'est bien cette structure-là qui s'éteint sur la carte (l'indexation par côté était inversée)
+
+### Modifié
+- **Condition de victoire unique — destruction du nexus** : une partie se gagne en détruisant le nexus adverse. Il faut au préalable détruire, dans une même lane, la T1, la T2, la T3 et l'inhibiteur adverses, plus les 2 tours du nexus. Le vainqueur affiché découle de l'état réel de la partie (nexus détruit), garde-fou de temps résolu à l'avantage structurel sinon
+
+---
+
 ## [1.2.5] — 2026-06-17
 
 ### Ajouté

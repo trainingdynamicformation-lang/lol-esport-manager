@@ -2033,9 +2033,13 @@ function renderPicksColumn(draft, side) {
   }).join('');
 }
 
-function renderChampionGrid(draft, mode, role, roleFilter) {
+function renderChampionGrid(draft, mode, role, roleFilter, search) {
   let pool = CHAMPIONS;
   if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
+  if (search && search.trim()) {
+    const q = search.trim().toLowerCase();
+    pool = pool.filter(c => c.name.toLowerCase().includes(q));
+  }
   const champions = [...pool].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   const player = role ? state.roster.find((p) => p.role === role) : null;
   return `
@@ -2144,15 +2148,20 @@ function renderDraft() {
       { id: 'ADC', label: 'ADC' },
       { id: 'SUPPORT', label: 'Support' }
     ];
+    const searchVal = draft._champSearch || '';
+    const searchHtml = `<input type="text" id="draft-search" class="draft-search-input" placeholder="Rechercher…" value="${searchVal.replace(/"/g, '&quot;')}" autocomplete="off">`;
     if (turn.type === 'ban') {
       const banFilter = draft._banRoleFilter || 'ALL';
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un ban (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
-        <div class="draft-role-filter">
-          ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === banFilter ? 'comp-tag-option--active' : ''}" data-ban-filter="${f.id}">${f.label}</button>`).join('')}
+        <div class="draft-filter-row">
+          <div class="draft-role-filter">
+            ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === banFilter ? 'comp-tag-option--active' : ''}" data-ban-filter="${f.id}">${f.label}</button>`).join('')}
+          </div>
+          ${searchHtml}
         </div>
-        ${renderChampionGrid(draft, 'ban', null, banFilter)}
+        ${renderChampionGrid(draft, 'ban', null, banFilter, searchVal)}
       `;
     } else {
       const roles = emptyRoles(draft[draft.playerSide + 'Picks']);
@@ -2163,10 +2172,13 @@ function renderDraft() {
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
-        <div class="draft-role-filter">
-          ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === pickFilter ? 'comp-tag-option--active' : ''}" data-pick-filter="${f.id}">${f.label}</button>`).join('')}
+        <div class="draft-filter-row">
+          <div class="draft-role-filter">
+            ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === pickFilter ? 'comp-tag-option--active' : ''}" data-pick-filter="${f.id}">${f.label}</button>`).join('')}
+          </div>
+          ${searchHtml}
         </div>
-        ${renderChampionGrid(draft, 'pick', pickFilter !== 'ALL' ? pickFilter : activeRole, pickFilter)}
+        ${renderChampionGrid(draft, 'pick', pickFilter !== 'ALL' ? pickFilter : activeRole, pickFilter, searchVal)}
       `;
     }
   } else {
@@ -2220,6 +2232,7 @@ function renderDraft() {
       const currentDraft = state.draft;
       const currentTurnInfo = currentTurn(currentDraft);
       if (!currentTurnInfo) return;
+      currentDraft._champSearch = '';
       if (currentTurnInfo.type === 'ban') {
         playerBan(champName);
       } else {
@@ -2254,6 +2267,17 @@ function renderDraft() {
       renderDraft();
     });
   });
+
+  const searchInput = document.getElementById('draft-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      const pos = searchInput.selectionStart;
+      state.draft._champSearch = searchInput.value;
+      renderDraft();
+      const again = document.getElementById('draft-search');
+      if (again) { again.focus(); again.setSelectionRange(pos, pos); }
+    });
+  }
 
   const newDraftBtn = document.getElementById('btn-new-draft');
   if (newDraftBtn) {
@@ -3550,7 +3574,16 @@ let matchRuntime = null;
 
 function getMatchPicks(opponent) {
   if (state.draft && state.draft.status === 'done' && state.draft.opponentTeamId === opponent.id) {
-    return { blue: state.draft.bluePicks, red: state.draft.redPicks, playerSide: state.draft.playerSide, playerMapSide: state.draft.mapSide || state.draft.playerSide };
+    const d = state.draft;
+    // draft.playerSide = ordre de pick ('blue'=First, 'red'=Last) ; on re-clé tout par CÔTÉ DE CARTE
+    const playerPickSide = d.playerSide;
+    const oppPickSide = playerPickSide === 'blue' ? 'red' : 'blue';
+    const playerMapSide = d.mapSide || playerPickSide;
+    const oppMapSide = playerMapSide === 'blue' ? 'red' : 'blue';
+    const picks = {};
+    picks[playerMapSide] = d[playerPickSide + 'Picks'];
+    picks[oppMapSide] = d[oppPickSide + 'Picks'];
+    return { blue: picks.blue, red: picks.red, playerSide: playerMapSide };
   }
 
   const playerPicks = {};
@@ -3848,6 +3881,7 @@ function startMatch(opponentTeamId) {
       elders: { blue: 0, red: 0 }
     },
     structuresDown: { blue: [], red: [] },
+    nexusWinner: null,
     dragonBuff: null,
     baronBuff: null,
     elderBuff: null,
@@ -4047,7 +4081,19 @@ function simulateTick() {
   if (candidates.length === 0) candidates = MATCH_EVENTS.filter((e) => e.phases.includes(rt.phase) && !['dragons', 'elders', 'grubs', 'heralds'].includes(e.objective));
 
   const dramaticWeight = BALANCE_CONFIG.events.dramaticWeight[getMatchStakes()];
-  candidates = candidates.map((e) => (e.id === 'dramatic' && dramaticWeight != null) ? { ...e, weight: dramaticWeight } : e);
+  // Le nexus d'un camp est sur le point de tomber (inhib + 2 tours nexus down) ?
+  const nexusImminent = ['blue', 'red'].some((s) => {
+    const d = new Set(rt.structuresDown[s]);
+    return d.has('NEX_T1') && d.has('NEX_T2') && ['BOT_INH', 'MID_INH', 'TOP_INH'].some((i) => d.has(i)) && !d.has('NEXUS');
+  });
+  candidates = candidates.map((e) => {
+    if (e.id === 'dramatic' && dramaticWeight != null) return { ...e, weight: dramaticWeight };
+    // On pousse la prise de tours en late pour que la partie se conclue sur un nexus détruit
+    if (e.id === 'tower' && (nexusImminent || rt.phase === 'late')) {
+      return { ...e, weight: e.weight * (nexusImminent ? 5 : 2) };
+    }
+    return e;
+  });
 
   const template = weightedChoice(candidates);
 
@@ -4083,6 +4129,7 @@ function simulateTick() {
       if (nextStruct === 'NEXUS') {
         rt.finished = true;
         rt.endReason = 'nexus';
+        rt.nexusWinner = winner;
       }
     }
   }
@@ -4322,9 +4369,23 @@ function finishMatch() {
   const rt = matchRuntime;
   if (rt.timer) clearInterval(rt.timer);
 
-  const win = Math.random() < rt.winProbability;
+  // Le vainqueur découle de l'état de la partie (cohérence écran) : nexus détruit avant tout,
+  // sinon (garde-fou de temps) avance structurelle, puis or, puis kills.
+  let winnerSide;
+  if (rt.nexusWinner) {
+    winnerSide = rt.nexusWinner;
+  } else {
+    const blueDestroyed = rt.structuresDown.red.length; // structures rouges tombées = détruites par blue
+    const redDestroyed = rt.structuresDown.blue.length;
+    if (blueDestroyed !== redDestroyed) winnerSide = blueDestroyed > redDestroyed ? 'blue' : 'red';
+    else if (rt.gold.blue !== rt.gold.red) winnerSide = rt.gold.blue > rt.gold.red ? 'blue' : 'red';
+    else if (rt.score.blue !== rt.score.red) winnerSide = rt.score.blue > rt.score.red ? 'blue' : 'red';
+    else winnerSide = Math.random() < 0.5 ? 'blue' : 'red';
+  }
+
+  const win = winnerSide === rt.picks.playerSide;
   rt.result = win ? 'win' : 'loss';
-  rt.winner = win ? rt.picks.playerSide : (rt.picks.playerSide === 'blue' ? 'red' : 'blue');
+  rt.winner = winnerSide;
 
   const after = applyMatchOutcome(win);
   rt.report = buildMatchReport(rt.opponent, win, rt.before, after, rt.eventHistory);
@@ -4411,7 +4472,7 @@ function renderMatchArena() {
   arenaEl.style.display = '';
 
   const rt = matchRuntime;
-  const playerMapSide = rt.picks.playerMapSide || rt.picks.playerSide;
+  const playerMapSide = rt.picks.playerSide; // rt.picks est clé par côté de carte
   const blueLabel = playerMapSide === 'blue' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
   const redLabel = playerMapSide === 'red' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
 

@@ -861,6 +861,30 @@ img { max-width: 100%; height: auto; }
 
 .draft-role-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 
+.draft-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.draft-filter-row .draft-role-filter { flex: 1 1 auto; }
+
+.draft-search-input {
+  flex: 0 0 200px;
+  max-width: 240px;
+  padding: 6px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.draft-search-input::placeholder { color: var(--color-text-muted); }
+.draft-search-input:focus { border-color: var(--color-gold); }
+
 .draft-champion-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
