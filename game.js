@@ -2034,7 +2034,7 @@ function renderPicksColumn(draft, side) {
 }
 
 function renderChampionGrid(draft, mode, role, roleFilter) {
-  let pool = CHAMPIONS;
+  let pool = (mode === 'pick' && role) ? CHAMPIONS.filter(c => c.role === role) : CHAMPIONS;
   if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
   const champions = [...pool].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   const player = role ? state.roster.find((p) => p.role === role) : null;
@@ -2161,10 +2161,7 @@ function renderDraft() {
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
-        <div class="draft-role-filter">
-          ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === pickFilter ? 'comp-tag-option--active' : ''}" data-pick-filter="${f.id}">${f.label}</button>`).join('')}
-        </div>
-        ${renderChampionGrid(draft, 'pick', activeRole, pickFilter)}
+        ${renderChampionGrid(draft, 'pick', activeRole, null)}
       `;
     }
   } else {
