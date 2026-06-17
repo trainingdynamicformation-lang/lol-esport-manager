@@ -2034,7 +2034,7 @@ function renderPicksColumn(draft, side) {
 }
 
 function renderChampionGrid(draft, mode, role, roleFilter) {
-  let pool = CHAMPIONS;
+  let pool = (mode === 'pick' && role) ? getChampionsForRole(role) : CHAMPIONS;
   if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
   const champions = [...pool].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   const player = role ? state.roster.find((p) => p.role === role) : null;
