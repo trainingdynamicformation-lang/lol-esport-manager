@@ -39,10 +39,24 @@ const MAP_UNIT_HOME = {
   }
 };
 
-/* Positions des tours simplifiees (3 par cote) */
+/* Positions des tours (3 par lane par cote + nexus) */
 const MAP_TOWER_POS = {
-  blue: { BOT: { x: 220, y: 480 }, MID: { x: 220, y: 380 }, TOP: { x: 180, y: 160 } },
-  red: { BOT: { x: 380, y: 480 }, MID: { x: 380, y: 220 }, TOP: { x: 420, y: 160 } }
+  blue: {
+    BOT_T1: { x: 220, y: 480 }, BOT_T2: { x: 190, y: 430 },
+    MID_T1: { x: 220, y: 380 }, MID_T2: { x: 205, y: 310 },
+    TOP_T1: { x: 160, y: 200 }, TOP_T2: { x: 160, y: 145 }
+  },
+  red: {
+    BOT_T1: { x: 380, y: 480 }, BOT_T2: { x: 410, y: 430 },
+    MID_T1: { x: 380, y: 220 }, MID_T2: { x: 395, y: 290 },
+    TOP_T1: { x: 440, y: 200 }, TOP_T2: { x: 440, y: 145 }
+  }
+};
+
+/* Positions des nexus */
+const MAP_NEXUS_POS = {
+  blue: { x: 70, y: 530 },
+  red:  { x: 530, y: 70 }
 };
 
 /* Categorie d'evenement de match -> type MapEvent (CDC 8.2) */
@@ -129,15 +143,31 @@ function champAbbrev(rt, side, role) {
   return champName ? champName.slice(0, 2).toUpperCase() : role.slice(0, 1);
 }
 
+/* Chemin SVG en étoile 5 branches (rayon ext, rayon int) */
+function starPath(cx, cy, rOut, rIn) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const angle = (Math.PI / 5) * i - Math.PI / 2;
+    const r = i % 2 === 0 ? rOut : rIn;
+    pts.push(`${(cx + Math.cos(angle) * r).toFixed(1)},${(cy + Math.sin(angle) * r).toFixed(1)}`);
+  }
+  return `M${pts.join('L')}Z`;
+}
+
 function renderMatchMap(rt) {
   const container = document.getElementById('match-map');
   if (!container || !rt) return;
 
   const towersSvg = ['blue', 'red'].map((side) => {
-    return Object.keys(MAP_TOWER_POS[side]).map((lane) => {
-      const pos = MAP_TOWER_POS[side][lane];
-      return `<rect id="map-tower-${side}-${lane}" class="map-tower map-tower--${side}" x="${pos.x - 6}" y="${pos.y - 6}" width="12" height="12" rx="2"></rect>`;
+    return Object.keys(MAP_TOWER_POS[side]).map((key) => {
+      const pos = MAP_TOWER_POS[side][key];
+      return `<rect id="map-tower-${side}-${key}" class="map-tower map-tower--${side}" x="${pos.x - 6}" y="${pos.y - 6}" width="12" height="12" rx="2"></rect>`;
     }).join('');
+  }).join('');
+
+  const nexusSvg = ['blue', 'red'].map((side) => {
+    const pos = MAP_NEXUS_POS[side];
+    return `<path id="map-nexus-${side}" class="map-nexus map-nexus--${side}" d="${starPath(pos.x, pos.y, 11, 5)}"></path>`;
   }).join('');
 
   const unitsSvg = ['blue', 'red'].map((side) => {
@@ -158,7 +188,7 @@ function renderMatchMap(rt) {
           <rect x="0" y="0" width="600" height="600" rx="18"></rect>
         </clipPath>
       </defs>
-      <image class="map-bg-image" href="IMG/map.png" x="-121.6" y="0" width="843.2" height="600" clip-path="url(#map-clip)" preserveAspectRatio="xMidYMid slice"></image>
+      <image class="map-bg-image" href="img/map.png" x="-121.6" y="0" width="843.2" height="600" clip-path="url(#map-clip)" preserveAspectRatio="xMidYMid slice"></image>
       <rect class="map-bg-border" x="0" y="0" width="600" height="600" rx="18"></rect>
 
       <g id="map-baron-pit" class="map-pit map-pit--baron">
@@ -175,6 +205,7 @@ function renderMatchMap(rt) {
       <text id="map-baron-count-red" class="map-objective-count map-objective-count--red" x="${MAP_ZONES.baron.x + 34}" y="${MAP_ZONES.baron.y + 4}"></text>
 
       ${towersSvg}
+      ${nexusSvg}
       ${unitsSvg}
     </svg>
   `;
@@ -208,11 +239,17 @@ function updateMapObjectives(rt) {
   }
 
   ['blue', 'red'].forEach((side) => {
-    const destroyedByOpponent = obj.towers[side === 'blue' ? 'red' : 'blue'];
-    Object.keys(MAP_TOWER_POS[side]).forEach((lane, idx) => {
-      const tower = container.querySelector(`#map-tower-${side}-${lane}`);
+    const opponent = side === 'blue' ? 'red' : 'blue';
+    const destroyedByOpponent = obj.towers[opponent];
+    const towerKeys = Object.keys(MAP_TOWER_POS[side]);
+    towerKeys.forEach((key, idx) => {
+      const tower = container.querySelector(`#map-tower-${side}-${key}`);
       if (tower) tower.classList.toggle('map-tower--down', idx < destroyedByOpponent);
     });
+
+    /* Nexus : détruit si 9 tours tombées (fin de game par nexus) */
+    const nexusEl = container.querySelector(`#map-nexus-${side}`);
+    if (nexusEl) nexusEl.classList.toggle('map-nexus--down', destroyedByOpponent >= towerKeys.length);
   });
 }
 

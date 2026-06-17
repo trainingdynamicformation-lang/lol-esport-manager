@@ -5,6 +5,23 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.2] — 2026-06-17
+
+### Ajouté
+- **Tours & Nexus sur la carte** — tours représentées par des carrés bleu/rouge (noirs avec liseré coloré quand détruites), nexus en étoile ★ avec même logique visuelle
+- **Disclaimer Riot Games** — mention légale en pied de page : projet indépendant non affilié à Riot Games
+- **Lien Changelog** — lien cliquable vers le changelog en pied de page
+- **Side/Pick pour les games 2+ en série** — le perdant de la game précédente choisit en premier sa catégorie (côté OU ordre de pick) ; le gagnant obtient la catégorie restante
+
+### Corrigé
+- **Fatigue — affichage `undefined`** : propriété `p.fatigué` (cassée par le script d'accents v1.2.1) corrigée en `p.fatigue`
+- **Carte non affichée** : chemin `IMG/map.png` corrigé en `img/map.png` (sensible à la casse sur serveur Linux)
+- **Teamfight (0 kills)** : un teamfight garantit désormais ≥ 2 kills (4 max) ; si le kill cap est atteint, 1 kill est quand même accordé
+- **Draft alphabétique** : champions triés par ordre alphabétique dans la grille de draft (bans et picks)
+- **Fearless en saison** : guard explicite — le verrou fearless ne s'applique que si `fearlessMode === 'on'`, éliminant tout risque de faux positif en saison régulière
+
+---
+
 ## [1.2.1] — 2026-06-16
 
 ### Corrigé

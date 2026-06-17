@@ -1246,7 +1246,7 @@ function playerCardHtml(p) {
       </div>
       <div class="player-card__stats">
         ${playerStatRow('Forme', p.form)}
-        ${playerStatRow('Fatigue', p.fatigué)}
+        ${playerStatRow('Fatigue', p.fatigue)}
         ${playerStatRow('Mental', p.mental)}
         ${playerStatRow('Shotcalling', p.shotcalling)}
         ${playerStatRow('Laning', p.laning)}
@@ -1694,9 +1694,10 @@ function aiSide(draft) {
 }
 
 function isChampionTaken(draft, champName) {
+  const fearlessActive = draft.fearlessMode === 'on' && Array.isArray(draft.globalFearlessLocked);
   return draft.blueBans.includes(champName) || draft.redBans.includes(champName) ||
     Object.values(draft.bluePicks).includes(champName) || Object.values(draft.redPicks).includes(champName) ||
-    draft.globalFearlessLocked.includes(champName);
+    (fearlessActive && draft.globalFearlessLocked.includes(champName));
 }
 
 function emptyRoles(picks) {
@@ -1994,7 +1995,8 @@ function renderPicksColumn(draft, side) {
 }
 
 function renderChampionGrid(draft, mode, role) {
-  const champions = (mode === 'pick' && role) ? getChampionsForRole(role) : CHAMPIONS;
+  const champions = [...((mode === 'pick' && role) ? getChampionsForRole(role) : CHAMPIONS)]
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   const player = role ? state.roster.find((p) => p.role === role) : null;
   return `
     <div class="draft-champion-grid">
@@ -3550,6 +3552,122 @@ function getOtherCategory(chosenId) {
   return inSide ? COIN_FLIP_CATEGORIES.pick : COIN_FLIP_CATEGORIES.side;
 }
 
+/* Modal side/pick pour les games 2+ d'une série BO3/BO5
+   Le PERDANT de la game précédente choisit en premier (side OU pick).
+   Le GAGNANT obtient le choix restant. */
+function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
+  const series = state.matchSeries;
+  const opponent = getTeamRef(opponentTeamId);
+  const opName = opponent ? opponent.shortName : 'ADV';
+  const gameNum = series ? series.gameNumber : '?';
+
+  function resolveChoices(playerOptId, aiOptId) {
+    const playerInSide = COIN_FLIP_CATEGORIES.side.some(o => o.id === playerOptId);
+    const playerOpt = getCoinFlipOpt(playerOptId);
+    const aiOpt = getCoinFlipOpt(aiOptId);
+    let playerMapSide, playerPickOrder;
+    if (playerInSide) {
+      playerMapSide = playerOpt.side;
+      playerPickOrder = aiOpt.side === 'blue' ? 'red' : 'blue';
+    } else {
+      playerPickOrder = playerOpt.side;
+      playerMapSide = aiOpt.side === 'blue' ? 'red' : 'blue';
+    }
+    return { playerMapSide, playerPickOrder };
+  }
+
+  function showSummary(playerOptId, aiOptId) {
+    const { playerMapSide, playerPickOrder } = resolveChoices(playerOptId, aiOptId);
+    const sLabel = playerMapSide === 'blue' ? 'Blue Side' : 'Red Side';
+    const pLabel = playerPickOrder === 'blue' ? 'First Pick' : 'Last Pick';
+    const overlay = document.getElementById('modal-overlay');
+    overlay.querySelector('.modal-content').innerHTML = `
+      <div class="coin-flip">
+        <h3 class="coin-flip__title">Game ${gameNum} — Résumé</h3>
+        <div class="coin-flip__summary">
+          Côté : <strong>${sLabel}</strong> &nbsp;|&nbsp; Draft : <strong>${pLabel}</strong>
+        </div>
+        <div class="modal-content__actions">
+          <button class="btn-primary" id="series-game-go">Lancer la draft !</button>
+        </div>
+      </div>`;
+    document.getElementById('series-game-go').addEventListener('click', () => {
+      closeModal();
+      startDraft(opponentTeamId, playerPickOrder, playerMapSide);
+      showView('draft');
+    });
+  }
+
+  function optionBtns(opts, prefix) {
+    return opts.map(o =>
+      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}</button>`
+    ).join('');
+  }
+
+  function showLoserChooses() {
+    /* Le perdant choisit en premier */
+    const overlay = document.getElementById('modal-overlay');
+    overlay.querySelector('.modal-content').innerHTML = `
+      <div class="coin-flip">
+        <h3 class="coin-flip__title">Game ${gameNum} — Choix du perdant</h3>
+        <div class="coin-flip__result coin-flip__result--loss">Vous avez perdu la game précédente — vous choisissez en premier.</div>
+        <p class="coin-flip__sub coin-flip__category-label">— Côté —</p>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'loser-first')}</div>
+        <p class="coin-flip__sub coin-flip__category-label">— Ordre de pick —</p>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'loser-first')}</div>
+      </div>`;
+    overlay.querySelectorAll('[data-prefix="loser-first"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const playerOptId = btn.dataset.opt;
+        const aiCat = getOtherCategory(playerOptId);
+        const aiOpt = aiCat[Math.floor(Math.random() * aiCat.length)];
+        showSummary(playerOptId, aiOpt.id);
+      });
+    });
+  }
+
+  function showWinnerChooses() {
+    /* Le gagnant choisit en premier, l'IA (perdante) choisit dans l'autre catégorie */
+    const aiOpt = COIN_FLIP_ALL[Math.floor(Math.random() * COIN_FLIP_ALL.length)];
+    const playerCat = getOtherCategory(aiOpt.id);
+    const overlay = document.getElementById('modal-overlay');
+    overlay.querySelector('.modal-content').innerHTML = `
+      <div class="coin-flip">
+        <h3 class="coin-flip__title">Game ${gameNum} — Choix du gagnant</h3>
+        <div class="coin-flip__result coin-flip__result--win">Vous avez gagné la game précédente — ${opName} choisit en premier.</div>
+        <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${getCoinFlipOpt(aiOpt.id).label}</em></p>
+        <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Côté' : 'Ordre de pick'} —</p>
+        <div class="coin-flip__options">${optionBtns(playerCat, 'winner-second')}</div>
+      </div>`;
+    overlay.querySelectorAll('[data-prefix="winner-second"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        showSummary(btn.dataset.opt, aiOpt.id);
+      });
+    });
+  }
+
+  showModal(`
+    <div class="coin-flip">
+      <h3 class="coin-flip__title">Game ${gameNum} — Choix des sides</h3>
+      <p class="coin-flip__sub">
+        ${playerWonLastGame
+          ? `<strong>${opName}</strong> (perdant) choisit en premier sa catégorie.`
+          : `Vous (perdant) choisissez en premier votre catégorie.`}
+      </p>
+      <div class="modal-content__actions">
+        <button class="btn-primary" id="series-game-next">Continuer</button>
+      </div>
+    </div>`);
+
+  document.getElementById('series-game-next').addEventListener('click', () => {
+    if (playerWonLastGame) {
+      showWinnerChooses();
+    } else {
+      showLoserChooses();
+    }
+  });
+}
+
 function showCoinFlipModal(opponentTeamId) {
   const opponent = getTeamRef(opponentTeamId);
   const opName = opponent ? opponent.shortName : 'ADV';
@@ -3840,11 +3958,14 @@ function simulateTick() {
   let kills = 0;
   if (['lane', 'jungle', 'teamfight', 'dramatic'].includes(template.category)) {
     const totalKills = rt.score.blue + rt.score.red;
+    const isTF = template.category === 'teamfight' || template.category === 'dramatic';
     if (totalKills < MATCH_KILL_CAP) {
-      const desiredKills = template.category === 'teamfight' || template.category === 'dramatic' ? randomInt(1, 2) : 1;
+      const desiredKills = isTF ? randomInt(2, 4) : 1;
       kills = Math.min(desiredKills, MATCH_KILL_CAP - totalKills);
-      rt.score[winner] += kills;
+    } else if (isTF) {
+      kills = 1; /* teamfight sans kill n'existe pas */
     }
+    rt.score[winner] += kills;
   }
 
   if (template.objective) {
@@ -4070,6 +4191,7 @@ function finishMatch() {
 
   const win = Math.random() < rt.winProbability;
   rt.result = win ? 'win' : 'loss';
+  rt.winner = win ? rt.picks.playerSide : (rt.picks.playerSide === 'blue' ? 'red' : 'blue');
 
   const after = applyMatchOutcome(win);
   rt.report = buildMatchReport(rt.opponent, win, rt.before, after, rt.eventHistory);
@@ -4188,11 +4310,9 @@ function renderMatchArena() {
     if (finishedRt.finished) {
       if (finishedRt.seriesEvent && finishedRt.seriesEvent.type === 'next') {
         const opponentId = finishedRt.opponent.id;
-        const nextPickOrder = finishedRt.picks.playerSide === 'blue' ? 'red' : 'blue';
-        const nextMapSide = (finishedRt.picks.mapSide || finishedRt.picks.playerSide) === 'blue' ? 'red' : 'blue';
+        const playerWonGame = finishedRt.picks.playerSide === finishedRt.winner;
         matchRuntime = null;
-        startDraft(opponentId, nextPickOrder, nextMapSide);
-        showView('draft');
+        showSeriesGameModal(opponentId, playerWonGame);
       } else if (finishedRt.seriesEvent && finishedRt.seriesEvent.returnToCalendar) {
         matchRuntime = null;
         showView('calendar');

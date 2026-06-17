@@ -208,6 +208,20 @@ img { max-width: 100%; height: auto; }
   opacity: 0.6;
 }
 
+.footer-disclaimer {
+  font-style: italic;
+  opacity: 0.45;
+}
+
+.footer-link {
+  color: var(--color-gold);
+  text-decoration: none;
+  font-size: var(--fs-label);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.footer-link:hover { opacity: 1; text-decoration: underline; }
+
 /* ------------------------------------------------------------
    Navigation sidebar
    ------------------------------------------------------------ */
@@ -1014,10 +1028,19 @@ table.history-table th {
 .map-objective-count--blue { fill: #3A82F6; }
 .map-objective-count--red  { fill: var(--color-danger); }
 
-.map-tower { fill: var(--color-text-muted); stroke: var(--color-surface); stroke-width: 1; transition: var(--transition-fast); }
-.map-tower--blue { fill: #3A82F6; }
-.map-tower--red  { fill: var(--color-danger); }
-.map-tower--down { fill: var(--color-border); opacity: 0.35; }
+.map-tower               { fill: var(--color-text-muted); stroke: var(--color-surface); stroke-width: 1.5; transition: fill 0.4s, opacity 0.4s; }
+.map-tower--blue         { fill: #3A82F6; stroke: #BFD9FF; }
+.map-tower--red          { fill: var(--color-danger); stroke: #FFD0D6; }
+.map-tower--down         { fill: #1a1a2e; stroke: currentColor; opacity: 0.6; }
+.map-tower--blue.map-tower--down { stroke: #3A82F6; }
+.map-tower--red.map-tower--down  { stroke: var(--color-danger); }
+
+.map-nexus               { stroke-width: 1.5; transition: fill 0.4s, opacity 0.4s; }
+.map-nexus--blue         { fill: #3A82F6; stroke: #BFD9FF; filter: drop-shadow(0 0 4px #3A82F6); }
+.map-nexus--red          { fill: var(--color-danger); stroke: #FFD0D6; filter: drop-shadow(0 0 4px var(--color-danger)); }
+.map-nexus--down         { fill: #1a1a2e; filter: none; opacity: 0.7; }
+.map-nexus--blue.map-nexus--down { stroke: #3A82F6; }
+.map-nexus--red.map-nexus--down  { stroke: var(--color-danger); }
 
 .map-unit             { transition: transform 600ms ease-in-out; }
 .map-unit__circle     { stroke-width: 2; transition: var(--transition-fast); }
