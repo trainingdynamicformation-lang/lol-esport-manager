@@ -39,24 +39,71 @@ const MAP_UNIT_HOME = {
   }
 };
 
-/* Positions des tours (3 par lane par cote + nexus) */
-const MAP_TOWER_POS = {
+/* Dimensions de l'image source et placement SVG — sert à la conversion de coordonnées */
+const MAP_SOURCE_SIZE = { width: 2048, height: 1457 };
+const MAP_IMAGE_PLACEMENT = { x: -121.6, y: 0, width: 843.2, height: 600 };
+
+function sourcePointToSvg(point) {
+  return {
+    x: Number((MAP_IMAGE_PLACEMENT.x + (point.x / MAP_SOURCE_SIZE.width) * MAP_IMAGE_PLACEMENT.width).toFixed(1)),
+    y: Number((MAP_IMAGE_PLACEMENT.y + (point.y / MAP_SOURCE_SIZE.height) * MAP_IMAGE_PLACEMENT.height).toFixed(1))
+  };
+}
+
+function projectStructureGroup(group) {
+  return Object.fromEntries(
+    Object.entries(group).map(([side, structures]) => [
+      side,
+      Object.fromEntries(Object.entries(structures).map(([key, pt]) => [key, sourcePointToSvg(pt)]))
+    ])
+  );
+}
+
+/* Positions source (pixels sur l'image 2048×1457) */
+const MAP_TOWER_SOURCE_POS = {
   blue: {
-    BOT_T1: { x: 220, y: 480 }, BOT_T2: { x: 190, y: 430 },
-    MID_T1: { x: 220, y: 380 }, MID_T2: { x: 205, y: 310 },
-    TOP_T1: { x: 160, y: 200 }, TOP_T2: { x: 160, y: 145 }
+    TOP_T1: { x: 356.0, y: 452.5 }, TOP_T2: { x: 397.5, y: 768.5 }, TOP_T3: { x: 357.5, y: 975.5 },
+    MID_T1: { x: 866.0, y: 800.5 }, MID_T2: { x: 779.0, y: 942.5 }, MID_T3: { x: 627.5, y: 1037.5 },
+    BOT_T1: { x: 1380.5, y: 1301.5 }, BOT_T2: { x: 989.5, y: 1252.5 }, BOT_T3: { x: 695.0, y: 1265.5 },
+    NEX_T1: { x: 418.0, y: 1165.0 }, NEX_T2: { x: 465.5, y: 1213.0 }
   },
   red: {
-    BOT_T1: { x: 380, y: 480 }, BOT_T2: { x: 410, y: 430 },
-    MID_T1: { x: 380, y: 220 }, MID_T2: { x: 395, y: 290 },
-    TOP_T1: { x: 440, y: 200 }, TOP_T2: { x: 440, y: 145 }
+    TOP_T1: { x: 703.0, y: 175.5 }, TOP_T2: { x: 1075.0, y: 218.0 }, TOP_T3: { x: 1329.5, y: 201.0 },
+    MID_T1: { x: 1187.5, y: 626.5 }, MID_T2: { x: 1269.5, y: 489.5 }, MID_T3: { x: 1399.5, y: 402.5 },
+    BOT_T1: { x: 1736.0, y: 984.0 }, BOT_T2: { x: 1650.0, y: 658.5 }, BOT_T3: { x: 1670.5, y: 462.0 },
+    NEX_T1: { x: 1543.5, y: 249.5 }, NEX_T2: { x: 1597.0, y: 299.5 }
   }
 };
 
-/* Positions des nexus */
+const MAP_INHIBITOR_SOURCE_POS = {
+  blue: {
+    TOP_INH: { x: 359.0, y: 1052.5 }, MID_INH: { x: 582.5, y: 1090.0 }, BOT_INH: { x: 602.5, y: 1271.0 }
+  },
+  red: {
+    TOP_INH: { x: 1415.0, y: 208.0 }, MID_INH: { x: 1455.5, y: 369.5 }, BOT_INH: { x: 1658.5, y: 396.5 }
+  }
+};
+
+const MAP_NEXUS_SOURCE_POS = {
+  blue: { x: 392.0, y: 1233.5 },
+  red:  { x: 1616.5, y: 239.0 }
+};
+
+/* Coordonnées SVG finales — calculées automatiquement */
+const MAP_TOWER_POS     = projectStructureGroup(MAP_TOWER_SOURCE_POS);
+const MAP_INHIBITOR_POS = projectStructureGroup(MAP_INHIBITOR_SOURCE_POS);
 const MAP_NEXUS_POS = {
-  blue: { x: 70, y: 530 },
-  red:  { x: 530, y: 70 }
+  blue: sourcePointToSvg(MAP_NEXUS_SOURCE_POS.blue),
+  red:  sourcePointToSvg(MAP_NEXUS_SOURCE_POS.red)
+};
+
+/* Tailles des formes */
+const MAP_STRUCTURE_SIZE = {
+  towerHalf: 6.5,
+  nexusTowerHalf: 6.5,
+  inhibitorRadius: 9.5,
+  nexusOuterRadius: 14,
+  nexusInnerRadius: 6
 };
 
 /* Categorie d'evenement de match -> type MapEvent (CDC 8.2) */
@@ -154,6 +201,16 @@ function starPath(cx, cy, rOut, rIn) {
   return `M${pts.join('L')}Z`;
 }
 
+/* Chemin SVG triangle équilatéral pointant vers le haut */
+function triPath(cx, cy, r) {
+  const pts = [
+    `${cx},${cy - r}`,
+    `${cx + r * 0.866},${cy + r * 0.5}`,
+    `${cx - r * 0.866},${cy + r * 0.5}`
+  ];
+  return `M${pts.join('L')}Z`;
+}
+
 function renderMatchMap(rt) {
   const container = document.getElementById('match-map');
   if (!container || !rt) return;
@@ -161,13 +218,22 @@ function renderMatchMap(rt) {
   const towersSvg = ['blue', 'red'].map((side) => {
     return Object.keys(MAP_TOWER_POS[side]).map((key) => {
       const pos = MAP_TOWER_POS[side][key];
-      return `<rect id="map-tower-${side}-${key}" class="map-tower map-tower--${side}" x="${pos.x - 6}" y="${pos.y - 6}" width="12" height="12" rx="2"></rect>`;
+      const isNex = key.startsWith('NEX');
+      const half = isNex ? MAP_STRUCTURE_SIZE.nexusTowerHalf : MAP_STRUCTURE_SIZE.towerHalf;
+      return `<rect id="map-tower-${side}-${key}" class="map-tower map-tower--${side}${isNex ? ' map-tower--nexus' : ''}" x="${(pos.x - half).toFixed(1)}" y="${(pos.y - half).toFixed(1)}" width="${(half * 2).toFixed(1)}" height="${(half * 2).toFixed(1)}" rx="2" data-side="${side}" data-structure="${key}"></rect>`;
+    }).join('');
+  }).join('');
+
+  const inhibitorsSvg = ['blue', 'red'].map((side) => {
+    return Object.keys(MAP_INHIBITOR_POS[side]).map((key) => {
+      const pos = MAP_INHIBITOR_POS[side][key];
+      return `<path id="map-inh-${side}-${key}" class="map-inhibitor map-inhibitor--${side}" d="${triPath(pos.x, pos.y, MAP_STRUCTURE_SIZE.inhibitorRadius)}" data-side="${side}" data-structure="${key}"></path>`;
     }).join('');
   }).join('');
 
   const nexusSvg = ['blue', 'red'].map((side) => {
     const pos = MAP_NEXUS_POS[side];
-    return `<path id="map-nexus-${side}" class="map-nexus map-nexus--${side}" d="${starPath(pos.x, pos.y, 11, 5)}"></path>`;
+    return `<path id="map-nexus-${side}" class="map-nexus map-nexus--${side}" d="${starPath(pos.x, pos.y, MAP_STRUCTURE_SIZE.nexusOuterRadius, MAP_STRUCTURE_SIZE.nexusInnerRadius)}" data-side="${side}" data-structure="NEXUS"></path>`;
   }).join('');
 
   const unitsSvg = ['blue', 'red'].map((side) => {
@@ -188,7 +254,7 @@ function renderMatchMap(rt) {
           <rect x="0" y="0" width="600" height="600" rx="18"></rect>
         </clipPath>
       </defs>
-      <image class="map-bg-image" href="img/map.png" x="-121.6" y="0" width="843.2" height="600" clip-path="url(#map-clip)" preserveAspectRatio="xMidYMid slice"></image>
+      <image class="map-bg-image" href="img/map.png" x="${MAP_IMAGE_PLACEMENT.x}" y="${MAP_IMAGE_PLACEMENT.y}" width="${MAP_IMAGE_PLACEMENT.width}" height="${MAP_IMAGE_PLACEMENT.height}" clip-path="url(#map-clip)" preserveAspectRatio="xMidYMid slice"></image>
       <rect class="map-bg-border" x="0" y="0" width="600" height="600" rx="18"></rect>
 
       <g id="map-baron-pit" class="map-pit map-pit--baron">
@@ -205,6 +271,7 @@ function renderMatchMap(rt) {
       <text id="map-baron-count-red" class="map-objective-count map-objective-count--red" x="${MAP_ZONES.baron.x + 34}" y="${MAP_ZONES.baron.y + 4}"></text>
 
       ${towersSvg}
+      ${inhibitorsSvg}
       ${nexusSvg}
       ${unitsSvg}
     </svg>
@@ -238,18 +305,22 @@ function updateMapObjectives(rt) {
     baronPit.classList.toggle('map-pit--aura-red', obj.barons.red > obj.barons.blue);
   }
 
+  /* Mise à jour des structures via structuresDown */
   ['blue', 'red'].forEach((side) => {
-    const opponent = side === 'blue' ? 'red' : 'blue';
-    const destroyedByOpponent = obj.towers[opponent];
-    const towerKeys = Object.keys(MAP_TOWER_POS[side]);
-    towerKeys.forEach((key, idx) => {
-      const tower = container.querySelector(`#map-tower-${side}-${key}`);
-      if (tower) tower.classList.toggle('map-tower--down', idx < destroyedByOpponent);
+    const down = new Set(rt.structuresDown ? rt.structuresDown[side] : []);
+
+    Object.keys(MAP_TOWER_POS[side]).forEach((key) => {
+      const el = container.querySelector(`#map-tower-${side}-${key}`);
+      if (el) el.classList.toggle('map-tower--down', down.has(key));
     });
 
-    /* Nexus : détruit si 9 tours tombées (fin de game par nexus) */
+    Object.keys(MAP_INHIBITOR_POS[side]).forEach((key) => {
+      const el = container.querySelector(`#map-inh-${side}-${key}`);
+      if (el) el.classList.toggle('map-inhibitor--down', down.has(key));
+    });
+
     const nexusEl = container.querySelector(`#map-nexus-${side}`);
-    if (nexusEl) nexusEl.classList.toggle('map-nexus--down', destroyedByOpponent >= towerKeys.length);
+    if (nexusEl) nexusEl.classList.toggle('map-nexus--down', down.has('NEXUS'));
   });
 }
 

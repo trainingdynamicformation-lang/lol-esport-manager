@@ -5,6 +5,37 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.5] — 2026-06-17
+
+### Ajouté
+- **Différence d'or en simulation** : sous le compteur de kills, affichage dynamique de l'avance en or — valeur toujours positive, en bleu si l'équipe bleue est devant, en rouge sinon ; calculée à partir des kills (300g/kill), objectifs (dragons 250g, baron 300g, herald 150g, etc.) et structures (tours T1/T2/T3, inhibiteurs)
+
+---
+
+## [1.2.4] — 2026-06-17
+
+### Corrigé
+- **Side/Pick indépendants** : Blue Side et First Pick sont désormais deux choix séparés — un joueur peut être Blue Side + Last Pick ou Red Side + First Pick ; attribution toujours respectée
+- **Carte — toutes les structures** : tours T1/T2/T3, inhibiteurs (triangles), tours du nexus et nexus (étoile) positionnés correctement sur la map ; formes plus élégantes et plus petites
+- **Simulation — structures nommées** : le journal de match indique quelle structure exacte est détruite (ex : "Tour 2 (Mid)", "Inhibiteur (Bot)") et respecte l'ordre T1→T2→T3→Inhibiteur→Tours Nexus→Nexus
+- **Bouton fermer Changelog** : repositionné en haut à droite de la fenêtre modale, dans la charte graphique or/navy
+- **Labels colonnes de draft** : colonnes renommées "First Pick / Last Pick" au lieu de "Bleu / Rouge" — évite la confusion entre ordre de pick et côté de map (ex : Red Side + First Pick s'affichait sous la colonne "Bleu")
+- **Map side en simulation** : le côté affiché dans la simulation (Bleu/Rouge) reflète désormais le vrai côté de carte choisi au coin flip, indépendamment de l'ordre de pick
+
+---
+
+## [1.2.3] — 2026-06-17
+
+### Corrigé
+- **Timings objectifs neutres** : Baron (Nashor) spawn à 20:00 (1200s), respawn 6 min après sa mort ; Herald spawn à 14:00 (840s) — impossible de tuer le Baron avant 20h00 ou deux fois en 20 secondes
+- **Fearless en saison** : mode Fearless Draft actif pour tous les matchs de saison régulière (BO3)
+- **Changelog** : le lien en pied de page ouvre une fenêtre modale formatée (plus de lien 404)
+
+### Ajouté
+- **Filtres de rôle dans la draft** : boutons Tous / Top / Jungle / Mid / ADC / Support lors des bans ET des picks
+
+---
+
 ## [1.2.2] — 2026-06-17
 
 ### Ajouté

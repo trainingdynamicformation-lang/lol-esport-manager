@@ -445,6 +445,45 @@ function closeModal() {
   if (overlay) overlay.classList.remove('modal-overlay--visible');
 }
 
+function showChangelogModal() {
+  showModal(`<div class="changelog-modal"><p class="changelog-loading">Chargement…</p></div>`);
+  fetch('CHANGELOG.md')
+    .then(r => r.text())
+    .then(md => {
+      const html = md
+        .replace(/^# (.+)$/gm, '<h2 class="changelog-h1">$1</h2>')
+        .replace(/^## \[(.+)\] — (.+)$/gm, '<h3 class="changelog-version"><span class="changelog-tag">v$1</span><span class="changelog-date">$2</span></h3>')
+        .replace(/^### (.+)$/gm, '<h4 class="changelog-section">$1</h4>')
+        .replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<li><strong>$1</strong> — $2</li>')
+        .replace(/^- \*\*(.+?)\*\*\s*:(.+)$/gm, '<li><strong>$1</strong> :$2</li>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>[\s\S]+?<\/li>)(\n(?=<li>))?/g, (m) => m)
+        .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
+        .replace(/\n{2,}/g, '\n')
+        .replace(/^---$/gm, '<hr class="changelog-hr">')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\`(.+?)\`/g, '<code>$1</code>');
+
+      const overlay = document.getElementById('modal-overlay');
+      if (overlay) {
+        overlay.querySelector('.modal-content').innerHTML = `
+          <div class="changelog-modal">
+            <div class="changelog-header">
+              <h2 class="changelog-title">Changelog</h2>
+              <button class="changelog-close" id="changelog-close-btn">✕</button>
+            </div>
+            <div class="changelog-body">${html}</div>
+          </div>`;
+        document.getElementById('changelog-close-btn').addEventListener('click', closeModal);
+      }
+    })
+    .catch(() => {
+      const overlay = document.getElementById('modal-overlay');
+      if (overlay) overlay.querySelector('.modal-content').innerHTML =
+        `<div class="changelog-modal"><p>Impossible de charger le changelog.</p><button class="btn-secondary" onclick="closeModal()">Fermer</button></div>`;
+    });
+}
+
 /* ------------------------------------------------------------
    Aleas
    ------------------------------------------------------------ */
@@ -1994,9 +2033,10 @@ function renderPicksColumn(draft, side) {
   }).join('');
 }
 
-function renderChampionGrid(draft, mode, role) {
-  const champions = [...((mode === 'pick' && role) ? getChampionsForRole(role) : CHAMPIONS)]
-    .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+function renderChampionGrid(draft, mode, role, roleFilter) {
+  let pool = (mode === 'pick' && role) ? getChampionsForRole(role) : CHAMPIONS;
+  if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
+  const champions = [...pool].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   const player = role ? state.roster.find((p) => p.role === role) : null;
   return `
     <div class="draft-champion-grid">
@@ -2096,22 +2136,35 @@ function renderDraft() {
     `;
   } else if (isPlayerTurn) {
     const suggestion = getDraftSuggestion(draft);
+    const ROLE_FILTERS = [
+      { id: 'ALL', label: 'Tous' },
+      { id: 'TOP', label: 'Top' },
+      { id: 'JUNGLE', label: 'Jungle' },
+      { id: 'MID', label: 'Mid' },
+      { id: 'ADC', label: 'ADC' },
+      { id: 'SUPPORT', label: 'Support' }
+    ];
     if (turn.type === 'ban') {
+      const banFilter = draft._banRoleFilter || 'ALL';
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un ban (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
-        ${renderChampionGrid(draft, 'ban')}
+        <div class="draft-role-filter">
+          ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === banFilter ? 'comp-tag-option--active' : ''}" data-ban-filter="${f.id}">${f.label}</button>`).join('')}
+        </div>
+        ${renderChampionGrid(draft, 'ban', null, banFilter)}
       `;
     } else {
       const roles = emptyRoles(draft[draft.playerSide + 'Picks']);
       const activeRole = draft._pendingRole && roles.includes(draft._pendingRole) ? draft._pendingRole : roles[0];
+      const pickFilter = draft._pickRoleFilter || 'ALL';
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
         <div class="draft-role-filter">
           ${roles.map((r) => `<button class="comp-tag-option ${r === activeRole ? 'comp-tag-option--active' : ''}" data-role="${r}">${ROLE_NAMES[r]}</button>`).join('')}
         </div>
-        ${renderChampionGrid(draft, 'pick', activeRole)}
+        ${renderChampionGrid(draft, 'pick', activeRole, pickFilter)}
       `;
     }
   } else {
@@ -2127,21 +2180,21 @@ function renderDraft() {
       <h3 class="panel-title">Draft vs ${opponent.name} &mdash; ${sideLabel(draft.mapSide || draft.playerSide)} / ${draft.playerSide === 'blue' ? 'First Pick' : 'Last Pick'}${seriesLabel}</h3>
       <div class="draft-bans">
         <div class="draft-bans__team">
-          <span class="draft-bans__label">Bans Bleu</span>
+          <span class="draft-bans__label">Bans First Pick</span>
           <div class="draft-bans__row">${renderBansRow(draft, 'blue')}</div>
         </div>
         <div class="draft-bans__team">
-          <span class="draft-bans__label">Bans Rouge</span>
+          <span class="draft-bans__label">Bans Last Pick</span>
           <div class="draft-bans__row">${renderBansRow(draft, 'red')}</div>
         </div>
       </div>
       <div class="draft-board">
         <div class="draft-team-column">
-          <h4>Bleu ${draft.playerSide === 'blue' ? '(Vous)' : `(${opponent.shortName})`}</h4>
+          <h4>First Pick ${draft.playerSide === 'blue' ? '(Vous)' : `(${opponent.shortName})`}</h4>
           ${renderPicksColumn(draft, 'blue')}
         </div>
         <div class="draft-team-column">
-          <h4>Rouge ${draft.playerSide === 'red' ? '(Vous)' : `(${opponent.shortName})`}</h4>
+          <h4>Last Pick ${draft.playerSide === 'red' ? '(Vous)' : `(${opponent.shortName})`}</h4>
           ${renderPicksColumn(draft, 'red')}
         </div>
       </div>
@@ -2179,6 +2232,20 @@ function renderDraft() {
   document.querySelectorAll('.draft-role-filter [data-role]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.draft._pendingRole = btn.dataset.role;
+      renderDraft();
+    });
+  });
+
+  document.querySelectorAll('[data-ban-filter]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.draft._banRoleFilter = btn.dataset.banFilter;
+      renderDraft();
+    });
+  });
+
+  document.querySelectorAll('[data-pick-filter]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.draft._pickRoleFilter = btn.dataset.pickFilter;
       renderDraft();
     });
   });
@@ -3182,7 +3249,7 @@ function renderRegularSeasonCalendar(el, season) {
         const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
         season.pendingMatch = { type: 'regular', opponentTeamId: opponentId };
         saveGame();
-        startMatchSeries(opponentId, 'BO3', 'off');
+        startMatchSeries(opponentId, 'BO3', 'on');
       } else {
         const pairings = season.schedule[season.matchday - 1] || [];
         pairings.forEach((p) => {
@@ -3340,7 +3407,7 @@ function renderInternationalGroups(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, 'BO3', 'off');
+        startMatchSeries(pm.opponentTeamId, 'BO3', 'on');
       } else {
         showView('match');
       }
@@ -3465,18 +3532,20 @@ const BARON_BUFF_DURATION = 180;
 const ELDER_BUFF_DURATION = 150;
 const MATCH_GRUBS_TOTAL = 3;
 const GRUBS_SPAWN_TIME = 480;
-const HERALD_SPAWN_TIME = 900;
+const HERALD_SPAWN_TIME = 840;
 const HERALD_DESPAWN_TIME = 1195;
 const DRAGON_FIRST_SPAWN = 300;
 const DRAGON_RESPAWN = 300;
 const DRAGON_SOUL_COUNT = 4;
 const ELDER_RESPAWN = 360;
+const BARON_SPAWN_TIME = 1200;
+const BARON_RESPAWN = 360;
 
 let matchRuntime = null;
 
 function getMatchPicks(opponent) {
   if (state.draft && state.draft.status === 'done' && state.draft.opponentTeamId === opponent.id) {
-    return { blue: state.draft.bluePicks, red: state.draft.redPicks, playerSide: state.draft.playerSide };
+    return { blue: state.draft.bluePicks, red: state.draft.redPicks, playerSide: state.draft.playerSide, playerMapSide: state.draft.mapSide || state.draft.playerSide };
   }
 
   const playerPicks = {};
@@ -3534,52 +3603,60 @@ function startMatchSeries(opponentTeamId, format, fearlessMode) {
 
 // Deux catégories distinctes : Side et Pick Order
 // Le gagnant choisit dans l'une → le perdant est contraint à l'autre
+/* Pile ou Face — Side et Pick sont des choix indépendants (Blue Side ≠ First Pick) */
 const COIN_FLIP_CATEGORIES = {
-  side:  [
-    { id: 'blue', label: 'Blue Side', desc: '', side: 'blue' },
-    { id: 'red',  label: 'Red Side',  desc: '', side: 'red'  }
+  side: [
+    { id: 'blue',  label: 'Blue Side',    desc: 'Spawn & vision supérieurs en early', type: 'side' },
+    { id: 'red',   label: 'Red Side',     desc: 'Dragon & Baron côté droit',           type: 'side' }
   ],
   pick: [
-    { id: 'first', label: 'First Pick', desc: '', side: 'blue' },
-    { id: 'last',  label: 'Last Pick',  desc: '', side: 'red'  }
+    { id: 'first', label: 'First Pick',   desc: 'Contrôle le meta — impose le tempo', type: 'pick' },
+    { id: 'last',  label: 'Last Pick',    desc: 'Contre-pick assuré en position 5',   type: 'pick' }
   ]
 };
 const COIN_FLIP_ALL = [...COIN_FLIP_CATEGORIES.side, ...COIN_FLIP_CATEGORIES.pick];
 
 function getCoinFlipOpt(id) { return COIN_FLIP_ALL.find(x => x.id === id); }
 function getOtherCategory(chosenId) {
-  const inSide = COIN_FLIP_CATEGORIES.side.some(o => o.id === chosenId);
-  return inSide ? COIN_FLIP_CATEGORIES.pick : COIN_FLIP_CATEGORIES.side;
+  return COIN_FLIP_CATEGORIES.side.some(o => o.id === chosenId)
+    ? COIN_FLIP_CATEGORIES.pick
+    : COIN_FLIP_CATEGORIES.side;
 }
 
-/* Modal side/pick pour les games 2+ d'une série BO3/BO5
-   Le PERDANT de la game précédente choisit en premier (side OU pick).
-   Le GAGNANT obtient le choix restant. */
+/* Résout les choix : playerOptId = ce que le joueur a choisi, aiOptId = ce que l'IA a choisi
+   Retourne playerMapSide ('blue'|'red') et playerPickOrder ('blue'=FirstPick | 'red'=LastPick) */
+function resolveFlipChoices(playerOptId, aiOptId) {
+  const playerOpt = getCoinFlipOpt(playerOptId);
+  const aiOpt     = getCoinFlipOpt(aiOptId);
+  let playerMapSide, playerPickOrder;
+  if (playerOpt.type === 'side') {
+    playerMapSide   = playerOptId;                          // 'blue' ou 'red'
+    playerPickOrder = aiOptId === 'first' ? 'red' : 'blue'; // opposé du pick de l'IA
+  } else {
+    playerPickOrder = playerOptId === 'first' ? 'blue' : 'red'; // 'blue'=FirstPick
+    playerMapSide   = aiOptId === 'blue'  ? 'red' : 'blue';    // opposé du side de l'IA
+  }
+  return { playerMapSide, playerPickOrder };
+}
+
+/* Modal side/pick pour les games 2+ d'une série BO3/BO5.
+   Le PERDANT choisit en premier sa catégorie (Côté OU Ordre de pick), séparément. */
 function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
   const series = state.matchSeries;
   const opponent = getTeamRef(opponentTeamId);
   const opName = opponent ? opponent.shortName : 'ADV';
   const gameNum = series ? series.gameNumber : '?';
 
-  function resolveChoices(playerOptId, aiOptId) {
-    const playerInSide = COIN_FLIP_CATEGORIES.side.some(o => o.id === playerOptId);
-    const playerOpt = getCoinFlipOpt(playerOptId);
-    const aiOpt = getCoinFlipOpt(aiOptId);
-    let playerMapSide, playerPickOrder;
-    if (playerInSide) {
-      playerMapSide = playerOpt.side;
-      playerPickOrder = aiOpt.side === 'blue' ? 'red' : 'blue';
-    } else {
-      playerPickOrder = playerOpt.side;
-      playerMapSide = aiOpt.side === 'blue' ? 'red' : 'blue';
-    }
-    return { playerMapSide, playerPickOrder };
+  function optionBtns(opts, prefix) {
+    return opts.map(o =>
+      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}<span>${o.desc}</span></button>`
+    ).join('');
   }
 
   function showSummary(playerOptId, aiOptId) {
-    const { playerMapSide, playerPickOrder } = resolveChoices(playerOptId, aiOptId);
-    const sLabel = playerMapSide === 'blue' ? 'Blue Side' : 'Red Side';
-    const pLabel = playerPickOrder === 'blue' ? 'First Pick' : 'Last Pick';
+    const { playerMapSide, playerPickOrder } = resolveFlipChoices(playerOptId, aiOptId);
+    const sLabel = playerMapSide   === 'blue' ? 'Blue Side'   : 'Red Side';
+    const pLabel = playerPickOrder === 'blue' ? 'First Pick'  : 'Last Pick';
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
@@ -3598,51 +3675,40 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
     });
   }
 
-  function optionBtns(opts, prefix) {
-    return opts.map(o =>
-      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}</button>`
-    ).join('');
-  }
-
   function showLoserChooses() {
-    /* Le perdant choisit en premier */
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
         <h3 class="coin-flip__title">Game ${gameNum} — Choix du perdant</h3>
         <div class="coin-flip__result coin-flip__result--loss">Vous avez perdu la game précédente — vous choisissez en premier.</div>
         <p class="coin-flip__sub coin-flip__category-label">— Côté —</p>
-        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'loser-first')}</div>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'sg-loser')}</div>
         <p class="coin-flip__sub coin-flip__category-label">— Ordre de pick —</p>
-        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'loser-first')}</div>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'sg-loser')}</div>
       </div>`;
-    overlay.querySelectorAll('[data-prefix="loser-first"]').forEach(btn => {
+    overlay.querySelectorAll('[data-prefix="sg-loser"]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const playerOptId = btn.dataset.opt;
-        const aiCat = getOtherCategory(playerOptId);
+        const aiCat = getOtherCategory(btn.dataset.opt);
         const aiOpt = aiCat[Math.floor(Math.random() * aiCat.length)];
-        showSummary(playerOptId, aiOpt.id);
+        showSummary(btn.dataset.opt, aiOpt.id);
       });
     });
   }
 
   function showWinnerChooses() {
-    /* Le gagnant choisit en premier, l'IA (perdante) choisit dans l'autre catégorie */
     const aiOpt = COIN_FLIP_ALL[Math.floor(Math.random() * COIN_FLIP_ALL.length)];
     const playerCat = getOtherCategory(aiOpt.id);
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
         <h3 class="coin-flip__title">Game ${gameNum} — Choix du gagnant</h3>
-        <div class="coin-flip__result coin-flip__result--win">Vous avez gagné la game précédente — ${opName} choisit en premier.</div>
+        <div class="coin-flip__result coin-flip__result--win">Vous avez gagné — ${opName} (perdant) choisit en premier.</div>
         <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${getCoinFlipOpt(aiOpt.id).label}</em></p>
         <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Côté' : 'Ordre de pick'} —</p>
-        <div class="coin-flip__options">${optionBtns(playerCat, 'winner-second')}</div>
+        <div class="coin-flip__options">${optionBtns(playerCat, 'sg-winner')}</div>
       </div>`;
-    overlay.querySelectorAll('[data-prefix="winner-second"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        showSummary(btn.dataset.opt, aiOpt.id);
-      });
+    overlay.querySelectorAll('[data-prefix="sg-winner"]').forEach(btn => {
+      btn.addEventListener('click', () => showSummary(btn.dataset.opt, aiOpt.id));
     });
   }
 
@@ -3660,11 +3726,8 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
     </div>`);
 
   document.getElementById('series-game-next').addEventListener('click', () => {
-    if (playerWonLastGame) {
-      showWinnerChooses();
-    } else {
-      showLoserChooses();
-    }
+    if (playerWonLastGame) showWinnerChooses();
+    else showLoserChooses();
   });
 }
 
@@ -3679,29 +3742,11 @@ function showCoinFlipModal(opponentTeamId) {
     ).join('');
   }
 
-  function resolveChoices(playerOptId, aiOptId) {
-    const playerInSide = COIN_FLIP_CATEGORIES.side.some(o => o.id === playerOptId);
-    const playerOpt = getCoinFlipOpt(playerOptId);
-    const aiOpt = getCoinFlipOpt(aiOptId);
-    let playerMapSide, playerPickOrder;
-    if (playerInSide) {
-      // Player chose Side → AI chose Pick Order
-      playerMapSide = playerOpt.side;
-      // AI picks first/last → player gets the opposite pick order
-      playerPickOrder = aiOpt.side === 'blue' ? 'red' : 'blue';
-    } else {
-      // Player chose Pick Order → AI chose Side → player gets opposite map side
-      playerPickOrder = playerOpt.side;
-      playerMapSide = aiOpt.side === 'blue' ? 'red' : 'blue';
-    }
-    return { playerMapSide, playerPickOrder };
-  }
-
   function showSummary(playerOptId, aiOptId) {
     const playerOpt = getCoinFlipOpt(playerOptId);
-    const aiOpt = getCoinFlipOpt(aiOptId);
-    const { playerMapSide, playerPickOrder } = resolveChoices(playerOptId, aiOptId);
-    const sideLabel = playerMapSide === 'blue' ? 'Blue Side' : 'Red Side';
+    const aiOpt     = getCoinFlipOpt(aiOptId);
+    const { playerMapSide, playerPickOrder } = resolveFlipChoices(playerOptId, aiOptId);
+    const sideLabel = playerMapSide   === 'blue' ? 'Blue Side'  : 'Red Side';
     const pickLabel = playerPickOrder === 'blue' ? 'First Pick' : 'Last Pick';
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
@@ -3723,34 +3768,27 @@ function showCoinFlipModal(opponentTeamId) {
   }
 
   function step2PlayerChooses() {
-    // Gagnant : player choisit parmi les 4 options
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
         <div class="coin-flip__result coin-flip__result--win">Vous choisissez en premier !</div>
         <p class="coin-flip__sub">Choisissez votre avantage :</p>
-        <p class="coin-flip__sub coin-flip__category-label">— Coté —</p>
-        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'winner')}</div>
+        <p class="coin-flip__sub coin-flip__category-label">— Côté —</p>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'cf-winner')}</div>
         <p class="coin-flip__sub coin-flip__category-label">— Ordre de pick —</p>
-        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'winner')}</div>
+        <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'cf-winner')}</div>
       </div>`;
-    overlay.querySelectorAll('[data-prefix="winner"]').forEach(btn => {
+    overlay.querySelectorAll('[data-prefix="cf-winner"]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const playerOptId = btn.dataset.opt;
-        const playerOpt = getCoinFlipOpt(playerOptId);
-        // L'IA choisit dans l'autre catégorie
-        const aiCat = getOtherCategory(playerOptId);
+        const aiCat = getOtherCategory(btn.dataset.opt);
         const aiOpt = aiCat[Math.floor(Math.random() * aiCat.length)];
-        // Le side du joueur est déterminé par son choix
-        showSummary(playerOptId, aiOpt.id);
+        showSummary(btn.dataset.opt, aiOpt.id);
       });
     });
   }
 
   function step2AIChoosesFirst() {
-    // Perdant : l'IA choisit en premier parmi les 4, player choisit dans l'autre catégorie
-    const allOpts = COIN_FLIP_ALL;
-    const aiOpt = allOpts[Math.floor(Math.random() * allOpts.length)];
+    const aiOpt = COIN_FLIP_ALL[Math.floor(Math.random() * COIN_FLIP_ALL.length)];
     const playerCat = getOtherCategory(aiOpt.id);
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
@@ -3758,15 +3796,11 @@ function showCoinFlipModal(opponentTeamId) {
         <div class="coin-flip__result coin-flip__result--loss">${opName} choisit en premier...</div>
         <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${aiOpt.label}</em></p>
         <p class="coin-flip__sub">Choisissez parmi la catégorie restante :</p>
-        <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Coté' : 'Ordre de pick'} —</p>
-        <div class="coin-flip__options">${optionBtns(playerCat, 'loser')}</div>
+        <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Côté' : 'Ordre de pick'} —</p>
+        <div class="coin-flip__options">${optionBtns(playerCat, 'cf-loser')}</div>
       </div>`;
-    overlay.querySelectorAll('[data-prefix="loser"]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const playerOptId = btn.dataset.opt;
-        const playerOpt = getCoinFlipOpt(playerOptId);
-        showSummary(playerOptId, aiOpt.id);
-      });
+    overlay.querySelectorAll('[data-prefix="cf-loser"]').forEach(btn => {
+      btn.addEventListener('click', () => showSummary(btn.dataset.opt, aiOpt.id));
     });
   }
 
@@ -3785,11 +3819,8 @@ function showCoinFlipModal(opponentTeamId) {
     </div>`);
 
   document.getElementById('coin-flip-next').addEventListener('click', () => {
-    if (playerWon) {
-      step2PlayerChooses();
-    } else {
-      step2AIChoosesFirst();
-    }
+    if (playerWon) step2PlayerChooses();
+    else step2AIChoosesFirst();
   });
 }
 
@@ -3803,19 +3834,21 @@ function startMatch(opponentTeamId) {
     gameClock: 0,
     phase: 'early',
     score: { blue: 0, red: 0 },
+    gold: { blue: 0, red: 0 },
     objectives: {
       dragons: { blue: 0, red: 0 },
       heralds: { blue: 0, red: 0 },
       barons: { blue: 0, red: 0 },
       grubs: { blue: 0, red: 0 },
-      elders: { blue: 0, red: 0 },
-      towers: { blue: 0, red: 0 }
+      elders: { blue: 0, red: 0 }
     },
+    structuresDown: { blue: [], red: [] },
     dragonBuff: null,
     baronBuff: null,
     elderBuff: null,
     soulOwner: null,
     nextDragonTime: DRAGON_FIRST_SPAWN,
+    nextBaronTime: BARON_SPAWN_TIME,
     nextElderTime: null,
     winProbability: computeBaseWinProbability(opponent),
     eventHistory: [],
@@ -3895,6 +3928,47 @@ function sideTeamLabel(side) {
   return side === rt.picks.playerSide ? (state.teamShortName || state.teamName) : rt.opponent.shortName;
 }
 
+/* ------------------------------------------------------------------
+   Structures de map : T1→T2→T3→INH par lane, puis NEX_T1+NEX_T2→NEXUS
+   ------------------------------------------------------------------ */
+const STRUCTURE_LABELS = {
+  BOT_T1: 'Tour 1 (Bot)', BOT_T2: 'Tour 2 (Bot)', BOT_T3: 'Tour 3 (Bot)', BOT_INH: 'Inhibiteur (Bot)',
+  MID_T1: 'Tour 1 (Mid)', MID_T2: 'Tour 2 (Mid)', MID_T3: 'Tour 3 (Mid)', MID_INH: 'Inhibiteur (Mid)',
+  TOP_T1: 'Tour 1 (Top)', TOP_T2: 'Tour 2 (Top)', TOP_T3: 'Tour 3 (Top)', TOP_INH: 'Inhibiteur (Top)',
+  NEX_T1: 'Tour du Nexus 1', NEX_T2: 'Tour du Nexus 2',
+  NEXUS: 'Nexus'
+};
+
+function getStructureLabel(id) { return STRUCTURE_LABELS[id] || id; }
+
+function getNextDestroyableStructure(side, rt) {
+  const down = new Set(rt.structuresDown[side]);
+  const TIER_REQ = { T2: 'T1', T3: 'T2', INH: 'T3' };
+  const lanes = ['BOT', 'MID', 'TOP'];
+  const shuffled = lanes.slice().sort(() => Math.random() - 0.5);
+
+  for (const lane of shuffled) {
+    for (const tier of ['T1', 'T2', 'T3', 'INH']) {
+      const id = `${lane}_${tier}`;
+      if (down.has(id)) continue;
+      if (tier === 'T1' || down.has(`${lane}_${TIER_REQ[tier]}`)) return id;
+      break; // lane bloquée, essayer la suivante
+    }
+  }
+  // Tours et Nexus (nécessitent au moins 1 inhibiteur)
+  const hasInh = ['BOT_INH', 'MID_INH', 'TOP_INH'].some(id => down.has(id));
+  if (hasInh) {
+    if (!down.has('NEX_T1')) return 'NEX_T1';
+    if (!down.has('NEX_T2')) return 'NEX_T2';
+    if (down.has('NEX_T1') && down.has('NEX_T2') && !down.has('NEXUS')) return 'NEXUS';
+  }
+  return null;
+}
+
+function structureTowerCount(side, rt) {
+  return rt.structuresDown[side].filter(id => id.endsWith('_T1') || id.endsWith('_T2') || id.endsWith('_T3') || id === 'NEX_T1' || id === 'NEX_T2').length;
+}
+
 function buildEventText(template, winnerLabel, role, kills) {
   switch (template.id) {
     case 'lane_kill': return `${winnerLabel} remporte un duel en lane (${ROLE_NAMES[role]}) et prend l'avantage.`;
@@ -3902,7 +3976,13 @@ function buildEventText(template, winnerLabel, role, kills) {
     case 'dragon': return `${winnerLabel} prend le Dragon.`;
     case 'herald': return `${winnerLabel} prend l'Herald de la Faille.`;
     case 'grubs': return `${winnerLabel} prend le controle des Void Grubs.`;
-    case 'tower': return `${winnerLabel} fait tomber une tour.`;
+    case 'tower': {
+      const rt = matchRuntime;
+      const struct = rt ? rt._lastStructure : null;
+      if (struct === 'NEXUS') return `${winnerLabel} détruit le NEXUS et remporte la partie !`;
+      if (struct && struct.endsWith('_INH')) return `${winnerLabel} détruit ${getStructureLabel(struct)} !`;
+      return struct ? `${winnerLabel} détruit ${getStructureLabel(struct)}.` : `${winnerLabel} fait tomber une tour.`;
+    }
     case 'teamfight': return `${winnerLabel} gagne un teamfight (${kills} kills) !`;
     case 'baron': return `${winnerLabel} prend le Baron Nashor !`;
     case 'elder': return `${winnerLabel} terrasse le Dragon Ancien (Elder) !`;
@@ -3924,11 +4004,31 @@ function isObjectiveAvailable(eventTemplate, rt) {
     return rt.gameClock >= GRUBS_SPAWN_TIME && total < MATCH_GRUBS_TOTAL;
   }
   if (eventTemplate.objective === 'heralds') {
-    // Avenant v1.1 5.2 : spawn unique a 15:00, despawn a 19:55 sans respawn.
+    // Avenant v1.1 5.2 : spawn unique a 14:00, despawn a 19:55 sans respawn.
     const total = rt.objectives.heralds.blue + rt.objectives.heralds.red;
     return total === 0 && rt.gameClock >= HERALD_SPAWN_TIME && rt.gameClock <= HERALD_DESPAWN_TIME;
   }
+  if (eventTemplate.objective === 'barons') {
+    return rt.gameClock >= rt.nextBaronTime;
+  }
   return true;
+}
+
+function getEventGold(template, kills, struct) {
+  let gold = kills * 300;
+  if (template.objective === 'dragons') gold += 250;
+  else if (template.objective === 'barons') gold += 300;
+  else if (template.objective === 'heralds') gold += 150;
+  else if (template.objective === 'grubs') gold += 100;
+  else if (template.objective === 'elders') gold += 500;
+  else if (template.objective === 'towers' && struct) {
+    if (struct.endsWith('_T1')) gold += 160;
+    else if (struct.endsWith('_T2')) gold += 250;
+    else if (struct.endsWith('_T3') || struct.startsWith('NEX_')) gold += 125;
+    else if (struct.endsWith('_INH')) gold += 200;
+  }
+  if (gold === 0) gold = 80;
+  return gold;
 }
 
 function simulateTick() {
@@ -3968,14 +4068,26 @@ function simulateTick() {
     rt.score[winner] += kills;
   }
 
-  if (template.objective) {
-    const grubsExhausted = template.objective === 'grubs' && (rt.objectives.grubs.blue + rt.objectives.grubs.red) >= MATCH_GRUBS_TOTAL;
-    if (!grubsExhausted) {
-      rt.objectives[template.objective][winner]++;
-      if (template.objective === 'towers' && rt.objectives.towers[winner] >= 9) {
+  rt._lastStructure = null;
+  if (template.objective === 'towers') {
+    const loser = winner === 'blue' ? 'red' : 'blue';
+    const nextStruct = getNextDestroyableStructure(loser, rt);
+    if (nextStruct) {
+      rt.structuresDown[loser].push(nextStruct);
+      rt._lastStructure = nextStruct;
+      if (nextStruct === 'NEXUS') {
         rt.finished = true;
         rt.endReason = 'nexus';
       }
+    }
+  }
+
+  rt.gold[winner] += getEventGold(template, kills, rt._lastStructure);
+
+  if (template.objective && template.objective !== 'towers') {
+    const grubsExhausted = template.objective === 'grubs' && (rt.objectives.grubs.blue + rt.objectives.grubs.red) >= MATCH_GRUBS_TOTAL;
+    if (!grubsExhausted) {
+      rt.objectives[template.objective][winner]++;
       if (template.objective === 'dragons') {
         rt.dragonBuff = { side: winner, expiresAt: rt.gameClock + DRAGON_BUFF_DURATION };
         rt.nextDragonTime = rt.gameClock + DRAGON_RESPAWN;
@@ -3986,6 +4098,7 @@ function simulateTick() {
       }
       if (template.objective === 'barons') {
         rt.baronBuff = { side: winner, expiresAt: rt.gameClock + BARON_BUFF_DURATION };
+        rt.nextBaronTime = rt.gameClock + BARON_RESPAWN;
       }
       if (template.objective === 'elders') {
         rt.elderBuff = { side: winner, expiresAt: rt.gameClock + ELDER_BUFF_DURATION };
@@ -4034,8 +4147,23 @@ function updateMatchScoreboard() {
   const scoreEl = document.getElementById('match-score');
   if (scoreEl) scoreEl.textContent = `${rt.score.blue} - ${rt.score.red}`;
 
-  const structureProgress = Math.max(rt.objectives.towers.blue, rt.objectives.towers.red);
-  const pct = clamp((structureProgress / 9) * 100, 0, 100);
+  const goldDiffEl = document.getElementById('match-gold-diff');
+  if (goldDiffEl) {
+    const diff = rt.gold.blue - rt.gold.red;
+    if (diff === 0) {
+      goldDiffEl.textContent = '';
+      goldDiffEl.className = 'scoreboard__gold-diff';
+    } else {
+      const leader = diff > 0 ? 'blue' : 'red';
+      const abs = Math.abs(diff);
+      const formatted = abs >= 1000 ? `${(abs / 1000).toFixed(1)}k` : String(abs);
+      goldDiffEl.textContent = `+${formatted}g`;
+      goldDiffEl.className = `scoreboard__gold-diff scoreboard__gold-diff--${leader}`;
+    }
+  }
+
+  const structureProgress = Math.max(rt.structuresDown.blue.length, rt.structuresDown.red.length);
+  const pct = clamp((structureProgress / 15) * 100, 0, 100);
   const fillEl = document.getElementById('match-time-fill');
   if (fillEl) fillEl.style.width = `${pct}%`;
 
@@ -4278,13 +4406,14 @@ function renderMatchArena() {
   arenaEl.style.display = '';
 
   const rt = matchRuntime;
-  const blueLabel = rt.picks.playerSide === 'blue' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
-  const redLabel = rt.picks.playerSide === 'red' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
+  const playerMapSide = rt.picks.playerMapSide || rt.picks.playerSide;
+  const blueLabel = playerMapSide === 'blue' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
+  const redLabel = playerMapSide === 'red' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
 
   document.getElementById('match-team-home-name').textContent = blueLabel;
-  document.getElementById('match-team-home-league').textContent = rt.picks.playerSide === 'blue' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-home-league').textContent = playerMapSide === 'blue' ? (state.region || '') : rt.opponent.region;
   document.getElementById('match-team-away-name').textContent = redLabel;
-  document.getElementById('match-team-away-league').textContent = rt.picks.playerSide === 'red' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-away-league').textContent = playerMapSide === 'red' ? (state.region || '') : rt.opponent.region;
 
   const seriesLabelEl = document.getElementById('match-series-label');
   if (seriesLabelEl) {
