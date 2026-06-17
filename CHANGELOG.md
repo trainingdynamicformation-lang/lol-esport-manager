@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.2.7] — 2026-06-18
+
+### Modifié
+- **Classement des round robins (saison + groupes MSI/Worlds)** : ajout de la différence de nexus (nexus gagnés - nexus perdus) comme départage, intercalée entre le head-to-head et la différence d'or. Nouvel ordre : victoires → confrontation directe → diff. nexus → diff. or
+- **Colonne Nexus au classement** : chaque ligne affiche désormais `V D Nexus(gagnés-perdus) Diff.or` (ex : `2 MKoi 3 2 6-3 +4325`)
+- **Matchs IA en saison/groupes** : simulés en BO3 (comme les matchs du joueur) pour alimenter le compteur de nexus de façon cohérente
+
+---
+
 ## [1.2.6] — 2026-06-17
 
 ### Ajouté

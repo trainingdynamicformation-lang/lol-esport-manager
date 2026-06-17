@@ -2374,7 +2374,7 @@ function showSeasonIntroModal(split, year, teamIds) {
         <p style="color:var(--color-text-muted);line-height:1.6;">
           Vous affrontez <strong>${teamIds.length - 1} équipes</strong> en round-robin complet : chaque équipe joue contre toutes les autres une fois.
           Cela represente <strong>${totalMatchdays} journées</strong>. Chaque match se joue en <strong>BO3</strong>.
-          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la différence d'or.
+          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la différence de nexus (gagnés - perdus), puis par la différence d'or.
         </p>
       </div>
       <div>
@@ -2411,7 +2411,7 @@ function startSeason(split, year) {
   year = year || (state.season ? state.season.year : 1);
   const teamIds = getSeasonTeamIds();
   const standings = {};
-  teamIds.forEach((id) => { standings[id] = { wins: 0, losses: 0, goldDiff: 0, h2h: {} }; });
+  teamIds.forEach((id) => { standings[id] = { wins: 0, losses: 0, goldDiff: 0, nexusWon: 0, nexusLost: 0, h2h: {} }; });
   state.season = {
     year,
     split,
@@ -2438,6 +2438,9 @@ function getSortedStandings() {
     if (sb.wins !== sa.wins) return sb.wins - sa.wins;
     if (sa.h2h[b] === 'W') return -1;
     if (sa.h2h[b] === 'L') return 1;
+    const ndA = (sa.nexusWon || 0) - (sa.nexusLost || 0);
+    const ndB = (sb.nexusWon || 0) - (sb.nexusLost || 0);
+    if (ndB !== ndA) return ndB - ndA;
     return sb.goldDiff - sa.goldDiff;
   });
 }
@@ -2467,19 +2470,22 @@ function simulateAISeries(teamAId, teamBId, format) {
   const winsNeeded = format === 'BO5' ? 3 : (format === 'BO3' ? 2 : 1);
   let scoreA = 0;
   let scoreB = 0;
+  let goldDiffForA = 0;
   while (scoreA < winsNeeded && scoreB < winsNeeded) {
     const res = simulateAIMatch(teamAId, teamBId);
     if (res.winner === teamAId) scoreA++; else scoreB++;
+    goldDiffForA += res.goldDiffForA;
   }
   return {
     winner: scoreA > scoreB ? teamAId : teamBId,
     loser: scoreA > scoreB ? teamBId : teamAId,
     scoreA,
-    scoreB
+    scoreB,
+    goldDiffForA
   };
 }
 
-function recordMatchResult(homeId, awayId, winnerId, goldDiffForHome) {
+function recordMatchResult(homeId, awayId, winnerId, goldDiffForHome, nexusForHome, nexusAgainstHome) {
   const st = state.season.standings;
   if (winnerId === homeId) {
     st[homeId].wins++;
@@ -2494,6 +2500,12 @@ function recordMatchResult(homeId, awayId, winnerId, goldDiffForHome) {
   }
   st[homeId].goldDiff += goldDiffForHome;
   st[awayId].goldDiff -= goldDiffForHome;
+  if (nexusForHome != null && nexusAgainstHome != null) {
+    st[homeId].nexusWon = (st[homeId].nexusWon || 0) + nexusForHome;
+    st[homeId].nexusLost = (st[homeId].nexusLost || 0) + nexusAgainstHome;
+    st[awayId].nexusWon = (st[awayId].nexusWon || 0) + nexusAgainstHome;
+    st[awayId].nexusLost = (st[awayId].nexusLost || 0) + nexusForHome;
+  }
 }
 
 function playoffRoundLabel(round) {
@@ -2831,7 +2843,7 @@ function startInternational(eventType) {
 
   const groupSchedules = groups.map((g) => generateRoundRobin(g));
   const groupStandings = {};
-  teams.forEach((id) => { groupStandings[id] = { wins: 0, losses: 0, goldDiff: 0 }; });
+  teams.forEach((id) => { groupStandings[id] = { wins: 0, losses: 0, goldDiff: 0, nexusWon: 0, nexusLost: 0 }; });
 
   state.international = {
     event: eventType,
@@ -2909,7 +2921,7 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
   `);
 }
 
-function recordInternationalResult(intl, homeId, awayId, winnerId, goldDiffForHome) {
+function recordInternationalResult(intl, homeId, awayId, winnerId, goldDiffForHome, nexusForHome, nexusAgainstHome) {
   const st = intl.groupStandings;
   if (winnerId === homeId) {
     st[homeId].wins++;
@@ -2920,6 +2932,12 @@ function recordInternationalResult(intl, homeId, awayId, winnerId, goldDiffForHo
   }
   st[homeId].goldDiff += goldDiffForHome;
   st[awayId].goldDiff -= goldDiffForHome;
+  if (nexusForHome != null && nexusAgainstHome != null) {
+    st[homeId].nexusWon = (st[homeId].nexusWon || 0) + nexusForHome;
+    st[homeId].nexusLost = (st[homeId].nexusLost || 0) + nexusAgainstHome;
+    st[awayId].nexusWon = (st[awayId].nexusWon || 0) + nexusAgainstHome;
+    st[awayId].nexusLost = (st[awayId].nexusLost || 0) + nexusForHome;
+  }
 }
 
 function sortGroupStandings(group, standings) {
@@ -2927,6 +2945,9 @@ function sortGroupStandings(group, standings) {
     const sa = standings[a];
     const sb = standings[b];
     if (sb.wins !== sa.wins) return sb.wins - sa.wins;
+    const ndA = (sa.nexusWon || 0) - (sa.nexusLost || 0);
+    const ndB = (sb.nexusWon || 0) - (sb.nexusLost || 0);
+    if (ndB !== ndA) return ndB - ndA;
     return sb.goldDiff - sa.goldDiff;
   });
 }
@@ -2943,9 +2964,9 @@ function processInternationalGroupMatchday(startGroup) {
         saveGame();
         return;
       }
-      const res = simulateAIMatch(p.home, p.away);
+      const res = simulateAISeries(p.home, p.away, 'BO3');
       recordAIMatchResult(p.home, p.away, res.winner);
-      recordInternationalResult(intl, p.home, p.away, res.winner, res.goldDiffForA);
+      recordInternationalResult(intl, p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
     }
   }
   intl.log.unshift(`${eventLabel(intl)} : journée ${intl.groupMatchday}/${intl.totalGroupRounds} de phase de groupes terminée.`);
@@ -3108,7 +3129,7 @@ function resolveInternationalSeries(rt) {
   if (pm.type === 'group') {
     const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
     const winnerId = won ? 'player' : pm.opponentTeamId;
-    recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, pm.isHome ? goldDiff : -goldDiff);
+    recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, pm.isHome ? goldDiff : -goldDiff, scoreFor, scoreAgainst);
     intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     const finishedGroup = pm.groupIndex;
     intl.pendingMatch = null;
@@ -3141,16 +3162,16 @@ function resolveSeasonSeries(rt) {
   if (pm.type === 'regular') {
     const opponentId = pm.opponentTeamId;
     const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
-    recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff);
+    recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff, scoreFor, scoreAgainst);
     season.log.unshift(`J${season.matchday} : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(opponentId)}.`);
 
     const pairings = season.schedule[season.matchday - 1] || [];
     pairings.forEach((p) => {
       if (p.home === 'player' || p.away === 'player') return;
-      const res = simulateAIMatch(p.home, p.away);
+      const res = simulateAISeries(p.home, p.away, 'BO3');
       recordAIMatchResult(p.home, p.away, res.winner);
-      recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA);
-      season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)}.`);
+      recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
+      season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
     });
 
     season.pendingMatch = null;
@@ -3226,6 +3247,7 @@ function renderRegularSeasonCalendar(el, season) {
         <td>${getTeamShortName(id)}${isPlayer ? ' (Vous)' : ''}</td>
         <td>${s.wins}</td>
         <td>${s.losses}</td>
+        <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
         <td>${s.goldDiff >= 0 ? '+' : ''}${s.goldDiff}</td>
       </tr>
     `;
@@ -3262,7 +3284,7 @@ function renderRegularSeasonCalendar(el, season) {
     </div>
     <h3 class="panel-title">Classement</h3>
     <table class="history-table">
-      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
+      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th><th>Diff. or</th></tr></thead>
       <tbody>${standingsRows}</tbody>
     </table>
     <h3 class="panel-title">Derniers résultats</h3>
@@ -3283,10 +3305,10 @@ function renderRegularSeasonCalendar(el, season) {
         const pairings = season.schedule[season.matchday - 1] || [];
         pairings.forEach((p) => {
           if (p.home === 'player' || p.away === 'player') return;
-          const res = simulateAIMatch(p.home, p.away);
+          const res = simulateAISeries(p.home, p.away, 'BO3');
           recordAIMatchResult(p.home, p.away, res.winner);
-          recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA);
-          season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)}.`);
+          recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
+          season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
         });
         season.matchday++;
         if (season.matchday > totalMatchdays) startPlayoffs();
@@ -3402,6 +3424,7 @@ function renderInternationalGroups(el, intl) {
           <td>${getTeamShortName(id)}${isPlayer ? ' (Vous)' : ''}</td>
           <td>${s.wins}</td>
           <td>${s.losses}</td>
+          <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
           <td>${s.goldDiff >= 0 ? '+' : ''}${s.goldDiff}</td>
         </tr>
       `;
@@ -3409,7 +3432,7 @@ function renderInternationalGroups(el, intl) {
     return `
       <h3 class="panel-title">Groupe ${String.fromCharCode(65 + i)}</h3>
       <table class="history-table">
-        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th>Diff. or</th></tr></thead>
+        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th><th>Diff. or</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
