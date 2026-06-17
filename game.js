@@ -2161,7 +2161,10 @@ function renderDraft() {
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
         ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
-        ${renderChampionGrid(draft, 'pick', activeRole, null)}
+        <div class="draft-role-filter">
+          ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === pickFilter ? 'comp-tag-option--active' : ''}" data-pick-filter="${f.id}">${f.label}</button>`).join('')}
+        </div>
+        ${renderChampionGrid(draft, 'pick', activeRole, pickFilter)}
       `;
     }
   } else {
