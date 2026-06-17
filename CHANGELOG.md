@@ -12,6 +12,9 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 - **Colonne Nexus au classement** : chaque ligne affiche désormais `V D Nexus(gagnés-perdus) Diff.or` (ex : `2 MKoi 3 2 6-3 +4325`)
 - **Matchs IA en saison/groupes** : simulés en BO3 (comme les matchs du joueur) pour alimenter le compteur de nexus de façon cohérente
 
+### Corrigé
+- **Diff. or du classement** : la différence d'or enregistrée au classement correspond désormais à l'or réellement accumulé pendant les games de la série (cumul du point de vue du joueur), au lieu d'une valeur aléatoire dérivée du score. Échelle de l'or des matchs IA alignée sur celle des vraies games pour rester cohérente
+
 ---
 
 ## [1.2.6] — 2026-06-17

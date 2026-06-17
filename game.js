@@ -2458,7 +2458,8 @@ function simulateAIMatch(teamAId, teamBId) {
   const ratingB = averageRosterLevel(b.roster);
   const prob = clamp(0.5 + (ratingA - ratingB) / 150, 0.1, 0.9);
   const win = Math.random() < prob;
-  const goldDiff = randomInt(500, 3000);
+  // Échelle alignée sur le différentiel d'or réel d'une game jouée (~1k-7k)
+  const goldDiff = randomInt(800, 7000);
   return {
     winner: win ? teamAId : teamBId,
     loser: win ? teamBId : teamAId,
@@ -3127,9 +3128,11 @@ function resolveInternationalSeries(rt) {
   const scoreAgainst = rt.seriesEvent.scoreAgainst;
 
   if (pm.type === 'group') {
-    const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
+    const goldDiff = rt.seriesEvent.goldDiffTotal != null
+      ? rt.seriesEvent.goldDiffTotal
+      : (scoreFor - scoreAgainst) * randomInt(600, 1400);
     const winnerId = won ? 'player' : pm.opponentTeamId;
-    recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, pm.isHome ? goldDiff : -goldDiff, scoreFor, scoreAgainst);
+    recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, goldDiff, scoreFor, scoreAgainst);
     intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     const finishedGroup = pm.groupIndex;
     intl.pendingMatch = null;
@@ -3161,7 +3164,9 @@ function resolveSeasonSeries(rt) {
 
   if (pm.type === 'regular') {
     const opponentId = pm.opponentTeamId;
-    const goldDiff = (scoreFor - scoreAgainst) * randomInt(600, 1400);
+    const goldDiff = rt.seriesEvent.goldDiffTotal != null
+      ? rt.seriesEvent.goldDiffTotal
+      : (scoreFor - scoreAgainst) * randomInt(600, 1400);
     recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff, scoreFor, scoreAgainst);
     season.log.unshift(`J${season.matchday} : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(opponentId)}.`);
 
@@ -3654,6 +3659,7 @@ function startMatchSeries(opponentTeamId, format, fearlessMode) {
     fearlessMode,
     scoreFor: 0,
     scoreAgainst: 0,
+    goldDiffTotal: 0,
     gameNumber: 1,
     globalFearlessLocked: []
   };
@@ -4447,12 +4453,17 @@ function finishMatch() {
     p.currentWinStreak = 0;
   }
 
+  // Différentiel d'or réel de la game, du point de vue du joueur
+  const opponentMapSide = rt.picks.playerSide === 'blue' ? 'red' : 'blue';
+  const gameGoldDiff = rt.gold[rt.picks.playerSide] - rt.gold[opponentMapSide];
+
   rt.seriesEvent = null;
   if (series) {
     if (win) series.scoreFor++; else series.scoreAgainst++;
+    series.goldDiffTotal = (series.goldDiffTotal || 0) + gameGoldDiff;
     const winsNeeded = series.format === 'BO3' ? 2 : (series.format === 'BO5' ? 3 : 1);
     if (series.scoreFor >= winsNeeded || series.scoreAgainst >= winsNeeded) {
-      rt.seriesEvent = { type: 'done', won: series.scoreFor >= winsNeeded, scoreFor: series.scoreFor, scoreAgainst: series.scoreAgainst, format: series.format };
+      rt.seriesEvent = { type: 'done', won: series.scoreFor >= winsNeeded, scoreFor: series.scoreFor, scoreAgainst: series.scoreAgainst, goldDiffTotal: series.goldDiffTotal, format: series.format };
       state.matchSeries = null;
       state.draft = null;
     } else {

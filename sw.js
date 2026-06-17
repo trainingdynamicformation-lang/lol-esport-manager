@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lol-esport-manager-v1.2.7';
+const CACHE_NAME = 'lol-esport-manager-v1.2.7-1';
 const ASSETS = [
   '/',
   '/index.html',
