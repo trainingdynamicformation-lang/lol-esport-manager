@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.7] — 2026-06-19
+
+### Corrigé
+- **Classement — suppression du "(Vous)"** : le nom de l'équipe du joueur s'affiche sans mention, comme les autres équipes (saison régulière et groupes MSI/Worlds)
+- **Sauvegarde cloud — confirmation avant envoi** : un popup demande confirmation avant d'écraser la sauvegarde cloud existante
+- **Sauvegarde cloud — confirmation avant chargement** : un popup demande confirmation avant d'écraser la partie actuelle avec la sauvegarde cloud
+- **Chargement cloud — réinitialisation préalable** : avant d'appliquer la sauvegarde cloud, la partie en cours est réinitialisée proprement (match en cours stoppé, état remis à zéro) pour éviter tout état parasite
+
+---
+
 ## [1.3.6] — 2026-06-18
 
 ### Modifié

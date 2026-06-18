@@ -271,6 +271,9 @@ async function cloudImport() {
     if (!content) throw new Error('Fichier save.json introuvable dans le Gist');
     const parsed = JSON.parse(content);
     if (!parsed.resources || !parsed.roster) throw new Error('Format de sauvegarde invalide');
+    if (matchRuntime && matchRuntime.timer) clearInterval(matchRuntime.timer);
+    matchRuntime = null;
+    state = createDefaultState();
     state = parsed;
     saveGame();
     updateResourceBar();
@@ -302,10 +305,34 @@ function initCloudSaveUI() {
   });
 
   const exportBtn = document.getElementById('btn-cloud-export');
-  if (exportBtn) exportBtn.addEventListener('click', cloudExport);
+  if (exportBtn) exportBtn.addEventListener('click', () => {
+    showModal(`
+      <div class="modal-confirm">
+        <h3 class="panel-title">Envoyer vers le cloud</h3>
+        <p>Cette action va <strong>écraser la sauvegarde cloud existante</strong> avec votre partie actuelle. Continuer ?</p>
+        <div class="training-form__actions">
+          <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+          <button class="btn-primary" id="btn-confirm-cloud-export">Confirmer l'envoi</button>
+        </div>
+      </div>
+    `);
+    document.getElementById('btn-confirm-cloud-export').addEventListener('click', () => { closeModal(); cloudExport(); });
+  });
 
   const importBtn = document.getElementById('btn-cloud-import');
-  if (importBtn) importBtn.addEventListener('click', cloudImport);
+  if (importBtn) importBtn.addEventListener('click', () => {
+    showModal(`
+      <div class="modal-confirm">
+        <h3 class="panel-title">Charger depuis le cloud</h3>
+        <p>Cette action va <strong>écraser votre partie actuelle</strong> avec la sauvegarde cloud. Toute progression non sauvegardée sera perdue. Continuer ?</p>
+        <div class="training-form__actions">
+          <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+          <button class="btn-primary" id="btn-confirm-cloud-import">Confirmer le chargement</button>
+        </div>
+      </div>
+    `);
+    document.getElementById('btn-confirm-cloud-import').addEventListener('click', () => { closeModal(); cloudImport(); });
+  });
 }
 
 function exportSave() {
@@ -3292,7 +3319,7 @@ function renderRegularSeasonCalendar(el, season) {
     return `
       <tr class="${isPlayer ? 'standings-row--player' : ''}">
         <td>${i + 1}</td>
-        <td>${getTeamShortName(id)}${isPlayer ? ' (Vous)' : ''}</td>
+        <td>${getTeamShortName(id)}</td>
         <td>${s.wins}</td>
         <td>${s.losses}</td>
         <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
@@ -3468,7 +3495,7 @@ function renderInternationalGroups(el, intl) {
       return `
         <tr class="${isPlayer ? 'standings-row--player' : ''}">
           <td>${idx + 1}</td>
-          <td>${getTeamShortName(id)}${isPlayer ? ' (Vous)' : ''}</td>
+          <td>${getTeamShortName(id)}</td>
           <td>${s.wins}</td>
           <td>${s.losses}</td>
           <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
