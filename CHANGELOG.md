@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.5] — 2026-06-18
+
+### Corrigé
+- **Historique des matchs — colonne Compétition** : la colonne affichait toujours « Scrim » pour tous les matchs. Elle indique désormais le bon contexte : « Spring 1 - LEC » (saison régulière), « Playoffs - Spring 1 - LEC » (playoffs), « MSI 1 - Groupes » / « MSI 1 - Phase finale », « Worlds 1 - Groupes » / « Worlds 1 - Phase finale », ou « Scrim » pour les entraînements
+
+---
+
 ## [1.3.4] — 2026-06-18
 
 ### Modifié

@@ -3347,7 +3347,7 @@ function renderRegularSeasonCalendar(el, season) {
         const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
         season.pendingMatch = { type: 'regular', opponentTeamId: opponentId };
         saveGame();
-        startMatchSeries(opponentId, 'BO3', 'on');
+        startMatchSeries(opponentId, 'BO3', 'on', `${splitLabel(season.split)} ${season.year} - ${season.region}`);
       } else {
         const pairings = season.schedule[season.matchday - 1] || [];
         pairings.forEach((p) => {
@@ -3414,7 +3414,7 @@ function renderPlayoffsCalendar(el, season) {
   if (playBtn) {
     playBtn.addEventListener('click', () => {
       const pm = season.pendingMatch;
-      startMatchSeries(pm.opponentTeamId, pm.format, 'on');
+      startMatchSeries(pm.opponentTeamId, pm.format, 'on', `Playoffs - ${splitLabel(season.split)} ${season.year} - ${season.region}`);
     });
   }
 }
@@ -3505,7 +3505,7 @@ function renderInternationalGroups(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, 'BO3', 'on');
+        startMatchSeries(pm.opponentTeamId, 'BO3', 'on', `${eventLabel(intl)} ${intl.year} - Groupes`);
       } else {
         showView('match');
       }
@@ -3562,7 +3562,7 @@ function renderInternationalBracket(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, pm.format, 'on');
+        startMatchSeries(pm.opponentTeamId, pm.format, 'on', `${eventLabel(intl)} ${intl.year} - Phase finale`);
       } else {
         showView('match');
       }
@@ -3693,11 +3693,12 @@ function computeBaseWinProbability(opponent) {
   return clamp(prob, 0.1, 0.9);
 }
 
-function startMatchSeries(opponentTeamId, format, fearlessMode) {
+function startMatchSeries(opponentTeamId, format, fearlessMode, context) {
   state.matchSeries = {
     opponentTeamId,
     format,
     fearlessMode,
+    context: context || 'Scrim',
     scoreFor: 0,
     scoreAgainst: 0,
     goldDiffTotal: 0,
@@ -4476,7 +4477,7 @@ function finishMatch() {
 
   state.matchHistory.unshift({
     date: Date.now(),
-    competition: series ? `${series.format} - Game ${series.gameNumber}` : 'Scrim officiel',
+    competition: series ? series.context : 'Scrim',
     opponent: rt.opponent.name,
     scoreHome: playerScore,
     scoreAway: opponentScore,
@@ -5262,7 +5263,7 @@ function renderProgression() {
     return `
       <tr>
         <td>${date}</td>
-        <td>${m.compétition || 'Scrim'}</td>
+        <td>${m.competition || 'Scrim'}</td>
         <td>${m.opponent}</td>
         <td>${m.scoreHome} - ${m.scoreAway}</td>
         <td><span class="result-tag ${cls}">${label}</span></td>
