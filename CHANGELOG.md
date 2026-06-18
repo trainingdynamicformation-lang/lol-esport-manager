@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.2] — 2026-06-18
+
+### Corrigé
+- **Inversion des matchups (counter ↔ synthèse de draft)** : la synthèse post-draft annonçait l'inverse de l'écran Counters (ex : « Renekton contre Jayce, matchup favorable » alors que Jayce contre Renekton). La synthèse s'appuie désormais sur le fichier de counters (même source que l'écran Counters) ; le repli sur les tags a été remis dans le bon sens
+- **Bonus de counter en simulation** : la fonction `getCounterEntry` manquait, donc le calcul de puissance en match utilisait un repli de tags inversé (il avantageait l'équipe contrée). Le moteur lit maintenant le fichier de counters et applique le bon signe
+
+---
+
 ## [1.3.1] — 2026-06-18
 
 ### Modifié

@@ -1914,13 +1914,28 @@ function computeDraftScore(draft) {
     const myChamp = getChampionByName(myPicks[role]);
     const enemyChamp = getChampionByName(enemyPicks[role]);
     if (!myChamp || !enemyChamp) return;
-    if (myChamp.tags.some((t) => enemyChamp.counterTags.includes(t))) {
-      matchupScore += 3;
-      matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable.`);
-    }
-    if (enemyChamp.tags.some((t) => myChamp.counterTags.includes(t))) {
-      matchupScore -= 3;
-      matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable.`);
+    // Source de vérité : le fichier de counters (même que l'écran Counters)
+    const iCounter = getCounterEntry(myChamp.id, enemyChamp.id);     // je contre l'ennemi
+    const theyCounter = getCounterEntry(enemyChamp.id, myChamp.id);  // l'ennemi me contre
+    if (iCounter || theyCounter) {
+      if (iCounter) {
+        matchupScore += 3;
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable.`);
+      }
+      if (theyCounter) {
+        matchupScore -= 3;
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable.`);
+      }
+    } else {
+      // Repli sur les tags (direction corrigée) : je contre l'ennemi si MES counterTags touchent SON profil
+      if (enemyChamp.tags.some((t) => myChamp.counterTags.includes(t))) {
+        matchupScore += 3;
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable.`);
+      }
+      if (myChamp.tags.some((t) => enemyChamp.counterTags.includes(t))) {
+        matchupScore -= 3;
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable.`);
+      }
     }
   });
 
@@ -4005,8 +4020,9 @@ function teamEventPower(side, category, role) {
         if (myCounter) total += (myCounter.score / 100) * counterBonusMax;
         if (enemyCounter) total -= (enemyCounter.score / 100) * counterBonusMax;
       } else {
-        if (myChamp.tags.some((t) => enemyChamp.counterTags.includes(t))) total += matchupBonus;
-        if (enemyChamp.tags.some((t) => myChamp.counterTags.includes(t))) total -= matchupBonus;
+        // Repli tags (direction corrigée) : je contre l'ennemi si MES counterTags touchent SON profil
+        if (enemyChamp.tags.some((t) => myChamp.counterTags.includes(t))) total += matchupBonus;
+        if (myChamp.tags.some((t) => enemyChamp.counterTags.includes(t))) total -= matchupBonus;
       }
     }
   }
@@ -4719,6 +4735,15 @@ function scoutingPreviewHtml(opponentId) {
 /* ------------------------------------------------------------
    Ecran Counters (matchups de champions)
    ------------------------------------------------------------ */
+
+/* Renvoie l'entrée du fichier de counters où `counterId` contre `targetId`
+   (c.-à-d. counterId a l'avantage sur targetId), ou null. Source de vérité :
+   data_counters.js (issu de l'Excel des counters). */
+function getCounterEntry(counterId, targetId) {
+  if (typeof CHAMPION_COUNTERS === 'undefined') return null;
+  return CHAMPION_COUNTERS.find((e) => e.counter === counterId && e.target === targetId) || null;
+}
+
 function renderCounters() {
   const el = document.getElementById('counters-content');
   if (!el) return;
