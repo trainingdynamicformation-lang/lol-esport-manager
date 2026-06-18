@@ -2644,12 +2644,12 @@ function getFinalPlacement() {
 }
 
 function getPlacementRewards(placement) {
-  if (placement === 1) return { coaching: 120, budget: 200, prestige: 15 };
-  if (placement === 2) return { coaching: 90, budget: 140, prestige: 10 };
-  if (placement <= 4) return { coaching: 70, budget: 100, prestige: 6 };
-  if (placement <= 6) return { coaching: 50, budget: 70, prestige: 3 };
-  if (placement <= 8) return { coaching: 25, budget: 40, prestige: 1 };
-  return { coaching: 10, budget: 15, prestige: 0 };
+  if (placement === 1) return { coaching: 120, budget: 100, prestige: 15 };
+  if (placement === 2) return { coaching: 90, budget: 80, prestige: 10 };
+  if (placement <= 4) return { coaching: 70, budget: 60, prestige: 6 };
+  if (placement <= 6) return { coaching: 50, budget: 40, prestige: 3 };
+  if (placement <= 8) return { coaching: 25, budget: 20, prestige: 1 };
+  return { coaching: 10, budget: 0, prestige: 0 };
 }
 
 function placementLabel(placement) {
@@ -3124,7 +3124,7 @@ function getInternationalPlacement(intl) {
 }
 
 function getInternationalRewards(event, placement) {
-  const mult = event === 'worlds' ? 2 : 1.4;
+  const mult = event === 'worlds' ? 1.5 : 1.25;
   const base = getPlacementRewards(placement);
   return {
     coaching: Math.round(base.coaching * mult),
@@ -4391,7 +4391,7 @@ function applyMatchOutcome(win) {
   });
 
   state.resources.coachingPoints = clamp(state.resources.coachingPoints + (win ? 15 : 8), 0, 999);
-  state.resources.budget += win ? 10 : 3;
+  // Pas de gain de budget par match — revenus uniquement via classement fin de saison / MSI / Worlds
   if (win) state.resources.prestige += 1;
 
   return snapshotRosterStats();

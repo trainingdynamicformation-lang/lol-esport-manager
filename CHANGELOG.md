@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.6] — 2026-06-18
+
+### Modifié
+- **Économie — suppression du gain de budget par match** : le budget ne s'incrémente plus à chaque victoire (+10) ou défaite (+3) — les revenus proviennent uniquement du classement en fin de compétition
+- **Récompenses de classement revues à la baisse** : fin de saison 1er +100 / 2e +80 / Top 4 +60 / Top 6 +40 / Top 8 +20 / hors top 8 +0 (était 200/140/100/70/40/15)
+- **Multiplicateurs MSI / Worlds** : MSI ×1,25 et Worlds ×1,5 par rapport aux récompenses de fin de saison (était ×1,4 et ×2)
+
+---
+
 ## [1.3.5] — 2026-06-18
 
 ### Corrigé
