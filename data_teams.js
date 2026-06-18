@@ -1,6 +1,9 @@
-// data_teams.js - Equipes IA (CDC §11.1)
-// Genere a partir de lol_esports_update_2026_with_counters.xlsx (feuilles Teams_Rosters / DraftProfiles)
-// Regions: LEC, LCK, LPL, LTAN (LTA North), LTAS (LTA South / CBLOL), LCP, LJL
+// data_teams.js - Equipes IA (CDC 11.1)
+// Genere depuis CDC/lol_esports_update_2026_major_balance_v2.xlsx
+// (Teams_Rosters / DraftProfiles / MajorChampionPools_Extended)
+// Passe d'equilibrage majeure : stats recalibrees, pools etendus a 5 champions
+// avec masteries explicites (champ 'masteries' aligne sur championPool).
+// Regions: LEC, LCK, LPL, LTAN, LTAS, LCP, LJL
 
 const AI_TEAMS = [
   {
@@ -16,22 +19,31 @@ const AI_TEAMS = [
         "name": "Empyros",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 82,
-        "potential": 89,
-        "form": 65,
+        "level": 87,
+        "potential": 98,
+        "form": 69,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 72,
-        "laning": 82,
-        "teamfight": 80,
-        "mechanics": 79,
+        "mental": 87,
+        "shotcalling": 80,
+        "laning": 90,
+        "teamfight": 87,
+        "mechanics": 88,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "rookie"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -39,24 +51,33 @@ const AI_TEAMS = [
         "name": "Razork",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 86,
-        "potential": 92,
-        "form": 62,
+        "level": 90,
+        "potential": 93,
+        "form": 65,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 98,
-        "laning": 85,
-        "teamfight": 88,
-        "mechanics": 90,
+        "mental": 95,
+        "shotcalling": 99,
+        "laning": 88,
+        "teamfight": 94,
+        "mechanics": 96,
         "championPool": [
           "Vi",
           "Jarvan IV",
-          "Wukong"
+          "Wukong",
+          "Skarner",
+          "Sejuani"
         ],
         "traits": [
           "igl",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -64,22 +85,31 @@ const AI_TEAMS = [
         "name": "Vladi",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 81,
-        "potential": 81,
-        "form": 75,
+        "level": 86,
+        "potential": 89,
+        "form": 80,
         "fatigue": 0,
-        "mental": 81,
-        "shotcalling": 75,
-        "laning": 80,
-        "teamfight": 84,
-        "mechanics": 81,
+        "mental": 89,
+        "shotcalling": 84,
+        "laning": 89,
+        "teamfight": 89,
+        "mechanics": 89,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -87,22 +117,31 @@ const AI_TEAMS = [
         "name": "Upset",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 81,
-        "potential": 80,
-        "form": 71,
+        "level": 86,
+        "potential": 89,
+        "form": 76,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 72,
-        "laning": 86,
-        "teamfight": 80,
-        "mechanics": 83,
+        "mental": 90,
+        "shotcalling": 78,
+        "laning": 90,
+        "teamfight": 90,
+        "mechanics": 91,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Aphelios"
+          "Aphelios",
+          "Jinx",
+          "Xayah"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -110,21 +149,30 @@ const AI_TEAMS = [
         "name": "Lospa",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 79,
-        "potential": 82,
-        "form": 65,
+        "level": 86,
+        "potential": 89,
+        "form": 69,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 75,
-        "laning": 81,
-        "teamfight": 77,
-        "mechanics": 75,
+        "mental": 88,
+        "shotcalling": 89,
+        "laning": 87,
+        "teamfight": 88,
+        "mechanics": 81,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          92,
+          89,
+          86,
+          81,
+          77
+        ]
       }
     ],
     "draftProfile": {
@@ -141,16 +189,16 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -177,22 +225,31 @@ const AI_TEAMS = [
         "name": "BrokenBlade",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 86,
-        "potential": 91,
-        "form": 67,
+        "level": 90,
+        "potential": 93,
+        "form": 71,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 77,
-        "laning": 90,
-        "teamfight": 86,
-        "mechanics": 91,
+        "mental": 87,
+        "shotcalling": 84,
+        "laning": 96,
+        "teamfight": 91,
+        "mechanics": 97,
         "championPool": [
           "K'Sante",
           "Jax",
-          "Gnar"
+          "Gnar",
+          "Rumble",
+          "Kennen"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -200,46 +257,64 @@ const AI_TEAMS = [
         "name": "SkewMond",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 79,
-        "potential": 77,
-        "form": 66,
+        "level": 87,
+        "potential": 90,
+        "form": 72,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 81,
-        "laning": 80,
-        "teamfight": 76,
-        "mechanics": 82,
+        "mental": 88,
+        "shotcalling": 93,
+        "laning": 84,
+        "teamfight": 89,
+        "mechanics": 89,
         "championPool": [
           "Vi",
           "Nocturne",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Wukong",
+          "Skarner"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
+        ]
       },
       {
         "id": "g2_mid",
         "name": "Caps",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 91,
-        "potential": 95,
-        "form": 82,
+        "level": 95,
+        "potential": 98,
+        "form": 88,
         "fatigue": 0,
-        "mental": 89,
-        "shotcalling": 97,
-        "laning": 93,
-        "teamfight": 88,
-        "mechanics": 95,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 99,
+        "teamfight": 98,
+        "mechanics": 99,
         "championPool": [
           "Ryze",
           "Azir",
-          "Ahri"
+          "Ahri",
+          "Orianna",
+          "Viktor"
         ],
         "traits": [
           "clutch",
           "consistant",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -247,23 +322,32 @@ const AI_TEAMS = [
         "name": "Hans Sama",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 85,
-        "potential": 91,
-        "form": 78,
+        "level": 89,
+        "potential": 92,
+        "form": 84,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 76,
-        "laning": 82,
-        "teamfight": 94,
-        "mechanics": 89,
+        "mental": 89,
+        "shotcalling": 81,
+        "laning": 91,
+        "teamfight": 97,
+        "mechanics": 98,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -271,23 +355,32 @@ const AI_TEAMS = [
         "name": "Labrov",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 83,
-        "potential": 83,
-        "form": 78,
+        "level": 89,
+        "potential": 92,
+        "form": 85,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 84,
-        "laning": 77,
-        "teamfight": 82,
-        "mechanics": 78,
+        "mental": 93,
+        "shotcalling": 98,
+        "laning": 86,
+        "teamfight": 92,
+        "mechanics": 84,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Karma"
+          "Karma",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       }
     ],
@@ -301,20 +394,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Jax"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Nocturne"
         ],
         "MID": [
-          "Orianna",
+          "Ryze",
           "Azir"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -341,43 +434,61 @@ const AI_TEAMS = [
         "name": "Lot",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 62,
-        "potential": 66,
-        "form": 49,
+        "level": 72,
+        "potential": 75,
+        "form": 52,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 56,
-        "laning": 62,
-        "teamfight": 61,
-        "mechanics": 61,
+        "mental": 70,
+        "shotcalling": 67,
+        "laning": 75,
+        "teamfight": 73,
+        "mechanics": 74,
         "championPool": [
           "Jayce",
           "Kennen",
-          "Rumble"
+          "Rumble",
+          "Gnar",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
+        ]
       },
       {
         "id": "gx_jungle",
         "name": "ISMA",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 69,
-        "potential": 74,
-        "form": 65,
+        "level": 77,
+        "potential": 80,
+        "form": 70,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 68,
-        "laning": 67,
-        "teamfight": 71,
-        "mechanics": 69,
+        "mental": 79,
+        "shotcalling": 82,
+        "laning": 73,
+        "teamfight": 81,
+        "mechanics": 78,
         "championPool": [
           "Nidalee",
           "Graves",
-          "Ivern"
+          "Ivern",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -385,43 +496,61 @@ const AI_TEAMS = [
         "name": "Jackies",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 69,
-        "potential": 74,
-        "form": 55,
+        "level": 77,
+        "potential": 80,
+        "form": 58,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 69,
-        "laning": 70,
-        "teamfight": 66,
-        "mechanics": 74,
+        "mental": 75,
+        "shotcalling": 78,
+        "laning": 80,
+        "teamfight": 78,
+        "mechanics": 82,
         "championPool": [
           "Orianna",
           "Hwei",
-          "Zoe"
+          "Zoe",
+          "Corki",
+          "LeBlanc"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "gx_adc",
         "name": "Noah",
         "role": "ADC",
         "nationality": "KR",
-        "level": 65,
-        "potential": 64,
-        "form": 55,
+        "level": 73,
+        "potential": 76,
+        "form": 60,
         "fatigue": 0,
-        "mental": 65,
-        "shotcalling": 56,
-        "laning": 63,
-        "teamfight": 72,
-        "mechanics": 66,
+        "mental": 76,
+        "shotcalling": 65,
+        "laning": 74,
+        "teamfight": 80,
+        "mechanics": 77,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Ashe",
+          "Kai'Sa"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -429,22 +558,31 @@ const AI_TEAMS = [
         "name": "Jun",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 71,
-        "potential": 77,
-        "form": 59,
+        "level": 78,
+        "potential": 81,
+        "form": 63,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 75,
-        "laning": 66,
-        "teamfight": 77,
-        "mechanics": 68,
+        "mental": 80,
+        "shotcalling": 85,
+        "laning": 76,
+        "teamfight": 84,
+        "mechanics": 74,
         "championPool": [
           "Karma",
           "Milio",
-          "Nami"
+          "Nami",
+          "Bard",
+          "Lulu"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          76,
+          71,
+          67
         ]
       }
     ],
@@ -466,8 +604,8 @@ const AI_TEAMS = [
           "Graves"
         ],
         "MID": [
-          "Hwei",
-          "Zoe"
+          "Orianna",
+          "Hwei"
         ],
         "ADC": [
           "Ezreal",
@@ -498,22 +636,31 @@ const AI_TEAMS = [
         "name": "Canna",
         "role": "TOP",
         "nationality": "KR",
-        "level": 77,
-        "potential": 75,
-        "form": 71,
+        "level": 84,
+        "potential": 87,
+        "form": 77,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 73,
-        "laning": 80,
-        "teamfight": 76,
-        "mechanics": 78,
+        "mental": 88,
+        "shotcalling": 80,
+        "laning": 88,
+        "teamfight": 85,
+        "mechanics": 86,
         "championPool": [
-          "Kennen",
+          "Rumble",
+          "Gnar",
           "Renekton",
-          "Jax"
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -521,45 +668,63 @@ const AI_TEAMS = [
         "name": "Yike",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 75,
-        "potential": 81,
-        "form": 61,
+        "level": 82,
+        "potential": 85,
+        "form": 65,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 76,
-        "laning": 68,
-        "teamfight": 79,
-        "mechanics": 75,
+        "mental": 82,
+        "shotcalling": 87,
+        "laning": 76,
+        "teamfight": 87,
+        "mechanics": 83,
         "championPool": [
           "Elise",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Nocturne",
+          "Pantheon"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
+        ]
       },
       {
         "id": "kc_mid",
         "name": "kyeahoo",
         "role": "MID",
         "nationality": "KR",
-        "level": 84,
-        "potential": 90,
-        "form": 74,
+        "level": 89,
+        "potential": 99,
+        "form": 80,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 86,
-        "laning": 83,
-        "teamfight": 82,
-        "mechanics": 89,
+        "mental": 92,
+        "shotcalling": 91,
+        "laning": 93,
+        "teamfight": 90,
+        "mechanics": 97,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant",
           "mechanical",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -567,23 +732,32 @@ const AI_TEAMS = [
         "name": "Caliste",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 85,
-        "potential": 95,
-        "form": 67,
+        "level": 88,
+        "potential": 99,
+        "form": 70,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 76,
-        "laning": 86,
-        "teamfight": 89,
-        "mechanics": 96,
+        "mental": 86,
+        "shotcalling": 80,
+        "laning": 91,
+        "teamfight": 94,
+        "mechanics": 99,
         "championPool": [
           "Varus",
           "Ezreal",
-          "Yunara"
+          "Yunara",
+          "Ashe",
+          "Caitlyn"
         ],
         "traits": [
           "mechanical",
           "rookie"
+        ],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
         ]
       },
       {
@@ -591,22 +765,31 @@ const AI_TEAMS = [
         "name": "Busio",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 73,
-        "potential": 78,
-        "form": 71,
+        "level": 82,
+        "potential": 85,
+        "form": 78,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 79,
-        "laning": 77,
-        "teamfight": 71,
-        "mechanics": 71,
+        "mental": 88,
+        "shotcalling": 90,
+        "laning": 84,
+        "teamfight": 84,
+        "mechanics": 78,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Thresh",
+          "Pyke"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       }
     ],
@@ -620,24 +803,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Rumble",
+          "Gnar"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Elise",
+          "Vi"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
           "Varus",
-          "Caitlyn"
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -660,23 +843,32 @@ const AI_TEAMS = [
         "name": "Myrwn",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 88,
-        "potential": 88,
-        "form": 76,
+        "level": 92,
+        "potential": 95,
+        "form": 82,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 82,
-        "laning": 94,
-        "teamfight": 83,
-        "mechanics": 90,
+        "mental": 91,
+        "shotcalling": 87,
+        "laning": 99,
+        "teamfight": 91,
+        "mechanics": 98,
         "championPool": [
           "K'Sante",
           "Rumble",
-          "Gnar"
+          "Gnar",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -684,25 +876,34 @@ const AI_TEAMS = [
         "name": "Elyoya",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 86,
-        "potential": 92,
-        "form": 81,
+        "level": 91,
+        "potential": 94,
+        "form": 87,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 96,
-        "laning": 82,
-        "teamfight": 83,
-        "mechanics": 87,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 86,
+        "teamfight": 95,
+        "mechanics": 92,
         "championPool": [
           "Jarvan IV",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "clutch",
           "consistant",
           "igl",
           "leader"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       },
       {
@@ -710,23 +911,32 @@ const AI_TEAMS = [
         "name": "Jojopyun",
         "role": "MID",
         "nationality": "NA",
-        "level": 84,
-        "potential": 89,
-        "form": 82,
+        "level": 90,
+        "potential": 93,
+        "form": 89,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 80,
-        "laning": 88,
-        "teamfight": 84,
-        "mechanics": 90,
+        "mental": 91,
+        "shotcalling": 89,
+        "laning": 96,
+        "teamfight": 92,
+        "mechanics": 99,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Akali"
+          "Akali",
+          "Orianna",
+          "Azir"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       },
       {
@@ -734,22 +944,31 @@ const AI_TEAMS = [
         "name": "Supa",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 84,
-        "potential": 90,
-        "form": 65,
+        "level": 90,
+        "potential": 93,
+        "form": 70,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 82,
-        "laning": 80,
-        "teamfight": 90,
-        "mechanics": 88,
+        "mental": 90,
+        "shotcalling": 85,
+        "laning": 91,
+        "teamfight": 97,
+        "mechanics": 99,
         "championPool": [
           "Ashe",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -757,23 +976,32 @@ const AI_TEAMS = [
         "name": "Alvaro",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 84,
-        "potential": 88,
-        "form": 81,
+        "level": 90,
+        "potential": 93,
+        "form": 88,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 86,
-        "laning": 88,
-        "teamfight": 89,
-        "mechanics": 85,
+        "mental": 95,
+        "shotcalling": 99,
+        "laning": 92,
+        "teamfight": 95,
+        "mechanics": 87,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       }
     ],
@@ -787,24 +1015,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Rumble"
         ],
         "JUNGLE": [
           "Jarvan IV",
           "Vi"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "LeBlanc",
+          "Ahri"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ashe",
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -827,22 +1055,31 @@ const AI_TEAMS = [
         "name": "Maynter",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 64,
-        "potential": 63,
-        "form": 60,
+        "level": 73,
+        "potential": 76,
+        "form": 65,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 62,
-        "laning": 63,
-        "teamfight": 66,
-        "mechanics": 61,
+        "mental": 76,
+        "shotcalling": 70,
+        "laning": 76,
+        "teamfight": 75,
+        "mechanics": 74,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -850,22 +1087,31 @@ const AI_TEAMS = [
         "name": "Rhilech",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 57,
-        "potential": 60,
-        "form": 44,
+        "level": 68,
+        "potential": 71,
+        "form": 50,
         "fatigue": 0,
-        "mental": 52,
-        "shotcalling": 58,
-        "laning": 49,
-        "teamfight": 55,
-        "mechanics": 59,
+        "mental": 64,
+        "shotcalling": 73,
+        "laning": 61,
+        "teamfight": 70,
+        "mechanics": 70,
         "championPool": [
           "Elise",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "tiltable"
+        ],
+        "masteries": [
+          71,
+          68,
+          64,
+          59,
+          55
         ]
       },
       {
@@ -873,22 +1119,31 @@ const AI_TEAMS = [
         "name": "Poby",
         "role": "MID",
         "nationality": "KR",
-        "level": 58,
-        "potential": 61,
-        "form": 44,
+        "level": 68,
+        "potential": 71,
+        "form": 50,
         "fatigue": 0,
-        "mental": 55,
-        "shotcalling": 55,
-        "laning": 56,
-        "teamfight": 64,
-        "mechanics": 60,
+        "mental": 65,
+        "shotcalling": 68,
+        "laning": 70,
+        "teamfight": 73,
+        "mechanics": 72,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "tiltable"
+        ],
+        "masteries": [
+          71,
+          68,
+          64,
+          59,
+          55
         ]
       },
       {
@@ -896,22 +1151,31 @@ const AI_TEAMS = [
         "name": "SamD",
         "role": "ADC",
         "nationality": "KR",
-        "level": 61,
-        "potential": 65,
-        "form": 59,
+        "level": 70,
+        "potential": 73,
+        "form": 64,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 59,
-        "laning": 63,
-        "teamfight": 64,
-        "mechanics": 65,
+        "mental": 72,
+        "shotcalling": 65,
+        "laning": 73,
+        "teamfight": 75,
+        "mechanics": 76,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
         ]
       },
       {
@@ -919,22 +1183,31 @@ const AI_TEAMS = [
         "name": "Parus",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 59,
-        "potential": 63,
-        "form": 50,
+        "level": 68,
+        "potential": 71,
+        "form": 55,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 57,
-        "laning": 53,
-        "teamfight": 55,
-        "mechanics": 62,
+        "mental": 74,
+        "shotcalling": 72,
+        "laning": 65,
+        "teamfight": 69,
+        "mechanics": 66,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       }
     ],
@@ -948,24 +1221,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Elise",
+          "Vi"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -988,22 +1261,31 @@ const AI_TEAMS = [
         "name": "Rooster",
         "role": "TOP",
         "nationality": "KR",
-        "level": 67,
-        "potential": 72,
-        "form": 57,
+        "level": 75,
+        "potential": 78,
+        "form": 62,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 67,
-        "laning": 71,
-        "teamfight": 62,
-        "mechanics": 66,
+        "mental": 79,
+        "shotcalling": 73,
+        "laning": 80,
+        "teamfight": 74,
+        "mechanics": 77,
         "championPool": [
           "Jax",
           "Fiora",
-          "Camille"
+          "Camille",
+          "Gwen",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -1011,22 +1293,31 @@ const AI_TEAMS = [
         "name": "Boukada",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 67,
-        "potential": 67,
-        "form": 58,
+        "level": 75,
+        "potential": 78,
+        "form": 63,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 69,
-        "laning": 59,
-        "teamfight": 64,
-        "mechanics": 68,
+        "mental": 75,
+        "shotcalling": 81,
+        "laning": 68,
+        "teamfight": 77,
+        "mechanics": 76,
         "championPool": [
           "Viego",
           "Lee Sin",
-          "Nocturne"
+          "Nocturne",
+          "Vi",
+          "Wukong"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -1034,64 +1325,91 @@ const AI_TEAMS = [
         "name": "nuc",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 71,
-        "potential": 69,
-        "form": 51,
+        "level": 78,
+        "potential": 81,
+        "form": 53,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 68,
-        "laning": 72,
-        "teamfight": 71,
-        "mechanics": 73,
+        "mental": 77,
+        "shotcalling": 78,
+        "laning": 81,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Ryze",
           "Akali",
-          "Twisted Fate"
+          "Twisted Fate",
+          "Yone",
+          "LeBlanc"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
+        ]
       },
       {
         "id": "shf_adc",
         "name": "Paduck",
         "role": "ADC",
         "nationality": "KR",
-        "level": 69,
-        "potential": 73,
-        "form": 51,
+        "level": 77,
+        "potential": 80,
+        "form": 54,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 64,
-        "laning": 68,
-        "teamfight": 73,
-        "mechanics": 76,
+        "mental": 75,
+        "shotcalling": 71,
+        "laning": 79,
+        "teamfight": 83,
+        "mechanics": 84,
         "championPool": [
           "Vayne",
           "Ezreal",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Lucian",
+          "Xayah"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "shf_support",
         "name": "Trymbi",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 62,
-        "potential": 60,
-        "form": 54,
+        "level": 72,
+        "potential": 75,
+        "form": 60,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 61,
-        "laning": 63,
-        "teamfight": 65,
-        "mechanics": 57,
+        "mental": 77,
+        "shotcalling": 77,
+        "laning": 72,
+        "teamfight": 76,
+        "mechanics": 67,
         "championPool": [
           "Bard",
           "Tahm Kench",
-          "Rakan"
+          "Rakan",
+          "Thresh",
+          "Nautilus"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       }
     ],
@@ -1109,20 +1427,20 @@ const AI_TEAMS = [
           "Fiora"
         ],
         "JUNGLE": [
-          "Nocturne",
-          "Viego"
+          "Viego",
+          "Lee Sin"
         ],
         "MID": [
-          "Twisted Fate",
-          "Ryze"
+          "Ryze",
+          "Akali"
         ],
         "ADC": [
-          "Ezreal",
-          "Kai'Sa"
+          "Vayne",
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Rakan",
-          "Bard"
+          "Bard",
+          "Tahm Kench"
         ]
       },
       "flexPicks": [
@@ -1145,23 +1463,32 @@ const AI_TEAMS = [
         "name": "Wunder",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 62,
-        "potential": 63,
-        "form": 50,
+        "level": 72,
+        "potential": 73,
+        "form": 56,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 60,
-        "laning": 66,
-        "teamfight": 65,
-        "mechanics": 65,
+        "mental": 80,
+        "shotcalling": 70,
+        "laning": 77,
+        "teamfight": 74,
+        "mechanics": 75,
         "championPool": [
           "Sion",
           "Gnar",
-          "Ornn"
+          "Ornn",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant",
           "veteran"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -1169,43 +1496,61 @@ const AI_TEAMS = [
         "name": "Skeanz",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 68,
-        "potential": 72,
-        "form": 52,
+        "level": 76,
+        "potential": 79,
+        "form": 55,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 66,
-        "laning": 59,
-        "teamfight": 70,
-        "mechanics": 72,
+        "mental": 76,
+        "shotcalling": 80,
+        "laning": 69,
+        "teamfight": 80,
+        "mechanics": 79,
         "championPool": [
           "Jarvan IV",
           "Sejuani",
-          "Maokai"
+          "Maokai",
+          "Nidalee",
+          "Graves"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
+        ]
       },
       {
         "id": "sk_mid",
         "name": "LIDER",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 62,
-        "potential": 66,
-        "form": 55,
+        "level": 72,
+        "potential": 75,
+        "form": 60,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 55,
-        "laning": 65,
-        "teamfight": 59,
-        "mechanics": 61,
+        "mental": 72,
+        "shotcalling": 70,
+        "laning": 76,
+        "teamfight": 73,
+        "mechanics": 75,
         "championPool": [
           "Orianna",
           "Azir",
-          "Viktor"
+          "Viktor",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -1213,22 +1558,31 @@ const AI_TEAMS = [
         "name": "Jopa",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 62,
-        "potential": 66,
-        "form": 59,
+        "level": 72,
+        "potential": 75,
+        "form": 64,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 53,
-        "laning": 64,
-        "teamfight": 67,
-        "mechanics": 67,
+        "mental": 73,
+        "shotcalling": 64,
+        "laning": 75,
+        "teamfight": 78,
+        "mechanics": 78,
         "championPool": [
           "Jinx",
           "Aphelios",
-          "Caitlyn"
+          "Caitlyn",
+          "Varus",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -1238,22 +1592,31 @@ const AI_TEAMS = [
         "nationality": "EMEA",
         "level": 86,
         "potential": 91,
-        "form": 57,
+        "form": 56,
         "fatigue": 0,
-        "mental": 91,
-        "shotcalling": 89,
-        "laning": 84,
-        "teamfight": 84,
+        "mental": 97,
+        "shotcalling": 97,
+        "laning": 85,
+        "teamfight": 90,
         "mechanics": 81,
         "championPool": [
           "Rakan",
           "Braum",
-          "Nautilus"
+          "Nautilus",
+          "Karma",
+          "Milio"
         ],
         "traits": [
           "clutch",
           "igl",
           "veteran"
+        ],
+        "masteries": [
+          91,
+          88,
+          84,
+          79,
+          75
         ]
       }
     ],
@@ -1267,24 +1630,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Sion",
+          "Gnar"
         ],
         "JUNGLE": [
-          "Maokai",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Sejuani"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Orianna",
+          "Azir"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Aphelios"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Rakan",
+          "Braum"
         ]
       },
       "flexPicks": [
@@ -1307,22 +1670,31 @@ const AI_TEAMS = [
         "name": "Tracyn",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 77,
-        "potential": 76,
-        "form": 71,
+        "level": 83,
+        "potential": 86,
+        "form": 76,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 69,
-        "laning": 84,
-        "teamfight": 82,
-        "mechanics": 78,
+        "mental": 85,
+        "shotcalling": 77,
+        "laning": 89,
+        "teamfight": 86,
+        "mechanics": 85,
         "championPool": [
           "Kennen",
           "Jayce",
-          "Renekton"
+          "Renekton",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -1330,22 +1702,31 @@ const AI_TEAMS = [
         "name": "Daglas",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 76,
-        "potential": 77,
-        "form": 65,
+        "level": 82,
+        "potential": 85,
+        "form": 70,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 74,
-        "laning": 72,
-        "teamfight": 79,
-        "mechanics": 73,
+        "mental": 85,
+        "shotcalling": 86,
+        "laning": 77,
+        "teamfight": 86,
+        "mechanics": 82,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -1353,22 +1734,31 @@ const AI_TEAMS = [
         "name": "Serin",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 68,
-        "potential": 69,
-        "form": 67,
+        "level": 77,
+        "potential": 80,
+        "form": 73,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 63,
-        "laning": 71,
-        "teamfight": 67,
-        "mechanics": 73,
+        "mental": 78,
+        "shotcalling": 76,
+        "laning": 81,
+        "teamfight": 79,
+        "mechanics": 82,
         "championPool": [
           "Ahri",
           "Taliyah",
-          "LeBlanc"
+          "LeBlanc",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
         ]
       },
       {
@@ -1376,42 +1766,60 @@ const AI_TEAMS = [
         "name": "Ice",
         "role": "ADC",
         "nationality": "KR",
-        "level": 76,
-        "potential": 81,
-        "form": 60,
+        "level": 82,
+        "potential": 85,
+        "form": 63,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 70,
-        "laning": 77,
-        "teamfight": 75,
-        "mechanics": 83,
+        "mental": 82,
+        "shotcalling": 75,
+        "laning": 84,
+        "teamfight": 86,
+        "mechanics": 89,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
+        ]
       },
       {
         "id": "th_support",
         "name": "Way",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 69,
-        "potential": 70,
-        "form": 54,
+        "level": 78,
+        "potential": 81,
+        "form": 58,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 65,
-        "laning": 63,
-        "teamfight": 70,
-        "mechanics": 66,
+        "mental": 81,
+        "shotcalling": 81,
+        "laning": 75,
+        "teamfight": 81,
+        "mechanics": 74,
         "championPool": [
           "Nautilus",
           "Thresh",
-          "Pyke"
+          "Pyke",
+          "Rakan",
+          "Bard"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
+        ]
       }
     ],
     "draftProfile": {
@@ -1424,24 +1832,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Kennen",
+          "Jayce"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Taliyah"
         ],
         "ADC": [
           "Varus",
           "Caitlyn"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Nautilus",
+          "Thresh"
         ]
       },
       "flexPicks": [
@@ -1464,22 +1872,31 @@ const AI_TEAMS = [
         "name": "Naak",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 77,
-        "potential": 79,
-        "form": 69,
+        "level": 83,
+        "potential": 86,
+        "form": 74,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 67,
-        "laning": 78,
-        "teamfight": 81,
-        "mechanics": 79,
+        "mental": 86,
+        "shotcalling": 76,
+        "laning": 86,
+        "teamfight": 86,
+        "mechanics": 86,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -1487,22 +1904,31 @@ const AI_TEAMS = [
         "name": "Lyncas",
         "role": "JUNGLE",
         "nationality": "EMEA",
-        "level": 71,
-        "potential": 77,
-        "form": 66,
+        "level": 79,
+        "potential": 82,
+        "form": 72,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 77,
-        "laning": 66,
-        "teamfight": 68,
-        "mechanics": 75,
+        "mental": 81,
+        "shotcalling": 87,
+        "laning": 74,
+        "teamfight": 81,
+        "mechanics": 82,
         "championPool": [
           "Vi",
           "Nocturne",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
         ]
       },
       {
@@ -1510,43 +1936,61 @@ const AI_TEAMS = [
         "name": "Humanoid",
         "role": "MID",
         "nationality": "EMEA",
-        "level": 73,
-        "potential": 73,
-        "form": 59,
+        "level": 81,
+        "potential": 84,
+        "form": 63,
         "fatigue": 0,
-        "mental": 65,
-        "shotcalling": 74,
-        "laning": 74,
-        "teamfight": 72,
-        "mechanics": 73,
+        "mental": 78,
+        "shotcalling": 82,
+        "laning": 84,
+        "teamfight": 83,
+        "mechanics": 84,
         "championPool": [
           "Orianna",
           "Azir",
-          "LeBlanc"
+          "LeBlanc",
+          "Ryze",
+          "Viktor"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "vit_adc",
         "name": "Carzzy",
         "role": "ADC",
         "nationality": "EMEA",
-        "level": 77,
-        "potential": 82,
-        "form": 68,
+        "level": 83,
+        "potential": 86,
+        "form": 73,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 73,
-        "laning": 78,
-        "teamfight": 76,
-        "mechanics": 78,
+        "mental": 83,
+        "shotcalling": 77,
+        "laning": 85,
+        "teamfight": 87,
+        "mechanics": 87,
         "championPool": [
           "Ashe",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -1554,22 +1998,31 @@ const AI_TEAMS = [
         "name": "Fleshy",
         "role": "SUPPORT",
         "nationality": "EMEA",
-        "level": 71,
-        "potential": 70,
-        "form": 63,
+        "level": 79,
+        "potential": 82,
+        "form": 69,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 71,
-        "laning": 73,
-        "teamfight": 75,
-        "mechanics": 72,
+        "mental": 84,
+        "shotcalling": 84,
+        "laning": 80,
+        "teamfight": 84,
+        "mechanics": 76,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
         ]
       }
     ],
@@ -1587,16 +2040,16 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Nocturne"
         ],
         "MID": [
           "Orianna",
           "Azir"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ashe",
+          "Ezreal"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -1623,22 +2076,31 @@ const AI_TEAMS = [
         "name": "Clear",
         "role": "TOP",
         "nationality": "KR",
-        "level": 65,
-        "potential": 65,
-        "form": 59,
+        "level": 73,
+        "potential": 76,
+        "form": 64,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 58,
-        "laning": 65,
-        "teamfight": 70,
-        "mechanics": 67,
+        "mental": 76,
+        "shotcalling": 68,
+        "laning": 76,
+        "teamfight": 76,
+        "mechanics": 76,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -1646,22 +2108,31 @@ const AI_TEAMS = [
         "name": "Raptor",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 65,
-        "potential": 70,
-        "form": 60,
+        "level": 73,
+        "potential": 76,
+        "form": 65,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 70,
-        "laning": 57,
-        "teamfight": 63,
-        "mechanics": 69,
+        "mental": 74,
+        "shotcalling": 80,
+        "laning": 66,
+        "teamfight": 75,
+        "mechanics": 76,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -1669,22 +2140,31 @@ const AI_TEAMS = [
         "name": "VicLa",
         "role": "MID",
         "nationality": "KR",
-        "level": 67,
-        "potential": 66,
-        "form": 59,
+        "level": 75,
+        "potential": 78,
+        "form": 64,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 59,
-        "laning": 68,
-        "teamfight": 71,
-        "mechanics": 72,
+        "mental": 79,
+        "shotcalling": 72,
+        "laning": 78,
+        "teamfight": 79,
+        "mechanics": 80,
         "championPool": [
           "Orianna",
           "Azir",
-          "Ryze"
+          "Ryze",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -1692,22 +2172,31 @@ const AI_TEAMS = [
         "name": "Diable",
         "role": "ADC",
         "nationality": "KR",
-        "level": 68,
-        "potential": 71,
-        "form": 58,
+        "level": 76,
+        "potential": 79,
+        "form": 63,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 58,
-        "laning": 74,
-        "teamfight": 69,
-        "mechanics": 73,
+        "mental": 77,
+        "shotcalling": 68,
+        "laning": 81,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Ashe",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -1715,22 +2204,31 @@ const AI_TEAMS = [
         "name": "Kellin",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 62,
-        "potential": 68,
-        "form": 65,
+        "level": 72,
+        "potential": 75,
+        "form": 70,
         "fatigue": 0,
-        "mental": 54,
-        "shotcalling": 64,
-        "laning": 58,
-        "teamfight": 60,
-        "mechanics": 64,
+        "mental": 73,
+        "shotcalling": 78,
+        "laning": 70,
+        "teamfight": 74,
+        "mechanics": 70,
         "championPool": [
           "Rakan",
           "Nautilus",
-          "Lulu"
+          "Lulu",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       }
     ],
@@ -1748,20 +2246,20 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
           "Orianna",
           "Azir"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ashe",
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -1784,23 +2282,32 @@ const AI_TEAMS = [
         "name": "DuDu",
         "role": "TOP",
         "nationality": "KR",
-        "level": 56,
-        "potential": 55,
-        "form": 60,
+        "level": 68,
+        "potential": 71,
+        "form": 65,
         "fatigue": 0,
-        "mental": 52,
-        "shotcalling": 52,
-        "laning": 59,
-        "teamfight": 56,
-        "mechanics": 56,
+        "mental": 66,
+        "shotcalling": 64,
+        "laning": 72,
+        "teamfight": 69,
+        "mechanics": 70,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -1808,22 +2315,31 @@ const AI_TEAMS = [
         "name": "Pyosik",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 60,
-        "potential": 58,
-        "form": 58,
+        "level": 69,
+        "potential": 72,
+        "form": 63,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 63,
-        "laning": 59,
-        "teamfight": 66,
-        "mechanics": 56,
+        "mental": 73,
+        "shotcalling": 75,
+        "laning": 66,
+        "teamfight": 75,
+        "mechanics": 68,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          73,
+          70,
+          66,
+          61,
+          57
         ]
       },
       {
@@ -1831,23 +2347,32 @@ const AI_TEAMS = [
         "name": "Clozer",
         "role": "MID",
         "nationality": "KR",
-        "level": 56,
-        "potential": 58,
-        "form": 59,
+        "level": 68,
+        "potential": 71,
+        "form": 64,
         "fatigue": 0,
-        "mental": 55,
-        "shotcalling": 53,
-        "laning": 61,
-        "teamfight": 54,
-        "mechanics": 57,
+        "mental": 68,
+        "shotcalling": 68,
+        "laning": 73,
+        "teamfight": 69,
+        "mechanics": 71,
         "championPool": [
           "Ahri",
           "Taliyah",
-          "LeBlanc"
+          "LeBlanc",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -1855,43 +2380,61 @@ const AI_TEAMS = [
         "name": "deokdam",
         "role": "ADC",
         "nationality": "KR",
-        "level": 61,
-        "potential": 62,
-        "form": 44,
+        "level": 70,
+        "potential": 73,
+        "form": 50,
         "fatigue": 0,
-        "mental": 60,
-        "shotcalling": 52,
-        "laning": 64,
-        "teamfight": 64,
-        "mechanics": 62,
+        "mental": 71,
+        "shotcalling": 62,
+        "laning": 73,
+        "teamfight": 75,
+        "mechanics": 74,
         "championPool": [
           "Kai'Sa",
           "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Ashe",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          73,
+          70,
+          66,
+          61,
+          57
+        ]
       },
       {
         "id": "soop_support",
         "name": "Life",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 65,
-        "potential": 67,
-        "form": 62,
+        "level": 72,
+        "potential": 75,
+        "form": 66,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 61,
-        "laning": 67,
-        "teamfight": 62,
-        "mechanics": 61,
+        "mental": 76,
+        "shotcalling": 75,
+        "laning": 73,
+        "teamfight": 74,
+        "mechanics": 67,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       }
     ],
@@ -1905,24 +2448,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Taliyah"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Kai'Sa",
+          "Varus"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -1945,22 +2488,31 @@ const AI_TEAMS = [
         "name": "Siwoo",
         "role": "TOP",
         "nationality": "KR",
-        "level": 75,
-        "potential": 75,
-        "form": 68,
+        "level": 82,
+        "potential": 85,
+        "form": 74,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 70,
-        "laning": 80,
-        "teamfight": 78,
-        "mechanics": 79,
+        "mental": 85,
+        "shotcalling": 78,
+        "laning": 87,
+        "teamfight": 84,
+        "mechanics": 86,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -1968,22 +2520,31 @@ const AI_TEAMS = [
         "name": "Lucid",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 79,
-        "potential": 81,
-        "form": 60,
+        "level": 86,
+        "potential": 89,
+        "form": 64,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 85,
-        "laning": 76,
-        "teamfight": 80,
-        "mechanics": 77,
+        "mental": 88,
+        "shotcalling": 97,
+        "laning": 82,
+        "teamfight": 89,
+        "mechanics": 86,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          92,
+          89,
+          86,
+          81,
+          77
         ]
       },
       {
@@ -1991,23 +2552,32 @@ const AI_TEAMS = [
         "name": "ShowMaker",
         "role": "MID",
         "nationality": "KR",
-        "level": 90,
-        "potential": 94,
-        "form": 63,
+        "level": 92,
+        "potential": 95,
+        "form": 65,
         "fatigue": 0,
-        "mental": 92,
-        "shotcalling": 86,
-        "laning": 89,
-        "teamfight": 88,
-        "mechanics": 97,
+        "mental": 97,
+        "shotcalling": 91,
+        "laning": 96,
+        "teamfight": 95,
+        "mechanics": 99,
         "championPool": [
           "LeBlanc",
           "Syndra",
-          "Azir"
+          "Azir",
+          "Orianna",
+          "Ryze"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          89,
+          85
         ]
       },
       {
@@ -2015,23 +2585,32 @@ const AI_TEAMS = [
         "name": "Smash",
         "role": "ADC",
         "nationality": "KR",
-        "level": 76,
-        "potential": 83,
-        "form": 64,
+        "level": 83,
+        "potential": 94,
+        "form": 71,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 71,
-        "laning": 73,
-        "teamfight": 83,
-        "mechanics": 82,
+        "mental": 81,
+        "shotcalling": 77,
+        "laning": 84,
+        "teamfight": 90,
+        "mechanics": 90,
         "championPool": [
           "Ashe",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant",
           "rookie"
+        ],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
         ]
       },
       {
@@ -2039,21 +2618,30 @@ const AI_TEAMS = [
         "name": "Career",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 82,
-        "potential": 84,
-        "form": 60,
+        "level": 87,
+        "potential": 90,
+        "form": 63,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 80,
-        "laning": 86,
-        "teamfight": 86,
-        "mechanics": 77,
+        "mental": 88,
+        "shotcalling": 91,
+        "laning": 89,
+        "teamfight": 92,
+        "mechanics": 82,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
+        ]
       }
     ],
     "draftProfile": {
@@ -2066,20 +2654,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "LeBlanc",
+          "Syndra"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ashe",
+          "Ezreal"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -2106,22 +2694,31 @@ const AI_TEAMS = [
         "name": "Kiin",
         "role": "TOP",
         "nationality": "KR",
-        "level": 92,
-        "potential": 90,
-        "form": 69,
+        "level": 95,
+        "potential": 98,
+        "form": 72,
         "fatigue": 0,
-        "mental": 87,
-        "shotcalling": 86,
-        "laning": 94,
-        "teamfight": 91,
-        "mechanics": 90,
+        "mental": 94,
+        "shotcalling": 90,
+        "laning": 99,
+        "teamfight": 96,
+        "mechanics": 99,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2129,25 +2726,34 @@ const AI_TEAMS = [
         "name": "Canyon",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 95,
+        "level": 97,
         "potential": 98,
-        "form": 82,
+        "form": 85,
         "fatigue": 0,
-        "mental": 98,
-        "shotcalling": 98,
-        "laning": 86,
-        "teamfight": 98,
-        "mechanics": 98,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 91,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Nidalee",
           "Lee Sin",
-          "Viego"
+          "Viego",
+          "Jarvan IV",
+          "Wukong"
         ],
         "traits": [
           "clutch",
           "igl",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2155,23 +2761,32 @@ const AI_TEAMS = [
         "name": "Chovy",
         "role": "MID",
         "nationality": "KR",
-        "level": 96,
+        "level": 97,
         "potential": 98,
-        "form": 64,
+        "form": 66,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 98,
-        "laning": 96,
-        "teamfight": 98,
+        "mental": 98,
+        "shotcalling": 99,
+        "laning": 99,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Yone",
           "Azir",
-          "Corki"
+          "Corki",
+          "Orianna",
+          "Ryze"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2179,25 +2794,34 @@ const AI_TEAMS = [
         "name": "Ruler",
         "role": "ADC",
         "nationality": "KR",
-        "level": 94,
-        "potential": 96,
-        "form": 81,
+        "level": 97,
+        "potential": 97,
+        "form": 84,
         "fatigue": 0,
-        "mental": 98,
+        "mental": 99,
         "shotcalling": 98,
-        "laning": 90,
-        "teamfight": 98,
+        "laning": 98,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Varus",
           "Ezreal",
-          "Jinx"
+          "Jinx",
+          "Aphelios",
+          "Xayah"
         ],
         "traits": [
           "clutch",
           "leader",
           "mechanical",
           "veteran"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2205,23 +2829,32 @@ const AI_TEAMS = [
         "name": "Duro",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 87,
-        "potential": 92,
-        "form": 65,
+        "level": 91,
+        "potential": 99,
+        "form": 70,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 84,
-        "laning": 91,
-        "teamfight": 90,
-        "mechanics": 84,
+        "mental": 94,
+        "shotcalling": 99,
+        "laning": 93,
+        "teamfight": 95,
+        "mechanics": 87,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       }
     ],
@@ -2235,24 +2868,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nidalee",
+          "Lee Sin"
         ],
         "MID": [
-          "Orianna",
+          "Yone",
           "Azir"
         ],
         "ADC": [
           "Varus",
-          "Ashe"
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -2275,43 +2908,61 @@ const AI_TEAMS = [
         "name": "Casting",
         "role": "TOP",
         "nationality": "KR",
-        "level": 72,
-        "potential": 76,
-        "form": 56,
+        "level": 80,
+        "potential": 83,
+        "form": 60,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 68,
-        "laning": 71,
-        "teamfight": 70,
-        "mechanics": 73,
+        "mental": 77,
+        "shotcalling": 76,
+        "laning": 83,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Sion",
           "Gnar",
-          "Ornn"
+          "Ornn",
+          "Jayce",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
+        ]
       },
       {
         "id": "bro_jungle",
         "name": "GIDEON",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 74,
-        "potential": 72,
-        "form": 70,
+        "level": 82,
+        "potential": 85,
+        "form": 76,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 76,
-        "laning": 75,
-        "teamfight": 71,
-        "mechanics": 75,
+        "mental": 83,
+        "shotcalling": 88,
+        "laning": 79,
+        "teamfight": 84,
+        "mechanics": 83,
         "championPool": [
           "Maokai",
           "Jarvan IV",
-          "Sejuani"
+          "Sejuani",
+          "Nidalee",
+          "Graves"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -2319,22 +2970,31 @@ const AI_TEAMS = [
         "name": "Roamer",
         "role": "MID",
         "nationality": "KR",
-        "level": 77,
-        "potential": 80,
-        "form": 66,
+        "level": 83,
+        "potential": 86,
+        "form": 71,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 76,
-        "laning": 84,
-        "teamfight": 83,
-        "mechanics": 80,
+        "mental": 87,
+        "shotcalling": 84,
+        "laning": 89,
+        "teamfight": 88,
+        "mechanics": 87,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -2342,43 +3002,61 @@ const AI_TEAMS = [
         "name": "Teddy",
         "role": "ADC",
         "nationality": "KR",
-        "level": 73,
-        "potential": 78,
-        "form": 56,
+        "level": 81,
+        "potential": 84,
+        "form": 60,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 69,
-        "laning": 79,
-        "teamfight": 82,
-        "mechanics": 72,
+        "mental": 82,
+        "shotcalling": 75,
+        "laning": 86,
+        "teamfight": 89,
+        "mechanics": 85,
         "championPool": [
           "Jinx",
           "Aphelios",
-          "Caitlyn"
+          "Caitlyn",
+          "Varus",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "bro_support",
         "name": "Namgung",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 73,
-        "potential": 71,
-        "form": 69,
+        "level": 81,
+        "potential": 84,
+        "form": 75,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 73,
-        "laning": 73,
-        "teamfight": 71,
-        "mechanics": 76,
+        "mental": 84,
+        "shotcalling": 86,
+        "laning": 81,
+        "teamfight": 83,
+        "mechanics": 79,
         "championPool": [
           "Lulu",
           "Milio",
-          "Karma"
+          "Karma",
+          "Nami",
+          "Thresh"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       }
     ],
@@ -2392,20 +3070,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Sion",
+          "Gnar"
         ],
         "JUNGLE": [
           "Maokai",
           "Jarvan IV"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Aphelios"
         ],
         "SUPPORT": [
           "Lulu",
@@ -2432,23 +3110,32 @@ const AI_TEAMS = [
         "name": "Zeus",
         "role": "TOP",
         "nationality": "KR",
-        "level": 94,
-        "potential": 92,
-        "form": 72,
+        "level": 97,
+        "potential": 98,
+        "form": 75,
         "fatigue": 0,
-        "mental": 88,
-        "shotcalling": 94,
-        "laning": 98,
-        "teamfight": 97,
+        "mental": 98,
+        "shotcalling": 95,
+        "laning": 99,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Gwen",
           "Jayce",
-          "Rumble"
+          "Rumble",
+          "Gnar",
+          "Kennen"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2456,24 +3143,33 @@ const AI_TEAMS = [
         "name": "Kanavi",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 93,
-        "potential": 93,
-        "form": 75,
+        "level": 97,
+        "potential": 98,
+        "form": 79,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 91,
-        "laning": 84,
-        "teamfight": 93,
-        "mechanics": 91,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 91,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Jarvan IV",
           "Lee Sin",
-          "Viego"
+          "Viego",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "clutch",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2481,23 +3177,32 @@ const AI_TEAMS = [
         "name": "Zeka",
         "role": "MID",
         "nationality": "KR",
-        "level": 91,
-        "potential": 89,
-        "form": 79,
+        "level": 94,
+        "potential": 97,
+        "form": 84,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 93,
-        "laning": 89,
-        "teamfight": 97,
+        "mental": 93,
+        "shotcalling": 96,
+        "laning": 97,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Akali",
           "Yone",
-          "Ahri"
+          "Ahri",
+          "Orianna",
+          "Azir"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2505,22 +3210,31 @@ const AI_TEAMS = [
         "name": "Gumayusi",
         "role": "ADC",
         "nationality": "KR",
-        "level": 92,
-        "potential": 96,
-        "form": 70,
+        "level": 95,
+        "potential": 98,
+        "form": 73,
         "fatigue": 0,
-        "mental": 85,
-        "shotcalling": 83,
-        "laning": 89,
-        "teamfight": 95,
+        "mental": 93,
+        "shotcalling": 87,
+        "laning": 97,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Varus",
           "Jinx",
-          "Caitlyn"
+          "Caitlyn",
+          "Aphelios",
+          "Xayah"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -2528,25 +3242,34 @@ const AI_TEAMS = [
         "name": "Delight",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 91,
-        "potential": 96,
-        "form": 73,
+        "level": 95,
+        "potential": 98,
+        "form": 77,
         "fatigue": 0,
-        "mental": 93,
-        "shotcalling": 96,
-        "laning": 89,
-        "teamfight": 93,
-        "mechanics": 92,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 95,
+        "teamfight": 99,
+        "mechanics": 95,
         "championPool": [
           "Rakan",
           "Rell",
-          "Nautilus"
+          "Nautilus",
+          "Braum",
+          "Renata Glasc"
         ],
         "traits": [
           "clutch",
           "igl",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       }
     ],
@@ -2560,24 +3283,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gwen",
+          "Jayce"
         ],
         "JUNGLE": [
           "Jarvan IV",
-          "Vi"
+          "Lee Sin"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Akali",
+          "Yone"
         ],
         "ADC": [
           "Varus",
-          "Ashe"
+          "Jinx"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell"
         ]
       },
       "flexPicks": [
@@ -2600,22 +3323,31 @@ const AI_TEAMS = [
         "name": "Rich",
         "role": "TOP",
         "nationality": "KR",
-        "level": 68,
-        "potential": 72,
-        "form": 65,
+        "level": 76,
+        "potential": 79,
+        "form": 70,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 60,
-        "laning": 68,
-        "teamfight": 72,
-        "mechanics": 67,
+        "mental": 76,
+        "shotcalling": 70,
+        "laning": 79,
+        "teamfight": 79,
+        "mechanics": 78,
         "championPool": [
           "Jayce",
           "Renekton",
-          "Kennen"
+          "Kennen",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -2623,22 +3355,31 @@ const AI_TEAMS = [
         "name": "Willer",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 67,
-        "potential": 65,
-        "form": 65,
+        "level": 75,
+        "potential": 78,
+        "form": 70,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 73,
-        "laning": 65,
-        "teamfight": 64,
-        "mechanics": 63,
+        "mental": 78,
+        "shotcalling": 83,
+        "laning": 71,
+        "teamfight": 77,
+        "mechanics": 74,
         "championPool": [
           "Lee Sin",
           "Elise",
-          "Vi"
+          "Vi",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -2646,22 +3387,31 @@ const AI_TEAMS = [
         "name": "Ucal",
         "role": "MID",
         "nationality": "KR",
-        "level": 65,
-        "potential": 64,
-        "form": 63,
+        "level": 73,
+        "potential": 76,
+        "form": 68,
         "fatigue": 0,
-        "mental": 58,
-        "shotcalling": 62,
-        "laning": 72,
-        "teamfight": 62,
-        "mechanics": 67,
+        "mental": 73,
+        "shotcalling": 73,
+        "laning": 79,
+        "teamfight": 74,
+        "mechanics": 77,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -2669,42 +3419,60 @@ const AI_TEAMS = [
         "name": "Jiwoo",
         "role": "ADC",
         "nationality": "KR",
-        "level": 70,
-        "potential": 74,
-        "form": 55,
+        "level": 77,
+        "potential": 80,
+        "form": 57,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 62,
-        "laning": 76,
-        "teamfight": 71,
-        "mechanics": 71,
+        "mental": 78,
+        "shotcalling": 69,
+        "laning": 82,
+        "teamfight": 81,
+        "mechanics": 81,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "drx_support",
         "name": "Andil",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 71,
-        "potential": 70,
-        "form": 51,
+        "level": 78,
+        "potential": 81,
+        "form": 53,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 76,
-        "laning": 65,
-        "teamfight": 67,
-        "mechanics": 68,
+        "mental": 81,
+        "shotcalling": 85,
+        "laning": 75,
+        "teamfight": 79,
+        "mechanics": 74,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
+        ]
       }
     ],
     "draftProfile": {
@@ -2725,16 +3493,16 @@ const AI_TEAMS = [
           "Elise"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -2757,22 +3525,31 @@ const AI_TEAMS = [
         "name": "PerfecT",
         "role": "TOP",
         "nationality": "KR",
-        "level": 75,
-        "potential": 78,
-        "form": 74,
+        "level": 82,
+        "potential": 85,
+        "form": 80,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 68,
-        "laning": 80,
-        "teamfight": 72,
-        "mechanics": 80,
+        "mental": 85,
+        "shotcalling": 77,
+        "laning": 87,
+        "teamfight": 82,
+        "mechanics": 86,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -2780,23 +3557,32 @@ const AI_TEAMS = [
         "name": "Cuzz",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 83,
-        "potential": 87,
-        "form": 77,
+        "level": 88,
+        "potential": 91,
+        "form": 82,
         "fatigue": 0,
-        "mental": 85,
-        "shotcalling": 82,
-        "laning": 79,
-        "teamfight": 85,
-        "mechanics": 82,
+        "mental": 93,
+        "shotcalling": 97,
+        "laning": 83,
+        "teamfight": 92,
+        "mechanics": 89,
         "championPool": [
           "Vi",
           "Nocturne",
-          "Sejuani"
+          "Sejuani",
+          "Jarvan IV",
+          "Wukong"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
         ]
       },
       {
@@ -2804,23 +3590,32 @@ const AI_TEAMS = [
         "name": "Bdd",
         "role": "MID",
         "nationality": "KR",
-        "level": 88,
+        "level": 91,
         "potential": 94,
-        "form": 70,
+        "form": 72,
         "fatigue": 0,
-        "mental": 89,
-        "shotcalling": 87,
-        "laning": 85,
-        "teamfight": 93,
-        "mechanics": 93,
+        "mental": 95,
+        "shotcalling": 92,
+        "laning": 94,
+        "teamfight": 97,
+        "mechanics": 99,
         "championPool": [
           "Azir",
           "Taliyah",
-          "Orianna"
+          "Orianna",
+          "Ryze",
+          "Viktor"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       },
       {
@@ -2828,22 +3623,31 @@ const AI_TEAMS = [
         "name": "Aiming",
         "role": "ADC",
         "nationality": "KR",
-        "level": 88,
-        "potential": 92,
-        "form": 70,
+        "level": 91,
+        "potential": 94,
+        "form": 72,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 82,
-        "laning": 90,
-        "teamfight": 95,
-        "mechanics": 88,
+        "mental": 88,
+        "shotcalling": 84,
+        "laning": 95,
+        "teamfight": 98,
+        "mechanics": 98,
         "championPool": [
           "Ezreal",
           "Jinx",
-          "Varus"
+          "Varus",
+          "Aphelios",
+          "Xayah"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -2851,22 +3655,31 @@ const AI_TEAMS = [
         "name": "Effort",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 83,
-        "potential": 83,
-        "form": 61,
+        "level": 88,
+        "potential": 91,
+        "form": 64,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 87,
-        "laning": 85,
-        "teamfight": 79,
-        "mechanics": 81,
+        "mental": 92,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 89,
+        "mechanics": 84,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       }
     ],
@@ -2880,20 +3693,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Nocturne"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Taliyah"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Jinx"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -2920,22 +3733,31 @@ const AI_TEAMS = [
         "name": "Kingen",
         "role": "TOP",
         "nationality": "KR",
-        "level": 70,
-        "potential": 72,
-        "form": 64,
+        "level": 77,
+        "potential": 80,
+        "form": 68,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 65,
-        "laning": 73,
-        "teamfight": 69,
-        "mechanics": 71,
+        "mental": 78,
+        "shotcalling": 73,
+        "laning": 81,
+        "teamfight": 78,
+        "mechanics": 79,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -2943,22 +3765,31 @@ const AI_TEAMS = [
         "name": "Sponge",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 62,
-        "potential": 61,
-        "form": 50,
+        "level": 72,
+        "potential": 75,
+        "form": 56,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 65,
-        "laning": 58,
-        "teamfight": 63,
-        "mechanics": 59,
+        "mental": 75,
+        "shotcalling": 78,
+        "laning": 67,
+        "teamfight": 75,
+        "mechanics": 72,
         "championPool": [
           "Lee Sin",
           "Elise",
-          "Vi"
+          "Vi",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -2966,22 +3797,31 @@ const AI_TEAMS = [
         "name": "Scout",
         "role": "MID",
         "nationality": "CN",
-        "level": 69,
-        "potential": 75,
-        "form": 59,
+        "level": 77,
+        "potential": 80,
+        "form": 64,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 61,
-        "laning": 72,
-        "teamfight": 66,
-        "mechanics": 75,
+        "mental": 80,
+        "shotcalling": 74,
+        "laning": 81,
+        "teamfight": 78,
+        "mechanics": 83,
         "championPool": [
           "Azir",
           "Ryze",
-          "LeBlanc"
+          "LeBlanc",
+          "Ahri",
+          "Taliyah"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -2989,22 +3829,31 @@ const AI_TEAMS = [
         "name": "Taeyoon",
         "role": "ADC",
         "nationality": "KR",
-        "level": 62,
-        "potential": 63,
-        "form": 57,
+        "level": 72,
+        "potential": 75,
+        "form": 62,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 54,
-        "laning": 63,
-        "teamfight": 65,
-        "mechanics": 64,
+        "mental": 75,
+        "shotcalling": 64,
+        "laning": 74,
+        "teamfight": 77,
+        "mechanics": 77,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -3013,21 +3862,30 @@ const AI_TEAMS = [
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 87,
-        "potential": 85,
-        "form": 60,
+        "potential": 90,
+        "form": 59,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 89,
-        "laning": 83,
-        "teamfight": 89,
-        "mechanics": 86,
+        "mental": 91,
+        "shotcalling": 97,
+        "laning": 85,
+        "teamfight": 91,
+        "mechanics": 84,
         "championPool": [
           "Bard",
           "Rakan",
-          "Thresh"
+          "Thresh",
+          "Nautilus",
+          "Pyke"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          91,
+          88,
+          84,
+          79,
+          75
         ]
       }
     ],
@@ -3041,24 +3899,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
           "Lee Sin",
           "Elise"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
           "Caitlyn"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Bard",
+          "Rakan"
         ]
       },
       "flexPicks": [
@@ -3081,23 +3939,32 @@ const AI_TEAMS = [
         "name": "Doran",
         "role": "TOP",
         "nationality": "KR",
-        "level": 88,
-        "potential": 93,
-        "form": 81,
+        "level": 92,
+        "potential": 95,
+        "form": 87,
         "fatigue": 0,
-        "mental": 85,
-        "shotcalling": 83,
-        "laning": 90,
-        "teamfight": 88,
-        "mechanics": 88,
+        "mental": 94,
+        "shotcalling": 88,
+        "laning": 97,
+        "teamfight": 93,
+        "mechanics": 97,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -3105,19 +3972,21 @@ const AI_TEAMS = [
         "name": "Oner",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 91,
-        "potential": 91,
-        "form": 81,
+        "level": 95,
+        "potential": 98,
+        "form": 87,
         "fatigue": 0,
-        "mental": 98,
-        "shotcalling": 98,
-        "laning": 84,
-        "teamfight": 93,
-        "mechanics": 92,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 90,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Lee Sin",
           "Viego",
-          "Vi"
+          "Vi",
+          "Jarvan IV",
+          "Wukong"
         ],
         "traits": [
           "clutch",
@@ -3125,6 +3994,13 @@ const AI_TEAMS = [
           "igl",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3132,25 +4008,34 @@ const AI_TEAMS = [
         "name": "Faker",
         "role": "MID",
         "nationality": "KR",
-        "level": 95,
-        "potential": 98,
-        "form": 65,
+        "level": 97,
+        "potential": 97,
+        "form": 68,
         "fatigue": 0,
-        "mental": 98,
-        "shotcalling": 98,
-        "laning": 94,
-        "teamfight": 96,
-        "mechanics": 95,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 99,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Azir",
           "Orianna",
-          "Ryze"
+          "Ryze",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "clutch",
           "leader",
           "mechanical",
           "veteran"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3158,23 +4043,32 @@ const AI_TEAMS = [
         "name": "Peyz",
         "role": "ADC",
         "nationality": "KR",
-        "level": 91,
-        "potential": 94,
-        "form": 76,
+        "level": 94,
+        "potential": 97,
+        "form": 79,
         "fatigue": 0,
-        "mental": 88,
-        "shotcalling": 80,
-        "laning": 95,
-        "teamfight": 97,
-        "mechanics": 98,
+        "mental": 97,
+        "shotcalling": 85,
+        "laning": 99,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Zeri"
+          "Zeri",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3182,25 +4076,34 @@ const AI_TEAMS = [
         "name": "Keria",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 94,
-        "potential": 92,
-        "form": 77,
+        "level": 97,
+        "potential": 98,
+        "form": 80,
         "fatigue": 0,
-        "mental": 96,
-        "shotcalling": 98,
-        "laning": 89,
-        "teamfight": 94,
-        "mechanics": 92,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 96,
+        "teamfight": 99,
+        "mechanics": 96,
         "championPool": [
           "Thresh",
-          "Renata",
-          "Nautilus"
+          "Renata Glasc",
+          "Nautilus",
+          "Rakan",
+          "Rell"
         ],
         "traits": [
           "clutch",
           "igl",
           "leader",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       }
     ],
@@ -3218,20 +4121,20 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Lee Sin",
+          "Viego"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Orianna"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Thresh",
+          "Renata Glasc"
         ]
       },
       "flexPicks": [
@@ -3254,23 +4157,32 @@ const AI_TEAMS = [
         "name": "Flandre",
         "role": "TOP",
         "nationality": "CN",
-        "level": 86,
-        "potential": 85,
-        "form": 68,
+        "level": 90,
+        "potential": 91,
+        "form": 72,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 76,
-        "laning": 85,
-        "teamfight": 81,
-        "mechanics": 85,
+        "mental": 99,
+        "shotcalling": 84,
+        "laning": 93,
+        "teamfight": 91,
+        "mechanics": 92,
         "championPool": [
           "Gangplank",
           "Jayce",
-          "Kennen"
+          "Kennen",
+          "Rumble",
+          "Gnar"
         ],
         "traits": [
           "clutch",
           "veteran"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -3278,25 +4190,34 @@ const AI_TEAMS = [
         "name": "Tarzan",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 90,
-        "potential": 91,
-        "form": 79,
+        "level": 94,
+        "potential": 97,
+        "form": 85,
         "fatigue": 0,
-        "mental": 89,
-        "shotcalling": 88,
-        "laning": 87,
-        "teamfight": 91,
-        "mechanics": 89,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 91,
+        "teamfight": 99,
+        "mechanics": 98,
         "championPool": [
           "Jarvan IV",
           "Sejuani",
-          "Lee Sin"
+          "Lee Sin",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "clutch",
           "consistant",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3304,22 +4225,31 @@ const AI_TEAMS = [
         "name": "Shanks",
         "role": "MID",
         "nationality": "CN",
-        "level": 79,
-        "potential": 78,
-        "form": 81,
+        "level": 87,
+        "potential": 90,
+        "form": 89,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 75,
-        "laning": 80,
-        "teamfight": 83,
-        "mechanics": 84,
+        "mental": 87,
+        "shotcalling": 86,
+        "laning": 90,
+        "teamfight": 91,
+        "mechanics": 92,
         "championPool": [
           "Ryze",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
         ]
       },
       {
@@ -3327,22 +4257,31 @@ const AI_TEAMS = [
         "name": "Hope",
         "role": "ADC",
         "nationality": "CN",
-        "level": 89,
-        "potential": 94,
-        "form": 72,
+        "level": 93,
+        "potential": 96,
+        "form": 76,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 80,
-        "laning": 85,
-        "teamfight": 93,
-        "mechanics": 89,
+        "mental": 91,
+        "shotcalling": 85,
+        "laning": 94,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -3350,23 +4289,32 @@ const AI_TEAMS = [
         "name": "Kael",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 89,
-        "potential": 92,
-        "form": 73,
+        "level": 93,
+        "potential": 96,
+        "form": 77,
         "fatigue": 0,
-        "mental": 88,
-        "shotcalling": 87,
-        "laning": 89,
-        "teamfight": 87,
-        "mechanics": 84,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 93,
+        "teamfight": 97,
+        "mechanics": 88,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "clutch",
           "igl"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       }
     ],
@@ -3380,24 +4328,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gangplank",
+          "Jayce"
         ],
         "JUNGLE": [
           "Jarvan IV",
-          "Vi"
+          "Sejuani"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Ryze",
+          "Orianna"
         ],
         "ADC": [
           "Varus",
           "Ashe"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -3420,23 +4368,32 @@ const AI_TEAMS = [
         "name": "Bin",
         "role": "TOP",
         "nationality": "CN",
-        "level": 95,
+        "level": 97,
         "potential": 98,
-        "form": 75,
+        "form": 78,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 88,
-        "laning": 96,
-        "teamfight": 95,
+        "mental": 99,
+        "shotcalling": 92,
+        "laning": 99,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Jax",
           "Gnar",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3444,24 +4401,33 @@ const AI_TEAMS = [
         "name": "Xun",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 91,
-        "potential": 91,
-        "form": 69,
+        "level": 95,
+        "potential": 98,
+        "form": 73,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 93,
-        "laning": 86,
-        "teamfight": 97,
-        "mechanics": 92,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 91,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Wukong",
           "Vi",
-          "Nocturne"
+          "Nocturne",
+          "Jarvan IV",
+          "Skarner"
         ],
         "traits": [
           "clutch",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3469,23 +4435,32 @@ const AI_TEAMS = [
         "name": "Knight",
         "role": "MID",
         "nationality": "CN",
-        "level": 96,
+        "level": 97,
         "potential": 98,
-        "form": 77,
+        "form": 79,
         "fatigue": 0,
-        "mental": 97,
-        "shotcalling": 96,
-        "laning": 93,
-        "teamfight": 98,
+        "mental": 99,
+        "shotcalling": 98,
+        "laning": 99,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Orianna",
           "Ahri",
-          "Syndra"
+          "Syndra",
+          "Azir",
+          "Ryze"
         ],
         "traits": [
           "clutch",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3493,24 +4468,33 @@ const AI_TEAMS = [
         "name": "Viper",
         "role": "ADC",
         "nationality": "KR",
-        "level": 94,
-        "potential": 97,
-        "form": 82,
+        "level": 97,
+        "potential": 98,
+        "form": 87,
         "fatigue": 0,
-        "mental": 90,
-        "shotcalling": 91,
-        "laning": 92,
-        "teamfight": 98,
+        "mental": 99,
+        "shotcalling": 92,
+        "laning": 99,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Varus",
           "Ezreal",
-          "Aphelios"
+          "Aphelios",
+          "Jinx",
+          "Xayah"
         ],
         "traits": [
           "clutch",
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       },
       {
@@ -3518,24 +4502,33 @@ const AI_TEAMS = [
         "name": "ON",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 90,
-        "potential": 95,
-        "form": 70,
+        "level": 94,
+        "potential": 97,
+        "form": 74,
         "fatigue": 0,
-        "mental": 91,
-        "shotcalling": 94,
-        "laning": 86,
-        "teamfight": 88,
-        "mechanics": 90,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 93,
+        "teamfight": 98,
+        "mechanics": 94,
         "championPool": [
           "Rakan",
           "Nautilus",
-          "Rell"
+          "Rell",
+          "Braum",
+          "Renata Glasc"
         ],
         "traits": [
           "clutch",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          91,
+          88
         ]
       }
     ],
@@ -3549,24 +4542,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
+          "Jax",
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
+          "Wukong",
           "Vi"
         ],
         "MID": [
           "Orianna",
-          "Azir"
+          "Ahri"
         ],
         "ADC": [
           "Varus",
-          "Ashe"
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -3589,22 +4582,31 @@ const AI_TEAMS = [
         "name": "Zdz",
         "role": "TOP",
         "nationality": "CN",
-        "level": 69,
-        "potential": 71,
-        "form": 58,
+        "level": 77,
+        "potential": 80,
+        "form": 63,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 59,
-        "laning": 74,
-        "teamfight": 64,
-        "mechanics": 74,
+        "mental": 80,
+        "shotcalling": 70,
+        "laning": 82,
+        "teamfight": 76,
+        "mechanics": 81,
         "championPool": [
           "Ornn",
           "Sion",
-          "Gnar"
+          "Gnar",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -3612,22 +4614,31 @@ const AI_TEAMS = [
         "name": "Xiaohao",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 64,
-        "potential": 67,
-        "form": 59,
+        "level": 74,
+        "potential": 77,
+        "form": 64,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 69,
-        "laning": 62,
-        "teamfight": 65,
-        "mechanics": 65,
+        "mental": 74,
+        "shotcalling": 81,
+        "laning": 70,
+        "teamfight": 77,
+        "mechanics": 75,
         "championPool": [
           "Sejuani",
           "Maokai",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Nidalee",
+          "Graves"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          79,
+          76,
+          72,
+          67,
+          63
         ]
       },
       {
@@ -3635,64 +4646,91 @@ const AI_TEAMS = [
         "name": "Angel",
         "role": "MID",
         "nationality": "CN",
-        "level": 64,
-        "potential": 66,
-        "form": 50,
+        "level": 74,
+        "potential": 77,
+        "form": 54,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 65,
-        "laning": 61,
-        "teamfight": 70,
-        "mechanics": 66,
+        "mental": 71,
+        "shotcalling": 75,
+        "laning": 76,
+        "teamfight": 79,
+        "mechanics": 78,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
+        ]
       },
       {
         "id": "edg_adc",
         "name": "Leave",
         "role": "ADC",
         "nationality": "CN",
-        "level": 69,
-        "potential": 70,
-        "form": 49,
+        "level": 77,
+        "potential": 80,
+        "form": 52,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 64,
-        "laning": 70,
-        "teamfight": 69,
-        "mechanics": 69,
+        "mental": 78,
+        "shotcalling": 71,
+        "laning": 79,
+        "teamfight": 81,
+        "mechanics": 81,
         "championPool": [
           "Aphelios",
           "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Varus",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "edg_support",
         "name": "Jwei",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 63,
-        "potential": 67,
-        "form": 57,
+        "level": 73,
+        "potential": 76,
+        "form": 62,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 60,
-        "laning": 57,
-        "teamfight": 63,
-        "mechanics": 61,
+        "mental": 77,
+        "shotcalling": 77,
+        "laning": 70,
+        "teamfight": 76,
+        "mechanics": 69,
         "championPool": [
           "Milio",
           "Karma",
-          "Lulu"
+          "Lulu",
+          "Nami",
+          "Thresh"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       }
     ],
@@ -3710,20 +4748,20 @@ const AI_TEAMS = [
           "Sion"
         ],
         "JUNGLE": [
-          "Maokai",
-          "Jarvan IV"
+          "Sejuani",
+          "Maokai"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Aphelios",
+          "Caitlyn"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Milio",
+          "Karma"
         ]
       },
       "flexPicks": [
@@ -3746,44 +4784,62 @@ const AI_TEAMS = [
         "name": "Breathe",
         "role": "TOP",
         "nationality": "CN",
-        "level": 76,
-        "potential": 77,
-        "form": 63,
+        "level": 83,
+        "potential": 86,
+        "form": 67,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 75,
-        "laning": 78,
-        "teamfight": 71,
-        "mechanics": 73,
+        "mental": 84,
+        "shotcalling": 81,
+        "laning": 87,
+        "teamfight": 82,
+        "mechanics": 84,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
+        ]
       },
       {
         "id": "ig_jungle",
         "name": "Wei",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 82,
-        "potential": 83,
-        "form": 75,
+        "level": 87,
+        "potential": 90,
+        "form": 80,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 88,
-        "laning": 78,
-        "teamfight": 80,
-        "mechanics": 82,
+        "mental": 87,
+        "shotcalling": 98,
+        "laning": 82,
+        "teamfight": 89,
+        "mechanics": 88,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -3791,22 +4847,31 @@ const AI_TEAMS = [
         "name": "Renard",
         "role": "MID",
         "nationality": "CN",
-        "level": 79,
-        "potential": 84,
-        "form": 71,
+        "level": 86,
+        "potential": 89,
+        "form": 77,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 77,
-        "laning": 83,
-        "teamfight": 78,
-        "mechanics": 83,
+        "mental": 88,
+        "shotcalling": 86,
+        "laning": 91,
+        "teamfight": 88,
+        "mechanics": 91,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Taliyah"
+          "Taliyah",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -3814,22 +4879,31 @@ const AI_TEAMS = [
         "name": "Nia",
         "role": "ADC",
         "nationality": "CN",
-        "level": 75,
-        "potential": 73,
-        "form": 73,
+        "level": 82,
+        "potential": 85,
+        "form": 79,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 67,
-        "laning": 76,
-        "teamfight": 83,
-        "mechanics": 82,
+        "mental": 82,
+        "shotcalling": 74,
+        "laning": 84,
+        "teamfight": 90,
+        "mechanics": 89,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -3837,25 +4911,34 @@ const AI_TEAMS = [
         "name": "Meiko",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 88,
-        "potential": 90,
-        "form": 59,
+        "level": 92,
+        "potential": 93,
+        "form": 62,
         "fatigue": 0,
-        "mental": 91,
-        "shotcalling": 98,
-        "laning": 82,
-        "teamfight": 87,
-        "mechanics": 83,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 97,
+        "mechanics": 87,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Braum"
+          "Braum",
+          "Bard",
+          "Thresh"
         ],
         "traits": [
           "clutch",
           "igl",
           "leader",
           "veteran"
+        ],
+        "masteries": [
+          97,
+          96,
+          93,
+          88,
+          84
         ]
       }
     ],
@@ -3869,24 +4952,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
           "LeBlanc",
           "Ahri"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Nautilus",
+          "Rakan"
         ]
       },
       "flexPicks": [
@@ -3909,22 +4992,31 @@ const AI_TEAMS = [
         "name": "Xiaoxu",
         "role": "TOP",
         "nationality": "CN",
-        "level": 88,
-        "potential": 91,
-        "form": 68,
+        "level": 92,
+        "potential": 95,
+        "form": 72,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 82,
-        "laning": 88,
-        "teamfight": 92,
-        "mechanics": 90,
+        "mental": 89,
+        "shotcalling": 87,
+        "laning": 96,
+        "teamfight": 95,
+        "mechanics": 98,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          89,
+          85
         ]
       },
       {
@@ -3932,22 +5024,31 @@ const AI_TEAMS = [
         "name": "JunJia",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 82,
-        "potential": 83,
-        "form": 72,
+        "level": 88,
+        "potential": 91,
+        "form": 79,
         "fatigue": 0,
-        "mental": 84,
-        "shotcalling": 81,
-        "laning": 81,
-        "teamfight": 82,
-        "mechanics": 82,
+        "mental": 92,
+        "shotcalling": 93,
+        "laning": 85,
+        "teamfight": 91,
+        "mechanics": 89,
         "championPool": [
           "Vi",
           "Nocturne",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       },
       {
@@ -3955,22 +5056,31 @@ const AI_TEAMS = [
         "name": "HongQ",
         "role": "MID",
         "nationality": "APAC",
-        "level": 81,
-        "potential": 81,
-        "form": 80,
+        "level": 87,
+        "potential": 90,
+        "form": 87,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 83,
-        "laning": 87,
-        "teamfight": 81,
-        "mechanics": 86,
+        "mental": 88,
+        "shotcalling": 89,
+        "laning": 93,
+        "teamfight": 89,
+        "mechanics": 92,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
         ]
       },
       {
@@ -3978,22 +5088,31 @@ const AI_TEAMS = [
         "name": "GALA",
         "role": "ADC",
         "nationality": "CN",
-        "level": 89,
-        "potential": 89,
-        "form": 75,
+        "level": 93,
+        "potential": 96,
+        "form": 79,
         "fatigue": 0,
-        "mental": 84,
-        "shotcalling": 85,
-        "laning": 89,
-        "teamfight": 89,
-        "mechanics": 97,
+        "mental": 92,
+        "shotcalling": 87,
+        "laning": 96,
+        "teamfight": 97,
+        "mechanics": 99,
         "championPool": [
           "Kai'Sa",
           "Xayah",
-          "Varus"
+          "Varus",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -4001,23 +5120,32 @@ const AI_TEAMS = [
         "name": "Vampire",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 87,
-        "potential": 92,
-        "form": 69,
+        "level": 91,
+        "potential": 94,
+        "form": 73,
         "fatigue": 0,
-        "mental": 88,
-        "shotcalling": 93,
-        "laning": 82,
-        "teamfight": 89,
-        "mechanics": 82,
+        "mental": 98,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 97,
+        "mechanics": 86,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "clutch",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       }
     ],
@@ -4035,20 +5163,20 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Nocturne"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Kai'Sa",
+          "Xayah"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -4071,23 +5199,32 @@ const AI_TEAMS = [
         "name": "Burdol",
         "role": "TOP",
         "nationality": "KR",
-        "level": 59,
-        "potential": 57,
-        "form": 58,
+        "level": 68,
+        "potential": 71,
+        "form": 62,
         "fatigue": 0,
-        "mental": 51,
-        "shotcalling": 53,
-        "laning": 60,
-        "teamfight": 56,
-        "mechanics": 62,
+        "mental": 64,
+        "shotcalling": 63,
+        "laning": 71,
+        "teamfight": 68,
+        "mechanics": 71,
         "championPool": [
           "Ornn",
           "Sion",
-          "Gnar"
+          "Gnar",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -4095,22 +5232,31 @@ const AI_TEAMS = [
         "name": "Heng",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 60,
-        "potential": 65,
-        "form": 49,
+        "level": 69,
+        "potential": 72,
+        "form": 54,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 57,
-        "laning": 57,
-        "teamfight": 56,
-        "mechanics": 62,
+        "mental": 72,
+        "shotcalling": 73,
+        "laning": 65,
+        "teamfight": 70,
+        "mechanics": 71,
         "championPool": [
           "Maokai",
           "Jarvan IV",
-          "Sejuani"
+          "Sejuani",
+          "Nidalee",
+          "Graves"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          73,
+          70,
+          66,
+          61,
+          57
         ]
       },
       {
@@ -4118,22 +5264,31 @@ const AI_TEAMS = [
         "name": "Tangyuan",
         "role": "MID",
         "nationality": "CN",
-        "level": 64,
-        "potential": 67,
-        "form": 57,
+        "level": 73,
+        "potential": 76,
+        "form": 62,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 62,
-        "laning": 71,
-        "teamfight": 62,
-        "mechanics": 65,
+        "mental": 72,
+        "shotcalling": 73,
+        "laning": 79,
+        "teamfight": 74,
+        "mechanics": 76,
         "championPool": [
           "Azir",
           "Viktor",
-          "Orianna"
+          "Orianna",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -4141,42 +5296,60 @@ const AI_TEAMS = [
         "name": "Shaoye",
         "role": "ADC",
         "nationality": "CN",
-        "level": 62,
-        "potential": 62,
-        "form": 44,
+        "level": 71,
+        "potential": 74,
+        "form": 50,
         "fatigue": 0,
-        "mental": 54,
-        "shotcalling": 57,
-        "laning": 66,
-        "teamfight": 62,
-        "mechanics": 61,
+        "mental": 68,
+        "shotcalling": 65,
+        "laning": 75,
+        "teamfight": 75,
+        "mechanics": 75,
         "championPool": [
           "Caitlyn",
           "Jinx",
-          "Aphelios"
+          "Aphelios",
+          "Varus",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
+        ]
       },
       {
         "id": "lgd_support",
         "name": "Ycx",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 64,
-        "potential": 67,
-        "form": 49,
+        "level": 73,
+        "potential": 76,
+        "form": 52,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 65,
-        "laning": 58,
-        "teamfight": 66,
-        "mechanics": 60,
+        "mental": 77,
+        "shotcalling": 78,
+        "laning": 70,
+        "teamfight": 77,
+        "mechanics": 68,
         "championPool": [
           "Karma",
           "Lulu",
-          "Milio"
+          "Milio",
+          "Nami",
+          "Thresh"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
+        ]
       }
     ],
     "draftProfile": {
@@ -4205,8 +5378,8 @@ const AI_TEAMS = [
           "Jinx"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Karma",
+          "Lulu"
         ]
       },
       "flexPicks": [
@@ -4229,22 +5402,31 @@ const AI_TEAMS = [
         "name": "sheer",
         "role": "TOP",
         "nationality": "CN",
-        "level": 61,
-        "potential": 60,
-        "form": 54,
+        "level": 71,
+        "potential": 74,
+        "form": 60,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 61,
-        "laning": 64,
-        "teamfight": 56,
-        "mechanics": 66,
+        "mental": 73,
+        "shotcalling": 69,
+        "laning": 75,
+        "teamfight": 70,
+        "mechanics": 75,
         "championPool": [
           "Jayce",
           "Kennen",
-          "Rumble"
+          "Rumble",
+          "Gnar",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       },
       {
@@ -4252,22 +5434,31 @@ const AI_TEAMS = [
         "name": "Croco",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 67,
-        "potential": 70,
-        "form": 56,
+        "level": 75,
+        "potential": 78,
+        "form": 61,
         "fatigue": 0,
-        "mental": 60,
-        "shotcalling": 67,
-        "laning": 64,
-        "teamfight": 65,
-        "mechanics": 68,
+        "mental": 75,
+        "shotcalling": 80,
+        "laning": 71,
+        "teamfight": 77,
+        "mechanics": 76,
         "championPool": [
           "Ivern",
           "Nidalee",
-          "Graves"
+          "Graves",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -4275,22 +5466,31 @@ const AI_TEAMS = [
         "name": "BuLLDoG",
         "role": "MID",
         "nationality": "KR",
-        "level": 68,
-        "potential": 72,
-        "form": 63,
+        "level": 76,
+        "potential": 79,
+        "form": 68,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 66,
-        "laning": 65,
-        "teamfight": 70,
-        "mechanics": 73,
+        "mental": 78,
+        "shotcalling": 76,
+        "laning": 78,
+        "teamfight": 79,
+        "mechanics": 81,
         "championPool": [
           "Orianna",
           "Hwei",
-          "Zoe"
+          "Zoe",
+          "Corki",
+          "LeBlanc"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -4298,22 +5498,31 @@ const AI_TEAMS = [
         "name": "1xn",
         "role": "ADC",
         "nationality": "CN",
-        "level": 61,
-        "potential": 61,
-        "form": 60,
+        "level": 71,
+        "potential": 74,
+        "form": 66,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 53,
-        "laning": 61,
-        "teamfight": 67,
-        "mechanics": 61,
+        "mental": 74,
+        "shotcalling": 63,
+        "laning": 73,
+        "teamfight": 78,
+        "mechanics": 75,
         "championPool": [
           "Caitlyn",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Kai'Sa"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       },
       {
@@ -4321,22 +5530,31 @@ const AI_TEAMS = [
         "name": "MISSING",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 67,
-        "potential": 72,
-        "form": 61,
+        "level": 75,
+        "potential": 78,
+        "form": 66,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 69,
-        "laning": 68,
-        "teamfight": 71,
-        "mechanics": 64,
+        "mental": 80,
+        "shotcalling": 81,
+        "laning": 75,
+        "teamfight": 80,
+        "mechanics": 71,
         "championPool": [
           "Karma",
           "Milio",
-          "Nami"
+          "Nami",
+          "Bard",
+          "Lulu"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       }
     ],
@@ -4354,16 +5572,16 @@ const AI_TEAMS = [
           "Kennen"
         ],
         "JUNGLE": [
-          "Nidalee",
-          "Graves"
+          "Ivern",
+          "Nidalee"
         ],
         "MID": [
-          "Hwei",
-          "Zoe"
+          "Orianna",
+          "Hwei"
         ],
         "ADC": [
-          "Ezreal",
-          "Varus"
+          "Caitlyn",
+          "Ezreal"
         ],
         "SUPPORT": [
           "Karma",
@@ -4390,43 +5608,61 @@ const AI_TEAMS = [
         "name": "HOYA",
         "role": "TOP",
         "nationality": "KR",
-        "level": 74,
-        "potential": 78,
-        "form": 56,
+        "level": 82,
+        "potential": 85,
+        "form": 60,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 64,
-        "laning": 75,
-        "teamfight": 72,
-        "mechanics": 75,
+        "mental": 79,
+        "shotcalling": 76,
+        "laning": 85,
+        "teamfight": 82,
+        "mechanics": 84,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
+        ]
       },
       {
         "id": "nip_jungle",
         "name": "Guwon",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 72,
-        "potential": 74,
-        "form": 72,
+        "level": 80,
+        "potential": 83,
+        "form": 78,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 76,
-        "laning": 65,
-        "teamfight": 71,
-        "mechanics": 69,
+        "mental": 81,
+        "shotcalling": 87,
+        "laning": 74,
+        "teamfight": 83,
+        "mechanics": 80,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       },
       {
@@ -4434,22 +5670,31 @@ const AI_TEAMS = [
         "name": "Care",
         "role": "MID",
         "nationality": "CN",
-        "level": 75,
-        "potential": 78,
-        "form": 68,
+        "level": 81,
+        "potential": 84,
+        "form": 73,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 68,
-        "laning": 73,
-        "teamfight": 80,
-        "mechanics": 77,
+        "mental": 84,
+        "shotcalling": 79,
+        "laning": 83,
+        "teamfight": 85,
+        "mechanics": 85,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Taliyah"
+          "Taliyah",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -4457,22 +5702,31 @@ const AI_TEAMS = [
         "name": "Assum",
         "role": "ADC",
         "nationality": "CN",
-        "level": 72,
-        "potential": 74,
-        "form": 67,
+        "level": 80,
+        "potential": 83,
+        "form": 73,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 70,
-        "laning": 71,
-        "teamfight": 77,
-        "mechanics": 74,
+        "mental": 81,
+        "shotcalling": 75,
+        "laning": 82,
+        "teamfight": 86,
+        "mechanics": 85,
         "championPool": [
           "Kai'Sa",
           "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       },
       {
@@ -4480,21 +5734,30 @@ const AI_TEAMS = [
         "name": "Zhuo",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 69,
-        "potential": 75,
-        "form": 54,
+        "level": 78,
+        "potential": 81,
+        "form": 58,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 66,
-        "laning": 65,
-        "teamfight": 70,
-        "mechanics": 68,
+        "mental": 81,
+        "shotcalling": 82,
+        "laning": 76,
+        "teamfight": 81,
+        "mechanics": 75,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
+        ]
       }
     ],
     "draftProfile": {
@@ -4507,24 +5770,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
           "LeBlanc",
           "Ahri"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Kai'Sa",
+          "Varus"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -4547,22 +5810,31 @@ const AI_TEAMS = [
         "name": "Hery",
         "role": "TOP",
         "nationality": "CN",
-        "level": 64,
-        "potential": 69,
-        "form": 56,
+        "level": 74,
+        "potential": 77,
+        "form": 62,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 59,
-        "laning": 71,
-        "teamfight": 68,
-        "mechanics": 66,
+        "mental": 74,
+        "shotcalling": 70,
+        "laning": 80,
+        "teamfight": 77,
+        "mechanics": 77,
         "championPool": [
           "Jayce",
           "Kennen",
-          "Rumble"
+          "Rumble",
+          "Gnar",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          79,
+          76,
+          72,
+          67,
+          63
         ]
       },
       {
@@ -4570,22 +5842,31 @@ const AI_TEAMS = [
         "name": "Juhan",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 61,
-        "potential": 62,
-        "form": 50,
+        "level": 71,
+        "potential": 74,
+        "form": 56,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 67,
-        "laning": 60,
-        "teamfight": 65,
-        "mechanics": 60,
+        "mental": 75,
+        "shotcalling": 79,
+        "laning": 68,
+        "teamfight": 76,
+        "mechanics": 72,
         "championPool": [
           "Nidalee",
           "Graves",
-          "Ivern"
+          "Ivern",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       },
       {
@@ -4593,23 +5874,32 @@ const AI_TEAMS = [
         "name": "haichao",
         "role": "MID",
         "nationality": "CN",
-        "level": 61,
-        "potential": 59,
-        "form": 50,
+        "level": 71,
+        "potential": 74,
+        "form": 54,
         "fatigue": 0,
-        "mental": 55,
-        "shotcalling": 61,
-        "laning": 61,
-        "teamfight": 65,
-        "mechanics": 62,
+        "mental": 68,
+        "shotcalling": 72,
+        "laning": 74,
+        "teamfight": 75,
+        "mechanics": 74,
         "championPool": [
           "Orianna",
           "Hwei",
-          "Zoe"
+          "Zoe",
+          "Corki",
+          "LeBlanc"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       },
       {
@@ -4617,22 +5907,31 @@ const AI_TEAMS = [
         "name": "Photic",
         "role": "ADC",
         "nationality": "CN",
-        "level": 70,
-        "potential": 76,
-        "form": 61,
+        "level": 77,
+        "potential": 80,
+        "form": 65,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 63,
-        "laning": 75,
-        "teamfight": 69,
-        "mechanics": 69,
+        "mental": 77,
+        "shotcalling": 70,
+        "laning": 81,
+        "teamfight": 81,
+        "mechanics": 81,
         "championPool": [
           "Caitlyn",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Kai'Sa"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -4640,21 +5939,30 @@ const AI_TEAMS = [
         "name": "Moham",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 63,
-        "potential": 69,
-        "form": 50,
+        "level": 73,
+        "potential": 76,
+        "form": 54,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 67,
-        "laning": 60,
-        "teamfight": 60,
-        "mechanics": 61,
+        "mental": 74,
+        "shotcalling": 80,
+        "laning": 72,
+        "teamfight": 75,
+        "mechanics": 69,
         "championPool": [
           "Karma",
           "Milio",
-          "Nami"
+          "Nami",
+          "Bard",
+          "Lulu"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
+        ]
       }
     ],
     "draftProfile": {
@@ -4675,12 +5983,12 @@ const AI_TEAMS = [
           "Graves"
         ],
         "MID": [
-          "Hwei",
-          "Zoe"
+          "Orianna",
+          "Hwei"
         ],
         "ADC": [
-          "Ezreal",
-          "Varus"
+          "Caitlyn",
+          "Ezreal"
         ],
         "SUPPORT": [
           "Karma",
@@ -4707,22 +6015,31 @@ const AI_TEAMS = [
         "name": "Cube",
         "role": "TOP",
         "nationality": "CN",
-        "level": 77,
-        "potential": 80,
-        "form": 67,
+        "level": 83,
+        "potential": 86,
+        "form": 72,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 68,
-        "laning": 78,
-        "teamfight": 75,
-        "mechanics": 74,
+        "mental": 86,
+        "shotcalling": 77,
+        "laning": 86,
+        "teamfight": 83,
+        "mechanics": 84,
         "championPool": [
           "Gnar",
           "Ornn",
-          "Sion"
+          "Sion",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -4730,43 +6047,61 @@ const AI_TEAMS = [
         "name": "Monki",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 72,
-        "potential": 78,
-        "form": 56,
+        "level": 80,
+        "potential": 83,
+        "form": 60,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 73,
-        "laning": 65,
-        "teamfight": 68,
-        "mechanics": 69,
+        "mental": 82,
+        "shotcalling": 85,
+        "laning": 74,
+        "teamfight": 81,
+        "mechanics": 80,
         "championPool": [
           "Maokai",
           "Jarvan IV",
-          "Sejuani"
+          "Sejuani",
+          "Nidalee",
+          "Graves"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
+        ]
       },
       {
         "id": "we_mid",
         "name": "Karis",
         "role": "MID",
         "nationality": "KR",
-        "level": 74,
-        "potential": 79,
-        "form": 69,
+        "level": 82,
+        "potential": 85,
+        "form": 75,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 67,
-        "laning": 73,
-        "teamfight": 71,
-        "mechanics": 79,
+        "mental": 83,
+        "shotcalling": 80,
+        "laning": 85,
+        "teamfight": 83,
+        "mechanics": 87,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -4774,22 +6109,31 @@ const AI_TEAMS = [
         "name": "About",
         "role": "ADC",
         "nationality": "KR",
-        "level": 75,
-        "potential": 81,
-        "form": 68,
+        "level": 81,
+        "potential": 84,
+        "form": 73,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 70,
-        "laning": 79,
-        "teamfight": 78,
-        "mechanics": 82,
+        "mental": 81,
+        "shotcalling": 75,
+        "laning": 85,
+        "teamfight": 86,
+        "mechanics": 88,
         "championPool": [
           "Jinx",
           "Aphelios",
-          "Caitlyn"
+          "Caitlyn",
+          "Varus",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -4797,22 +6141,31 @@ const AI_TEAMS = [
         "name": "Erha",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 67,
-        "potential": 65,
-        "form": 72,
+        "level": 76,
+        "potential": 79,
+        "form": 78,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 71,
-        "laning": 67,
-        "teamfight": 70,
-        "mechanics": 66,
+        "mental": 77,
+        "shotcalling": 83,
+        "laning": 76,
+        "teamfight": 80,
+        "mechanics": 73,
         "championPool": [
           "Karma",
           "Lulu",
-          "Milio"
+          "Milio",
+          "Nami",
+          "Thresh"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          76,
+          71,
+          67
         ]
       }
     ],
@@ -4826,24 +6179,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Gnar",
+          "Ornn"
         ],
         "JUNGLE": [
           "Maokai",
           "Jarvan IV"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Aphelios"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Karma",
+          "Lulu"
         ]
       },
       "flexPicks": [
@@ -4866,23 +6219,32 @@ const AI_TEAMS = [
         "name": "Keshi",
         "role": "TOP",
         "nationality": "CN",
-        "level": 58,
-        "potential": 62,
-        "form": 46,
+        "level": 68,
+        "potential": 71,
+        "form": 50,
         "fatigue": 0,
-        "mental": 54,
-        "shotcalling": 56,
-        "laning": 61,
-        "teamfight": 56,
-        "mechanics": 60,
+        "mental": 66,
+        "shotcalling": 65,
+        "laning": 72,
+        "teamfight": 68,
+        "mechanics": 71,
         "championPool": [
           "Kennen",
           "Jayce",
-          "Renekton"
+          "Renekton",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -4890,23 +6252,32 @@ const AI_TEAMS = [
         "name": "Junhao",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 55,
-        "potential": 59,
-        "form": 60,
+        "level": 68,
+        "potential": 71,
+        "form": 66,
         "fatigue": 0,
-        "mental": 49,
-        "shotcalling": 51,
-        "laning": 49,
-        "teamfight": 60,
-        "mechanics": 52,
+        "mental": 65,
+        "shotcalling": 71,
+        "laning": 62,
+        "teamfight": 73,
+        "mechanics": 68,
         "championPool": [
           "Elise",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -4914,22 +6285,31 @@ const AI_TEAMS = [
         "name": "Heru",
         "role": "MID",
         "nationality": "KR",
-        "level": 62,
-        "potential": 67,
-        "form": 47,
+        "level": 71,
+        "potential": 82,
+        "form": 51,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 64,
-        "laning": 64,
-        "teamfight": 69,
-        "mechanics": 61,
+        "mental": 69,
+        "shotcalling": 73,
+        "laning": 75,
+        "teamfight": 76,
+        "mechanics": 74,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Taliyah"
+          "Taliyah",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "rookie"
+        ],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
         ]
       },
       {
@@ -4937,44 +6317,62 @@ const AI_TEAMS = [
         "name": "Ahn",
         "role": "ADC",
         "nationality": "CN",
-        "level": 65,
-        "potential": 64,
-        "form": 47,
+        "level": 72,
+        "potential": 75,
+        "form": 50,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 54,
-        "laning": 70,
-        "teamfight": 66,
-        "mechanics": 65,
+        "mental": 73,
+        "shotcalling": 63,
+        "laning": 76,
+        "teamfight": 76,
+        "mechanics": 76,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
+        ]
       },
       {
         "id": "ttg_support",
         "name": "Feather",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 56,
-        "potential": 55,
-        "form": 59,
+        "level": 68,
+        "potential": 71,
+        "form": 64,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 55,
-        "laning": 59,
-        "teamfight": 53,
-        "mechanics": 53,
+        "mental": 70,
+        "shotcalling": 73,
+        "laning": 69,
+        "teamfight": 70,
+        "mechanics": 64,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       }
     ],
@@ -4988,12 +6386,12 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Kennen",
+          "Jayce"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Elise",
+          "Vi"
         ],
         "MID": [
           "LeBlanc",
@@ -5004,8 +6402,8 @@ const AI_TEAMS = [
           "Caitlyn"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -5028,23 +6426,32 @@ const AI_TEAMS = [
         "name": "ZUIAN",
         "role": "TOP",
         "nationality": "CN",
-        "level": 84,
-        "potential": 91,
-        "form": 75,
+        "level": 90,
+        "potential": 99,
+        "form": 83,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 84,
-        "laning": 85,
-        "teamfight": 86,
-        "mechanics": 87,
+        "mental": 92,
+        "shotcalling": 88,
+        "laning": 93,
+        "teamfight": 92,
+        "mechanics": 93,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -5052,23 +6459,32 @@ const AI_TEAMS = [
         "name": "Tian",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 89,
-        "potential": 91,
-        "form": 70,
+        "level": 93,
+        "potential": 96,
+        "form": 74,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 86,
-        "laning": 85,
-        "teamfight": 93,
-        "mechanics": 98,
+        "mental": 94,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 98,
+        "mechanics": 99,
         "championPool": [
           "Lee Sin",
           "Viego",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -5076,22 +6492,31 @@ const AI_TEAMS = [
         "name": "Creme",
         "role": "MID",
         "nationality": "CN",
-        "level": 82,
-        "potential": 83,
-        "form": 79,
+        "level": 88,
+        "potential": 91,
+        "form": 86,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 82,
-        "laning": 81,
-        "teamfight": 87,
-        "mechanics": 81,
+        "mental": 90,
+        "shotcalling": 89,
+        "laning": 91,
+        "teamfight": 92,
+        "mechanics": 91,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       },
       {
@@ -5099,22 +6524,31 @@ const AI_TEAMS = [
         "name": "JackeyLove",
         "role": "ADC",
         "nationality": "CN",
-        "level": 89,
-        "potential": 92,
-        "form": 68,
+        "level": 93,
+        "potential": 96,
+        "form": 72,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 82,
-        "laning": 88,
-        "teamfight": 97,
-        "mechanics": 95,
+        "mental": 91,
+        "shotcalling": 86,
+        "laning": 96,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Lucian",
           "Ezreal",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -5122,22 +6556,31 @@ const AI_TEAMS = [
         "name": "fengyue",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 86,
-        "potential": 85,
-        "form": 73,
+        "level": 90,
+        "potential": 93,
+        "form": 77,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 89,
-        "laning": 90,
-        "teamfight": 88,
-        "mechanics": 83,
+        "mental": 91,
+        "shotcalling": 99,
+        "laning": 92,
+        "teamfight": 94,
+        "mechanics": 86,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       }
     ],
@@ -5151,24 +6594,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Lee Sin",
+          "Viego"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Lucian",
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -5191,22 +6634,31 @@ const AI_TEAMS = [
         "name": "sasi",
         "role": "TOP",
         "nationality": "CN",
-        "level": 62,
-        "potential": 63,
-        "form": 61,
+        "level": 71,
+        "potential": 74,
+        "form": 66,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 53,
-        "laning": 68,
-        "teamfight": 66,
-        "mechanics": 60,
+        "mental": 74,
+        "shotcalling": 65,
+        "laning": 77,
+        "teamfight": 74,
+        "mechanics": 72,
         "championPool": [
           "Fiora",
           "Camille",
-          "Jax"
+          "Jax",
+          "Gwen",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       },
       {
@@ -5214,23 +6666,32 @@ const AI_TEAMS = [
         "name": "Climber",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 58,
-        "potential": 60,
-        "form": 49,
+        "level": 68,
+        "potential": 71,
+        "form": 54,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 60,
-        "laning": 50,
-        "teamfight": 62,
-        "mechanics": 55,
+        "mental": 68,
+        "shotcalling": 74,
+        "laning": 61,
+        "teamfight": 73,
+        "mechanics": 68,
         "championPool": [
           "Lee Sin",
           "Nocturne",
-          "Viego"
+          "Viego",
+          "Vi",
+          "Wukong"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -5238,23 +6699,32 @@ const AI_TEAMS = [
         "name": "Saber",
         "role": "MID",
         "nationality": "CN",
-        "level": 61,
-        "potential": 65,
-        "form": 49,
+        "level": 70,
+        "potential": 73,
+        "form": 53,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 62,
-        "laning": 68,
-        "teamfight": 63,
-        "mechanics": 66,
+        "mental": 68,
+        "shotcalling": 71,
+        "laning": 76,
+        "teamfight": 73,
+        "mechanics": 75,
         "championPool": [
           "Ryze",
           "Akali",
-          "Twisted Fate"
+          "Twisted Fate",
+          "Yone",
+          "LeBlanc"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
         ]
       },
       {
@@ -5262,23 +6732,32 @@ const AI_TEAMS = [
         "name": "Hena",
         "role": "ADC",
         "nationality": "KR",
-        "level": 55,
-        "potential": 56,
-        "form": 59,
+        "level": 68,
+        "potential": 71,
+        "form": 65,
         "fatigue": 0,
-        "mental": 55,
-        "shotcalling": 50,
-        "laning": 53,
-        "teamfight": 61,
-        "mechanics": 59,
+        "mental": 68,
+        "shotcalling": 62,
+        "laning": 69,
+        "teamfight": 75,
+        "mechanics": 74,
         "championPool": [
           "Ezreal",
           "Kai'Sa",
-          "Vayne"
+          "Vayne",
+          "Lucian",
+          "Xayah"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -5286,21 +6765,30 @@ const AI_TEAMS = [
         "name": "Xiaoxia",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 62,
-        "potential": 67,
-        "form": 45,
+        "level": 71,
+        "potential": 74,
+        "form": 50,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 58,
-        "laning": 66,
-        "teamfight": 66,
-        "mechanics": 57,
+        "mental": 72,
+        "shotcalling": 74,
+        "laning": 73,
+        "teamfight": 76,
+        "mechanics": 66,
         "championPool": [
           "Rakan",
           "Bard",
-          "Tahm Kench"
+          "Tahm Kench",
+          "Thresh",
+          "Nautilus"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
+        ]
       }
     ],
     "draftProfile": {
@@ -5313,16 +6801,16 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jax",
-          "Fiora"
+          "Fiora",
+          "Camille"
         ],
         "JUNGLE": [
-          "Nocturne",
-          "Viego"
+          "Lee Sin",
+          "Nocturne"
         ],
         "MID": [
-          "Twisted Fate",
-          "Ryze"
+          "Ryze",
+          "Akali"
         ],
         "ADC": [
           "Ezreal",
@@ -5353,22 +6841,31 @@ const AI_TEAMS = [
         "name": "Zika",
         "role": "TOP",
         "nationality": "CN",
-        "level": 74,
-        "potential": 78,
-        "form": 63,
+        "level": 83,
+        "potential": 86,
+        "form": 70,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 69,
-        "laning": 80,
-        "teamfight": 78,
-        "mechanics": 73,
+        "mental": 82,
+        "shotcalling": 79,
+        "laning": 89,
+        "teamfight": 86,
+        "mechanics": 85,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
         ]
       },
       {
@@ -5376,22 +6873,31 @@ const AI_TEAMS = [
         "name": "Jiejie",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 80,
-        "potential": 84,
-        "form": 61,
+        "level": 85,
+        "potential": 88,
+        "form": 64,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 85,
-        "laning": 74,
-        "teamfight": 83,
-        "mechanics": 80,
+        "mental": 87,
+        "shotcalling": 96,
+        "laning": 79,
+        "teamfight": 89,
+        "mechanics": 86,
         "championPool": [
           "Jarvan IV",
           "Viego",
-          "Lee Sin"
+          "Lee Sin",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -5399,25 +6905,34 @@ const AI_TEAMS = [
         "name": "Xiaohu",
         "role": "MID",
         "nationality": "CN",
-        "level": 90,
-        "potential": 89,
-        "form": 66,
+        "level": 93,
+        "potential": 94,
+        "form": 68,
         "fatigue": 0,
-        "mental": 93,
-        "shotcalling": 92,
-        "laning": 96,
-        "teamfight": 90,
-        "mechanics": 89,
+        "mental": 99,
+        "shotcalling": 98,
+        "laning": 99,
+        "teamfight": 97,
+        "mechanics": 99,
         "championPool": [
           "Azir",
           "Annie",
-          "Taliyah"
+          "Taliyah",
+          "Orianna",
+          "Ryze"
         ],
         "traits": [
           "clutch",
           "leader",
           "mechanical",
           "veteran"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          90,
+          86
         ]
       },
       {
@@ -5425,22 +6940,31 @@ const AI_TEAMS = [
         "name": "Elk",
         "role": "ADC",
         "nationality": "CN",
-        "level": 91,
-        "potential": 92,
-        "form": 65,
+        "level": 93,
+        "potential": 96,
+        "form": 67,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 89,
-        "laning": 95,
-        "teamfight": 98,
+        "mental": 90,
+        "shotcalling": 88,
+        "laning": 98,
+        "teamfight": 99,
         "mechanics": 99,
         "championPool": [
           "Varus",
           "Kai'Sa",
-          "Aphelios"
+          "Aphelios",
+          "Jinx",
+          "Xayah"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          89,
+          85
         ]
       },
       {
@@ -5448,22 +6972,31 @@ const AI_TEAMS = [
         "name": "Hang",
         "role": "SUPPORT",
         "nationality": "CN",
-        "level": 74,
-        "potential": 77,
-        "form": 66,
+        "level": 83,
+        "potential": 86,
+        "form": 73,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 77,
-        "laning": 77,
-        "teamfight": 79,
-        "mechanics": 77,
+        "mental": 88,
+        "shotcalling": 89,
+        "laning": 84,
+        "teamfight": 88,
+        "mechanics": 81,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
         ]
       }
     ],
@@ -5477,20 +7010,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
           "Jarvan IV",
-          "Vi"
+          "Viego"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Annie"
         ],
         "ADC": [
           "Varus",
-          "Ashe"
+          "Kai'Sa"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -5517,43 +7050,61 @@ const AI_TEAMS = [
         "name": "Thanatos",
         "role": "TOP",
         "nationality": "KR",
-        "level": 79,
-        "potential": 84,
-        "form": 66,
+        "level": 86,
+        "potential": 89,
+        "form": 71,
         "fatigue": 0,
-        "mental": 71,
-        "shotcalling": 75,
-        "laning": 85,
-        "teamfight": 83,
-        "mechanics": 80,
+        "mental": 83,
+        "shotcalling": 82,
+        "laning": 92,
+        "teamfight": 89,
+        "mechanics": 88,
         "championPool": [
           "K'Sante",
           "Rumble",
-          "Gnar"
+          "Gnar",
+          "Kennen",
+          "Sion"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
+        ]
       },
       {
         "id": "c9_jungle",
         "name": "Blaber",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 84,
-        "potential": 82,
-        "form": 76,
+        "level": 89,
+        "potential": 92,
+        "form": 82,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 80,
-        "laning": 83,
-        "teamfight": 89,
-        "mechanics": 86,
+        "mental": 88,
+        "shotcalling": 92,
+        "laning": 86,
+        "teamfight": 94,
+        "mechanics": 91,
         "championPool": [
           "Kindred",
           "Lee Sin",
-          "Viego"
+          "Viego",
+          "Jarvan IV",
+          "Wukong"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -5561,43 +7112,61 @@ const AI_TEAMS = [
         "name": "APA",
         "role": "MID",
         "nationality": "NA",
-        "level": 79,
-        "potential": 84,
-        "form": 65,
+        "level": 86,
+        "potential": 89,
+        "form": 70,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 78,
-        "laning": 78,
-        "teamfight": 79,
-        "mechanics": 80,
+        "mental": 87,
+        "shotcalling": 87,
+        "laning": 89,
+        "teamfight": 88,
+        "mechanics": 89,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
+        ]
       },
       {
         "id": "c9_adc",
         "name": "Zven",
         "role": "ADC",
         "nationality": "NA",
-        "level": 81,
-        "potential": 86,
-        "form": 76,
+        "level": 86,
+        "potential": 89,
+        "form": 82,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 78,
-        "laning": 84,
-        "teamfight": 81,
-        "mechanics": 82,
+        "mental": 90,
+        "shotcalling": 81,
+        "laning": 89,
+        "teamfight": 90,
+        "mechanics": 90,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -5605,23 +7174,32 @@ const AI_TEAMS = [
         "name": "Vulcan",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 87,
+        "level": 90,
         "potential": 93,
-        "form": 79,
+        "form": 84,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 87,
-        "laning": 86,
-        "teamfight": 86,
+        "mental": 94,
+        "shotcalling": 99,
+        "laning": 90,
+        "teamfight": 93,
         "mechanics": 87,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Braum"
+          "Braum",
+          "Rell",
+          "Renata Glasc"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       }
     ],
@@ -5635,16 +7213,16 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Rumble"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Kindred",
+          "Lee Sin"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
@@ -5675,22 +7253,31 @@ const AI_TEAMS = [
         "name": "Photon",
         "role": "TOP",
         "nationality": "KR",
-        "level": 70,
-        "potential": 75,
-        "form": 64,
+        "level": 76,
+        "potential": 79,
+        "form": 68,
         "fatigue": 0,
-        "mental": 71,
-        "shotcalling": 64,
-        "laning": 77,
-        "teamfight": 75,
-        "mechanics": 72,
+        "mental": 79,
+        "shotcalling": 71,
+        "laning": 82,
+        "teamfight": 79,
+        "mechanics": 79,
         "championPool": [
           "Ornn",
           "Sion",
-          "Gnar"
+          "Gnar",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -5698,43 +7285,61 @@ const AI_TEAMS = [
         "name": "eXyu",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 67,
-        "potential": 70,
-        "form": 54,
+        "level": 74,
+        "potential": 77,
+        "form": 56,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 66,
-        "laning": 66,
-        "teamfight": 66,
-        "mechanics": 67,
+        "mental": 74,
+        "shotcalling": 79,
+        "laning": 71,
+        "teamfight": 77,
+        "mechanics": 75,
         "championPool": [
           "Sejuani",
           "Maokai",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Nidalee",
+          "Graves"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
+        ]
       },
       {
         "id": "dig_mid",
         "name": "Palafox",
         "role": "MID",
         "nationality": "NA",
-        "level": 70,
-        "potential": 72,
-        "form": 58,
+        "level": 76,
+        "potential": 79,
+        "form": 62,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 64,
-        "laning": 67,
-        "teamfight": 69,
-        "mechanics": 74,
+        "mental": 76,
+        "shotcalling": 74,
+        "laning": 78,
+        "teamfight": 78,
+        "mechanics": 81,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -5742,22 +7347,31 @@ const AI_TEAMS = [
         "name": "FBI",
         "role": "ADC",
         "nationality": "NA",
-        "level": 70,
-        "potential": 71,
-        "form": 61,
+        "level": 76,
+        "potential": 79,
+        "form": 65,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 68,
-        "laning": 69,
-        "teamfight": 75,
-        "mechanics": 71,
+        "mental": 76,
+        "shotcalling": 71,
+        "laning": 78,
+        "teamfight": 82,
+        "mechanics": 80,
         "championPool": [
           "Caitlyn",
           "Jinx",
-          "Aphelios"
+          "Aphelios",
+          "Varus",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -5765,22 +7379,31 @@ const AI_TEAMS = [
         "name": "Ignar",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 62,
-        "potential": 64,
-        "form": 67,
+        "level": 71,
+        "potential": 74,
+        "form": 72,
         "fatigue": 0,
-        "mental": 57,
-        "shotcalling": 60,
-        "laning": 56,
-        "teamfight": 61,
-        "mechanics": 57,
+        "mental": 74,
+        "shotcalling": 75,
+        "laning": 68,
+        "teamfight": 74,
+        "mechanics": 66,
         "championPool": [
           "Karma",
           "Lulu",
-          "Milio"
+          "Milio",
+          "Nami",
+          "Thresh"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          76,
+          73,
+          69,
+          64,
+          60
         ]
       }
     ],
@@ -5798,20 +7421,20 @@ const AI_TEAMS = [
           "Sion"
         ],
         "JUNGLE": [
-          "Maokai",
-          "Jarvan IV"
+          "Sejuani",
+          "Maokai"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
           "Caitlyn",
           "Jinx"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Karma",
+          "Lulu"
         ]
       },
       "flexPicks": [
@@ -5834,22 +7457,31 @@ const AI_TEAMS = [
         "name": "Castle",
         "role": "TOP",
         "nationality": "KR",
-        "level": 60,
-        "potential": 60,
-        "form": 57,
+        "level": 68,
+        "potential": 71,
+        "form": 62,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 57,
-        "laning": 59,
-        "teamfight": 64,
-        "mechanics": 58,
+        "mental": 71,
+        "shotcalling": 65,
+        "laning": 71,
+        "teamfight": 71,
+        "mechanics": 69,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
         ]
       },
       {
@@ -5857,23 +7489,32 @@ const AI_TEAMS = [
         "name": "Kisno",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 56,
-        "potential": 61,
-        "form": 59,
+        "level": 67,
+        "potential": 70,
+        "form": 64,
         "fatigue": 0,
-        "mental": 53,
-        "shotcalling": 60,
-        "laning": 54,
-        "teamfight": 57,
-        "mechanics": 56,
+        "mental": 66,
+        "shotcalling": 74,
+        "laning": 63,
+        "teamfight": 70,
+        "mechanics": 68,
         "championPool": [
           "Lee Sin",
           "Elise",
-          "Vi"
+          "Vi",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          71,
+          68,
+          64,
+          59,
+          55
         ]
       },
       {
@@ -5881,22 +7522,31 @@ const AI_TEAMS = [
         "name": "KryRa",
         "role": "MID",
         "nationality": "NA",
-        "level": 63,
-        "potential": 63,
-        "form": 60,
+        "level": 71,
+        "potential": 74,
+        "form": 65,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 55,
-        "laning": 60,
-        "teamfight": 67,
-        "mechanics": 69,
+        "mental": 74,
+        "shotcalling": 68,
+        "laning": 73,
+        "teamfight": 75,
+        "mechanics": 77,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Taliyah"
+          "Taliyah",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       },
       {
@@ -5904,23 +7554,32 @@ const AI_TEAMS = [
         "name": "Callme",
         "role": "ADC",
         "nationality": "KR",
-        "level": 59,
-        "potential": 61,
-        "form": 53,
+        "level": 67,
+        "potential": 70,
+        "form": 57,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 53,
-        "laning": 64,
-        "teamfight": 62,
-        "mechanics": 65,
+        "mental": 66,
+        "shotcalling": 60,
+        "laning": 71,
+        "teamfight": 72,
+        "mechanics": 74,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          71,
+          68,
+          64,
+          59,
+          55
         ]
       },
       {
@@ -5928,23 +7587,32 @@ const AI_TEAMS = [
         "name": "Lyonz",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 61,
-        "potential": 61,
-        "form": 53,
+        "level": 69,
+        "potential": 72,
+        "form": 57,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 67,
-        "laning": 56,
-        "teamfight": 59,
-        "mechanics": 60,
+        "mental": 69,
+        "shotcalling": 77,
+        "laning": 67,
+        "teamfight": 71,
+        "mechanics": 66,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          73,
+          70,
+          66,
+          61,
+          57
         ]
       }
     ],
@@ -5958,8 +7626,8 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
           "Lee Sin",
@@ -5970,12 +7638,12 @@ const AI_TEAMS = [
           "Ahri"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -5998,23 +7666,32 @@ const AI_TEAMS = [
         "name": "Gakgos",
         "role": "TOP",
         "nationality": "EMEA",
-        "level": 86,
-        "potential": 97,
-        "form": 75,
+        "level": 89,
+        "potential": 99,
+        "form": 81,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 81,
-        "laning": 84,
-        "teamfight": 87,
-        "mechanics": 86,
+        "mental": 87,
+        "shotcalling": 85,
+        "laning": 91,
+        "teamfight": 90,
+        "mechanics": 91,
         "championPool": [
           "K'Sante",
           "Rumble",
-          "Gnar"
+          "Gnar",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -6022,25 +7699,34 @@ const AI_TEAMS = [
         "name": "Gryffinn",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 88,
-        "potential": 93,
-        "form": 77,
+        "level": 91,
+        "potential": 99,
+        "form": 83,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 87,
-        "laning": 86,
-        "teamfight": 86,
-        "mechanics": 92,
+        "mental": 91,
+        "shotcalling": 99,
+        "laning": 88,
+        "teamfight": 93,
+        "mechanics": 97,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant",
           "igl",
           "mechanical",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       },
       {
@@ -6048,44 +7734,62 @@ const AI_TEAMS = [
         "name": "Quad",
         "role": "MID",
         "nationality": "KR",
-        "level": 81,
-        "potential": 83,
-        "form": 67,
+        "level": 86,
+        "potential": 89,
+        "form": 71,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 83,
-        "laning": 79,
-        "teamfight": 88,
-        "mechanics": 85,
+        "mental": 85,
+        "shotcalling": 88,
+        "laning": 88,
+        "teamfight": 91,
+        "mechanics": 91,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
+        ]
       },
       {
         "id": "fly_adc",
         "name": "Massu",
         "role": "ADC",
         "nationality": "NA",
-        "level": 89,
-        "potential": 98,
-        "form": 71,
+        "level": 92,
+        "potential": 99,
+        "form": 75,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 78,
-        "laning": 85,
-        "teamfight": 95,
-        "mechanics": 96,
+        "mental": 89,
+        "shotcalling": 83,
+        "laning": 93,
+        "teamfight": 99,
+        "mechanics": 99,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical",
           "rookie"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          89,
+          85
         ]
       },
       {
@@ -6093,23 +7797,32 @@ const AI_TEAMS = [
         "name": "Cryogen",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 84,
-        "potential": 93,
-        "form": 66,
+        "level": 89,
+        "potential": 99,
+        "form": 71,
         "fatigue": 0,
-        "mental": 84,
-        "shotcalling": 84,
-        "laning": 82,
-        "teamfight": 86,
-        "mechanics": 85,
+        "mental": 92,
+        "shotcalling": 98,
+        "laning": 88,
+        "teamfight": 93,
+        "mechanics": 86,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl",
           "rookie"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       }
     ],
@@ -6123,16 +7836,16 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Rumble"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
@@ -6163,22 +7876,31 @@ const AI_TEAMS = [
         "name": "Dhokla",
         "role": "TOP",
         "nationality": "NA",
-        "level": 80,
-        "potential": 86,
-        "form": 76,
+        "level": 84,
+        "potential": 87,
+        "form": 81,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 71,
-        "laning": 84,
-        "teamfight": 81,
-        "mechanics": 77,
+        "mental": 85,
+        "shotcalling": 78,
+        "laning": 89,
+        "teamfight": 85,
+        "mechanics": 85,
         "championPool": [
           "Kennen",
           "Jayce",
-          "Renekton"
+          "Renekton",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -6186,43 +7908,61 @@ const AI_TEAMS = [
         "name": "Inspired",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 76,
-        "potential": 74,
-        "form": 59,
+        "level": 82,
+        "potential": 85,
+        "form": 63,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 81,
-        "laning": 75,
-        "teamfight": 75,
-        "mechanics": 75,
+        "mental": 84,
+        "shotcalling": 89,
+        "laning": 79,
+        "teamfight": 85,
+        "mechanics": 83,
         "championPool": [
           "Nocturne",
           "Viego",
-          "Graves"
+          "Graves",
+          "Vi",
+          "Pantheon"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
+        ]
       },
       {
         "id": "lyo_mid",
         "name": "Saint",
         "role": "MID",
         "nationality": "KR",
-        "level": 74,
-        "potential": 76,
-        "form": 73,
+        "level": 82,
+        "potential": 85,
+        "form": 80,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 74,
-        "laning": 81,
-        "teamfight": 81,
-        "mechanics": 79,
+        "mental": 82,
+        "shotcalling": 83,
+        "laning": 88,
+        "teamfight": 87,
+        "mechanics": 87,
         "championPool": [
           "Ahri",
           "Taliyah",
-          "LeBlanc"
+          "LeBlanc",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -6230,22 +7970,31 @@ const AI_TEAMS = [
         "name": "Berserker",
         "role": "ADC",
         "nationality": "KR",
-        "level": 87,
-        "potential": 87,
-        "form": 60,
+        "level": 89,
+        "potential": 92,
+        "form": 62,
         "fatigue": 0,
-        "mental": 80,
+        "mental": 87,
         "shotcalling": 84,
-        "laning": 93,
-        "teamfight": 90,
-        "mechanics": 92,
+        "laning": 95,
+        "teamfight": 94,
+        "mechanics": 98,
         "championPool": [
           "Aphelios",
           "Zeri",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Varus"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       },
       {
@@ -6253,23 +8002,32 @@ const AI_TEAMS = [
         "name": "Isles",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 78,
-        "potential": 77,
-        "form": 70,
+        "level": 84,
+        "potential": 87,
+        "form": 76,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 84,
-        "laning": 81,
-        "teamfight": 80,
-        "mechanics": 73,
+        "mental": 87,
+        "shotcalling": 95,
+        "laning": 85,
+        "teamfight": 88,
+        "mechanics": 79,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       }
     ],
@@ -6283,24 +8041,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Kennen",
+          "Jayce"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Nocturne",
+          "Viego"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Taliyah"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Aphelios",
+          "Zeri"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -6323,25 +8081,34 @@ const AI_TEAMS = [
         "name": "Impact",
         "role": "TOP",
         "nationality": "NA",
-        "level": 86,
+        "level": 88,
         "potential": 91,
-        "form": 76,
+        "form": 80,
         "fatigue": 0,
-        "mental": 92,
-        "shotcalling": 77,
-        "laning": 93,
-        "teamfight": 84,
-        "mechanics": 90,
+        "mental": 99,
+        "shotcalling": 83,
+        "laning": 95,
+        "teamfight": 90,
+        "mechanics": 95,
         "championPool": [
           "K'Sante",
           "Ornn",
-          "Gnar"
+          "Gnar",
+          "Rumble",
+          "Kennen"
         ],
         "traits": [
           "clutch",
           "consistant",
           "mechanical",
           "veteran"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -6349,85 +8116,121 @@ const AI_TEAMS = [
         "name": "HamBak",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 74,
-        "potential": 76,
-        "form": 59,
+        "level": 82,
+        "potential": 85,
+        "form": 64,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 72,
-        "laning": 75,
-        "teamfight": 71,
-        "mechanics": 74,
+        "mental": 81,
+        "shotcalling": 86,
+        "laning": 79,
+        "teamfight": 84,
+        "mechanics": 83,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
+        ]
       },
       {
         "id": "sen_mid",
         "name": "DARKWINGS",
         "role": "MID",
         "nationality": "NA",
-        "level": 78,
-        "potential": 80,
-        "form": 64,
+        "level": 84,
+        "potential": 87,
+        "form": 68,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 75,
-        "laning": 78,
-        "teamfight": 83,
-        "mechanics": 83,
+        "mental": 85,
+        "shotcalling": 84,
+        "laning": 87,
+        "teamfight": 88,
+        "mechanics": 89,
         "championPool": [
           "Ryze",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
+        ]
       },
       {
         "id": "sen_adc",
         "name": "Rahel",
         "role": "ADC",
         "nationality": "KR",
-        "level": 77,
-        "potential": 79,
-        "form": 60,
+        "level": 83,
+        "potential": 86,
+        "form": 64,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 76,
-        "laning": 82,
-        "teamfight": 83,
-        "mechanics": 79,
+        "mental": 84,
+        "shotcalling": 79,
+        "laning": 87,
+        "teamfight": 90,
+        "mechanics": 88,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
+        ]
       },
       {
         "id": "sen_support",
         "name": "huhi",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 81,
-        "potential": 87,
-        "form": 67,
+        "level": 85,
+        "potential": 88,
+        "form": 70,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 84,
-        "laning": 78,
-        "teamfight": 87,
+        "mental": 89,
+        "shotcalling": 95,
+        "laning": 84,
+        "teamfight": 91,
         "mechanics": 82,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       }
     ],
@@ -6441,24 +8244,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Ornn"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Ryze",
+          "Orianna"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -6481,22 +8284,31 @@ const AI_TEAMS = [
         "name": "Fudge",
         "role": "TOP",
         "nationality": "NA",
-        "level": 77,
-        "potential": 81,
-        "form": 68,
+        "level": 82,
+        "potential": 85,
+        "form": 72,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 73,
-        "laning": 83,
-        "teamfight": 82,
-        "mechanics": 82,
+        "mental": 81,
+        "shotcalling": 78,
+        "laning": 88,
+        "teamfight": 85,
+        "mechanics": 86,
         "championPool": [
           "Camille",
           "Jax",
-          "Fiora"
+          "Fiora",
+          "Gwen",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -6504,64 +8316,91 @@ const AI_TEAMS = [
         "name": "Contractz",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 74,
-        "potential": 76,
-        "form": 61,
+        "level": 81,
+        "potential": 84,
+        "form": 64,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 74,
-        "laning": 66,
-        "teamfight": 80,
-        "mechanics": 70,
+        "mental": 79,
+        "shotcalling": 86,
+        "laning": 74,
+        "teamfight": 87,
+        "mechanics": 80,
         "championPool": [
           "Lee Sin",
           "Nocturne",
-          "Viego"
+          "Viego",
+          "Vi",
+          "Wukong"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "sr_mid",
         "name": "Zinie",
         "role": "MID",
         "nationality": "KR",
-        "level": 74,
-        "potential": 74,
-        "form": 57,
+        "level": 81,
+        "potential": 84,
+        "form": 60,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 67,
-        "laning": 78,
-        "teamfight": 72,
-        "mechanics": 74,
+        "mental": 82,
+        "shotcalling": 79,
+        "laning": 86,
+        "teamfight": 82,
+        "mechanics": 84,
         "championPool": [
           "Twisted Fate",
           "Ryze",
-          "Akali"
+          "Akali",
+          "Yone",
+          "LeBlanc"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "sr_adc",
         "name": "Bvoy",
         "role": "ADC",
         "nationality": "KR",
-        "level": 77,
-        "potential": 79,
-        "form": 72,
+        "level": 82,
+        "potential": 85,
+        "form": 76,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 67,
-        "laning": 81,
-        "teamfight": 82,
-        "mechanics": 83,
+        "mental": 82,
+        "shotcalling": 74,
+        "laning": 86,
+        "teamfight": 88,
+        "mechanics": 89,
         "championPool": [
           "Kai'Sa",
           "Vayne",
-          "Ezreal"
+          "Ezreal",
+          "Lucian",
+          "Xayah"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -6569,21 +8408,30 @@ const AI_TEAMS = [
         "name": "Ceos",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 73,
-        "potential": 74,
-        "form": 56,
+        "level": 80,
+        "potential": 83,
+        "form": 59,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 73,
-        "laning": 73,
-        "teamfight": 72,
-        "mechanics": 76,
+        "mental": 84,
+        "shotcalling": 85,
+        "laning": 80,
+        "teamfight": 83,
+        "mechanics": 78,
         "championPool": [
           "Bard",
           "Tahm Kench",
-          "Rakan"
+          "Rakan",
+          "Thresh",
+          "Nautilus"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
+        ]
       }
     ],
     "draftProfile": {
@@ -6596,24 +8444,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jax",
-          "Fiora"
+          "Camille",
+          "Jax"
         ],
         "JUNGLE": [
-          "Nocturne",
-          "Viego"
+          "Lee Sin",
+          "Nocturne"
         ],
         "MID": [
           "Twisted Fate",
           "Ryze"
         ],
         "ADC": [
-          "Ezreal",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Vayne"
         ],
         "SUPPORT": [
-          "Rakan",
-          "Bard"
+          "Bard",
+          "Tahm Kench"
         ]
       },
       "flexPicks": [
@@ -6636,22 +8484,31 @@ const AI_TEAMS = [
         "name": "Morgan",
         "role": "TOP",
         "nationality": "KR",
-        "level": 86,
-        "potential": 90,
-        "form": 69,
+        "level": 89,
+        "potential": 92,
+        "form": 72,
         "fatigue": 0,
-        "mental": 84,
-        "shotcalling": 81,
-        "laning": 90,
-        "teamfight": 89,
-        "mechanics": 91,
+        "mental": 89,
+        "shotcalling": 85,
+        "laning": 95,
+        "teamfight": 91,
+        "mechanics": 96,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -6659,24 +8516,33 @@ const AI_TEAMS = [
         "name": "Josedeodo",
         "role": "JUNGLE",
         "nationality": "NA",
-        "level": 85,
-        "potential": 85,
-        "form": 79,
+        "level": 88,
+        "potential": 91,
+        "form": 84,
         "fatigue": 0,
-        "mental": 87,
-        "shotcalling": 85,
-        "laning": 80,
-        "teamfight": 91,
-        "mechanics": 88,
+        "mental": 93,
+        "shotcalling": 97,
+        "laning": 84,
+        "teamfight": 94,
+        "mechanics": 93,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -6684,67 +8550,94 @@ const AI_TEAMS = [
         "name": "Quid",
         "role": "MID",
         "nationality": "KR",
-        "level": 82,
-        "potential": 81,
-        "form": 68,
+        "level": 87,
+        "potential": 90,
+        "form": 72,
         "fatigue": 0,
-        "mental": 84,
-        "shotcalling": 80,
-        "laning": 85,
-        "teamfight": 86,
-        "mechanics": 85,
+        "mental": 89,
+        "shotcalling": 87,
+        "laning": 91,
+        "teamfight": 91,
+        "mechanics": 91,
         "championPool": [
           "Azir",
           "Orianna",
-          "Ahri"
+          "Ahri",
+          "Ryze",
+          "Viktor"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
+        ]
       },
       {
         "id": "tl_adc",
         "name": "Yeon",
         "role": "ADC",
         "nationality": "NA",
-        "level": 85,
-        "potential": 86,
-        "form": 71,
+        "level": 88,
+        "potential": 91,
+        "form": 74,
         "fatigue": 0,
-        "mental": 81,
-        "shotcalling": 74,
-        "laning": 81,
-        "teamfight": 89,
-        "mechanics": 84,
+        "mental": 87,
+        "shotcalling": 79,
+        "laning": 88,
+        "teamfight": 94,
+        "mechanics": 92,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
+        ]
       },
       {
         "id": "tl_support",
         "name": "CoreJJ",
         "role": "SUPPORT",
         "nationality": "NA",
-        "level": 86,
+        "level": 90,
         "potential": 91,
-        "form": 70,
+        "form": 74,
         "fatigue": 0,
-        "mental": 89,
-        "shotcalling": 98,
-        "laning": 81,
-        "teamfight": 83,
-        "mechanics": 84,
+        "mental": 99,
+        "shotcalling": 99,
+        "laning": 88,
+        "teamfight": 94,
+        "mechanics": 86,
         "championPool": [
           "Rakan",
           "Alistar",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "clutch",
           "igl",
           "leader",
           "veteran"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       }
     ],
@@ -6758,24 +8651,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Orianna"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Alistar"
         ]
       },
       "flexPicks": [
@@ -6798,43 +8691,61 @@ const AI_TEAMS = [
         "name": "curty",
         "role": "TOP",
         "nationality": "BR",
-        "level": 76,
-        "potential": 75,
-        "form": 63,
+        "level": 81,
+        "potential": 84,
+        "form": 65,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 68,
-        "laning": 78,
-        "teamfight": 72,
-        "mechanics": 74,
+        "mental": 79,
+        "shotcalling": 75,
+        "laning": 85,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Rumble",
           "Jayce",
-          "Kennen"
+          "Kennen",
+          "Gnar",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "fxw_jungle",
         "name": "Peach",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 76,
-        "potential": 81,
-        "form": 66,
+        "level": 81,
+        "potential": 84,
+        "form": 70,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 77,
-        "laning": 75,
-        "teamfight": 78,
-        "mechanics": 72,
+        "mental": 82,
+        "shotcalling": 86,
+        "laning": 78,
+        "teamfight": 85,
+        "mechanics": 80,
         "championPool": [
           "Graves",
           "Ivern",
-          "Nidalee"
+          "Nidalee",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -6842,22 +8753,31 @@ const AI_TEAMS = [
         "name": "cody",
         "role": "MID",
         "nationality": "BR",
-        "level": 77,
-        "potential": 83,
-        "form": 67,
+        "level": 82,
+        "potential": 85,
+        "form": 71,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 70,
-        "laning": 83,
-        "teamfight": 77,
-        "mechanics": 77,
+        "mental": 85,
+        "shotcalling": 80,
+        "laning": 88,
+        "teamfight": 84,
+        "mechanics": 85,
         "championPool": [
           "Hwei",
           "Zoe",
-          "Orianna"
+          "Orianna",
+          "Corki",
+          "LeBlanc"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -6865,22 +8785,31 @@ const AI_TEAMS = [
         "name": "BAO",
         "role": "ADC",
         "nationality": "KR",
-        "level": 68,
-        "potential": 67,
-        "form": 63,
+        "level": 76,
+        "potential": 79,
+        "form": 69,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 58,
-        "laning": 65,
-        "teamfight": 71,
-        "mechanics": 69,
+        "mental": 76,
+        "shotcalling": 68,
+        "laning": 77,
+        "teamfight": 81,
+        "mechanics": 80,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Ezreal"
+          "Ezreal",
+          "Ashe",
+          "Kai'Sa"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          76,
+          71,
+          67
         ]
       },
       {
@@ -6888,22 +8817,31 @@ const AI_TEAMS = [
         "name": "Momochi",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 75,
-        "potential": 81,
-        "form": 64,
+        "level": 80,
+        "potential": 83,
+        "form": 68,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 73,
-        "laning": 73,
-        "teamfight": 73,
-        "mechanics": 74,
+        "mental": 84,
+        "shotcalling": 84,
+        "laning": 79,
+        "teamfight": 82,
+        "mechanics": 77,
         "championPool": [
           "Milio",
           "Nami",
-          "Karma"
+          "Karma",
+          "Bard",
+          "Lulu"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       }
     ],
@@ -6917,24 +8855,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Kennen"
+          "Rumble",
+          "Jayce"
         ],
         "JUNGLE": [
-          "Nidalee",
-          "Graves"
+          "Graves",
+          "Ivern"
         ],
         "MID": [
           "Hwei",
           "Zoe"
         ],
         "ADC": [
-          "Ezreal",
-          "Varus"
+          "Varus",
+          "Caitlyn"
         ],
         "SUPPORT": [
-          "Karma",
-          "Milio"
+          "Milio",
+          "Nami"
         ]
       },
       "flexPicks": [
@@ -6957,22 +8895,31 @@ const AI_TEAMS = [
         "name": "Guigo",
         "role": "TOP",
         "nationality": "BR",
-        "level": 80,
-        "potential": 79,
-        "form": 79,
+        "level": 85,
+        "potential": 88,
+        "form": 85,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 76,
-        "laning": 83,
-        "teamfight": 79,
-        "mechanics": 81,
+        "mental": 85,
+        "shotcalling": 81,
+        "laning": 89,
+        "teamfight": 86,
+        "mechanics": 87,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -6980,23 +8927,32 @@ const AI_TEAMS = [
         "name": "Tatu",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 89,
-        "potential": 91,
-        "form": 73,
+        "level": 92,
+        "potential": 95,
+        "form": 76,
         "fatigue": 0,
-        "mental": 85,
-        "shotcalling": 94,
-        "laning": 87,
-        "teamfight": 91,
-        "mechanics": 89,
+        "mental": 92,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 96,
+        "mechanics": 96,
         "championPool": [
           "Jarvan IV",
           "Vi",
-          "Nocturne"
+          "Nocturne",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          97,
+          96,
+          94,
+          89,
+          85
         ]
       },
       {
@@ -7004,22 +8960,31 @@ const AI_TEAMS = [
         "name": "Tutsz",
         "role": "MID",
         "nationality": "BR",
-        "level": 80,
-        "potential": 78,
-        "form": 81,
+        "level": 85,
+        "potential": 88,
+        "form": 87,
         "fatigue": 0,
-        "mental": 81,
-        "shotcalling": 75,
-        "laning": 85,
-        "teamfight": 82,
-        "mechanics": 85,
+        "mental": 88,
+        "shotcalling": 84,
+        "laning": 90,
+        "teamfight": 88,
+        "mechanics": 90,
         "championPool": [
           "Orianna",
           "Azir",
-          "Ryze"
+          "Ryze",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -7027,22 +8992,31 @@ const AI_TEAMS = [
         "name": "Ayu",
         "role": "ADC",
         "nationality": "BR",
-        "level": 84,
-        "potential": 85,
-        "form": 75,
+        "level": 89,
+        "potential": 92,
+        "form": 81,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 76,
-        "laning": 84,
-        "teamfight": 86,
-        "mechanics": 86,
+        "mental": 89,
+        "shotcalling": 81,
+        "laning": 91,
+        "teamfight": 94,
+        "mechanics": 94,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -7050,23 +9024,32 @@ const AI_TEAMS = [
         "name": "JoJo",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 87,
-        "potential": 87,
-        "form": 70,
+        "level": 90,
+        "potential": 93,
+        "form": 73,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 90,
-        "laning": 84,
-        "teamfight": 87,
-        "mechanics": 90,
+        "mental": 92,
+        "shotcalling": 99,
+        "laning": 90,
+        "teamfight": 93,
+        "mechanics": 91,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       }
     ],
@@ -7080,8 +9063,8 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
           "Jarvan IV",
@@ -7092,12 +9075,12 @@ const AI_TEAMS = [
           "Azir"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -7120,65 +9103,92 @@ const AI_TEAMS = [
         "name": "Devost",
         "role": "TOP",
         "nationality": "BR",
-        "level": 65,
-        "potential": 63,
-        "form": 46,
+        "level": 71,
+        "potential": 74,
+        "form": 50,
         "fatigue": 0,
-        "mental": 65,
-        "shotcalling": 58,
-        "laning": 63,
-        "teamfight": 61,
-        "mechanics": 70,
+        "mental": 72,
+        "shotcalling": 66,
+        "laning": 73,
+        "teamfight": 70,
+        "mechanics": 75,
         "championPool": [
           "Jax",
           "Fiora",
-          "Camille"
+          "Camille",
+          "Gwen",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          74,
+          71,
+          67,
+          62,
+          58
+        ]
       },
       {
         "id": "lev_jungle",
         "name": "Booki",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 64,
-        "potential": 64,
-        "form": 49,
+        "level": 72,
+        "potential": 75,
+        "form": 52,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 67,
-        "laning": 64,
-        "teamfight": 70,
-        "mechanics": 62,
+        "mental": 71,
+        "shotcalling": 78,
+        "laning": 69,
+        "teamfight": 78,
+        "mechanics": 72,
         "championPool": [
           "Lee Sin",
           "Nocturne",
-          "Viego"
+          "Viego",
+          "Vi",
+          "Wukong"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
+        ]
       },
       {
         "id": "lev_mid",
         "name": "Enga",
         "role": "MID",
         "nationality": "BR",
-        "level": 58,
-        "potential": 58,
-        "form": 51,
+        "level": 66,
+        "potential": 69,
+        "form": 55,
         "fatigue": 0,
-        "mental": 52,
-        "shotcalling": 58,
-        "laning": 65,
-        "teamfight": 56,
-        "mechanics": 63,
+        "mental": 63,
+        "shotcalling": 67,
+        "laning": 72,
+        "teamfight": 67,
+        "mechanics": 71,
         "championPool": [
           "Ryze",
           "Akali",
-          "Twisted Fate"
+          "Twisted Fate",
+          "Yone",
+          "LeBlanc"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          70,
+          67,
+          63,
+          58,
+          54
         ]
       },
       {
@@ -7186,43 +9196,61 @@ const AI_TEAMS = [
         "name": "Snaker",
         "role": "ADC",
         "nationality": "BR",
-        "level": 61,
-        "potential": 60,
-        "form": 45,
+        "level": 69,
+        "potential": 72,
+        "form": 50,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 58,
-        "laning": 66,
-        "teamfight": 62,
-        "mechanics": 62,
+        "mental": 71,
+        "shotcalling": 64,
+        "laning": 73,
+        "teamfight": 73,
+        "mechanics": 73,
         "championPool": [
           "Ezreal",
           "Kai'Sa",
-          "Vayne"
+          "Vayne",
+          "Lucian",
+          "Xayah"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          72,
+          69,
+          65,
+          60,
+          56
+        ]
       },
       {
         "id": "lev_support",
         "name": "TopLop",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 63,
-        "potential": 64,
-        "form": 54,
+        "level": 71,
+        "potential": 74,
+        "form": 59,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 69,
-        "laning": 66,
-        "teamfight": 68,
-        "mechanics": 60,
+        "mental": 76,
+        "shotcalling": 79,
+        "laning": 72,
+        "teamfight": 76,
+        "mechanics": 67,
         "championPool": [
           "Bard",
           "Tahm Kench",
-          "Rakan"
+          "Rakan",
+          "Thresh",
+          "Nautilus"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       }
     ],
@@ -7240,20 +9268,20 @@ const AI_TEAMS = [
           "Fiora"
         ],
         "JUNGLE": [
-          "Nocturne",
-          "Viego"
+          "Lee Sin",
+          "Nocturne"
         ],
         "MID": [
-          "Twisted Fate",
-          "Ryze"
+          "Ryze",
+          "Akali"
         ],
         "ADC": [
           "Ezreal",
           "Kai'Sa"
         ],
         "SUPPORT": [
-          "Rakan",
-          "Bard"
+          "Bard",
+          "Tahm Kench"
         ]
       },
       "flexPicks": [
@@ -7276,22 +9304,31 @@ const AI_TEAMS = [
         "name": "xyno",
         "role": "TOP",
         "nationality": "BR",
-        "level": 69,
-        "potential": 75,
-        "form": 59,
+        "level": 77,
+        "potential": 80,
+        "form": 65,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 63,
-        "laning": 72,
-        "teamfight": 70,
-        "mechanics": 74,
+        "mental": 76,
+        "shotcalling": 72,
+        "laning": 81,
+        "teamfight": 78,
+        "mechanics": 81,
         "championPool": [
           "Renekton",
           "Kennen",
-          "Jayce"
+          "Jayce",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
         ]
       },
       {
@@ -7299,22 +9336,31 @@ const AI_TEAMS = [
         "name": "YoungJae",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 72,
-        "potential": 75,
-        "form": 68,
+        "level": 79,
+        "potential": 82,
+        "form": 73,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 73,
-        "laning": 67,
-        "teamfight": 72,
-        "mechanics": 74,
+        "mental": 81,
+        "shotcalling": 84,
+        "laning": 74,
+        "teamfight": 82,
+        "mechanics": 81,
         "championPool": [
           "Elise",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
         ]
       },
       {
@@ -7322,22 +9368,31 @@ const AI_TEAMS = [
         "name": "Envy",
         "role": "MID",
         "nationality": "BR",
-        "level": 69,
-        "potential": 72,
-        "form": 65,
+        "level": 77,
+        "potential": 80,
+        "form": 71,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 71,
-        "laning": 66,
-        "teamfight": 75,
-        "mechanics": 75,
+        "mental": 80,
+        "shotcalling": 79,
+        "laning": 79,
+        "teamfight": 82,
+        "mechanics": 83,
         "championPool": [
           "Ahri",
           "Taliyah",
-          "LeBlanc"
+          "LeBlanc",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
         ]
       },
       {
@@ -7345,22 +9400,31 @@ const AI_TEAMS = [
         "name": "Bull",
         "role": "ADC",
         "nationality": "KR",
-        "level": 67,
-        "potential": 69,
-        "form": 67,
+        "level": 75,
+        "potential": 78,
+        "form": 73,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 60,
-        "laning": 72,
-        "teamfight": 69,
-        "mechanics": 67,
+        "mental": 76,
+        "shotcalling": 68,
+        "laning": 79,
+        "teamfight": 80,
+        "mechanics": 79,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -7368,22 +9432,31 @@ const AI_TEAMS = [
         "name": "RedBert",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 69,
-        "potential": 69,
-        "form": 60,
+        "level": 77,
+        "potential": 80,
+        "form": 66,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 65,
-        "laning": 71,
-        "teamfight": 67,
-        "mechanics": 64,
+        "mental": 81,
+        "shotcalling": 80,
+        "laning": 78,
+        "teamfight": 79,
+        "mechanics": 72,
         "championPool": [
           "Thresh",
           "Pyke",
-          "Nautilus"
+          "Nautilus",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
         ]
       }
     ],
@@ -7397,16 +9470,16 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Renekton",
+          "Kennen"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Elise",
+          "Vi"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Taliyah"
         ],
         "ADC": [
           "Varus",
@@ -7437,22 +9510,31 @@ const AI_TEAMS = [
         "name": "Zest",
         "role": "TOP",
         "nationality": "KR",
-        "level": 75,
-        "potential": 81,
-        "form": 72,
+        "level": 81,
+        "potential": 84,
+        "form": 78,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 65,
-        "laning": 80,
-        "teamfight": 73,
-        "mechanics": 78,
+        "mental": 84,
+        "shotcalling": 74,
+        "laning": 86,
+        "teamfight": 81,
+        "mechanics": 84,
         "championPool": [
           "K'Sante",
           "Rumble",
-          "Gnar"
+          "Gnar",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -7460,43 +9542,61 @@ const AI_TEAMS = [
         "name": "Drakehero",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 82,
-        "potential": 82,
-        "form": 62,
+        "level": 86,
+        "potential": 89,
+        "form": 65,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 79,
-        "laning": 80,
-        "teamfight": 82,
-        "mechanics": 78,
+        "mental": 86,
+        "shotcalling": 90,
+        "laning": 82,
+        "teamfight": 89,
+        "mechanics": 85,
         "championPool": [
           "Jarvan IV",
           "Vi",
-          "Nocturne"
+          "Nocturne",
+          "Wukong",
+          "Skarner"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          92,
+          89,
+          86,
+          81,
+          77
+        ]
       },
       {
         "id": "los_mid",
         "name": "Curse",
         "role": "MID",
         "nationality": "BR",
-        "level": 78,
-        "potential": 81,
-        "form": 72,
+        "level": 84,
+        "potential": 87,
+        "form": 78,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 73,
-        "laning": 80,
-        "teamfight": 77,
-        "mechanics": 77,
+        "mental": 85,
+        "shotcalling": 83,
+        "laning": 88,
+        "teamfight": 86,
+        "mechanics": 87,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -7504,43 +9604,61 @@ const AI_TEAMS = [
         "name": "Feisty",
         "role": "ADC",
         "nationality": "KR",
-        "level": 78,
-        "potential": 81,
-        "form": 62,
+        "level": 84,
+        "potential": 87,
+        "form": 66,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 76,
-        "laning": 84,
-        "teamfight": 83,
-        "mechanics": 77,
+        "mental": 81,
+        "shotcalling": 79,
+        "laning": 89,
+        "teamfight": 90,
+        "mechanics": 88,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
+        ]
       },
       {
         "id": "los_support",
         "name": "Duduhh",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 73,
-        "potential": 79,
-        "form": 62,
+        "level": 81,
+        "potential": 84,
+        "form": 69,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 79,
-        "laning": 74,
-        "teamfight": 76,
-        "mechanics": 71,
+        "mental": 85,
+        "shotcalling": 89,
+        "laning": 81,
+        "teamfight": 85,
+        "mechanics": 77,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       }
     ],
@@ -7554,24 +9672,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Rumble"
         ],
         "JUNGLE": [
           "Jarvan IV",
           "Vi"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
           "Ashe"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -7594,43 +9712,61 @@ const AI_TEAMS = [
         "name": "Robo",
         "role": "TOP",
         "nationality": "BR",
-        "level": 78,
-        "potential": 81,
-        "form": 62,
+        "level": 82,
+        "potential": 85,
+        "form": 63,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 71,
-        "laning": 82,
-        "teamfight": 77,
-        "mechanics": 80,
+        "mental": 83,
+        "shotcalling": 77,
+        "laning": 87,
+        "teamfight": 83,
+        "mechanics": 85,
         "championPool": [
           "Sion",
           "K'Sante",
-          "Renekton"
+          "Renekton",
+          "Jayce",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          79,
+          74,
+          70
+        ]
       },
       {
         "id": "png_jungle",
         "name": "CarioK",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 64,
-        "potential": 62,
-        "form": 53,
+        "level": 73,
+        "potential": 76,
+        "form": 58,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 62,
-        "laning": 59,
-        "teamfight": 70,
-        "mechanics": 62,
+        "mental": 76,
+        "shotcalling": 77,
+        "laning": 68,
+        "teamfight": 79,
+        "mechanics": 73,
         "championPool": [
           "Jarvan IV",
           "Sejuani",
-          "Maokai"
+          "Maokai",
+          "Nidalee",
+          "Graves"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -7638,63 +9774,90 @@ const AI_TEAMS = [
         "name": "Keine",
         "role": "MID",
         "nationality": "KR",
-        "level": 66,
-        "potential": 71,
-        "form": 50,
+        "level": 73,
+        "potential": 76,
+        "form": 52,
         "fatigue": 0,
-        "mental": 58,
-        "shotcalling": 68,
-        "laning": 66,
-        "teamfight": 73,
-        "mechanics": 65,
+        "mental": 70,
+        "shotcalling": 75,
+        "laning": 76,
+        "teamfight": 78,
+        "mechanics": 76,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
+        ]
       },
       {
         "id": "png_adc",
         "name": "Trigger",
         "role": "ADC",
         "nationality": "KR",
-        "level": 71,
-        "potential": 72,
-        "form": 51,
+        "level": 77,
+        "potential": 80,
+        "form": 53,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 64,
-        "laning": 76,
-        "teamfight": 71,
-        "mechanics": 73,
+        "mental": 74,
+        "shotcalling": 70,
+        "laning": 81,
+        "teamfight": 81,
+        "mechanics": 82,
         "championPool": [
           "Jinx",
           "Aphelios",
-          "Caitlyn"
+          "Caitlyn",
+          "Varus",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "png_support",
         "name": "Kuri",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 69,
-        "potential": 72,
-        "form": 51,
+        "level": 76,
+        "potential": 79,
+        "form": 53,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 73,
-        "laning": 67,
-        "teamfight": 74,
-        "mechanics": 70,
+        "mental": 79,
+        "shotcalling": 83,
+        "laning": 75,
+        "teamfight": 81,
+        "mechanics": 73,
         "championPool": [
           "Milio",
           "Karma",
-          "Lulu"
+          "Lulu",
+          "Nami",
+          "Thresh"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
+        ]
       }
     ],
     "draftProfile": {
@@ -7707,24 +9870,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Sion",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Maokai",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Sejuani"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Aphelios"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Milio",
+          "Karma"
         ]
       },
       "flexPicks": [
@@ -7747,22 +9910,31 @@ const AI_TEAMS = [
         "name": "zynts",
         "role": "TOP",
         "nationality": "BR",
-        "level": 81,
-        "potential": 81,
-        "form": 82,
+        "level": 86,
+        "potential": 89,
+        "form": 88,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 79,
-        "laning": 83,
-        "teamfight": 78,
-        "mechanics": 80,
+        "mental": 89,
+        "shotcalling": 83,
+        "laning": 90,
+        "teamfight": 86,
+        "mechanics": 88,
         "championPool": [
           "Jayce",
           "Renekton",
-          "Kennen"
+          "Kennen",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -7770,22 +9942,31 @@ const AI_TEAMS = [
         "name": "STEPZ",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 81,
-        "potential": 87,
-        "form": 68,
+        "level": 86,
+        "potential": 89,
+        "form": 72,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 82,
-        "laning": 77,
-        "teamfight": 86,
-        "mechanics": 79,
+        "mental": 84,
+        "shotcalling": 95,
+        "laning": 81,
+        "teamfight": 91,
+        "mechanics": 86,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -7793,43 +9974,61 @@ const AI_TEAMS = [
         "name": "Kaze",
         "role": "MID",
         "nationality": "BR",
-        "level": 87,
-        "potential": 85,
-        "form": 64,
+        "level": 90,
+        "potential": 93,
+        "form": 67,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 88,
-        "laning": 92,
-        "teamfight": 91,
-        "mechanics": 86,
+        "mental": 88,
+        "shotcalling": 91,
+        "laning": 95,
+        "teamfight": 94,
+        "mechanics": 93,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
+        ]
       },
       {
         "id": "red_adc",
         "name": "Rabelo",
         "role": "ADC",
         "nationality": "BR",
-        "level": 87,
-        "potential": 91,
-        "form": 68,
+        "level": 90,
+        "potential": 93,
+        "form": 71,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 78,
-        "laning": 84,
-        "teamfight": 93,
-        "mechanics": 89,
+        "mental": 87,
+        "shotcalling": 82,
+        "laning": 92,
+        "teamfight": 97,
+        "mechanics": 98,
         "championPool": [
           "Varus",
           "Caitlyn",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          83
         ]
       },
       {
@@ -7837,22 +10036,31 @@ const AI_TEAMS = [
         "name": "frosty",
         "role": "SUPPORT",
         "nationality": "BR",
-        "level": 87,
-        "potential": 88,
-        "form": 73,
+        "level": 90,
+        "potential": 93,
+        "form": 76,
         "fatigue": 0,
-        "mental": 85,
-        "shotcalling": 84,
-        "laning": 91,
-        "teamfight": 89,
-        "mechanics": 84,
+        "mental": 93,
+        "shotcalling": 98,
+        "laning": 92,
+        "teamfight": 94,
+        "mechanics": 86,
         "championPool": [
           "Nautilus",
           "Thresh",
-          "Pyke"
+          "Pyke",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       }
     ],
@@ -7870,20 +10078,20 @@ const AI_TEAMS = [
           "Renekton"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
           "Varus",
           "Caitlyn"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Nautilus",
+          "Thresh"
         ]
       },
       "flexPicks": [
@@ -7906,85 +10114,121 @@ const AI_TEAMS = [
         "name": "Wizer",
         "role": "TOP",
         "nationality": "BR",
-        "level": 81,
-        "potential": 85,
-        "form": 66,
+        "level": 85,
+        "potential": 88,
+        "form": 69,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 76,
-        "laning": 85,
-        "teamfight": 86,
-        "mechanics": 83,
+        "mental": 86,
+        "shotcalling": 81,
+        "laning": 90,
+        "teamfight": 88,
+        "mechanics": 88,
         "championPool": [
           "K'Sante",
           "Gnar",
-          "Renekton"
+          "Renekton",
+          "Rumble",
+          "Kennen"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
+        ]
       },
       {
         "id": "key_jungle",
         "name": "Disamis",
         "role": "JUNGLE",
         "nationality": "BR",
-        "level": 77,
-        "potential": 80,
-        "form": 60,
+        "level": 83,
+        "potential": 86,
+        "form": 64,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 73,
-        "laning": 73,
-        "teamfight": 79,
-        "mechanics": 81,
+        "mental": 82,
+        "shotcalling": 86,
+        "laning": 78,
+        "teamfight": 87,
+        "mechanics": 86,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
+        ]
       },
       {
         "id": "key_mid",
         "name": "Mireu",
         "role": "MID",
         "nationality": "KR",
-        "level": 79,
-        "potential": 78,
-        "form": 59,
+        "level": 85,
+        "potential": 88,
+        "form": 63,
         "fatigue": 0,
-        "mental": 71,
-        "shotcalling": 79,
-        "laning": 85,
-        "teamfight": 80,
-        "mechanics": 84,
+        "mental": 82,
+        "shotcalling": 86,
+        "laning": 91,
+        "teamfight": 87,
+        "mechanics": 90,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
+        ]
       },
       {
         "id": "key_adc",
         "name": "ceo",
         "role": "ADC",
         "nationality": "BR",
-        "level": 73,
-        "potential": 74,
-        "form": 62,
+        "level": 81,
+        "potential": 84,
+        "form": 69,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 70,
-        "laning": 72,
-        "teamfight": 72,
-        "mechanics": 78,
+        "mental": 82,
+        "shotcalling": 76,
+        "laning": 83,
+        "teamfight": 85,
+        "mechanics": 87,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -7992,22 +10236,31 @@ const AI_TEAMS = [
         "name": "Kaiwing",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 74,
-        "potential": 80,
-        "form": 70,
+        "level": 82,
+        "potential": 85,
+        "form": 77,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 77,
-        "laning": 68,
-        "teamfight": 70,
-        "mechanics": 73,
+        "mental": 87,
+        "shotcalling": 88,
+        "laning": 79,
+        "teamfight": 83,
+        "mechanics": 79,
         "championPool": [
           "Rakan",
           "Nautilus",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       }
     ],
@@ -8021,24 +10274,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
+          "K'Sante",
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
           "Ashe"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -8061,44 +10314,62 @@ const AI_TEAMS = [
         "name": "Rest",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 85,
-        "potential": 88,
-        "form": 71,
+        "level": 88,
+        "potential": 91,
+        "form": 74,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 84,
-        "laning": 85,
-        "teamfight": 85,
-        "mechanics": 86,
+        "mental": 86,
+        "shotcalling": 86,
+        "laning": 91,
+        "teamfight": 89,
+        "mechanics": 90,
         "championPool": [
           "K'Sante",
           "Rumble",
-          "Gnar"
+          "Gnar",
+          "Kennen",
+          "Sion"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
+        ]
       },
       {
         "id": "cfo_jungle",
         "name": "Shad0w",
         "role": "JUNGLE",
         "nationality": "CN",
-        "level": 84,
-        "potential": 86,
-        "form": 73,
+        "level": 89,
+        "potential": 92,
+        "form": 79,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 86,
-        "laning": 81,
-        "teamfight": 82,
-        "mechanics": 85,
+        "mental": 90,
+        "shotcalling": 99,
+        "laning": 85,
+        "teamfight": 91,
+        "mechanics": 90,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -8106,43 +10377,61 @@ const AI_TEAMS = [
         "name": "Pungyeon",
         "role": "MID",
         "nationality": "KR",
-        "level": 85,
-        "potential": 88,
-        "form": 64,
+        "level": 88,
+        "potential": 91,
+        "form": 67,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 83,
-        "laning": 83,
-        "teamfight": 92,
-        "mechanics": 85,
+        "mental": 86,
+        "shotcalling": 88,
+        "laning": 90,
+        "teamfight": 93,
+        "mechanics": 91,
         "championPool": [
           "Ryze",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          95,
+          92,
+          89,
+          84,
+          80
+        ]
       },
       {
         "id": "cfo_adc",
         "name": "Doggo",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 81,
-        "potential": 81,
-        "form": 73,
+        "level": 86,
+        "potential": 89,
+        "form": 79,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 79,
-        "laning": 81,
-        "teamfight": 81,
-        "mechanics": 85,
+        "mental": 89,
+        "shotcalling": 81,
+        "laning": 88,
+        "teamfight": 90,
+        "mechanics": 92,
         "championPool": [
           "Varus",
           "Kai'Sa",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -8150,23 +10439,32 @@ const AI_TEAMS = [
         "name": "Kino",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 81,
-        "potential": 79,
-        "form": 82,
+        "level": 86,
+        "potential": 89,
+        "form": 88,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 85,
-        "laning": 80,
-        "teamfight": 87,
-        "mechanics": 81,
+        "mental": 93,
+        "shotcalling": 97,
+        "laning": 86,
+        "teamfight": 92,
+        "mechanics": 83,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       }
     ],
@@ -8180,24 +10478,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "K'Sante",
+          "Rumble"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Ryze",
+          "Orianna"
         ],
         "ADC": [
           "Varus",
-          "Ashe"
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -8220,23 +10518,32 @@ const AI_TEAMS = [
         "name": "Flauren",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 61,
-        "potential": 62,
-        "form": 55,
+        "level": 70,
+        "potential": 73,
+        "form": 59,
         "fatigue": 0,
-        "mental": 53,
-        "shotcalling": 57,
-        "laning": 68,
-        "teamfight": 60,
-        "mechanics": 65,
+        "mental": 66,
+        "shotcalling": 66,
+        "laning": 76,
+        "teamfight": 71,
+        "mechanics": 74,
         "championPool": [
           "Rumble",
           "Jayce",
-          "Kennen"
+          "Kennen",
+          "Gnar",
+          "Gangplank"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       },
       {
@@ -8244,22 +10551,31 @@ const AI_TEAMS = [
         "name": "Pop9",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 66,
-        "potential": 68,
-        "form": 64,
+        "level": 73,
+        "potential": 76,
+        "form": 68,
         "fatigue": 0,
-        "mental": 65,
-        "shotcalling": 65,
-        "laning": 66,
-        "teamfight": 63,
-        "mechanics": 69,
+        "mental": 76,
+        "shotcalling": 78,
+        "laning": 70,
+        "teamfight": 75,
+        "mechanics": 75,
         "championPool": [
           "Graves",
           "Ivern",
-          "Nidalee"
+          "Nidalee",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
         ]
       },
       {
@@ -8267,43 +10583,61 @@ const AI_TEAMS = [
         "name": "HongSuo",
         "role": "MID",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 73,
-        "form": 52,
+        "level": 75,
+        "potential": 78,
+        "form": 54,
         "fatigue": 0,
-        "mental": 60,
-        "shotcalling": 62,
-        "laning": 66,
-        "teamfight": 70,
-        "mechanics": 74,
+        "mental": 72,
+        "shotcalling": 73,
+        "laning": 77,
+        "teamfight": 78,
+        "mechanics": 81,
         "championPool": [
           "Hwei",
           "Zoe",
-          "Orianna"
+          "Orianna",
+          "Corki",
+          "LeBlanc"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          79,
+          76,
+          72,
+          67,
+          63
+        ]
       },
       {
         "id": "dcg_adc",
         "name": "XiaoXiang",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 69,
-        "potential": 73,
-        "form": 62,
+        "level": 76,
+        "potential": 79,
+        "form": 66,
         "fatigue": 0,
-        "mental": 71,
-        "shotcalling": 65,
-        "laning": 67,
-        "teamfight": 69,
-        "mechanics": 73,
+        "mental": 80,
+        "shotcalling": 70,
+        "laning": 77,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Ashe",
+          "Kai'Sa"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -8311,22 +10645,31 @@ const AI_TEAMS = [
         "name": "ShiauC",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 69,
-        "form": 56,
+        "level": 75,
+        "potential": 78,
+        "form": 60,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 65,
-        "laning": 71,
-        "teamfight": 70,
-        "mechanics": 71,
+        "mental": 79,
+        "shotcalling": 79,
+        "laning": 76,
+        "teamfight": 79,
+        "mechanics": 73,
         "championPool": [
           "Nami",
           "Karma",
-          "Milio"
+          "Milio",
+          "Bard",
+          "Lulu"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       }
     ],
@@ -8340,12 +10683,12 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Kennen"
+          "Rumble",
+          "Jayce"
         ],
         "JUNGLE": [
-          "Nidalee",
-          "Graves"
+          "Graves",
+          "Ivern"
         ],
         "MID": [
           "Hwei",
@@ -8356,8 +10699,8 @@ const AI_TEAMS = [
           "Varus"
         ],
         "SUPPORT": [
-          "Karma",
-          "Milio"
+          "Nami",
+          "Karma"
         ]
       },
       "flexPicks": [
@@ -8380,64 +10723,91 @@ const AI_TEAMS = [
         "name": "Momo",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 74,
-        "potential": 79,
-        "form": 57,
+        "level": 81,
+        "potential": 84,
+        "form": 60,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 67,
-        "laning": 79,
-        "teamfight": 75,
-        "mechanics": 76,
+        "mental": 82,
+        "shotcalling": 76,
+        "laning": 86,
+        "teamfight": 82,
+        "mechanics": 84,
         "championPool": [
           "Sion",
           "Gnar",
-          "Ornn"
+          "Ornn",
+          "Jayce",
+          "Gangplank"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "dfm_jungle",
         "name": "Citrus",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 72,
-        "potential": 77,
-        "form": 58,
+        "level": 79,
+        "potential": 82,
+        "form": 61,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 75,
-        "laning": 65,
-        "teamfight": 76,
-        "mechanics": 70,
+        "mental": 80,
+        "shotcalling": 85,
+        "laning": 73,
+        "teamfight": 84,
+        "mechanics": 79,
         "championPool": [
           "Jarvan IV",
           "Sejuani",
-          "Maokai"
+          "Maokai",
+          "Nidalee",
+          "Graves"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          84,
+          81,
+          78,
+          73,
+          69
+        ]
       },
       {
         "id": "dfm_mid",
         "name": "Fisher",
         "role": "MID",
         "nationality": "KR",
-        "level": 76,
-        "potential": 79,
-        "form": 71,
+        "level": 81,
+        "potential": 84,
+        "form": 75,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 72,
-        "laning": 73,
-        "teamfight": 76,
-        "mechanics": 80,
+        "mental": 82,
+        "shotcalling": 80,
+        "laning": 83,
+        "teamfight": 83,
+        "mechanics": 86,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -8445,22 +10815,31 @@ const AI_TEAMS = [
         "name": "Kakkun",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 71,
-        "form": 69,
+        "level": 76,
+        "potential": 79,
+        "form": 75,
         "fatigue": 0,
-        "mental": 68,
-        "shotcalling": 61,
-        "laning": 64,
-        "teamfight": 77,
-        "mechanics": 69,
+        "mental": 79,
+        "shotcalling": 69,
+        "laning": 76,
+        "teamfight": 84,
+        "mechanics": 80,
         "championPool": [
           "Aphelios",
           "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Varus",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          76,
+          71,
+          67
         ]
       },
       {
@@ -8468,22 +10847,31 @@ const AI_TEAMS = [
         "name": "Woody",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 77,
-        "potential": 82,
-        "form": 69,
+        "level": 82,
+        "potential": 85,
+        "form": 73,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 79,
-        "laning": 75,
-        "teamfight": 83,
-        "mechanics": 73,
+        "mental": 86,
+        "shotcalling": 88,
+        "laning": 81,
+        "teamfight": 88,
+        "mechanics": 77,
         "championPool": [
           "Karma",
           "Lulu",
-          "Milio"
+          "Milio",
+          "Nami",
+          "Thresh"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       }
     ],
@@ -8497,24 +10885,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Sion",
+          "Gnar"
         ],
         "JUNGLE": [
-          "Maokai",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Sejuani"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Aphelios",
+          "Caitlyn"
         ],
         "SUPPORT": [
-          "Lulu",
-          "Milio"
+          "Karma",
+          "Lulu"
         ]
       },
       "flexPicks": [
@@ -8537,44 +10925,62 @@ const AI_TEAMS = [
         "name": "Evi",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 80,
-        "potential": 80,
-        "form": 63,
+        "level": 84,
+        "potential": 87,
+        "form": 66,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 70,
-        "laning": 85,
-        "teamfight": 75,
-        "mechanics": 85,
+        "mental": 85,
+        "shotcalling": 78,
+        "laning": 89,
+        "teamfight": 83,
+        "mechanics": 88,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
+        ]
       },
       {
         "id": "fsh_jungle",
         "name": "Van1",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 78,
-        "potential": 80,
-        "form": 76,
+        "level": 84,
+        "potential": 87,
+        "form": 82,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 84,
-        "laning": 71,
-        "teamfight": 82,
-        "mechanics": 82,
+        "mental": 87,
+        "shotcalling": 95,
+        "laning": 78,
+        "teamfight": 89,
+        "mechanics": 87,
         "championPool": [
           "Vi",
           "Nocturne",
-          "Jarvan IV"
+          "Jarvan IV",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -8582,22 +10988,31 @@ const AI_TEAMS = [
         "name": "Aria",
         "role": "MID",
         "nationality": "APAC",
-        "level": 80,
-        "potential": 86,
-        "form": 74,
+        "level": 84,
+        "potential": 87,
+        "form": 79,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 77,
-        "laning": 80,
-        "teamfight": 78,
-        "mechanics": 86,
+        "mental": 85,
+        "shotcalling": 84,
+        "laning": 87,
+        "teamfight": 85,
+        "mechanics": 90,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -8605,22 +11020,31 @@ const AI_TEAMS = [
         "name": "Marble",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 83,
-        "potential": 89,
-        "form": 65,
+        "level": 87,
+        "potential": 90,
+        "form": 68,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 80,
-        "laning": 81,
-        "teamfight": 89,
-        "mechanics": 90,
+        "mental": 88,
+        "shotcalling": 82,
+        "laning": 89,
+        "teamfight": 94,
+        "mechanics": 97,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -8628,21 +11052,30 @@ const AI_TEAMS = [
         "name": "Vsta",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 78,
-        "potential": 77,
-        "form": 65,
+        "level": 84,
+        "potential": 87,
+        "form": 69,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 79,
-        "laning": 72,
-        "teamfight": 80,
-        "mechanics": 81,
+        "mental": 88,
+        "shotcalling": 89,
+        "laning": 81,
+        "teamfight": 88,
+        "mechanics": 82,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
+        ]
       }
     ],
     "draftProfile": {
@@ -8655,20 +11088,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Nocturne"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
           "Nautilus",
@@ -8695,45 +11128,63 @@ const AI_TEAMS = [
         "name": "Kiaya",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 80,
-        "potential": 82,
-        "form": 66,
+        "level": 85,
+        "potential": 88,
+        "form": 70,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 80,
-        "laning": 86,
-        "teamfight": 85,
-        "mechanics": 85,
+        "mental": 86,
+        "shotcalling": 83,
+        "laning": 91,
+        "teamfight": 88,
+        "mechanics": 89,
         "championPool": [
           "Jayce",
           "Renekton",
-          "Kennen"
+          "Kennen",
+          "Jax",
+          "Camille"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          92,
+          89,
+          86,
+          81,
+          77
+        ]
       },
       {
         "id": "gam_jungle",
         "name": "Draktharr",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 88,
-        "potential": 92,
-        "form": 76,
+        "level": 91,
+        "potential": 94,
+        "form": 81,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 87,
-        "laning": 88,
-        "teamfight": 90,
-        "mechanics": 89,
+        "mental": 91,
+        "shotcalling": 99,
+        "laning": 89,
+        "teamfight": 95,
+        "mechanics": 95,
         "championPool": [
           "Vi",
           "Lee Sin",
-          "Elise"
+          "Elise",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "consistant",
           "igl",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          87,
+          84
         ]
       },
       {
@@ -8741,22 +11192,31 @@ const AI_TEAMS = [
         "name": "Aress",
         "role": "MID",
         "nationality": "APAC",
-        "level": 80,
-        "potential": 78,
-        "form": 72,
+        "level": 85,
+        "potential": 88,
+        "form": 78,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 79,
-        "laning": 77,
-        "teamfight": 78,
-        "mechanics": 87,
+        "mental": 85,
+        "shotcalling": 86,
+        "laning": 87,
+        "teamfight": 86,
+        "mechanics": 91,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       },
       {
@@ -8764,22 +11224,31 @@ const AI_TEAMS = [
         "name": "Artemis",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 79,
-        "potential": 78,
-        "form": 82,
+        "level": 86,
+        "potential": 89,
+        "form": 89,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 73,
-        "laning": 85,
-        "teamfight": 88,
-        "mechanics": 81,
+        "mental": 86,
+        "shotcalling": 79,
+        "laning": 91,
+        "teamfight": 94,
+        "mechanics": 91,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       },
       {
@@ -8787,23 +11256,32 @@ const AI_TEAMS = [
         "name": "Taki",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 78,
-        "potential": 83,
-        "form": 75,
+        "level": 85,
+        "potential": 88,
+        "form": 82,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 84,
-        "laning": 74,
-        "teamfight": 82,
-        "mechanics": 78,
+        "mental": 90,
+        "shotcalling": 96,
+        "laning": 83,
+        "teamfight": 90,
+        "mechanics": 82,
         "championPool": [
           "Pyke",
           "Nautilus",
-          "Thresh"
+          "Thresh",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
         ]
       }
     ],
@@ -8821,20 +11299,20 @@ const AI_TEAMS = [
           "Renekton"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Vi",
+          "Lee Sin"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Pyke",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -8857,22 +11335,31 @@ const AI_TEAMS = [
         "name": "1Jiang",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 63,
-        "potential": 69,
-        "form": 60,
+        "level": 72,
+        "potential": 75,
+        "form": 65,
         "fatigue": 0,
-        "mental": 58,
-        "shotcalling": 63,
-        "laning": 64,
-        "teamfight": 64,
-        "mechanics": 65,
+        "mental": 73,
+        "shotcalling": 70,
+        "laning": 75,
+        "teamfight": 73,
+        "mechanics": 75,
         "championPool": [
           "Camille",
           "Jax",
-          "Fiora"
+          "Fiora",
+          "Gwen",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -8880,23 +11367,32 @@ const AI_TEAMS = [
         "name": "Husha",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 61,
-        "potential": 64,
-        "form": 53,
+        "level": 70,
+        "potential": 73,
+        "form": 57,
         "fatigue": 0,
-        "mental": 56,
-        "shotcalling": 60,
-        "laning": 54,
-        "teamfight": 57,
-        "mechanics": 57,
+        "mental": 68,
+        "shotcalling": 75,
+        "laning": 64,
+        "teamfight": 71,
+        "mechanics": 69,
         "championPool": [
           "Nocturne",
           "Viego",
-          "Lee Sin"
+          "Lee Sin",
+          "Vi",
+          "Wukong"
         ],
         "traits": [
           "consistant",
           "tiltable"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       },
       {
@@ -8904,22 +11400,31 @@ const AI_TEAMS = [
         "name": "JimieN",
         "role": "MID",
         "nationality": "APAC",
-        "level": 63,
-        "potential": 68,
-        "form": 56,
+        "level": 72,
+        "potential": 75,
+        "form": 61,
         "fatigue": 0,
-        "mental": 60,
-        "shotcalling": 56,
-        "laning": 70,
-        "teamfight": 66,
-        "mechanics": 66,
+        "mental": 74,
+        "shotcalling": 70,
+        "laning": 78,
+        "teamfight": 75,
+        "mechanics": 76,
         "championPool": [
           "Ryze",
           "Akali",
-          "Twisted Fate"
+          "Twisted Fate",
+          "Yone",
+          "LeBlanc"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -8927,43 +11432,61 @@ const AI_TEAMS = [
         "name": "Shunn",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 71,
-        "potential": 72,
-        "form": 49,
+        "level": 77,
+        "potential": 80,
+        "form": 51,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 70,
-        "laning": 67,
-        "teamfight": 77,
-        "mechanics": 71,
+        "mental": 76,
+        "shotcalling": 73,
+        "laning": 77,
+        "teamfight": 84,
+        "mechanics": 81,
         "championPool": [
           "Kai'Sa",
           "Vayne",
-          "Ezreal"
+          "Ezreal",
+          "Lucian",
+          "Xayah"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          81,
+          78,
+          74,
+          69,
+          65
+        ]
       },
       {
         "id": "gzg_support",
         "name": "Orca",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 66,
-        "form": 57,
+        "level": 75,
+        "potential": 78,
+        "form": 61,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 70,
-        "laning": 62,
-        "teamfight": 70,
-        "mechanics": 67,
+        "mental": 78,
+        "shotcalling": 81,
+        "laning": 72,
+        "teamfight": 79,
+        "mechanics": 72,
         "championPool": [
           "Rakan",
           "Bard",
-          "Tahm Kench"
+          "Tahm Kench",
+          "Thresh",
+          "Nautilus"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       }
     ],
@@ -8977,20 +11500,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jax",
-          "Fiora"
+          "Camille",
+          "Jax"
         ],
         "JUNGLE": [
           "Nocturne",
           "Viego"
         ],
         "MID": [
-          "Twisted Fate",
-          "Ryze"
+          "Ryze",
+          "Akali"
         ],
         "ADC": [
-          "Ezreal",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Vayne"
         ],
         "SUPPORT": [
           "Rakan",
@@ -9017,85 +11540,121 @@ const AI_TEAMS = [
         "name": "Steller",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 77,
-        "potential": 75,
-        "form": 58,
+        "level": 82,
+        "potential": 85,
+        "form": 60,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 70,
-        "laning": 84,
-        "teamfight": 74,
-        "mechanics": 76,
+        "mental": 83,
+        "shotcalling": 77,
+        "laning": 88,
+        "teamfight": 82,
+        "mechanics": 84,
         "championPool": [
           "Jayce",
           "Renekton",
-          "Kennen"
+          "Kennen",
+          "Jax",
+          "Camille"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
+        ]
       },
       {
         "id": "mvk_jungle",
         "name": "Kratos",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 75,
-        "potential": 75,
-        "form": 55,
+        "level": 80,
+        "potential": 83,
+        "form": 57,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 79,
-        "laning": 75,
-        "teamfight": 72,
-        "mechanics": 78,
+        "mental": 81,
+        "shotcalling": 87,
+        "laning": 77,
+        "teamfight": 82,
+        "mechanics": 82,
         "championPool": [
           "Elise",
           "Vi",
-          "Lee Sin"
+          "Lee Sin",
+          "Nocturne",
+          "Pantheon"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
+        ]
       },
       {
         "id": "mvk_mid",
         "name": "Gury",
         "role": "MID",
         "nationality": "APAC",
-        "level": 75,
-        "potential": 73,
-        "form": 61,
+        "level": 80,
+        "potential": 83,
+        "form": 63,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 72,
-        "laning": 72,
-        "teamfight": 77,
-        "mechanics": 82,
+        "mental": 81,
+        "shotcalling": 80,
+        "laning": 82,
+        "teamfight": 83,
+        "mechanics": 86,
         "championPool": [
           "Ahri",
           "Taliyah",
-          "LeBlanc"
+          "LeBlanc",
+          "Twisted Fate",
+          "Syndra"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
+        ]
       },
       {
         "id": "mvk_adc",
         "name": "Chika",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 72,
-        "form": 71,
+        "level": 76,
+        "potential": 79,
+        "form": 77,
         "fatigue": 0,
-        "mental": 67,
-        "shotcalling": 66,
-        "laning": 65,
-        "teamfight": 69,
-        "mechanics": 72,
+        "mental": 79,
+        "shotcalling": 71,
+        "laning": 77,
+        "teamfight": 80,
+        "mechanics": 82,
         "championPool": [
           "Kai'Sa",
           "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          76,
+          71,
+          67
         ]
       },
       {
@@ -9103,22 +11662,31 @@ const AI_TEAMS = [
         "name": "SiuLoong",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 73,
-        "potential": 72,
-        "form": 62,
+        "level": 80,
+        "potential": 83,
+        "form": 67,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 79,
-        "laning": 68,
-        "teamfight": 70,
-        "mechanics": 75,
+        "mental": 86,
+        "shotcalling": 88,
+        "laning": 78,
+        "teamfight": 82,
+        "mechanics": 78,
         "championPool": [
           "Thresh",
           "Pyke",
-          "Nautilus"
+          "Nautilus",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       }
     ],
@@ -9136,16 +11704,16 @@ const AI_TEAMS = [
           "Renekton"
         ],
         "JUNGLE": [
-          "Lee Sin",
-          "Elise"
+          "Elise",
+          "Vi"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Taliyah"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Kai'Sa",
+          "Varus"
         ],
         "SUPPORT": [
           "Thresh",
@@ -9172,43 +11740,61 @@ const AI_TEAMS = [
         "name": "Pun",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 83,
-        "potential": 87,
-        "form": 67,
+        "level": 87,
+        "potential": 90,
+        "form": 70,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 78,
-        "laning": 86,
-        "teamfight": 86,
-        "mechanics": 85,
+        "mental": 84,
+        "shotcalling": 83,
+        "laning": 91,
+        "teamfight": 89,
+        "mechanics": 90,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          93,
+          90,
+          87,
+          82,
+          78
+        ]
       },
       {
         "id": "tsw_jungle",
         "name": "Hizto",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 73,
-        "potential": 72,
-        "form": 76,
+        "level": 81,
+        "potential": 84,
+        "form": 83,
         "fatigue": 0,
-        "mental": 73,
-        "shotcalling": 75,
-        "laning": 66,
-        "teamfight": 77,
-        "mechanics": 76,
+        "mental": 84,
+        "shotcalling": 87,
+        "laning": 75,
+        "teamfight": 86,
+        "mechanics": 83,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -9216,22 +11802,31 @@ const AI_TEAMS = [
         "name": "Dire",
         "role": "MID",
         "nationality": "APAC",
-        "level": 76,
-        "potential": 76,
-        "form": 75,
+        "level": 82,
+        "potential": 85,
+        "form": 81,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 76,
-        "laning": 81,
-        "teamfight": 82,
-        "mechanics": 76,
+        "mental": 86,
+        "shotcalling": 83,
+        "laning": 87,
+        "teamfight": 87,
+        "mechanics": 85,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -9239,22 +11834,31 @@ const AI_TEAMS = [
         "name": "Eddie",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 77,
-        "potential": 80,
-        "form": 65,
+        "level": 83,
+        "potential": 86,
+        "form": 71,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 71,
-        "laning": 76,
-        "teamfight": 79,
-        "mechanics": 80,
+        "mental": 86,
+        "shotcalling": 76,
+        "laning": 85,
+        "teamfight": 88,
+        "mechanics": 88,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
         ]
       },
       {
@@ -9262,22 +11866,31 @@ const AI_TEAMS = [
         "name": "Bie",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 74,
-        "potential": 75,
-        "form": 68,
+        "level": 82,
+        "potential": 85,
+        "form": 75,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 74,
-        "laning": 70,
-        "teamfight": 75,
-        "mechanics": 77,
+        "mental": 87,
+        "shotcalling": 87,
+        "laning": 80,
+        "teamfight": 85,
+        "mechanics": 80,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       }
     ],
@@ -9291,24 +11904,24 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
           "Varus",
           "Ashe"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -9331,22 +11944,31 @@ const AI_TEAMS = [
         "name": "leaf",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 69,
-        "potential": 71,
-        "form": 70,
+        "level": 76,
+        "potential": 79,
+        "form": 75,
         "fatigue": 0,
-        "mental": 62,
-        "shotcalling": 59,
-        "laning": 71,
-        "teamfight": 70,
-        "mechanics": 67,
+        "mental": 76,
+        "shotcalling": 70,
+        "laning": 80,
+        "teamfight": 77,
+        "mechanics": 77,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          82,
+          79,
+          76,
+          71,
+          67
         ]
       },
       {
@@ -9354,22 +11976,31 @@ const AI_TEAMS = [
         "name": "Kania",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 74,
-        "potential": 78,
-        "form": 64,
+        "level": 80,
+        "potential": 83,
+        "form": 69,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 73,
-        "laning": 69,
-        "teamfight": 77,
-        "mechanics": 70,
+        "mental": 81,
+        "shotcalling": 85,
+        "laning": 75,
+        "teamfight": 84,
+        "mechanics": 79,
         "championPool": [
           "Jarvan IV",
           "Vi",
-          "Nocturne"
+          "Nocturne",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       },
       {
@@ -9377,43 +12008,61 @@ const AI_TEAMS = [
         "name": "Daemi",
         "role": "MID",
         "nationality": "KR",
-        "level": 77,
-        "potential": 79,
-        "form": 57,
+        "level": 81,
+        "potential": 84,
+        "form": 59,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 73,
-        "laning": 83,
-        "teamfight": 78,
-        "mechanics": 81,
+        "mental": 78,
+        "shotcalling": 80,
+        "laning": 87,
+        "teamfight": 83,
+        "mechanics": 86,
         "championPool": [
           "Orianna",
           "Azir",
-          "Ryze"
+          "Ryze",
+          "Viktor",
+          "Hwei"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "arn_adc",
         "name": "dresscode",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 68,
-        "potential": 69,
-        "form": 68,
+        "level": 75,
+        "potential": 78,
+        "form": 73,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 62,
-        "laning": 65,
-        "teamfight": 70,
-        "mechanics": 71,
+        "mental": 79,
+        "shotcalling": 68,
+        "laning": 76,
+        "teamfight": 80,
+        "mechanics": 80,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          81,
+          78,
+          75,
+          70,
+          66
         ]
       },
       {
@@ -9421,22 +12070,31 @@ const AI_TEAMS = [
         "name": "Taiyaki",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 74,
-        "potential": 76,
-        "form": 70,
+        "level": 80,
+        "potential": 83,
+        "form": 75,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 73,
-        "laning": 78,
-        "teamfight": 74,
-        "mechanics": 76,
+        "mental": 86,
+        "shotcalling": 85,
+        "laning": 82,
+        "teamfight": 83,
+        "mechanics": 78,
         "championPool": [
           "Nautilus",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       }
     ],
@@ -9450,8 +12108,8 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
           "Jarvan IV",
@@ -9490,22 +12148,31 @@ const AI_TEAMS = [
         "name": "Potential",
         "role": "TOP",
         "nationality": "KR",
-        "level": 81,
-        "potential": 79,
-        "form": 77,
+        "level": 84,
+        "potential": 87,
+        "form": 81,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 73,
-        "laning": 80,
-        "teamfight": 86,
-        "mechanics": 83,
+        "mental": 85,
+        "shotcalling": 78,
+        "laning": 87,
+        "teamfight": 87,
+        "mechanics": 87,
         "championPool": [
           "Sion",
           "Gnar",
-          "Ornn"
+          "Ornn",
+          "Jayce",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          91,
+          88,
+          85,
+          80,
+          76
         ]
       },
       {
@@ -9513,23 +12180,32 @@ const AI_TEAMS = [
         "name": "Grit",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 82,
-        "potential": 86,
-        "form": 76,
+        "level": 85,
+        "potential": 88,
+        "form": 80,
         "fatigue": 0,
-        "mental": 79,
-        "shotcalling": 82,
-        "laning": 76,
-        "teamfight": 79,
-        "mechanics": 84,
+        "mental": 88,
+        "shotcalling": 94,
+        "laning": 79,
+        "teamfight": 87,
+        "mechanics": 87,
         "championPool": [
           "Maokai",
           "Jarvan IV",
-          "Sejuani"
+          "Sejuani",
+          "Nidalee",
+          "Graves"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          92,
+          89,
+          86,
+          81,
+          77
         ]
       },
       {
@@ -9537,22 +12213,31 @@ const AI_TEAMS = [
         "name": "Ravvy",
         "role": "MID",
         "nationality": "APAC",
-        "level": 73,
-        "potential": 71,
-        "form": 73,
+        "level": 80,
+        "potential": 83,
+        "form": 79,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 68,
-        "laning": 80,
-        "teamfight": 79,
-        "mechanics": 73,
+        "mental": 83,
+        "shotcalling": 79,
+        "laning": 86,
+        "teamfight": 85,
+        "mechanics": 83,
         "championPool": [
           "Viktor",
           "Orianna",
-          "Azir"
+          "Azir",
+          "Corki",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -9560,42 +12245,60 @@ const AI_TEAMS = [
         "name": "Damocles",
         "role": "ADC",
         "nationality": "KR",
-        "level": 75,
-        "potential": 77,
-        "form": 61,
+        "level": 80,
+        "potential": 83,
+        "form": 64,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 70,
-        "laning": 76,
-        "teamfight": 80,
-        "mechanics": 76,
+        "mental": 78,
+        "shotcalling": 74,
+        "laning": 82,
+        "teamfight": 86,
+        "mechanics": 84,
         "championPool": [
           "Jinx",
           "Aphelios",
-          "Caitlyn"
+          "Caitlyn",
+          "Varus",
+          "Ezreal"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       },
       {
         "id": "dfma_support",
         "name": "Kurahuto",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 77,
-        "potential": 82,
-        "form": 62,
+        "level": 82,
+        "potential": 85,
+        "form": 65,
         "fatigue": 0,
-        "mental": 69,
-        "shotcalling": 74,
-        "laning": 81,
-        "teamfight": 74,
-        "mechanics": 79,
+        "mental": 81,
+        "shotcalling": 86,
+        "laning": 84,
+        "teamfight": 84,
+        "mechanics": 80,
         "championPool": [
           "Lulu",
           "Milio",
-          "Karma"
+          "Karma",
+          "Nami",
+          "Thresh"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
+        ]
       }
     ],
     "draftProfile": {
@@ -9608,20 +12311,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Ornn",
-          "Sion"
+          "Sion",
+          "Gnar"
         ],
         "JUNGLE": [
           "Maokai",
           "Jarvan IV"
         ],
         "MID": [
-          "Azir",
-          "Viktor"
+          "Viktor",
+          "Orianna"
         ],
         "ADC": [
-          "Caitlyn",
-          "Jinx"
+          "Jinx",
+          "Aphelios"
         ],
         "SUPPORT": [
           "Lulu",
@@ -9648,23 +12351,32 @@ const AI_TEAMS = [
         "name": "kkkkkkkkk",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 83,
-        "potential": 86,
-        "form": 75,
+        "level": 87,
+        "potential": 90,
+        "form": 81,
         "fatigue": 0,
-        "mental": 80,
-        "shotcalling": 73,
-        "laning": 85,
-        "teamfight": 83,
-        "mechanics": 88,
+        "mental": 89,
+        "shotcalling": 80,
+        "laning": 92,
+        "teamfight": 88,
+        "mechanics": 94,
         "championPool": [
           "Rumble",
           "Gnar",
-          "K'Sante"
+          "K'Sante",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       },
       {
@@ -9672,23 +12384,32 @@ const AI_TEAMS = [
         "name": "Ellim",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 87,
+        "level": 89,
         "potential": 92,
-        "form": 81,
+        "form": 86,
         "fatigue": 0,
-        "mental": 83,
-        "shotcalling": 92,
-        "laning": 82,
-        "teamfight": 88,
-        "mechanics": 86,
+        "mental": 91,
+        "shotcalling": 99,
+        "laning": 84,
+        "teamfight": 92,
+        "mechanics": 90,
         "championPool": [
           "Nocturne",
           "Jarvan IV",
-          "Vi"
+          "Vi",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant",
           "igl"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -9696,23 +12417,32 @@ const AI_TEAMS = [
         "name": "DICE",
         "role": "MID",
         "nationality": "KR",
-        "level": 85,
-        "potential": 89,
-        "form": 77,
+        "level": 87,
+        "potential": 90,
+        "form": 82,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 87,
-        "laning": 82,
-        "teamfight": 88,
-        "mechanics": 89,
+        "mental": 87,
+        "shotcalling": 89,
+        "laning": 90,
+        "teamfight": 90,
+        "mechanics": 95,
         "championPool": [
           "Azir",
           "Ryze",
-          "Orianna"
+          "Orianna",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant",
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          93,
+          90,
+          85,
+          81
         ]
       },
       {
@@ -9720,22 +12450,31 @@ const AI_TEAMS = [
         "name": "MayR",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 87,
-        "potential": 89,
-        "form": 64,
+        "level": 89,
+        "potential": 92,
+        "form": 67,
         "fatigue": 0,
-        "mental": 86,
-        "shotcalling": 81,
-        "laning": 87,
-        "teamfight": 94,
-        "mechanics": 88,
+        "mental": 90,
+        "shotcalling": 82,
+        "laning": 92,
+        "teamfight": 96,
+        "mechanics": 96,
         "championPool": [
           "Ezreal",
           "Varus",
-          "Ashe"
+          "Ashe",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "mechanical"
+        ],
+        "masteries": [
+          96,
+          94,
+          91,
+          86,
+          82
         ]
       },
       {
@@ -9743,22 +12482,31 @@ const AI_TEAMS = [
         "name": "Bruce",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 85,
-        "potential": 84,
-        "form": 70,
+        "level": 87,
+        "potential": 90,
+        "form": 73,
         "fatigue": 0,
-        "mental": 81,
-        "shotcalling": 90,
-        "laning": 80,
-        "teamfight": 87,
-        "mechanics": 85,
+        "mental": 89,
+        "shotcalling": 98,
+        "laning": 85,
+        "teamfight": 91,
+        "mechanics": 84,
         "championPool": [
           "Bard",
           "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Rell",
+          "Braum"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          94,
+          91,
+          88,
+          83,
+          79
         ]
       }
     ],
@@ -9776,20 +12524,20 @@ const AI_TEAMS = [
           "Gnar"
         ],
         "JUNGLE": [
-          "Jarvan IV",
-          "Vi"
+          "Nocturne",
+          "Jarvan IV"
         ],
         "MID": [
-          "Orianna",
-          "Azir"
+          "Azir",
+          "Ryze"
         ],
         "ADC": [
-          "Varus",
-          "Ashe"
+          "Ezreal",
+          "Varus"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Bard",
+          "Nautilus"
         ]
       },
       "flexPicks": [
@@ -9812,22 +12560,31 @@ const AI_TEAMS = [
         "name": "SnowRabbit",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 64,
-        "potential": 65,
-        "form": 65,
+        "level": 72,
+        "potential": 75,
+        "form": 70,
         "fatigue": 0,
-        "mental": 63,
-        "shotcalling": 58,
-        "laning": 62,
-        "teamfight": 65,
-        "mechanics": 69,
+        "mental": 75,
+        "shotcalling": 67,
+        "laning": 74,
+        "teamfight": 73,
+        "mechanics": 76,
         "championPool": [
           "Kennen",
           "Jayce",
-          "Renekton"
+          "Renekton",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -9835,43 +12592,61 @@ const AI_TEAMS = [
         "name": "HyunSim",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 68,
-        "potential": 72,
-        "form": 51,
+        "level": 74,
+        "potential": 77,
+        "form": 53,
         "fatigue": 0,
-        "mental": 65,
-        "shotcalling": 70,
-        "laning": 69,
-        "teamfight": 68,
-        "mechanics": 71,
+        "mental": 74,
+        "shotcalling": 80,
+        "laning": 71,
+        "teamfight": 77,
+        "mechanics": 76,
         "championPool": [
           "Lee Sin",
           "Elise",
-          "Vi"
+          "Vi",
+          "Nocturne",
+          "Pantheon"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          78,
+          75,
+          71,
+          66,
+          62
+        ]
       },
       {
         "id": "lgg_mid",
         "name": "p1ng",
         "role": "MID",
         "nationality": "APAC",
-        "level": 69,
-        "potential": 73,
-        "form": 58,
+        "level": 75,
+        "potential": 78,
+        "form": 62,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 62,
-        "laning": 70,
-        "teamfight": 74,
-        "mechanics": 71,
+        "mental": 74,
+        "shotcalling": 73,
+        "laning": 78,
+        "teamfight": 79,
+        "mechanics": 79,
         "championPool": [
           "Taliyah",
           "LeBlanc",
-          "Ahri"
+          "Ahri",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          73,
+          68,
+          64
         ]
       },
       {
@@ -9879,22 +12654,31 @@ const AI_TEAMS = [
         "name": "Karaage",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 66,
-        "potential": 72,
-        "form": 55,
+        "level": 72,
+        "potential": 75,
+        "form": 59,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 60,
-        "laning": 63,
-        "teamfight": 70,
-        "mechanics": 72,
+        "mental": 74,
+        "shotcalling": 65,
+        "laning": 73,
+        "teamfight": 78,
+        "mechanics": 79,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -9902,22 +12686,31 @@ const AI_TEAMS = [
         "name": "rre",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 62,
-        "potential": 64,
-        "form": 58,
+        "level": 70,
+        "potential": 73,
+        "form": 63,
         "fatigue": 0,
-        "mental": 54,
-        "shotcalling": 66,
-        "laning": 61,
-        "teamfight": 64,
-        "mechanics": 61,
+        "mental": 71,
+        "shotcalling": 77,
+        "laning": 70,
+        "teamfight": 74,
+        "mechanics": 67,
         "championPool": [
           "Thresh",
           "Pyke",
-          "Nautilus"
+          "Nautilus",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       }
     ],
@@ -9931,20 +12724,20 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Kennen",
+          "Jayce"
         ],
         "JUNGLE": [
           "Lee Sin",
           "Elise"
         ],
         "MID": [
-          "LeBlanc",
-          "Ahri"
+          "Taliyah",
+          "LeBlanc"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
           "Thresh",
@@ -9971,22 +12764,31 @@ const AI_TEAMS = [
         "name": "advance",
         "role": "TOP",
         "nationality": "KR",
-        "level": 77,
-        "potential": 78,
-        "form": 74,
+        "level": 82,
+        "potential": 85,
+        "form": 79,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 68,
-        "laning": 75,
-        "teamfight": 80,
-        "mechanics": 77,
+        "mental": 84,
+        "shotcalling": 76,
+        "laning": 84,
+        "teamfight": 84,
+        "mechanics": 84,
         "championPool": [
           "Jayce",
           "Kennen",
-          "Rumble"
+          "Rumble",
+          "Gnar",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
         ]
       },
       {
@@ -9994,22 +12796,31 @@ const AI_TEAMS = [
         "name": "HRK",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 77,
-        "potential": 83,
-        "form": 60,
+        "level": 82,
+        "potential": 85,
+        "form": 63,
         "fatigue": 0,
-        "mental": 78,
-        "shotcalling": 83,
-        "laning": 70,
-        "teamfight": 73,
-        "mechanics": 78,
+        "mental": 84,
+        "shotcalling": 93,
+        "laning": 76,
+        "teamfight": 83,
+        "mechanics": 83,
         "championPool": [
           "Graves",
           "Ivern",
-          "Nidalee"
+          "Nidalee",
+          "Elise",
+          "Jarvan IV"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          88,
+          85,
+          82,
+          77,
+          73
         ]
       },
       {
@@ -10017,63 +12828,90 @@ const AI_TEAMS = [
         "name": "Zlatan",
         "role": "MID",
         "nationality": "APAC",
-        "level": 80,
-        "potential": 85,
-        "form": 67,
+        "level": 83,
+        "potential": 86,
+        "form": 69,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 77,
-        "laning": 77,
-        "teamfight": 86,
-        "mechanics": 80,
+        "mental": 85,
+        "shotcalling": 83,
+        "laning": 85,
+        "teamfight": 88,
+        "mechanics": 86,
         "championPool": [
           "Zoe",
           "Orianna",
-          "Hwei"
+          "Hwei",
+          "Corki",
+          "LeBlanc"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          89,
+          86,
+          83,
+          78,
+          74
+        ]
       },
       {
         "id": "nm_adc",
         "name": "Eria",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 81,
+        "level": 84,
         "potential": 87,
-        "form": 64,
+        "form": 66,
         "fatigue": 0,
-        "mental": 82,
-        "shotcalling": 76,
-        "laning": 86,
-        "teamfight": 88,
-        "mechanics": 87,
+        "mental": 85,
+        "shotcalling": 78,
+        "laning": 88,
+        "teamfight": 91,
+        "mechanics": 91,
         "championPool": [
           "Caitlyn",
           "Ezreal",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Kai'Sa"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          90,
+          87,
+          84,
+          79,
+          75
+        ]
       },
       {
         "id": "nm_support",
         "name": "Alps",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 75,
-        "potential": 73,
-        "form": 61,
+        "level": 80,
+        "potential": 83,
+        "form": 64,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 78,
-        "laning": 76,
-        "teamfight": 75,
-        "mechanics": 74,
+        "mental": 83,
+        "shotcalling": 86,
+        "laning": 80,
+        "teamfight": 83,
+        "mechanics": 77,
         "championPool": [
           "Milio",
           "Nami",
-          "Karma"
+          "Karma",
+          "Bard",
+          "Lulu"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       }
     ],
     "draftProfile": {
@@ -10090,20 +12928,20 @@ const AI_TEAMS = [
           "Kennen"
         ],
         "JUNGLE": [
-          "Nidalee",
-          "Graves"
+          "Graves",
+          "Ivern"
         ],
         "MID": [
-          "Hwei",
-          "Zoe"
+          "Zoe",
+          "Orianna"
         ],
         "ADC": [
-          "Ezreal",
-          "Varus"
+          "Caitlyn",
+          "Ezreal"
         ],
         "SUPPORT": [
-          "Karma",
-          "Milio"
+          "Milio",
+          "Nami"
         ]
       },
       "flexPicks": [
@@ -10126,22 +12964,31 @@ const AI_TEAMS = [
         "name": "Gecko",
         "role": "TOP",
         "nationality": "KR",
-        "level": 66,
-        "potential": 68,
-        "form": 65,
+        "level": 72,
+        "potential": 75,
+        "form": 69,
         "fatigue": 0,
-        "mental": 58,
-        "shotcalling": 66,
-        "laning": 70,
-        "teamfight": 70,
-        "mechanics": 70,
+        "mental": 71,
+        "shotcalling": 70,
+        "laning": 77,
+        "teamfight": 75,
+        "mechanics": 76,
         "championPool": [
           "Jax",
           "Fiora",
-          "Camille"
+          "Camille",
+          "Gwen",
+          "Gangplank"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -10149,43 +12996,61 @@ const AI_TEAMS = [
         "name": "Kangkuk",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 65,
-        "potential": 66,
-        "form": 51,
+        "level": 71,
+        "potential": 74,
+        "form": 53,
         "fatigue": 0,
-        "mental": 64,
-        "shotcalling": 71,
-        "laning": 57,
-        "teamfight": 66,
-        "mechanics": 63,
+        "mental": 72,
+        "shotcalling": 79,
+        "laning": 64,
+        "teamfight": 74,
+        "mechanics": 71,
         "championPool": [
           "Viego",
           "Lee Sin",
-          "Nocturne"
+          "Nocturne",
+          "Vi",
+          "Wukong"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
+        ]
       },
       {
         "id": "ryn_mid",
         "name": "Razer",
         "role": "MID",
         "nationality": "APAC",
-        "level": 62,
-        "potential": 65,
-        "form": 65,
+        "level": 70,
+        "potential": 73,
+        "form": 70,
         "fatigue": 0,
-        "mental": 55,
-        "shotcalling": 56,
-        "laning": 65,
-        "teamfight": 65,
-        "mechanics": 61,
+        "mental": 70,
+        "shotcalling": 68,
+        "laning": 74,
+        "teamfight": 73,
+        "mechanics": 73,
         "championPool": [
           "Twisted Fate",
           "Ryze",
-          "Akali"
+          "Akali",
+          "Yone",
+          "LeBlanc"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          75,
+          72,
+          68,
+          63,
+          59
         ]
       },
       {
@@ -10193,22 +13058,31 @@ const AI_TEAMS = [
         "name": "Fluid",
         "role": "ADC",
         "nationality": "APAC",
-        "level": 64,
-        "potential": 68,
-        "form": 63,
+        "level": 72,
+        "potential": 75,
+        "form": 68,
         "fatigue": 0,
-        "mental": 61,
-        "shotcalling": 54,
-        "laning": 60,
-        "teamfight": 70,
-        "mechanics": 68,
+        "mental": 74,
+        "shotcalling": 64,
+        "laning": 72,
+        "teamfight": 79,
+        "mechanics": 78,
         "championPool": [
           "Kai'Sa",
           "Vayne",
-          "Ezreal"
+          "Ezreal",
+          "Lucian",
+          "Xayah"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          77,
+          74,
+          70,
+          65,
+          61
         ]
       },
       {
@@ -10216,21 +13090,30 @@ const AI_TEAMS = [
         "name": "chico",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 70,
-        "potential": 73,
-        "form": 52,
+        "level": 75,
+        "potential": 78,
+        "form": 53,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 76,
-        "laning": 70,
-        "teamfight": 71,
-        "mechanics": 65,
+        "mental": 76,
+        "shotcalling": 83,
+        "laning": 75,
+        "teamfight": 78,
+        "mechanics": 70,
         "championPool": [
           "Tahm Kench",
           "Rakan",
-          "Bard"
+          "Bard",
+          "Thresh",
+          "Nautilus"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          79,
+          76,
+          72,
+          67,
+          63
+        ]
       }
     ],
     "draftProfile": {
@@ -10247,20 +13130,20 @@ const AI_TEAMS = [
           "Fiora"
         ],
         "JUNGLE": [
-          "Nocturne",
-          "Viego"
+          "Viego",
+          "Lee Sin"
         ],
         "MID": [
           "Twisted Fate",
           "Ryze"
         ],
         "ADC": [
-          "Ezreal",
-          "Kai'Sa"
+          "Kai'Sa",
+          "Vayne"
         ],
         "SUPPORT": [
-          "Rakan",
-          "Bard"
+          "Tahm Kench",
+          "Rakan"
         ]
       },
       "flexPicks": [
@@ -10283,22 +13166,31 @@ const AI_TEAMS = [
         "name": "YellowYoshi",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 73,
-        "potential": 79,
-        "form": 77,
+        "level": 80,
+        "potential": 83,
+        "form": 83,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 67,
-        "laning": 80,
-        "teamfight": 70,
-        "mechanics": 78,
+        "mental": 83,
+        "shotcalling": 75,
+        "laning": 86,
+        "teamfight": 80,
+        "mechanics": 84,
         "championPool": [
           "Gnar",
           "K'Sante",
-          "Rumble"
+          "Rumble",
+          "Kennen",
+          "Sion"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -10306,22 +13198,31 @@ const AI_TEAMS = [
         "name": "ankochan",
         "role": "JUNGLE",
         "nationality": "APAC",
-        "level": 73,
-        "potential": 79,
-        "form": 74,
+        "level": 80,
+        "potential": 83,
+        "form": 80,
         "fatigue": 0,
-        "mental": 72,
-        "shotcalling": 77,
-        "laning": 64,
-        "teamfight": 74,
-        "mechanics": 74,
+        "mental": 83,
+        "shotcalling": 87,
+        "laning": 73,
+        "teamfight": 83,
+        "mechanics": 81,
         "championPool": [
           "Jarvan IV",
           "Vi",
-          "Nocturne"
+          "Nocturne",
+          "Wukong",
+          "Skarner"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -10329,22 +13230,31 @@ const AI_TEAMS = [
         "name": "Ramune",
         "role": "MID",
         "nationality": "APAC",
-        "level": 75,
-        "potential": 76,
-        "form": 67,
+        "level": 80,
+        "potential": 83,
+        "form": 72,
         "fatigue": 0,
-        "mental": 76,
-        "shotcalling": 77,
-        "laning": 74,
-        "teamfight": 82,
-        "mechanics": 82,
+        "mental": 83,
+        "shotcalling": 82,
+        "laning": 83,
+        "teamfight": 85,
+        "mechanics": 86,
         "championPool": [
           "Orianna",
           "Azir",
-          "Ryze"
+          "Ryze",
+          "Viktor",
+          "Hwei"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -10352,22 +13262,31 @@ const AI_TEAMS = [
         "name": "Archer",
         "role": "ADC",
         "nationality": "KR",
-        "level": 75,
-        "potential": 81,
-        "form": 64,
+        "level": 80,
+        "potential": 83,
+        "form": 69,
         "fatigue": 0,
-        "mental": 70,
-        "shotcalling": 73,
-        "laning": 78,
-        "teamfight": 82,
-        "mechanics": 79,
+        "mental": 81,
+        "shotcalling": 75,
+        "laning": 83,
+        "teamfight": 87,
+        "mechanics": 86,
         "championPool": [
           "Varus",
           "Ashe",
-          "Ezreal"
+          "Ezreal",
+          "Jinx",
+          "Aphelios"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          87,
+          84,
+          81,
+          76,
+          72
         ]
       },
       {
@@ -10375,21 +13294,30 @@ const AI_TEAMS = [
         "name": "Patch",
         "role": "SUPPORT",
         "nationality": "KR",
-        "level": 73,
-        "potential": 79,
-        "form": 59,
+        "level": 80,
+        "potential": 83,
+        "form": 63,
         "fatigue": 0,
-        "mental": 75,
-        "shotcalling": 70,
-        "laning": 68,
-        "teamfight": 70,
-        "mechanics": 74,
+        "mental": 84,
+        "shotcalling": 84,
+        "laning": 78,
+        "teamfight": 82,
+        "mechanics": 77,
         "championPool": [
           "Rakan",
           "Bard",
-          "Nautilus"
+          "Nautilus",
+          "Rell",
+          "Braum"
         ],
-        "traits": []
+        "traits": [],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
+        ]
       }
     ],
     "draftProfile": {
@@ -10402,8 +13330,8 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Rumble",
-          "Gnar"
+          "Gnar",
+          "K'Sante"
         ],
         "JUNGLE": [
           "Jarvan IV",
@@ -10418,8 +13346,8 @@ const AI_TEAMS = [
           "Ashe"
         ],
         "SUPPORT": [
-          "Nautilus",
-          "Rakan"
+          "Rakan",
+          "Bard"
         ]
       },
       "flexPicks": [
@@ -10442,22 +13370,31 @@ const AI_TEAMS = [
         "name": "tol2",
         "role": "TOP",
         "nationality": "APAC",
-        "level": 67,
-        "potential": 72,
-        "form": 68,
+        "level": 74,
+        "potential": 77,
+        "form": 73,
         "fatigue": 0,
-        "mental": 59,
-        "shotcalling": 63,
-        "laning": 70,
-        "teamfight": 62,
-        "mechanics": 71,
+        "mental": 73,
+        "shotcalling": 70,
+        "laning": 78,
+        "teamfight": 73,
+        "mechanics": 78,
         "championPool": [
           "Kennen",
           "Jayce",
-          "Renekton"
+          "Renekton",
+          "Jax",
+          "Camille"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          80,
+          77,
+          74,
+          69,
+          65
         ]
       },
       {
@@ -10465,22 +13402,31 @@ const AI_TEAMS = [
         "name": "Elative",
         "role": "JUNGLE",
         "nationality": "KR",
-        "level": 77,
-        "potential": 82,
-        "form": 56,
+        "level": 81,
+        "potential": 84,
+        "form": 58,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 82,
-        "laning": 68,
-        "teamfight": 82,
-        "mechanics": 80,
+        "mental": 82,
+        "shotcalling": 92,
+        "laning": 74,
+        "teamfight": 86,
+        "mechanics": 83,
         "championPool": [
           "Lee Sin",
           "Elise",
-          "Vi"
+          "Vi",
+          "Nocturne",
+          "Pantheon"
         ],
         "traits": [
           "igl"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       },
       {
@@ -10488,22 +13434,31 @@ const AI_TEAMS = [
         "name": "Jericho",
         "role": "MID",
         "nationality": "APAC",
-        "level": 71,
-        "potential": 73,
-        "form": 60,
+        "level": 77,
+        "potential": 80,
+        "form": 65,
         "fatigue": 0,
-        "mental": 66,
-        "shotcalling": 63,
-        "laning": 73,
-        "teamfight": 69,
-        "mechanics": 77,
+        "mental": 78,
+        "shotcalling": 74,
+        "laning": 81,
+        "teamfight": 78,
+        "mechanics": 83,
         "championPool": [
           "LeBlanc",
           "Ahri",
-          "Taliyah"
+          "Taliyah",
+          "Twisted Fate",
+          "Syndra"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          83,
+          80,
+          77,
+          72,
+          68
         ]
       },
       {
@@ -10511,22 +13466,31 @@ const AI_TEAMS = [
         "name": "Gimi",
         "role": "ADC",
         "nationality": "KR",
-        "level": 76,
-        "potential": 75,
-        "form": 65,
+        "level": 80,
+        "potential": 83,
+        "form": 69,
         "fatigue": 0,
-        "mental": 77,
-        "shotcalling": 75,
-        "laning": 81,
-        "teamfight": 75,
-        "mechanics": 78,
+        "mental": 83,
+        "shotcalling": 76,
+        "laning": 84,
+        "teamfight": 84,
+        "mechanics": 85,
         "championPool": [
           "Caitlyn",
           "Kai'Sa",
-          "Varus"
+          "Varus",
+          "Ashe",
+          "Ezreal"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          86,
+          83,
+          80,
+          75,
+          71
         ]
       },
       {
@@ -10534,22 +13498,31 @@ const AI_TEAMS = [
         "name": "f4ke",
         "role": "SUPPORT",
         "nationality": "APAC",
-        "level": 75,
-        "potential": 76,
-        "form": 67,
+        "level": 79,
+        "potential": 82,
+        "form": 71,
         "fatigue": 0,
-        "mental": 74,
-        "shotcalling": 75,
-        "laning": 74,
-        "teamfight": 72,
-        "mechanics": 74,
+        "mental": 84,
+        "shotcalling": 84,
+        "laning": 79,
+        "teamfight": 81,
+        "mechanics": 76,
         "championPool": [
           "Nautilus",
           "Thresh",
-          "Pyke"
+          "Pyke",
+          "Rakan",
+          "Bard"
         ],
         "traits": [
           "consistant"
+        ],
+        "masteries": [
+          85,
+          82,
+          79,
+          74,
+          70
         ]
       }
     ],
@@ -10563,8 +13536,8 @@ const AI_TEAMS = [
       ],
       "comfortPicks": {
         "TOP": [
-          "Jayce",
-          "Renekton"
+          "Kennen",
+          "Jayce"
         ],
         "JUNGLE": [
           "Lee Sin",
@@ -10575,12 +13548,12 @@ const AI_TEAMS = [
           "Ahri"
         ],
         "ADC": [
-          "Varus",
-          "Caitlyn"
+          "Caitlyn",
+          "Kai'Sa"
         ],
         "SUPPORT": [
-          "Thresh",
-          "Pyke"
+          "Nautilus",
+          "Thresh"
         ]
       },
       "flexPicks": [

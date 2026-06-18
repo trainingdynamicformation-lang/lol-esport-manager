@@ -58,7 +58,11 @@ function initChampionProgress() {
     player.championPool.forEach((champName, index) => {
       const champion = getChampionByName(champName);
       const championId = champion ? champion.id : champName;
-      const mastery = Math.max(10, Math.min(95, player.level - 10 - index * 15));
+      // Masteries explicites (balance v2) prioritaires ; sinon ancienne formule décroissante
+      const explicit = (player.masteries && player.masteries[index] != null) ? player.masteries[index] : null;
+      const mastery = explicit != null
+        ? Math.max(1, Math.min(100, explicit))
+        : Math.max(10, Math.min(95, player.level - 10 - index * 15));
       playerProgress[championId] = {
         championId,
         mastery,

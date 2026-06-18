@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.1] — 2026-06-18
+
+### Modifié
+- **Passe d'équilibrage majeure (330 joueurs)** : recalibrage des stats globales et sous-stats des rosters principaux (`lol_esports_update_2026_major_balance_v2.xlsx`). Moyenne de niveau 75,0 → 81,3 ; min 55 → 66 ; max 96 → 97
+- **Pools de champions étendus à 5 + masteries explicites** : chaque joueur majeur dispose désormais d'un pool de 5 champions avec des maîtrises explicites (plus de formule automatique punitive). Maîtrise moyenne du pick 1 : 65,0 → 86,6 ; pick 2 : 50,0 → 83,9 ; pick 3 : 35,0 → 80,7
+- **Maîtrises réelles en jeu** : le roster du joueur utilise directement ces maîtrises explicites (badges de maîtrise et liséré de confort en draft alignés sur les vraies données) ; repli sur l'ancienne formule si une maîtrise est absente
+- **DraftProfiles synchronisés** : comfort picks d'équipe (IA) alignés sur les nouveaux pools joueurs
+- _Le marché des transferts (75 joueurs ERL) reste inchangé._
+
+---
+
 ## [1.3.0] — 2026-06-18
 
 ### Ajouté
