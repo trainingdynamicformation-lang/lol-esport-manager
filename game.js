@@ -3293,7 +3293,6 @@ function renderRegularSeasonCalendar(el, season) {
         <td>${s.wins}</td>
         <td>${s.losses}</td>
         <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
-        <td>${s.goldDiff >= 0 ? '+' : ''}${s.goldDiff}</td>
       </tr>
     `;
   }).join('');
@@ -3329,7 +3328,7 @@ function renderRegularSeasonCalendar(el, season) {
     </div>
     <h3 class="panel-title">Classement</h3>
     <table class="history-table">
-      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th><th>Diff. or</th></tr></thead>
+      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th></tr></thead>
       <tbody>${standingsRows}</tbody>
     </table>
     <h3 class="panel-title">Derniers résultats</h3>
@@ -3470,14 +3469,13 @@ function renderInternationalGroups(el, intl) {
           <td>${s.wins}</td>
           <td>${s.losses}</td>
           <td>${s.nexusWon || 0}-${s.nexusLost || 0}</td>
-          <td>${s.goldDiff >= 0 ? '+' : ''}${s.goldDiff}</td>
         </tr>
       `;
     }).join('');
     return `
       <h3 class="panel-title">Groupe ${String.fromCharCode(65 + i)}</h3>
       <table class="history-table">
-        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th><th>Diff. or</th></tr></thead>
+        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;

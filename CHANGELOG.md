@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.3] — 2026-06-18
+
+### Modifié
+- **Classement — colonne Diff. or masquée** : la différence d'or n'est plus affichée dans les tableaux de classement (saison régulière, groupes MSI et Worlds) mais reste utilisée en dernier critère de départage (victoires → h2h → diff. nexus → diff. or)
+
+---
+
 ## [1.3.2] — 2026-06-18
 
 ### Corrigé
