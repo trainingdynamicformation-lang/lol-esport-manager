@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.4.0] — 2026-06-19
+
+### Modifié
+- **Niveau global dynamique** : la valeur globale d'un joueur (ex. 89) n'est plus un chiffre statique importé — elle est désormais calculée en temps réel comme la moyenne de ses 5 sous-stats (Mental + Shotcalling + Laning + Teamfight + Mécaniques) / 5. Si l'entraînement améliore une stat, le niveau global monte immédiatement
+- **Impact direct sur les matchs** : c'est ce niveau calculé qui alimente le moteur de simulation (calcul de puissance par joueur). Un joueur qui progresse en entraînement est plus fort au prochain match ; un joueur qui régresse l'est moins
+- **Affichage cohérent** : la carte Roster et le tableau récapitulatif affichent désormais le niveau réel (calculé), non la valeur figée du fichier de données
+- **Moyennes d'équipe dynamiques** : la moyenne de niveau d'équipe (utilisée en scouting et dans les comparaisons) reflète également les sous-stats actuelles
+
+---
+
 ## [1.3.7] — 2026-06-19
 
 ### Corrigé

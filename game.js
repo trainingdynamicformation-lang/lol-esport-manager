@@ -589,8 +589,12 @@ function getScoutingTier(confidence) {
   return 'basic';
 }
 
+function computeLevel(p) {
+  return Math.round((p.mental + p.shotcalling + p.laning + p.teamfight + p.mechanics) / 5);
+}
+
 function getTeamAverageLevel(team) {
-  const total = team.roster.reduce((sum, p) => sum + p.level, 0);
+  const total = team.roster.reduce((sum, p) => sum + computeLevel(p), 0);
   return Math.round(total / team.roster.length);
 }
 
@@ -903,7 +907,7 @@ function getChampionsForRole(role) {
 
 function averageRosterLevel(roster) {
   if (!roster.length) return 0;
-  return roster.reduce((sum, p) => sum + p.level, 0) / roster.length;
+  return roster.reduce((sum, p) => sum + computeLevel(p), 0) / roster.length;
 }
 
 /* ------------------------------------------------------------
@@ -1051,7 +1055,7 @@ function computePlayerChampionPower(player, options = {}) {
   const stakes = options.stakes || 'regular';
   const category = options.category || 'macro';
 
-  return player.level * cfg.levelWeight
+  return computeLevel(player) * cfg.levelWeight
     + mastery * cfg.masteryWeight
     + roleSkill * cfg.roleSkillWeight
     + player.form * cfg.formWeight
@@ -1155,7 +1159,7 @@ function showTeamConfirmModal(team, regionId) {
       <td>${p.role}</td>
       <td>${p.name}</td>
       <td>${p.nationality}</td>
-      <td>${p.level}</td>
+      <td>${computeLevel(p)}</td>
     </tr>
   `).join('');
 
@@ -1312,7 +1316,7 @@ function playerCardHtml(p) {
           <div class="player-card__name">${p.name}</div>
           <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
         </div>
-        <div class="player-card__level">${p.level}${deltaHtml}</div>
+        <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
       </div>
       <div class="player-card__stats">
         ${playerStatRow('Forme', p.form)}
