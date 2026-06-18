@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.4] — 2026-06-18
+
+### Modifié
+- **Synthèse de draft — raison du matchup** : chaque ligne de matchup indique désormais pourquoi le matchup est favorable ou défavorable, entre parenthèses (ex : « Top : Sion contre Jayce, matchup favorable (Poke) » et « Top : Sion contre Jayce, matchup défavorable (Engage) »). Lorsque deux entrées coexistent dans la base (champ. A contre B ET B contre A), les deux lignes s'affichent avec leur profil respectif
+
+---
+
 ## [1.3.3] — 2026-06-18
 
 ### Modifié

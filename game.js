@@ -1918,13 +1918,16 @@ function computeDraftScore(draft) {
     const iCounter = getCounterEntry(myChamp.id, enemyChamp.id);     // je contre l'ennemi
     const theyCounter = getCounterEntry(enemyChamp.id, myChamp.id);  // l'ennemi me contre
     if (iCounter || theyCounter) {
+      const fmtTags = (entry) => (entry.matchedTags || []).map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(', ');
       if (iCounter) {
+        const suffix = fmtTags(iCounter) ? ` (${fmtTags(iCounter)})` : '';
         matchupScore += 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable.`);
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable${suffix}.`);
       }
       if (theyCounter) {
+        const suffix = fmtTags(theyCounter) ? ` (${fmtTags(theyCounter)})` : '';
         matchupScore -= 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable.`);
+        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable${suffix}.`);
       }
     } else {
       // Repli sur les tags (direction corrigée) : je contre l'ennemi si MES counterTags touchent SON profil
