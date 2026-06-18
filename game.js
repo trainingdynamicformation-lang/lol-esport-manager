@@ -2033,6 +2033,23 @@ function renderPicksColumn(draft, side) {
   }).join('');
 }
 
+/**
+ * Pour un champion donne, renvoie le meilleur confort pick parmi mes joueurs
+ * ({ mastery, tier, playerName }) ou null si aucun joueur ne le joue (mastery < 1).
+ */
+function getBestRosterComfort(champName) {
+  let best = null;
+  state.roster.forEach((p) => {
+    const mastery = (getChampionMastery(p.id, champName) || {}).mastery || 0;
+    if (mastery >= 1 && (!best || mastery > best.mastery)) {
+      best = { mastery, playerName: p.name, role: p.role };
+    }
+  });
+  if (!best) return null;
+  best.tier = getMasteryTier(best.mastery);
+  return best;
+}
+
 function renderChampionGrid(draft, mode, role, roleFilter, search) {
   let pool = CHAMPIONS;
   if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
@@ -2052,8 +2069,12 @@ function renderChampionGrid(draft, mode, role, roleFilter, search) {
           const tier = getMasteryTier(mastery);
           masteryBadge = `<span class="champion-chip champion-chip--${tier.id}">${mastery}</span>`;
         }
+        // Liséré de confort : champions qu'un de mes joueurs sait jouer (confort >= 1)
+        const comfort = getBestRosterComfort(c.name);
+        const comfortClass = comfort ? ` draft-champion-card--comfort draft-champion-card--comfort-${comfort.tier.id}` : '';
+        const comfortTitle = comfort ? ` title="${comfort.playerName} (${comfort.role}) — ${comfort.tier.label} ${comfort.mastery}"` : '';
         return `
-          <button class="draft-champion-card ${taken ? 'draft-champion-card--taken' : ''}" data-champion="${c.name}" ${taken ? 'disabled' : ''}>
+          <button class="draft-champion-card ${taken ? 'draft-champion-card--taken' : ''}${comfortClass}" data-champion="${c.name}"${comfortTitle} ${taken ? 'disabled' : ''}>
             <span class="draft-champion-card__name">${c.name}</span>
             <span class="draft-champion-card__role">${ROLE_NAMES[c.role] || c.role}</span>
             ${masteryBadge}
@@ -4903,6 +4924,67 @@ function generateTransferMarket() {
   saveGame();
 }
 
+function escapeAttr(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
+
+/* Liste des joueurs transferables encore disponibles (non signés) */
+function getAvailableTransfers() {
+  if (!state.transferMarket) state.transferMarket = { signedIds: [] };
+  if (!state.transferMarket.signedIds) state.transferMarket.signedIds = [];
+  const signed = new Set(state.transferMarket.signedIds);
+  const list = (typeof TRANSFER_PLAYERS !== 'undefined') ? TRANSFER_PLAYERS : [];
+  return list.filter(p => !signed.has(p.id));
+}
+
+function renderTransferCard(c, budget) {
+  const avg = getPlayerAvg(c);
+  const cost = getPlayerCost(c);
+  const canAfford = budget >= cost;
+  const myPlayer = state.roster.find(p => p.role === c.role);
+  const myAvg = myPlayer ? getPlayerAvg(myPlayer) : 0;
+  const diff = avg - myAvg;
+  const diffHtml = myPlayer
+    ? `<span class="level-delta ${diff >= 0 ? 'level-delta--up' : 'level-delta--down'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)} vs ${myPlayer.name}</span>`
+    : '';
+
+  // Champion pool affiché avec liséré de confort (mêmes couleurs que le roster)
+  const comforts = (c.comforts && c.comforts.length)
+    ? c.comforts
+    : (c.championPool || []).map(ch => ({ champion: ch, score: 0 }));
+  const poolHtml = comforts.slice(0, 5).map(cf => {
+    const tier = getMasteryTier(cf.score || 0);
+    return `<span class="champion-chip champion-chip--${tier.id}" title="${escapeAttr(tier.label)}">${cf.champion}${cf.score ? ` <span class="champion-chip__mastery">${cf.score}</span>` : ''}</span>`;
+  }).join('');
+
+  return `
+    <div class="transfer-card ${canAfford ? '' : 'transfer-card--unavailable'}">
+      <div class="transfer-card__header">
+        <div class="mini-avatar">${getInitials(c.name)}</div>
+        <div class="transfer-card__identity">
+          <div class="transfer-card__name">${c.name}${c.scoutGrade ? ` <span class="transfer-grade">${c.scoutGrade}</span>` : ''}</div>
+          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}</div>
+        </div>
+        <div class="transfer-card__level">${avg}</div>
+      </div>
+      <div class="transfer-card__stats">
+        <span>Lane <strong>${c.laning}</strong></span>
+        <span>TF <strong>${c.teamfight}</strong></span>
+        <span>Meca <strong>${c.mechanics}</strong></span>
+        <span>Shotcall <strong>${c.shotcalling || '?'}</strong></span>
+      </div>
+      <div class="transfer-card__pool champion-chip-list">${poolHtml}</div>
+      <div class="transfer-card__footer">
+        ${diffHtml}
+        <div class="transfer-card__cost">
+          <span class="resource-chip__icon">💰</span> ${cost} budget
+        </div>
+        <button class="btn-primary btn-small" data-sign-id="${escapeAttr(c.id)}" ${canAfford ? '' : 'disabled'}>
+          ${canAfford ? 'Signer' : 'Budget insuffisant'}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 function renderTransfers() {
   const el = document.getElementById('transfers-content');
   if (!el) return;
@@ -4912,101 +4994,89 @@ function renderTransfers() {
     return;
   }
 
-  if (!state.transferMarket || !state.transferMarket.candidates || state.transferMarket.candidates.length === 0) {
-    generateTransferMarket();
-  }
-
   const budget = state.resources.budget;
   const roles = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
+  const all = getAvailableTransfers();
+
   const roleFilter = state._transferRoleFilter || '';
+  const divFilter = state._transferDivision || '';
+  const teamFilter = state._transferTeam || '';
+  const champFilter = state._transferChamp || '';
+  const search = (state._transferSearch || '').trim().toLowerCase();
 
-  const candidates = state.transferMarket.candidates.filter(c =>
-    !roleFilter || c.role === roleFilter
-  );
+  // Valeurs distinctes pour les listes déroulantes
+  const divisions = [...new Set(all.map(p => p.division).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
+  const teams = [...new Set(all.map(p => p.fromTeam).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
+  const champs = [...new Set(all.flatMap(p => p.championPool || []))].sort((a, b) => a.localeCompare(b, 'fr'));
 
-  const filterHtml = `
-    <div class="draft-role-filter">
-      <button class="comp-tag-option ${!roleFilter ? 'comp-tag-option--active' : ''}" data-transfer-role="">Tous</button>
-      ${roles.map(r => `<button class="comp-tag-option ${roleFilter === r ? 'comp-tag-option--active' : ''}" data-transfer-role="${r}">${r}</button>`).join('')}
-    </div>
-  `;
+  const matches = all.filter(p => {
+    if (roleFilter && p.role !== roleFilter) return false;
+    if (divFilter && p.division !== divFilter) return false;
+    if (teamFilter && p.fromTeam !== teamFilter) return false;
+    if (champFilter && !(p.championPool || []).includes(champFilter)) return false;
+    if (search) {
+      const hay = `${p.name} ${p.fromTeam || ''} ${(p.championPool || []).join(' ')}`.toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  }).sort((a, b) => (b.transferScore || 0) - (a.transferScore || 0));
 
-  const cardsHtml = candidates.length ? candidates.map(c => {
-    const avg = getPlayerAvg(c);
-    const cost = getPlayerCost(c);
-    const canAfford = budget >= cost;
-    const myPlayer = state.roster.find(p => p.role === c.role);
-    const myAvg = myPlayer ? getPlayerAvg(myPlayer) : 0;
-    const diff = avg - myAvg;
-    const diffHtml = myPlayer
-      ? `<span class="level-delta ${diff >= 0 ? 'level-delta--up' : 'level-delta--down'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)} vs ${myPlayer.name}</span>`
-      : '';
-
-    return `
-      <div class="transfer-card ${canAfford ? '' : 'transfer-card--unavailable'}">
-        <div class="transfer-card__header">
-          <div class="mini-avatar">${getInitials(c.name)}</div>
-          <div class="transfer-card__identity">
-            <div class="transfer-card__name">${c.name}</div>
-            <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}</div>
-          </div>
-          <div class="transfer-card__level">${avg}</div>
-        </div>
-        <div class="transfer-card__stats">
-          <span>Lane <strong>${c.laning}</strong></span>
-          <span>TF <strong>${c.teamfight}</strong></span>
-          <span>Meca <strong>${c.mechanics}</strong></span>
-          <span>Shotcall <strong>${c.shotcalling || '?'}</strong></span>
-        </div>
-        <div class="transfer-card__pool">
-          ${(c.championPool || []).slice(0, 3).map(ch => `<span class="champion-chip">${ch}</span>`).join('')}
-        </div>
-        <div class="transfer-card__footer">
-          ${diffHtml}
-          <div class="transfer-card__cost">
-            <span class="resource-chip__icon">💰</span> ${cost} budget
-          </div>
-          <button class="btn-primary btn-small" data-sign-id="${c.id}" ${canAfford ? '' : 'disabled'}>
-            ${canAfford ? 'Signer' : 'Budget insuffisant'}
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('') : '<div class="empty-state">Aucun joueur disponible pour ce role.</div>';
+  const cardsHtml = matches.length
+    ? matches.map(c => renderTransferCard(c, budget)).join('')
+    : '<div class="empty-state">Aucun joueur ne correspond aux filtres.</div>';
 
   el.innerHTML = `
     <div class="panel">
       <div class="transfer-header">
         <div>
           <p class="card__count">Budget disponible : <strong>${budget}</strong></p>
-          <p class="card__count" style="font-size:12px;color:var(--color-text-muted);">Le marche se renouvelle automatiquement a chaque nouveau split.</p>
+          <p class="card__count" style="font-size:12px;color:var(--color-text-muted);">${matches.length} joueur(s) affiché(s) sur ${all.length} — divisions ERL / EMEA Masters.</p>
         </div>
-        <button class="btn-secondary btn-small" id="btn-refresh-market">Rafraîchir le marche (gratuit)</button>
       </div>
-      ${filterHtml}
+      <div class="draft-role-filter">
+        <button class="comp-tag-option ${!roleFilter ? 'comp-tag-option--active' : ''}" data-transfer-role="">Tous</button>
+        ${roles.map(r => `<button class="comp-tag-option ${roleFilter === r ? 'comp-tag-option--active' : ''}" data-transfer-role="${r}">${r}</button>`).join('')}
+      </div>
+      <div class="transfer-filters">
+        <select class="transfer-select" id="transfer-division">
+          <option value="">Toutes divisions</option>
+          ${divisions.map(d => `<option value="${escapeAttr(d)}" ${divFilter === d ? 'selected' : ''}>${d}</option>`).join('')}
+        </select>
+        <select class="transfer-select" id="transfer-team">
+          <option value="">Toutes équipes</option>
+          ${teams.map(t => `<option value="${escapeAttr(t)}" ${teamFilter === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select>
+        <select class="transfer-select" id="transfer-champ">
+          <option value="">Tous champions</option>
+          ${champs.map(ch => `<option value="${escapeAttr(ch)}" ${champFilter === ch ? 'selected' : ''}>${ch}</option>`).join('')}
+        </select>
+        <input type="text" class="transfer-search" id="transfer-search" placeholder="Rechercher (joueur, équipe, champion)…" value="${escapeAttr(state._transferSearch || '')}" autocomplete="off">
+      </div>
     </div>
     <div class="transfer-grid">${cardsHtml}</div>
   `;
 
-  // Filtres par role
   el.querySelectorAll('[data-transfer-role]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state._transferRoleFilter = btn.dataset.transferRole;
-      renderTransfers();
-    });
+    btn.addEventListener('click', () => { state._transferRoleFilter = btn.dataset.transferRole; renderTransfers(); });
   });
-
-  // Bouton refresh
-  document.getElementById('btn-refresh-market').addEventListener('click', () => {
-    state.transferMarket = null;
-    generateTransferMarket();
+  const divSel = document.getElementById('transfer-division');
+  if (divSel) divSel.addEventListener('change', () => { state._transferDivision = divSel.value; renderTransfers(); });
+  const teamSel = document.getElementById('transfer-team');
+  if (teamSel) teamSel.addEventListener('change', () => { state._transferTeam = teamSel.value; renderTransfers(); });
+  const champSel = document.getElementById('transfer-champ');
+  if (champSel) champSel.addEventListener('change', () => { state._transferChamp = champSel.value; renderTransfers(); });
+  const searchInput = document.getElementById('transfer-search');
+  if (searchInput) searchInput.addEventListener('input', () => {
+    const pos = searchInput.selectionStart;
+    state._transferSearch = searchInput.value;
     renderTransfers();
+    const again = document.getElementById('transfer-search');
+    if (again) { again.focus(); again.setSelectionRange(pos, pos); }
   });
 
-  // Boutons signer
   el.querySelectorAll('[data-sign-id]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const candidate = state.transferMarket.candidates.find(c => c.id === btn.dataset.signId);
+      const candidate = getAvailableTransfers().find(c => c.id === btn.dataset.signId);
       if (candidate) showSignModal(candidate);
     });
   });
@@ -5080,29 +5150,59 @@ function signPlayer(candidate, releasePlayerId) {
 
   const released = state.roster[idx];
 
+  // Champion pool : privilégier les comfort picks (champions + scores réels)
+  const comforts = (candidate.comforts && candidate.comforts.length) ? candidate.comforts : null;
+  const pool = comforts ? comforts.map(cf => cf.champion) : (candidate.championPool || []);
+
   // Préparer le nouveau joueur (nettoyer les champs de marche)
   const avg = Math.round((candidate.laning + candidate.teamfight + candidate.mechanics + (candidate.shotcalling || 60)) / 4);
+  const newId = `player_${candidate.role.toLowerCase()}_${Date.now()}`;
   const newPlayer = Object.assign({}, candidate, {
-    id: `player_${candidate.role.toLowerCase()}_${Date.now()}`,
+    id: newId,
     fatigue: 0,
     level: candidate.level || avg,
     potential: candidate.potential || Math.min(99, avg + 10),
     form: candidate.form || candidate.forme || 70,
     nationality: candidate.nationality || candidate.region || 'EU',
     traits: candidate.traits || [],
+    championPool: pool.length ? pool : (candidate.championPool || []),
     isFreeAgent: undefined,
     fromTeam: undefined,
-    forme: undefined
+    forme: undefined,
+    comforts: undefined
   });
 
   // Remplacer dans le roster
   state.roster[idx] = newPlayer;
 
+  // Initialiser la maîtrise champion (depuis les comfort picks si dispo, sinon décroissante)
+  if (!state.championProgress) state.championProgress = {};
+  const progress = {};
+  newPlayer.championPool.forEach((champName, index) => {
+    const champion = getChampionByName(champName);
+    const championId = champion ? champion.id : champName;
+    let mastery;
+    if (comforts && comforts[index] && comforts[index].score) {
+      mastery = Math.max(1, Math.min(100, comforts[index].score));
+    } else {
+      mastery = Math.max(10, Math.min(95, (newPlayer.level || 70) - 10 - index * 15));
+    }
+    progress[championId] = {
+      championId, mastery, xp: mastery * 20,
+      confidence: Math.max(0, Math.min(100, mastery + 5)),
+      stageReady: mastery >= 50, lastPlayedMatchIds: []
+    };
+  });
+  state.championProgress[newId] = progress;
+  if (released && state.championProgress[released.id]) delete state.championProgress[released.id];
+
   // Déduire le budget
   state.resources.budget -= cost;
 
-  // Retirer du marche
-  state.transferMarket.candidates = state.transferMarket.candidates.filter(c => c.id !== candidate.id);
+  // Marquer le joueur transféré comme signé (retiré du marché)
+  if (!state.transferMarket) state.transferMarket = { signedIds: [] };
+  if (!state.transferMarket.signedIds) state.transferMarket.signedIds = [];
+  state.transferMarket.signedIds.push(candidate.id);
 
   saveGame();
   updateResourceBar();

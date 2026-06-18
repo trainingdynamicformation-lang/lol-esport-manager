@@ -916,6 +916,14 @@ img { max-width: 100%; height: auto; }
 .draft-champion-card__name       { font-weight: 700; text-align: center; }
 .draft-champion-card__role       { color: var(--color-text-muted); text-transform: uppercase; font-size: 0.7rem; }
 
+/* Liséré de confort pick : champions qu'un de mes joueurs sait jouer (mêmes couleurs que le roster) */
+.draft-champion-card--comfort               { border-width: 2px; }
+.draft-champion-card--comfort-decouverte    { border-color: #5a5a5a; box-shadow: 0 0 0 1px rgba(120,120,120,0.25) inset; }
+.draft-champion-card--comfort-praticable    { border-color: #6a8caf; box-shadow: 0 0 6px rgba(106,140,175,0.45); }
+.draft-champion-card--comfort-confort       { border-color: #4caf7d; box-shadow: 0 0 6px rgba(76,175,125,0.45); }
+.draft-champion-card--comfort-signature     { border-color: var(--color-gold); box-shadow: 0 0 7px rgba(200,155,60,0.55); }
+.draft-champion-card--comfort-elite         { border-color: var(--color-gold); box-shadow: 0 0 9px rgba(200,155,60,0.75); }
+
 .draft-score-panel { margin-top: 14px; }
 
 .draft-score-row {
@@ -1617,6 +1625,47 @@ table.history-table th {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
   margin-top: 14px;
+}
+
+.transfer-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.transfer-select,
+.transfer-search {
+  padding: 6px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.transfer-select { cursor: pointer; }
+.transfer-search { flex: 1 1 220px; min-width: 180px; }
+.transfer-select:focus,
+.transfer-search:focus { border-color: var(--color-gold); }
+.transfer-search::placeholder { color: var(--color-text-muted); }
+
+.transfer-div {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+.transfer-grade {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  vertical-align: middle;
 }
 
 .transfer-card {

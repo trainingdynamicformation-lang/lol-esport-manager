@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.3.0] — 2026-06-18
+
+### Ajouté
+- **Draft — liséré de confort sur les bans** : pendant la phase de ban (et de pick), chaque champion qu'un de vos joueurs sait jouer (confort ≥ 1) est entouré d'un liséré coloré selon le niveau de maîtrise, avec les mêmes couleurs que le roster (bleu praticable, vert confort, or signature/élite). Survol = nom du joueur et maîtrise
+- **Marché des transferts — 75 vrais joueurs ERL / EMEA Masters** : import des joueurs de divisions inférieures (LFL, Prime League, SuperLiga, NLC, Ultraliga, TCL, Balkan, Greek Legends) depuis `lol_esports_update_2026_with_transfers.xlsx`
+- **Transferts — affichage complet et filtres** : tous les joueurs disponibles sont affichés d'un coup, avec filtres par poste (boutons), par division, par équipe actuelle, par champion pool, et un champ de recherche (nom du joueur, équipe ou champion). Les champion pools sont affichés avec le liséré de confort et la note de scouting
+- **Transferts — maîtrises réelles à la signature** : un joueur signé conserve ses comfort picks et leurs scores comme maîtrises, ce qui alimente directement le liséré de confort en draft
+
+---
+
 ## [1.2.7] — 2026-06-18
 
 ### Modifié
