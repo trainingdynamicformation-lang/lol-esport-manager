@@ -2875,6 +2875,27 @@ function getRegionRepCounts(eventType, playerAiRegion) {
   return counts;
 }
 
+function getPlayoffQualifiers(count) {
+  const po = state.season.playoffs;
+  if (!po || !po.champion) return getSortedStandings().slice(0, count);
+  const qualified = [];
+  // 1er : champion des playoffs
+  qualified.push(po.champion);
+  // 2e : finaliste
+  if (po.matches.final.result) {
+    qualified.push(po.matches.final.result.loser);
+  }
+  // 3e (Worlds uniquement) : meilleur demi-finaliste éliminé selon seed saison régulière
+  if (count >= 3) {
+    const sf1Loser = po.matches.sf1.result ? po.matches.sf1.result.loser : null;
+    const sf2Loser = po.matches.sf2.result ? po.matches.sf2.result.loser : null;
+    const sfLosers = [sf1Loser, sf2Loser].filter((id) => id && !qualified.includes(id));
+    sfLosers.sort((a, b) => po.seeds.indexOf(a) - po.seeds.indexOf(b));
+    qualified.push(...sfLosers.slice(0, count - 2));
+  }
+  return qualified.slice(0, count);
+}
+
 function startInternational(eventType) {
   const season = state.season;
   const playerRegion = REGIONS.find((r) => r.id === state.region);
@@ -2885,7 +2906,7 @@ function startInternational(eventType) {
   Object.keys(repCounts).forEach((ar) => {
     const count = repCounts[ar];
     if (ar === playerAiRegion) {
-      teams = teams.concat(getSortedStandings().slice(0, count));
+      teams = teams.concat(getPlayoffQualifiers(count));
     } else {
       const regionTeams = AI_TEAMS.filter((t) => t.region === ar).slice().sort((a, b) => a.tier - b.tier);
       teams = teams.concat(regionTeams.slice(0, count).map((t) => t.id));

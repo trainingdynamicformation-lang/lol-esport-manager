@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.4.1] — 2026-06-19
+
+### Corrigé
+- **Qualification MSI / Worlds basée sur les playoffs** : les équipes représentant la région du joueur sont désormais sélectionnées selon les résultats des playoffs, et non le classement de saison régulière. MSI : champion + finaliste (2 spots). Worlds : champion + finaliste + meilleur demi-finaliste éliminé par seed de saison régulière (3 spots). Sans victoire en finale de playoffs il n'est plus possible de se qualifier automatiquement au MSI/Worlds depuis le classement régulier
+
+---
+
 ## [1.4.0] — 2026-06-19
 
 ### Modifié
