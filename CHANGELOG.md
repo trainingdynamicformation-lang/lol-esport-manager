@@ -5,6 +5,61 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.5.2] — 2026-06-19
+
+### Ajouté
+- **Bloc Vainqueur dans l'arbre** : à droite de la finale (playoffs, MSI, Worlds), un encart doré affiche « Vainqueur », le nom de la compétition (ex. *Spring 1 - LEC*) et l'équipe championne. Reste en pointillés « À déterminer » tant que la finale n'est pas jouée.
+- **Section Palmarès** (écran Progression, entre Statistiques globales et Évolution des joueurs) : titres régionaux, qualifications MSI, titres MSI, meilleur résultat MSI, qualifications Worlds, titres Worlds, meilleur résultat Worlds. Les sauvegardes existantes voient leurs titres déjà gagnés rétro-comptés automatiquement.
+
+### Amélioré
+- **Arbre centré** : le bracket est désormais centré horizontalement dans le panneau, comblant l'espace vide à droite.
+
+---
+
+## [1.5.1] — 2026-06-19
+
+### Amélioré
+- **Arbre de phase finale** : les playoffs (saison), MSI et Worlds affichent désormais un bracket visuel avec connecteurs SVG calculés dynamiquement — à la place des anciens chips texte. Chaque rencontre est une carte avec équipes, scores et état (qualifié/éliminé/à venir). La carte du prochain match est mise en évidence en doré. La section "Derniers résultats" reste inchangée en dessous.
+  - Saison : 6 équipes — byes seeds 1 & 2 intégrés à la colonne des quarts, demi-finales, finale
+  - MSI : 4 équipes — demi-finales directes, finale
+  - Worlds : 8 équipes — 4 quarts, 2 demis, finale
+
+### Corrigé
+- **Connecteurs de l'arbre (saison)** : les byes (seeds 1 & 2) partagent désormais la colonne des quarts de finale, ce qui évite que les traits de connexion ne passent par-dessus les cartes de match.
+- **Rafraîchissement du cache (Mac/Safari)** : ajout d'un suffixe de version (`?v=1.5.1`) sur le CSS et les scripts pour forcer le rechargement de `style.css` — l'arbre ne s'affichait pas sur Mac car l'ancien CSS restait en cache.
+
+---
+
+## [1.5.0] — 2026-06-19
+
+### Refonte
+- **Simulation de match recalibrée sur les données pro réelles** (LCK/LPL/LEC/LCS 2026 — gol.gg) : les parties génèrent désormais des statistiques cohérentes avec le pro play (27-31 kills/partie, durée 29-35 min, écart d'or progressif).
+
+### Ajouté
+- **5 scénarios de match** tirés au sort au lancement, pondérés selon la région et l'écart de niveau entre équipes :
+  - *Contrôle/Macro* (25 %) : peu de kills, priorité farm et objectifs — style LCK propre
+  - *Standard pro* (35 %) : avantage progressif, action concentrée sur les timings logiques — scénario central
+  - *Snowball réaliste* (22 %) : early réussi mais rythme crédible, 10-17 kills à 25 min
+  - *Stomp pro* (8 %) : grosse différence de niveau, partie pliée avant 28 min — rare
+  - *Fiesta/Chaotique* (10 %) : beaucoup de kills mais lead pas toujours stable, possibles 40-55 kills
+- **Poids par région** : LCK favorise le contrôle, LPL favorise snowball/fiesta, LEC/LCS équilibrés, International plus de stomps
+- **Plafond de kills par minute** (garde-fou temporel) : à 10 min max 5-13 kills selon scénario, à 15 min max 10-19, à 20 min max 18-28 — empêche les outliers absurdes hors scénario stomp/fiesta
+- **Comportement défensif sous grand écart d'or** : quand le lead dépasse 3 000 or, l'équipe menée joue plus safe — poids des events de kills réduit (×0.55-0.75), poids des tours augmenté (×1.4). Le snowball se convertit en structures/objectifs plutôt qu'en kills supplémentaires.
+
+### Modifié
+- Poids des events `lane_kill` et `gank` réduit de 2 → 1 (ratio de base en early : 44 % → 22 % des events)
+- Kills par teamfight : `randomInt(2,4)` → `randomInt(1, maxKillsPerTF)` selon scénario (1-4)
+- Plafond absolu de kills porté à 55 (réservé au scénario fiesta extrême)
+
+---
+
+## [1.4.3] — 2026-06-19
+
+### Amélioré
+- **Effet snowball** : l'avantage en or influence désormais directement la puissance de chaque camp lors des events de match. Chaque tranche de 2 000 or d'avance apporte +1 de puissance (plafonné à ±5, soit ±10 000 or). Concrètement, une équipe avec 10 000 or d'avance gagne les events de façon quasi systématique, ce qui reflète le comportement réel d'une partie de League of Legends où un retour de 10k gold n'existe quasiment pas.
+
+---
+
 ## [1.4.2] — 2026-06-19
 
 ### Corrigé

@@ -144,7 +144,12 @@ function createDefaultState() {
       currentWinStreak: 0,
       bestWinStreak: 0,
       yearsPlayed: 0,
-      titlesEarned: []
+      titlesEarned: [],
+      palmares: {
+        regionalTitles: 0,
+        msi: { qualified: 0, titles: 0, bestPlacement: null },
+        worlds: { qualified: 0, titles: 0, bestPlacement: null }
+      }
     }
   };
 }
@@ -167,6 +172,38 @@ function saveGame() {
   }
 }
 
+/* Palmarès (v1.5.2) : reconstruit les compteurs à partir des titres connus
+   pour les sauvegardes antérieures qui n'avaient pas d'objet palmares. */
+function buildPalmaresFromTitles(titles) {
+  const pal = {
+    regionalTitles: 0,
+    msi: { qualified: 0, titles: 0, bestPlacement: null },
+    worlds: { qualified: 0, titles: 0, bestPlacement: null }
+  };
+  (titles || []).forEach((t) => {
+    if (/Champion\s+MSI/i.test(t)) { pal.msi.titles++; pal.msi.qualified++; pal.msi.bestPlacement = 1; }
+    else if (/Champion\s+Worlds/i.test(t)) { pal.worlds.titles++; pal.worlds.qualified++; pal.worlds.bestPlacement = 1; }
+    else if (/Champion/i.test(t)) { pal.regionalTitles++; }
+  });
+  return pal;
+}
+
+function ensurePalmares() {
+  if (!state.progress.palmares) {
+    state.progress.palmares = buildPalmaresFromTitles(state.progress.titlesEarned);
+  }
+  return state.progress.palmares;
+}
+
+function intlBestResultLabel(placement) {
+  if (placement === null || placement === undefined) return '—';
+  if (placement === 1) return 'Champion';
+  if (placement === 2) return 'Finaliste';
+  if (placement === 3) return 'Demi-finaliste';
+  if (placement <= 5) return 'Quart de finaliste';
+  return 'Phase de groupes';
+}
+
 function loadGame() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -174,7 +211,7 @@ function loadGame() {
     const parsed = JSON.parse(raw);
     // fusion avec l'état par defaut pour assurer la compatibilite ascendante
     const defaults = createDefaultState();
-    return {
+    const merged = {
       version: CURRENT_VERSION,
       teamName: parsed.teamName || defaults.teamName,
       teamShortName: parsed.teamShortName !== undefined ? parsed.teamShortName : defaults.teamShortName,
@@ -199,6 +236,11 @@ function loadGame() {
       settings: Object.assign({}, defaults.settings, parsed.settings),
       progress: Object.assign({}, defaults.progress, parsed.progress)
     };
+    // Migration palmarès : backfill depuis les titres si absent de la sauvegarde
+    if (!(parsed.progress && parsed.progress.palmares)) {
+      merged.progress.palmares = buildPalmaresFromTitles(merged.progress.titlesEarned);
+    }
+    return merged;
   } catch (e) {
     console.error('Erreur de chargement', e);
     return createDefaultState();
@@ -2701,6 +2743,7 @@ function finishSeason() {
   state.resources.prestige += rewards.prestige;
   if (placement === 1) {
     state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.region})`);
+    ensurePalmares().regionalTitles++;
   }
   season.log.unshift(`Fin de saison ! Classement final : ${placementLabel(placement)}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
   applyCareerProgression();
@@ -2912,6 +2955,11 @@ function startInternational(eventType) {
       teams = teams.concat(regionTeams.slice(0, count).map((t) => t.id));
     }
   });
+
+  // Palmarès : le joueur s'est qualifié pour cet événement international
+  if (teams.includes('player')) {
+    ensurePalmares()[eventType].qualified++;
+  }
 
   const numGroups = eventType === 'msi' ? 2 : 4;
   const groups = Array.from({ length: numGroups }, () => []);
@@ -3195,8 +3243,11 @@ function finishInternational() {
     state.resources.budget += rewards.budget;
     state.resources.prestige += rewards.prestige;
     intl.rewards = rewards;
+    const pal = ensurePalmares()[intl.event];
+    if (pal.bestPlacement === null || placement < pal.bestPlacement) pal.bestPlacement = placement;
     if (placement === 1) {
       state.progress.titlesEarned.push(`Champion ${eventLabel(intl)} ${intl.year}`);
+      pal.titles++;
     }
     intl.log.unshift(`${eventLabel(intl)} terminé ! Classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
   } else {
@@ -3418,28 +3469,218 @@ function renderRegularSeasonCalendar(el, season) {
   }
 }
 
+/* ── Arbre de phase finale v1.5.1 ─────────────────────── */
+function poBracketCard(poId, label, m, seedA, seedB, isUpcoming, isFinal) {
+  const teamA = m ? m.home : null;
+  const teamB = m ? m.away : null;
+  const result = m ? m.result : null;
+  const isDone = !!result;
+  const aName = teamA ? getTeamShortName(teamA) : 'TBD';
+  const bName = teamB ? getTeamShortName(teamB) : 'TBD';
+  const aWins = isDone && result.winner === teamA;
+  const bWins = isDone && result.winner === teamB;
+  const aScore = isDone ? (aWins ? result.scoreA : result.scoreB) : '';
+  const bScore = isDone ? (bWins ? result.scoreA : result.scoreB) : '';
+  const aSt = isDone ? (aWins ? 'winner' : 'loser') : '';
+  const bSt = isDone ? (bWins ? 'winner' : 'loser') : '';
+  const aScCl = isDone ? (aWins ? 'win' : 'loss') : '';
+  const bScCl = isDone ? (bWins ? 'win' : 'loss') : '';
+  const sA = seedA !== null ? `<span class="po-card__seed">${seedA}</span>` : '';
+  const sB = seedB !== null ? `<span class="po-card__seed">${seedB}</span>` : '';
+  return `<div class="po-card${isUpcoming ? ' po-card--upcoming' : ''}${isFinal ? ' po-card--final' : ''}" data-po="${poId}">
+    ${isFinal ? '<div class="po-card__trophy">🏆</div>' : ''}
+    <div class="po-card__label">${label}</div>
+    <div class="po-card__team po-card__team--${aSt}">${sA}<span class="po-card__name">${aName}</span><span class="po-card__score po-card__score--${aScCl}">${aScore}</span></div>
+    <div class="po-card__team po-card__team--${bSt}">${sB}<span class="po-card__name">${bName}</span><span class="po-card__score po-card__score--${bScCl}">${bScore}</span></div>
+    ${isUpcoming ? '<div class="po-card__cta">À venir · Jouer la série</div>' : ''}
+  </div>`;
+}
+
+function poByeCard(poId, teamId, seed) {
+  return `<div class="po-bye" data-po="${poId}">
+    <div class="po-bye__label">Qualifié directement</div>
+    <div class="po-bye__name">${getTeamShortName(teamId)}</div>
+    <div class="po-bye__seed">Seed #${seed}</div>
+  </div>`;
+}
+
+function poChampionBlock(seasonLabel, championId) {
+  const pending = !championId;
+  const name = championId ? getTeamShortName(championId) : 'À déterminer';
+  return `<div class="po-champion${pending ? ' po-champion--pending' : ''}" data-po="po-champion">
+    <div class="po-champion__crown">👑</div>
+    <div class="po-champion__title">Vainqueur</div>
+    <div class="po-champion__season">${seasonLabel}</div>
+    <div class="po-champion__team">${name}</div>
+  </div>`;
+}
+
+function drawPoBracketLines(bracketId) {
+  const bracket = document.getElementById(bracketId);
+  if (!bracket) return;
+  const svg = bracket.querySelector('.po-bracket__svg');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const br = bracket.getBoundingClientRect();
+  if (!br.width) return;
+  const get = (id) => bracket.querySelector(`[data-po="${id}"]`);
+  const midY = (el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2 - br.top; };
+  const rx = (el) => el.getBoundingClientRect().right - br.left;
+  const lx = (el) => el.getBoundingClientRect().left  - br.left;
+  const line = (x1, y1, x2, y2, c) => {
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+    l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+    l.setAttribute('stroke', c); l.setAttribute('stroke-width', '1.5');
+    l.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(l);
+  };
+  const connect = (a, b, t, c) => {
+    if (!a || !b || !t) return;
+    const x1 = rx(a), y1 = midY(a), x2 = rx(b), y2 = midY(b);
+    const xt = lx(t), yt = midY(t), mx = (Math.max(x1, x2) + xt) / 2;
+    line(x1, y1, mx, y1, c); line(x2, y2, mx, y2, c);
+    line(mx, y1, mx, y2, c); line(mx, (y1 + y2) / 2, xt, yt, c);
+  };
+  const single = (a, t, c) => {
+    if (!a || !t) return;
+    const x1 = rx(a), y1 = midY(a), xt = lx(t), yt = midY(t), mx = (x1 + xt) / 2;
+    line(x1, y1, mx, y1, c); line(mx, y1, mx, yt, c); line(mx, yt, xt, yt, c);
+  };
+  const BL = '#2A4A70', GD = '#C89B3C';
+  // Saison (byes dans la colonne des quarts) : Demi 1 = G2 + vainqueur Quart 2, Demi 2 = vainqueur Quart 1 + KC
+  connect(get('po-bye-top'), get('po-qf2'), get('po-sf-top'), BL);
+  connect(get('po-qf1'), get('po-bye-bot'), get('po-sf-bot'), BL);
+  // Worlds (8 équipes) : 4 quarts -> 2 demis
+  connect(get('po-qf1-top'), get('po-qf1-bot'), get('po-sf-top'), BL);
+  connect(get('po-qf2-top'), get('po-qf2-bot'), get('po-sf-bot'), BL);
+  // Demi-finales -> Finale (saison, MSI, Worlds)
+  connect(get('po-sf-top'), get('po-sf-bot'), get('po-final'), GD);
+  // Finale -> bloc Vainqueur
+  single(get('po-final'), get('po-champion'), GD);
+}
+
+function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
+  const seeds = po.seeds;
+  const m = po.matches;
+  const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
+  const champ = po.champion || (m.final.result ? m.final.result.winner : null);
+  const H = 440;
+  // Demi-finale 1 = seed 1 (bye) + vainqueur Quart 2 ; Demi 2 = seed 2 (bye) + vainqueur Quart 1.
+  // Les byes partagent la colonne des quarts (round 1) -> les connecteurs ne croisent aucune carte.
+  const half = (c1, c2) => `<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:30px;">${c1}${c2}</div>`;
+  const centered = (card) => `<div style="flex:1;display:flex;align-items:center;justify-content:center;">${card}</div>`;
+  const col = (lbl, inner) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;">${inner}</div>
+  </div>`;
+  const legend = `<div class="po-legend">
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+  </div>`;
+  return `<div class="po-bracket-wrapper">
+    <div class="po-bracket" id="po-bracket-season">
+      <svg class="po-bracket__svg"></svg>
+      ${col('Quarts de finale & Byes<br>BO5',
+        half(poByeCard('po-bye-top', seeds[0], 1), poBracketCard('po-qf2','Quart 2',m.qf2,4,5,isUp('qf2'),false)) +
+        half(poBracketCard('po-qf1','Quart 1',m.qf1,3,6,isUp('qf1'),false), poByeCard('po-bye-bot', seeds[1], 2))
+      )}
+      <div class="po-gap"></div>
+      ${col('Demi-finales<br>BO5',
+        centered(poBracketCard('po-sf-top','Demi 1',m.sf1,null,null,isUp('sf1'),false)) +
+        centered(poBracketCard('po-sf-bot','Demi 2',m.sf2,null,null,isUp('sf2'),false))
+      )}
+      <div class="po-gap"></div>
+      ${col('Finale<br>BO5', centered(poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true)))}
+      <div class="po-gap"></div>
+      ${col('&nbsp;', centered(poChampionBlock(seasonLabel || '', champ)))}
+    </div>
+    ${legend}
+  </div>`;
+}
+
+function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
+  const m = b.matches;
+  const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
+  const has8 = !!m.qf1;
+  const champ = b.champion || (m.final.result ? m.final.result.winner : null);
+  const championColMSI = (H) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">&nbsp;</div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;">${poChampionBlock(seasonLabel || '', champ)}</div>
+  </div>`;
+  const legend = `<div class="po-legend">
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+  </div>`;
+
+  if (!has8) {
+    // MSI : 4 équipes, départ en demi-finales
+    const H = 240;
+    const pairCol = (lbl, c1, c2) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+      <div class="po-col__label">${lbl}</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">${c1}${c2}</div>
+    </div>`;
+    const singleCol = (lbl, card) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+      <div class="po-col__label">${lbl}</div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">${card}</div>
+    </div>`;
+    return `<div class="po-bracket-wrapper">
+      <div class="po-bracket" id="po-bracket-intl">
+        <svg class="po-bracket__svg"></svg>
+        ${pairCol('Demi-finales<br>BO5', poBracketCard('po-sf-top','Demi 1',m.sf1,1,4,isUp('sf1'),false), poBracketCard('po-sf-bot','Demi 2',m.sf2,2,3,isUp('sf2'),false))}
+        <div class="po-gap"></div>
+        ${singleCol('Finale<br>BO5', poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true))}
+        <div class="po-gap"></div>
+        ${championColMSI(H)}
+      </div>
+      ${legend}
+    </div>`;
+  }
+
+  // Worlds : 8 équipes — QF → SF → Finale
+  const H = 430;
+  const halfH = Math.floor((H - 38) / 2); // 38px ≈ label height
+  const pairCol = (lbl, c1, c2) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">${c1}${c2}</div>
+  </div>`;
+  const singleCol = (lbl, card) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">${card}</div>
+  </div>`;
+  const qfColHtml = `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">Quarts de finale<br>BO5</div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
+        ${poBracketCard('po-qf1-top','Quart 1',m.qf1,1,8,isUp('qf1'),false)}
+        ${poBracketCard('po-qf1-bot','Quart 4',m.qf4,2,7,isUp('qf4'),false)}
+      </div>
+      <div style="flex:1;"></div>
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
+        ${poBracketCard('po-qf2-top','Quart 2',m.qf2,4,5,isUp('qf2'),false)}
+        ${poBracketCard('po-qf2-bot','Quart 3',m.qf3,3,6,isUp('qf3'),false)}
+      </div>
+    </div>
+  </div>`;
+  return `<div class="po-bracket-wrapper">
+    <div class="po-bracket" id="po-bracket-intl">
+      <svg class="po-bracket__svg"></svg>
+      ${qfColHtml}
+      <div class="po-gap"></div>
+      ${pairCol('Demi-finales<br>BO5', poBracketCard('po-sf-top','Demi 1',m.sf1,null,null,isUp('sf1'),false), poBracketCard('po-sf-bot','Demi 2',m.sf2,null,null,isUp('sf2'),false))}
+      <div class="po-gap"></div>
+      ${singleCol('Finale<br>BO5', poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true))}
+      <div class="po-gap"></div>
+      ${championColMSI(H)}
+    </div>
+    ${legend}
+  </div>`;
+}
+
 function renderPlayoffsCalendar(el, season) {
   const po = season.playoffs;
-
-  const matchRow = (label, m) => {
-    if (!m.home && !m.away) return '';
-    const homeName = m.home ? getTeamShortName(m.home) : 'TBD';
-    const awayName = m.away ? getTeamShortName(m.away) : 'TBD';
-    let scoreLabel = 'A venir';
-    if (m.result) {
-      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifié)`;
-    }
-    return `<div class="result-chip">${label} : ${homeName} vs ${awayName} - ${m.format} - ${scoreLabel}</div>`;
-  };
-
-  const bracketHtml = [
-    matchRow('Quart 1', po.matches.qf1),
-    matchRow('Quart 2', po.matches.qf2),
-    matchRow('Demi 1', po.matches.sf1),
-    matchRow('Demi 2', po.matches.sf2),
-    matchRow('Finale', po.matches.final)
-  ].filter(Boolean).join('');
-
   const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
 
   let actionHtml;
@@ -3455,12 +3696,13 @@ function renderPlayoffsCalendar(el, season) {
 
   el.innerHTML = `
     <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Playoffs</h3>
-    <p class="card__count">Seeds : ${po.seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(' / ')}</p>
-    <div class="recent-results">${bracketHtml}</div>
+    ${buildSeasonBracketHtml(po, season.pendingMatch, `${splitLabel(season.split)} ${season.year} - ${season.region}`)}
     ${actionHtml}
     <h3 class="panel-title">Derniers résultats</h3>
     <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
+
+  requestAnimationFrame(() => drawPoBracketLines('po-bracket-season'));
 
   const playBtn = document.getElementById('btn-play-playoff');
   if (playBtn) {
@@ -3567,23 +3809,6 @@ function renderInternationalGroups(el, intl) {
 
 function renderInternationalBracket(el, intl) {
   const b = intl.bracket;
-
-  const matchRow = (label, m) => {
-    if (!m || (!m.home && !m.away)) return '';
-    const homeName = m.home ? getTeamShortName(m.home) : 'TBD';
-    const awayName = m.away ? getTeamShortName(m.away) : 'TBD';
-    let scoreLabel = 'A venir';
-    if (m.result) {
-      scoreLabel = `${m.result.scoreA}-${m.result.scoreB} (${getTeamShortName(m.result.winner)} qualifié)`;
-    }
-    return `<div class="result-chip">${label} : ${homeName} vs ${awayName} - ${m.format} - ${scoreLabel}</div>`;
-  };
-
-  const bracketHtml = Object.keys(b.matches)
-    .map((key) => matchRow(internationalRoundLabelFromKey(key), b.matches[key]))
-    .filter(Boolean)
-    .join('');
-
   const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
 
   let actionHtml;
@@ -3600,12 +3825,13 @@ function renderInternationalBracket(el, intl) {
 
   el.innerHTML = `
     <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase finale</h3>
-    <p class="card__count">Qualifies : ${b.seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(' / ')}</p>
-    <div class="recent-results">${bracketHtml}</div>
+    ${buildIntlBracketHtml(b, intl.pendingMatch, `${eventLabel(intl)} ${intl.year}`)}
     ${actionHtml}
     <h3 class="panel-title">Derniers résultats</h3>
     <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
+
+  requestAnimationFrame(() => drawPoBracketLines('po-bracket-intl'));
 
   const btn = document.getElementById('btn-international-action');
   if (btn) {
@@ -3664,8 +3890,8 @@ function formatClock(totalSeconds) {
 }
 
 const MATCH_EVENTS = [
-  { id: 'lane_kill', category: 'lane', phases: ['early', 'mid'], weight: 2 },
-  { id: 'gank', category: 'jungle', phases: ['early', 'mid'], weight: 2 },
+  { id: 'lane_kill', category: 'lane', phases: ['early', 'mid'], weight: 1 },
+  { id: 'gank', category: 'jungle', phases: ['early', 'mid'], weight: 1 },
   { id: 'dragon', category: 'objective', phases: ['early', 'mid', 'late'], weight: 3, objective: 'dragons' },
   { id: 'herald', category: 'objective', phases: ['mid'], weight: 1, objective: 'heralds' },
   { id: 'grubs', category: 'objective', phases: ['early', 'mid'], weight: 2, objective: 'grubs' },
@@ -3676,7 +3902,27 @@ const MATCH_EVENTS = [
   { id: 'dramatic', category: 'dramatic', phases: ['late'], weight: 1 }
 ];
 
-const MATCH_KILL_CAP = 40;
+const MATCH_KILL_CAP = 55; // plafond absolu (fiesta extrême)
+
+// v1.5.0 — 5 scénarios réalistes, pondérés par région
+const SCENARIO_WEIGHTS_BY_REGION = {
+  LCK:           { control: 35, standard: 35, snowball: 18, stomp:  7, fiesta:  5 },
+  LPL:           { control: 15, standard: 32, snowball: 28, stomp: 10, fiesta: 15 },
+  LEC:           { control: 20, standard: 35, snowball: 22, stomp:  8, fiesta: 15 },
+  LCS:           { control: 25, standard: 40, snowball: 22, stomp:  8, fiesta:  5 },
+  International: { control: 25, standard: 30, snowball: 25, stomp: 12, fiesta:  8 },
+};
+// killWeightMult : multiplie le poids des events lane/gank
+// maxKillsPerTF  : max kills générés par un teamfight/dramatic
+// killCapByMin   : plafond kills total à [<10 min, <15 min, <20 min, <25 min]
+// maxKills       : plafond absolu kills pour la partie entière
+const MATCH_SCENARIOS = {
+  control:  { killWeightMult: 0.65, maxKillsPerTF: 1, killCapByMin: [ 5, 10, 18, 25], maxKills: 26 },
+  standard: { killWeightMult: 0.90, maxKillsPerTF: 2, killCapByMin: [ 8, 16, 24, 32], maxKills: 32 },
+  snowball: { killWeightMult: 1.10, maxKillsPerTF: 2, killCapByMin: [10, 17, 26, 35], maxKills: 38 },
+  stomp:    { killWeightMult: 1.40, maxKillsPerTF: 3, killCapByMin: [13, 19, 27, 38], maxKills: 44 },
+  fiesta:   { killWeightMult: 1.70, maxKillsPerTF: 4, killCapByMin: [12, 18, 28, 42], maxKills: 55 },
+};
 const DRAGON_BUFF_DURATION = 180;
 const BARON_BUFF_DURATION = 180;
 const ELDER_BUFF_DURATION = 150;
@@ -3985,13 +4231,38 @@ function showCoinFlipModal(opponentTeamId) {
   });
 }
 
+function pickMatchScenario(opponent) {
+  let regionKey = 'LEC';
+  if (state.international && state.international.event) {
+    regionKey = 'International';
+  } else if (state.season && state.season.region) {
+    regionKey = state.season.region;
+  }
+  const w = SCENARIO_WEIGHTS_BY_REGION[regionKey] || SCENARIO_WEIGHTS_BY_REGION.LEC;
+  const playerAvg = averageRosterLevel(state.roster);
+  const oppAvg = averageRosterLevel(opponent.roster);
+  const tierGap = Math.abs(playerAvg - oppAvg);
+  const stompBonus = tierGap > 10 ? 8 : tierGap > 5 ? 3 : 0;
+  const items = [
+    { id: 'control',  weight: w.control },
+    { id: 'standard', weight: w.standard },
+    { id: 'snowball', weight: w.snowball },
+    { id: 'stomp',    weight: w.stomp + stompBonus },
+    { id: 'fiesta',   weight: w.fiesta },
+  ];
+  return weightedChoice(items).id;
+}
+
 function startMatch(opponentTeamId) {
   const opponent = getTeamRef(opponentTeamId);
   if (!opponent) return;
 
+  const scenario = pickMatchScenario(opponent);
   matchRuntime = {
     opponent,
     picks: getMatchPicks(opponent),
+    scenario,
+    scenarioCfg: MATCH_SCENARIOS[scenario],
     gameClock: 0,
     phase: 'early',
     score: { blue: 0, red: 0 },
@@ -4080,6 +4351,12 @@ function teamEventPower(side, category, role) {
       }
     }
   }
+
+  // Snowball : l'équipe avec plus d'or gagne les events plus facilement
+  // +2000 or = +1 de puissance, plafonné à ±5 (±10k or)
+  const enemySide = side === 'blue' ? 'red' : 'blue';
+  const goldLead = rt.gold[side] - rt.gold[enemySide];
+  total += clamp(goldLead / 2000, -5, 5);
 
   const variance = BALANCE_CONFIG.events.matchVariance;
   total += randomFloat(-variance, variance) * varianceMultiplier;
@@ -4204,19 +4481,27 @@ function simulateTick() {
   let candidates = MATCH_EVENTS.filter((e) => e.phases.includes(rt.phase) && isObjectiveAvailable(e, rt));
   if (candidates.length === 0) candidates = MATCH_EVENTS.filter((e) => e.phases.includes(rt.phase) && !['dragons', 'elders', 'grubs', 'heralds'].includes(e.objective));
 
+  const cfg = rt.scenarioCfg;
   const dramaticWeight = BALANCE_CONFIG.events.dramaticWeight[getMatchStakes()];
   // Le nexus d'un camp est sur le point de tomber (inhib + 2 tours nexus down) ?
   const nexusImminent = ['blue', 'red'].some((s) => {
     const d = new Set(rt.structuresDown[s]);
     return d.has('NEX_T1') && d.has('NEX_T2') && ['BOT_INH', 'MID_INH', 'TOP_INH'].some((i) => d.has(i)) && !d.has('NEXUS');
   });
+  const goldDiff = Math.abs(rt.gold.blue - rt.gold.red);
   candidates = candidates.map((e) => {
+    let w = e.weight;
     if (e.id === 'dramatic' && dramaticWeight != null) return { ...e, weight: dramaticWeight };
-    // On pousse la prise de tours en late pour que la partie se conclue sur un nexus détruit
-    if (e.id === 'tower' && (nexusImminent || rt.phase === 'late')) {
-      return { ...e, weight: e.weight * (nexusImminent ? 5 : 2) };
+    // Scénario : modifie le poids des events de kills en lane/jungle
+    if (e.category === 'lane' || e.category === 'jungle') w *= cfg.killWeightMult;
+    // Grand écart de gold → l'équipe menée joue défensif : moins de kills, plus de tours/objectifs
+    if (goldDiff > 3000) {
+      if (['lane', 'jungle', 'teamfight'].includes(e.category)) w *= goldDiff > 5000 ? 0.55 : 0.75;
+      if (e.category === 'macro') w *= 1.4;
     }
-    return e;
+    // Tours en late / nexus imminent
+    if (e.id === 'tower' && (nexusImminent || rt.phase === 'late')) w *= nexusImminent ? 5 : 2;
+    return { ...e, weight: Math.max(0.1, w) };
   });
 
   const template = weightedChoice(candidates);
@@ -4234,11 +4519,16 @@ function simulateTick() {
   if (['lane', 'jungle', 'teamfight', 'dramatic'].includes(template.category)) {
     const totalKills = rt.score.blue + rt.score.red;
     const isTF = template.category === 'teamfight' || template.category === 'dramatic';
-    if (totalKills < MATCH_KILL_CAP) {
-      const desiredKills = isTF ? randomInt(2, 4) : 1;
-      kills = Math.min(desiredKills, MATCH_KILL_CAP - totalKills);
+    // Plafond de kills combiné : scénario × horloge de jeu
+    const minuteNow = rt.gameClock / 60;
+    const capIdx = minuteNow < 10 ? 0 : minuteNow < 15 ? 1 : minuteNow < 20 ? 2 : 3;
+    const timeCap = cfg.killCapByMin[capIdx] ?? cfg.maxKills;
+    const effectiveCap = Math.min(cfg.maxKills, timeCap);
+    if (totalKills < effectiveCap) {
+      const desiredKills = isTF ? randomInt(1, cfg.maxKillsPerTF) : 1;
+      kills = Math.max(0, Math.min(desiredKills, effectiveCap - totalKills));
     } else if (isTF) {
-      kills = 1; /* teamfight sans kill n'existe pas */
+      kills = 1; // teamfight sans kill n'existe pas
     }
     rt.score[winner] += kills;
   }
@@ -5306,6 +5596,20 @@ function renderProgression() {
     <div class="stat-card"><div class="stat-card__value">${winRate}%</div><div class="stat-card__label">Taux de victoire</div></div>
     <div class="stat-card"><div class="stat-card__value">${p.bestWinStreak}</div><div class="stat-card__label">Meilleure serie de victoires</div></div>
   `;
+
+  const pal = ensurePalmares();
+  const palmaresEl = document.getElementById('progression-palmares');
+  if (palmaresEl) {
+    palmaresEl.innerHTML = `
+      <div class="stat-card"><div class="stat-card__value">${pal.regionalTitles}</div><div class="stat-card__label">Titres régionaux</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.msi.qualified}</div><div class="stat-card__label">Qualifications MSI</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.msi.titles}</div><div class="stat-card__label">Titres MSI</div></div>
+      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.msi.bestPlacement)}</div><div class="stat-card__label">Meilleur résultat MSI</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.worlds.qualified}</div><div class="stat-card__label">Qualifications Worlds</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.worlds.titles}</div><div class="stat-card__label">Titres Worlds</div></div>
+      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.worlds.bestPlacement)}</div><div class="stat-card__label">Meilleur résultat Worlds</div></div>
+    `;
+  }
 
   const historyEl = document.getElementById('progression-history');
   historyEl.innerHTML = state.matchHistory.slice(0, 10).map((m) => {
