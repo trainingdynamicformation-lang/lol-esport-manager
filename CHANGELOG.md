@@ -10,6 +10,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 ### Ajouté
 - **Roster complet des champions de League of Legends** : la base passe de 90 à **172 champions** (liste officielle Riot complète), répartis sur les 5 rôles (TOP 38, JUNGLE 41, MID 43, ADC 24, SUPPORT 26).
 - **Base de counters étendue** : de 1 120 à **4 259 matchups de counter** effectifs prêts pour la draft, scorés et tracés (contexte, tags communs, conseil de draft, raison gameplay). Chaque champion dispose désormais de données de counter.
+- **Nouvel écran Champions** (menu entre Draft et Counters) : liste des 172 champions avec filtre par rôle (boutons) et champ de recherche. Un clic ouvre la fiche du champion — caractéristiques (rôle, difficulté, puissances early/mid/late, objectifs, style, synergies, profils contrés), liste complète des champions qu'il counter et de ceux qui le contrent (chaque ligne cliquable pour naviguer de fiche en fiche). Flèche « ← Retour » pour revenir à la liste.
 
 ### Détails techniques
 - `data_champions.js` et `data_counters.js` régénérés depuis `lol_esports_update_2026_full_champion_counters.xlsx` (feuilles *Champions_All_Complete* et *ChampionCounters_Complete*).

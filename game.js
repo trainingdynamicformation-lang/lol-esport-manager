@@ -445,6 +445,9 @@ function showView(viewName) {
     case 'draft':
       if (typeof renderDraft === 'function') renderDraft();
       break;
+    case 'champions':
+      if (typeof renderChampions === 'function') renderChampions();
+      break;
     case 'counters':
       if (typeof renderCounters === 'function') renderCounters();
       break;
@@ -5141,6 +5144,136 @@ function getCounterEntry(counterId, targetId) {
   return CHAMPION_COUNTERS.find((e) => e.counter === counterId && e.target === targetId) || null;
 }
 
+/* ------------------------------------------------------------
+   Ecran Champions : liste filtrable + fiche detaillee (v1.6.0)
+   ------------------------------------------------------------ */
+let championsView = { role: '', selected: null };
+
+function renderChampions() {
+  const el = document.getElementById('champions-content');
+  if (!el) return;
+  if (typeof CHAMPIONS === 'undefined') {
+    el.innerHTML = '<div class="empty-state">Donnees des champions indisponibles.</div>';
+    return;
+  }
+  if (championsView.selected) {
+    renderChampionDetail(el, championsView.selected);
+  } else {
+    renderChampionsList(el);
+  }
+}
+
+function renderChampionsList(el) {
+  const roles = ['', 'TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
+  const roleLabels = { '': 'Tous', TOP: 'TOP', JUNGLE: 'JUNGLE', MID: 'MID', ADC: 'ADC', SUPPORT: 'SUPPORT' };
+  const searchInput = document.getElementById('champions-search');
+  const search = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+  const filterHtml = roles.map((r) =>
+    `<button class="comp-tag-option ${championsView.role === r ? 'comp-tag-option--active' : ''}" data-champ-role="${r}">${roleLabels[r]}</button>`
+  ).join('');
+
+  const list = CHAMPIONS.filter((c) => {
+    if (championsView.role && c.role !== championsView.role && !(c.secondaryRoles || []).includes(championsView.role)) return false;
+    if (search && !c.name.toLowerCase().includes(search)) return false;
+    return true;
+  }).slice().sort((a, b) => a.name.localeCompare(b.name));
+
+  const cardsHtml = list.length ? list.map((c) => `
+    <button class="champ-card" data-champ-id="${c.id}">
+      <span class="champ-card__name">${c.name}</span>
+      <span class="champ-card__role champ-card__role--${c.role}">${c.role}</span>
+      <span class="champ-card__tags">${(c.tags || []).slice(0, 3).join(' · ') || '—'}</span>
+    </button>
+  `).join('') : '<div class="empty-state">Aucun champion ne correspond.</div>';
+
+  el.innerHTML = `
+    <div class="draft-role-filter">${filterHtml}</div>
+    <p class="card__count">${list.length} champion${list.length > 1 ? 's' : ''}</p>
+    <div class="champ-grid">${cardsHtml}</div>
+  `;
+
+  el.querySelectorAll('[data-champ-role]').forEach((btn) => btn.addEventListener('click', () => {
+    championsView.role = btn.dataset.champRole;
+    renderChampions();
+  }));
+  el.querySelectorAll('[data-champ-id]').forEach((btn) => btn.addEventListener('click', () => {
+    championsView.selected = btn.dataset.champId;
+    renderChampions();
+  }));
+}
+
+function renderChampionDetail(el, champId) {
+  const c = getChampionById(champId);
+  if (!c) { championsView.selected = null; renderChampionsList(el); return; }
+
+  const counters = (typeof getCountersFor === 'function' ? getCountersFor(c.id) : CHAMPION_COUNTERS.filter((e) => e.counter === c.id))
+    .slice().sort((a, b) => b.score - a.score);
+  const counteredBy = (typeof getCounteredBy === 'function' ? getCounteredBy(c.id) : CHAMPION_COUNTERS.filter((e) => e.target === c.id))
+    .slice().sort((a, b) => b.score - a.score);
+
+  const chips = (arr) => (arr && arr.length)
+    ? arr.map((t) => `<span class="champ-chip">${t}</span>`).join('')
+    : '<span class="champ-chip champ-chip--empty">—</span>';
+  const stat = (val, label) => `<div class="stat-card"><div class="stat-card__value">${val}</div><div class="stat-card__label">${label}</div></div>`;
+  const roleLine = [c.role].concat(c.secondaryRoles || []).join(' / ');
+
+  const counterRow = (e, mode) => {
+    const otherId = mode === 'counter' ? e.target : e.counter;
+    const other = getChampionById(otherId);
+    const otherName = other ? other.name : otherId;
+    const otherRole = mode === 'counter' ? e.targetRole : e.counterRole;
+    const confClass = `counter-confidence--${(e.confidence || '').toLowerCase()}`;
+    return `<button class="counter-row counter-row--link" data-champ-id="${otherId}">
+      <div class="counter-row__main">
+        <span><strong>${otherName}</strong> <span class="champ-card__role champ-card__role--${otherRole}">${otherRole}</span></span>
+        <span class="counter-row__score ${confClass}">${e.score} · ${e.confidence}</span>
+      </div>
+      <div class="counter-row__tags">Tags communs : ${(e.matchedTags || []).join(', ') || '-'}</div>
+      <div class="counter-row__reason">${e.gameplayReason || ''}</div>
+    </button>`;
+  };
+
+  el.innerHTML = `
+    <button class="btn-back" id="champ-detail-back">← Retour</button>
+    <div class="panel">
+      <div class="champ-detail__head">
+        <h3 class="panel-title">${c.name}</h3>
+        <span class="champ-card__role champ-card__role--${c.role}">${roleLine}</span>
+      </div>
+      <div class="stats-grid">
+        ${stat(c.difficulty + '/5', 'Difficulté')}
+        ${stat(c.phasePower.early, 'Early')}
+        ${stat(c.phasePower.mid, 'Mid')}
+        ${stat(c.phasePower.late, 'Late')}
+        ${stat(c.objectivePower, 'Objectifs')}
+      </div>
+      <div class="champ-detail__tags">
+        <div><span class="champ-detail__label">Style</span> ${chips(c.tags)}</div>
+        <div><span class="champ-detail__label">Synergies</span> ${chips(c.synergyTags)}</div>
+        <div><span class="champ-detail__label">Fort contre les profils</span> ${chips(c.counterTags)}</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3 class="panel-title">${c.name} contre (${counters.length})</h3>
+      ${counters.length ? counters.map((e) => counterRow(e, 'counter')).join('') : '<div class="empty-state">Aucune donnée de counter.</div>'}
+    </div>
+    <div class="panel">
+      <h3 class="panel-title">Contré par (${counteredBy.length})</h3>
+      ${counteredBy.length ? counteredBy.map((e) => counterRow(e, 'target')).join('') : '<div class="empty-state">Aucune donnée de counter.</div>'}
+    </div>
+  `;
+
+  const backBtn = document.getElementById('champ-detail-back');
+  if (backBtn) backBtn.addEventListener('click', () => { championsView.selected = null; renderChampions(); });
+  el.querySelectorAll('[data-champ-id]').forEach((btn) => btn.addEventListener('click', () => {
+    championsView.selected = btn.dataset.champId;
+    renderChampions();
+    const view = document.getElementById('view-champions');
+    if (view) view.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+}
+
 function renderCounters() {
   const el = document.getElementById('counters-content');
   if (!el) return;
@@ -5735,6 +5868,15 @@ function setupNavigation() {
     input.addEventListener('input', () => renderCounters());
     input.addEventListener('change', () => renderCounters());
   });
+
+  // Recherche de l'ecran Champions (revient a la liste si on tape)
+  const championsSearch = document.getElementById('champions-search');
+  if (championsSearch) {
+    championsSearch.addEventListener('input', () => {
+      championsView.selected = null;
+      renderChampions();
+    });
+  }
 
   // Bouton reset (double-clic de confirmation)
   const resetBtn = document.getElementById('btn-reset-game');

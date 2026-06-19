@@ -1609,6 +1609,88 @@ table.history-table th {
 .counter-row__advice { font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 4px; }
 
 /* ------------------------------------------------------------
+   Ecran Champions (v1.6.0)
+   ------------------------------------------------------------ */
+.champ-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+.champ-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color .15s, transform .15s;
+}
+.champ-card:hover { border-color: var(--color-gold); transform: translateY(-2px); }
+.champ-card__name { font-weight: 700; color: var(--color-text); }
+.champ-card__tags { font-size: var(--fs-label); color: var(--color-text-muted); }
+.champ-card__role {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+.champ-card__role--TOP     { color: #E5894A; border-color: #E5894A; }
+.champ-card__role--JUNGLE  { color: #4FB477; border-color: #4FB477; }
+.champ-card__role--MID     { color: #5AA9E6; border-color: #5AA9E6; }
+.champ-card__role--ADC     { color: #D45D79; border-color: #D45D79; }
+.champ-card__role--SUPPORT { color: #C89B3C; border-color: #C89B3C; }
+
+.btn-back {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 6px 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: var(--fs-body);
+  transition: border-color .15s, color .15s;
+}
+.btn-back:hover { border-color: var(--color-gold); color: var(--color-gold); }
+
+.champ-detail__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.champ-detail__tags { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.champ-detail__label {
+  display: inline-block;
+  min-width: 150px;
+  color: var(--color-text-muted);
+  font-size: var(--fs-label);
+}
+.champ-chip {
+  display: inline-block;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 2px 9px;
+  margin: 2px 3px;
+  font-size: var(--fs-label);
+  color: var(--color-text);
+}
+.champ-chip--empty { color: var(--color-text-muted); }
+
+.counter-row--link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.counter-row--link:hover { border-color: var(--color-gold); }
+
+/* ------------------------------------------------------------
    Marche des transferts
    ------------------------------------------------------------ */
 .transfer-header {

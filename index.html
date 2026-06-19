@@ -48,6 +48,7 @@
       <button class="nav-btn" data-view="training">Entraînement</button>
       <button class="nav-btn" data-view="calendar">Calendrier</button>
       <button class="nav-btn" data-view="draft">Draft</button>
+      <button class="nav-btn" data-view="champions">Champions</button>
       <button class="nav-btn" data-view="counters">Counters</button>
       <button class="nav-btn" data-view="match">Match</button>
       <button class="nav-btn" data-view="scouting">Scouting</button>
@@ -122,6 +123,18 @@
       <h2 class="panel-title">Draft</h2>
       <div class="panel" id="draft-content">
         <div class="empty-state">Aucune draft en cours.</div>
+      </div>
+    </section>
+
+    <!-- ----------- COUNTERS ----------- -->
+    <!-- ----------- CHAMPIONS ----------- -->
+    <section id="view-champions" class="view">
+      <h2 class="panel-title">Champions</h2>
+      <div class="panel">
+        <input type="text" id="champions-search" class="counters-search" placeholder="Rechercher un champion..." />
+      </div>
+      <div class="panel" id="champions-content">
+        <div class="empty-state">Chargement des champions...</div>
       </div>
     </section>
 
