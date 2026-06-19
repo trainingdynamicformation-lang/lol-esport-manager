@@ -1686,6 +1686,7 @@ table.history-table th {
   width: 100%;
   text-align: left;
   cursor: pointer;
+  color: var(--color-text);
   transition: border-color .15s;
 }
 .counter-row--link:hover { border-color: var(--color-gold); }

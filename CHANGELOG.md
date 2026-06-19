@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.6.1] — 2026-06-19
+
+### Corrigé
+- **Écran Champions** : dans la fiche détail d'un champion, les noms des champions counter (panneaux « X contre » et « Contré par ») s'affichaient en noir sur fond sombre. Texte passé en blanc (`var(--color-text)`).
+
+---
+
 ## [1.6.0] — 2026-06-19
 
 ### Ajouté
