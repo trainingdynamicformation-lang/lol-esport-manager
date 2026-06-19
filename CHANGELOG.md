@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.5.3] — 2026-06-19
+
+### Amélioré
+- **Simulation de match plus réaliste et plus variée** : refonte de la résolution des affrontements pour casser le schéma répétitif (une équipe à 10-0 en 5 min puis stomp systématique).
+  - **Résolution probabiliste** : chaque affrontement est désormais tranché par une sigmoïde sur l'écart de puissance, et non plus par un vainqueur déterministe. Deux équipes proches → combats à ~50/50 (matchs serrés, leads qui changent de camp) ; gros écart → favori dominant. **Plus les deux équipes sont proches, plus le match est serré.**
+  - **Snowball adouci et contextuel** : l'avance en or pèse moins (±4 au lieu de ±5) et son intensité dépend du scénario (faible en *control*, forte en *stomp*).
+  - **Prime de comeback (shutdown gold)** : l'équipe menée touche un bonus d'or en gagnant un fait d'armes — les avances ne sont plus définitives, les retournements deviennent possibles.
+  - **Plafonds de kills early abaissés** : fin des 10-0 en 5 minutes.
+  - **Choix du scénario lié à la proximité des équipes** : rosters proches → matchs disputés (control/standard), gros écart → domination (stomp).
+- Les timers des objectifs neutres (dragon, grubs, herald, baron, elder) restent inchangés.
+
+---
+
 ## [1.5.2] — 2026-06-19
 
 ### Ajouté

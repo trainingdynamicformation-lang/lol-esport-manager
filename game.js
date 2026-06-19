@@ -3916,12 +3916,18 @@ const SCENARIO_WEIGHTS_BY_REGION = {
 // maxKillsPerTF  : max kills générés par un teamfight/dramatic
 // killCapByMin   : plafond kills total à [<10 min, <15 min, <20 min, <25 min]
 // maxKills       : plafond absolu kills pour la partie entière
+// decisiveness   : v1.5.3 — "raideur" de la sigmoïde de résolution d'un duel.
+//                  Petit = le favori gagne presque toujours (domination, peu de
+//                  hasard) ; grand = chaque combat tend vers pile/face (chaos).
+// snowballFactor : v1.5.3 — intensité de l'effet boule de neige de l'or.
+//                  Faible = comebacks possibles (match serré) ; fort = l'avance
+//                  fait gagner les combats suivants (vrai stomp).
 const MATCH_SCENARIOS = {
-  control:  { killWeightMult: 0.65, maxKillsPerTF: 1, killCapByMin: [ 5, 10, 18, 25], maxKills: 26 },
-  standard: { killWeightMult: 0.90, maxKillsPerTF: 2, killCapByMin: [ 8, 16, 24, 32], maxKills: 32 },
-  snowball: { killWeightMult: 1.10, maxKillsPerTF: 2, killCapByMin: [10, 17, 26, 35], maxKills: 38 },
-  stomp:    { killWeightMult: 1.40, maxKillsPerTF: 3, killCapByMin: [13, 19, 27, 38], maxKills: 44 },
-  fiesta:   { killWeightMult: 1.70, maxKillsPerTF: 4, killCapByMin: [12, 18, 28, 42], maxKills: 55 },
+  control:  { killWeightMult: 0.65, maxKillsPerTF: 1, killCapByMin: [ 3,  8, 15, 24], maxKills: 26, decisiveness: 4.5, snowballFactor: 0.6 },
+  standard: { killWeightMult: 0.90, maxKillsPerTF: 2, killCapByMin: [ 4, 11, 19, 30], maxKills: 32, decisiveness: 5.0, snowballFactor: 0.8 },
+  snowball: { killWeightMult: 1.10, maxKillsPerTF: 2, killCapByMin: [ 6, 13, 22, 35], maxKills: 38, decisiveness: 4.5, snowballFactor: 1.1 },
+  stomp:    { killWeightMult: 1.40, maxKillsPerTF: 3, killCapByMin: [ 8, 15, 25, 40], maxKills: 44, decisiveness: 3.5, snowballFactor: 1.4 },
+  fiesta:   { killWeightMult: 1.70, maxKillsPerTF: 4, killCapByMin: [10, 18, 30, 52], maxKills: 55, decisiveness: 6.5, snowballFactor: 0.9 },
 };
 const DRAGON_BUFF_DURATION = 180;
 const BARON_BUFF_DURATION = 180;
@@ -4242,13 +4248,27 @@ function pickMatchScenario(opponent) {
   const playerAvg = averageRosterLevel(state.roster);
   const oppAvg = averageRosterLevel(opponent.roster);
   const tierGap = Math.abs(playerAvg - oppAvg);
-  const stompBonus = tierGap > 10 ? 8 : tierGap > 5 ? 3 : 0;
+
+  // v1.5.3 — la proximité des deux équipes oriente le type de match :
+  // équipes proches → matchs serrés (control/standard), gros écart → domination.
+  let control = w.control, standard = w.standard, snowball = w.snowball,
+      stomp = w.stomp, fiesta = w.fiesta;
+  if (tierGap <= 3) {            // équipes très proches : matchs disputés
+    control *= 1.5; standard *= 1.3; snowball *= 0.8; stomp *= 0.4; fiesta *= 0.7;
+  } else if (tierGap <= 7) {     // léger avantage
+    control *= 1.1; standard *= 1.1; stomp *= 0.8;
+  } else if (tierGap <= 12) {    // écart marqué
+    control *= 0.7; snowball *= 1.2; stomp *= 1.6;
+  } else {                       // gros écart : domination probable
+    control *= 0.4; standard *= 0.7; snowball *= 1.3; stomp *= 2.2; fiesta *= 1.2;
+  }
+
   const items = [
-    { id: 'control',  weight: w.control },
-    { id: 'standard', weight: w.standard },
-    { id: 'snowball', weight: w.snowball },
-    { id: 'stomp',    weight: w.stomp + stompBonus },
-    { id: 'fiesta',   weight: w.fiesta },
+    { id: 'control',  weight: control },
+    { id: 'standard', weight: standard },
+    { id: 'snowball', weight: snowball },
+    { id: 'stomp',    weight: stomp },
+    { id: 'fiesta',   weight: fiesta },
   ];
   return weightedChoice(items).id;
 }
@@ -4352,11 +4372,13 @@ function teamEventPower(side, category, role) {
     }
   }
 
-  // Snowball : l'équipe avec plus d'or gagne les events plus facilement
-  // +2000 or = +1 de puissance, plafonné à ±5 (±10k or)
+  // Snowball : l'équipe avec plus d'or gagne les events plus facilement.
+  // v1.5.3 — adouci (±4 max) et modulé par le scénario : en "control" l'avance
+  // pèse peu (comebacks possibles), en "stomp" elle fait boule de neige.
   const enemySide = side === 'blue' ? 'red' : 'blue';
   const goldLead = rt.gold[side] - rt.gold[enemySide];
-  total += clamp(goldLead / 2000, -5, 5);
+  const snowballFactor = rt.scenarioCfg ? rt.scenarioCfg.snowballFactor : 1;
+  total += clamp(goldLead / 3000, -4, 4) * snowballFactor;
 
   const variance = BALANCE_CONFIG.events.matchVariance;
   total += randomFloat(-variance, variance) * varianceMultiplier;
@@ -4512,8 +4534,16 @@ function simulateTick() {
 
   const bluePower = teamEventPower('blue', template.category, role);
   const redPower = teamEventPower('red', template.category, role);
-  const winner = bluePower >= redPower ? 'blue' : 'red';
-  const diff = Math.abs(bluePower - redPower);
+  // v1.5.3 — résolution PROBABILISTE : l'écart de puissance se traduit en
+  // probabilité via une sigmoïde, au lieu d'un vainqueur déterministe. Équipes
+  // proches → ~50/50 (match serré, retournements) ; gros écart → favori dominant.
+  // La "raideur" (decisiveness) dépend du scénario : faible = domination,
+  // élevée = chaos type fiesta.
+  const powerGap = bluePower - redPower;
+  const decisiveness = cfg.decisiveness || 5;
+  const blueWinProb = 1 / (1 + Math.exp(-powerGap / decisiveness));
+  const winner = Math.random() < blueWinProb ? 'blue' : 'red';
+  const diff = Math.abs(powerGap);
 
   let kills = 0;
   if (['lane', 'jungle', 'teamfight', 'dramatic'].includes(template.category)) {
@@ -4548,7 +4578,17 @@ function simulateTick() {
     }
   }
 
-  rt.gold[winner] += getEventGold(template, kills, rt._lastStructure);
+  let eventGold = getEventGold(template, kills, rt._lastStructure);
+  // v1.5.3 — shutdown gold : quand l'équipe menée gagne un fait d'armes, elle
+  // touche une prime de comeback (équivalent des primes de la vraie LoL). Les
+  // avances ne sont plus définitives → retournements et matchs plus vivants.
+  if (kills > 0) {
+    const winnerLead = rt.gold[winner] - rt.gold[winner === 'blue' ? 'red' : 'blue'];
+    if (winnerLead < -2000) {
+      eventGold += Math.min(Math.abs(winnerLead) * 0.12, 600);
+    }
+  }
+  rt.gold[winner] += eventGold;
 
   if (template.objective && template.objective !== 'towers') {
     const grubsExhausted = template.objective === 'grubs' && (rt.objectives.grubs.blue + rt.objectives.grubs.red) >= MATCH_GRUBS_TOTAL;
