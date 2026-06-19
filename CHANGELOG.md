@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.3] — 2026-06-20
+
+### Amélioré
+- **Maîtrise réelle des champions de l'IA en match** — auparavant, l'IA jouait tous ses champions avec une maîtrise figée à 40, quel que soit le champion : les grosses équipes (T1, Gen.G, G2…) étaient artificiellement faibles, rendant les matchs trop faciles pour un roster développé.
+  - L'IA utilise désormais sa **vraie maîtrise** par champion (données `championPool`/`masteries` de `data_teams.js`, déjà présentes). Une équipe sur ses champions signature devient un véritable mur (maîtrise 90-100).
+  - **Récompense le scouting et les bans** : forcer une équipe hors de son pool de confort (en bannissant ses mains) réduit sa maîtrise à 35 — un vrai levier tactique en draft.
+  - Aucune asymétrie en faveur du joueur : le calcul de puissance par événement reste identique pour les deux camps.
+  - La simulation IA vs IA (matchs de groupe sans le joueur) est inchangée (pas de draft, basée sur le niveau moyen du roster).
+
+---
+
 ## [1.7.2] — 2026-06-19
 
 ### Corrigé

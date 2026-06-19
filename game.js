@@ -4424,6 +4424,19 @@ function startMatch(opponentTeamId) {
   restartMatchTimer();
 }
 
+// v1.7.3 — Maîtrise réelle de l'IA sur le champion pické : on lit la valeur
+// alignée dans championPool/masteries (données data_teams.js). Un champion
+// hors de son pool de confort → maîtrise réduite (l'IA est moins à l'aise),
+// ce qui récompense le scouting et les bans ciblés en draft.
+function getAiChampionMastery(player, champName) {
+  if (!champName || !Array.isArray(player.championPool)) return 40;
+  const idx = player.championPool.indexOf(champName);
+  if (idx >= 0 && Array.isArray(player.masteries) && player.masteries[idx] != null) {
+    return player.masteries[idx];
+  }
+  return 35; // hors pool de confort
+}
+
 function teamEventPower(side, category, role) {
   const rt = matchRuntime;
   const isPlayer = side === rt.picks.playerSide;
@@ -4439,8 +4452,13 @@ function teamEventPower(side, category, role) {
   players.forEach((player) => {
     const champName = picks[player.role];
     const champion = getChampionByName(champName);
-    const masteryEntry = isPlayer ? getChampionMastery(player.id, champName) : null;
-    const mastery = masteryEntry ? masteryEntry.mastery : 40;
+    let mastery;
+    if (isPlayer) {
+      const masteryEntry = getChampionMastery(player.id, champName);
+      mastery = masteryEntry ? masteryEntry.mastery : 40;
+    } else {
+      mastery = getAiChampionMastery(player, champName);
+    }
     const phasePower = champion ? champion.phasePower[rt.phase] : 5;
 
     let roleSkill;
