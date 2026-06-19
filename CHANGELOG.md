@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.5] — 2026-06-20
+
+### Corrigé
+- **Arbre de phase finale : lignes de connexion en angles droits uniquement** — certains connecteurs étaient tracés en diagonale lorsqu'un bloc cible n'était pas pile au centre vertical de ses deux sources, et le trait Finale → Vainqueur faisait un coude inutile.
+  - `connect()` : la barre verticale s'étend désormais jusqu'à la hauteur exacte de la cible, puis un trait horizontal entre dans la cible → angle droit garanti, plus aucune diagonale.
+  - `single()` (Finale → Vainqueur) : trait parfaitement droit quand les blocs sont alignés verticalement, coude en L uniquement si nécessaire.
+  - **Bloc Vainqueur aligné sur la Finale** : la colonne Vainqueur avait un label sur 1 ligne (`&nbsp;`) contre 2 lignes pour la Finale, décalant son centrage vertical et créant un zigzag inutile. Label uniformisé sur 2 lignes → Finale et Vainqueur exactement à la même hauteur, connecteur en ligne droite (saison + international).
+
+---
+
 ## [1.7.4] — 2026-06-20
 
 ### Amélioré

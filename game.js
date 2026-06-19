@@ -3643,16 +3643,25 @@ function drawPoBracketLines(bracketId) {
     l.setAttribute('stroke-linecap', 'round');
     svg.appendChild(l);
   };
+  // Connecteur à angles droits uniquement : 2 horizontales depuis les sources
+  // vers une barre verticale (mx), puis une horizontale dans la cible à sa
+  // hauteur exacte (yt). La barre verticale s'étend pour inclure yt afin que
+  // le raccord cible reste un angle droit même si la cible n'est pas pile au
+  // centre des deux sources (v1.7.5).
   const connect = (a, b, t, c) => {
     if (!a || !b || !t) return;
     const x1 = rx(a), y1 = midY(a), x2 = rx(b), y2 = midY(b);
     const xt = lx(t), yt = midY(t), mx = (Math.max(x1, x2) + xt) / 2;
     line(x1, y1, mx, y1, c); line(x2, y2, mx, y2, c);
-    line(mx, y1, mx, y2, c); line(mx, (y1 + y2) / 2, xt, yt, c);
+    line(mx, Math.min(y1, y2, yt), mx, Math.max(y1, y2, yt), c);
+    line(mx, yt, xt, yt, c);
   };
   const single = (a, t, c) => {
     if (!a || !t) return;
-    const x1 = rx(a), y1 = midY(a), xt = lx(t), yt = midY(t), mx = (x1 + xt) / 2;
+    const x1 = rx(a), y1 = midY(a), xt = lx(t), yt = midY(t);
+    // Aligné verticalement → trait parfaitement droit, pas de jog inutile.
+    if (Math.abs(y1 - yt) < 1) { line(x1, y1, xt, yt, c); return; }
+    const mx = (x1 + xt) / 2;
     line(x1, y1, mx, y1, c); line(mx, y1, mx, yt, c); line(mx, yt, xt, yt, c);
   };
   const BL = '#2A4A70', GD = '#C89B3C';
@@ -3702,7 +3711,7 @@ function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
       <div class="po-gap"></div>
       ${col('Finale<br>BO5', centered(poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true)))}
       <div class="po-gap"></div>
-      ${col('&nbsp;', centered(poChampionBlock(seasonLabel || '', champ)))}
+      ${col('&nbsp;<br>&nbsp;', centered(poChampionBlock(seasonLabel || '', champ)))}
     </div>
     ${legend}
   </div>`;
@@ -3714,7 +3723,7 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
   const has8 = !!m.qf1;
   const champ = b.champion || (m.final.result ? m.final.result.winner : null);
   const championColMSI = (H) => `<div style="height:${H}px;display:flex;flex-direction:column;">
-    <div class="po-col__label">&nbsp;</div>
+    <div class="po-col__label">&nbsp;<br>&nbsp;</div>
     <div style="flex:1;display:flex;align-items:center;justify-content:center;">${poChampionBlock(seasonLabel || '', champ)}</div>
   </div>`;
   const legend = `<div class="po-legend">
