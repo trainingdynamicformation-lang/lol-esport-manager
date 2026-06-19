@@ -3063,7 +3063,7 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
       </div>
     </div>
     <div class="modal-content__actions" style="margin-top:20px;">
-      <button class="btn-primary" onclick="closeModal();showView('calendar');processInternationalGroupMatchday();">C'est parti !</button>
+      <button class="btn-primary" onclick="closeModal();processInternationalGroupMatchday();showView('calendar');">C'est parti !</button>
     </div>
   `);
 }
@@ -3789,6 +3789,7 @@ function renderInternationalGroups(el, intl) {
 
   const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
   const pm = intl.pendingMatch;
+  if (!pm) { processInternationalGroupMatchday(); renderCalendar(); return; }
   const actionLabel = pm.started ? 'Continuer le match en cours' : 'Jouer le match';
 
   el.innerHTML = `

@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.6.2] — 2026-06-19
+
+### Corrigé
+- **Fin de playoffs → MSI/Worlds** : après avoir cliqué "Continuer vers le MSI" (ou Worlds) et confirmé dans la popup "C'est parti !", rien ne se passait et l'écran revenait à la récapitulation. Cause : `showView('calendar')` était appelé avant `processInternationalGroupMatchday()`, provoquant un `TypeError` (`pendingMatch` était encore `null`). Corrigé en inversant l'ordre des appels + garde défensive dans `renderInternationalGroups`.
+
+---
+
 ## [1.6.1] — 2026-06-19
 
 ### Corrigé
