@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.6.0] — 2026-06-19
+
+### Ajouté
+- **Roster complet des champions de League of Legends** : la base passe de 90 à **172 champions** (liste officielle Riot complète), répartis sur les 5 rôles (TOP 38, JUNGLE 41, MID 43, ADC 24, SUPPORT 26).
+- **Base de counters étendue** : de 1 120 à **4 259 matchups de counter** effectifs prêts pour la draft, scorés et tracés (contexte, tags communs, conseil de draft, raison gameplay). Chaque champion dispose désormais de données de counter.
+
+### Détails techniques
+- `data_champions.js` et `data_counters.js` régénérés depuis `lol_esports_update_2026_full_champion_counters.xlsx` (feuilles *Champions_All_Complete* et *ChampionCounters_Complete*).
+- Format et fonctions d'accès inchangés (`getChampionByName`, `getChampionById`, `getCounterEntry`) → compatibilité totale : les 75 champions référencés par les rosters existants résolvent tous correctement.
+- Correction au passage : le support Renata Glasc portait le nom « Renata » dans l'ancienne base (les rosters utilisaient « Renata Glasc ») — désormais aligné.
+
+---
+
 ## [1.5.4] — 2026-06-19
 
 ### Corrigé
