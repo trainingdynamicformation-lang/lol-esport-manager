@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.1] — 2026-06-19
+
+### Amélioré
+- **Scrims : bonus de gains selon le tier de l'adversaire** — s'entraîner contre une équipe d'élite rapporte davantage que contre une équipe de bas tableau.
+  - Tier 1 (T1, Gen.G, BLG…) : **+20 %** sur tous les gains (maîtrise champion, composition, matchup, macro, forme).
+  - Tier 2 : **+10 %**.
+  - Tier 3+ : aucun bonus (inchangé).
+  - Le bonus s'applique à tous les objectifs de scrim via le `resultFactor`.
+
+---
+
 ## [1.7.0] — 2026-06-19
 
 ### Ajouté

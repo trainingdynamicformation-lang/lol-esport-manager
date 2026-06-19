@@ -813,6 +813,13 @@ const REST_OPTIONS = [
 // Seuil de prestige requis pour demander un scrim à une équipe hors-région selon son tier
 const SCRIM_PRESTIGE_REQ = { 1: 75, 2: 40 };
 
+// Bonus de gains selon le tier de l'adversaire : tier 1 +20%, tier 2 +10%, tier 3+ +0%
+const SCRIM_TIER_BONUS = { 1: 1.20, 2: 1.10 };
+
+function getScrimTierMultiplier(tier) {
+  return SCRIM_TIER_BONUS[tier] || 1.0;
+}
+
 function getScrimPrestigeReq(tier) {
   return SCRIM_PRESTIGE_REQ[tier] || 0;
 }
@@ -1708,7 +1715,7 @@ function runScrim(plan) {
 }
 
 function applyScrimObjective(plan, opponent, intensity, win) {
-  const resultFactor = win ? 1.1 : 0.9;
+  const resultFactor = (win ? 1.1 : 0.9) * getScrimTierMultiplier(opponent.tier || 3);
 
   switch (plan.objective) {
     case 'champion_mastery':
@@ -1721,7 +1728,7 @@ function applyScrimObjective(plan, opponent, intensity, win) {
       return applyMacroGain(plan, intensity, resultFactor);
     case 'free_scrim':
     default:
-      return applyFreeScrimGain(intensity, win);
+      return applyFreeScrimGain(intensity, win, getScrimTierMultiplier(opponent.tier || 3));
   }
 }
 
@@ -1828,8 +1835,8 @@ function applyMacroGain(plan, intensity, resultFactor) {
   return `Travail macro/objectifs : +${total} shotcalling cumule sur l'équipe.`;
 }
 
-function applyFreeScrimGain(intensity, win) {
-  const formDelta = Math.round((win ? 3 : -1) * intensity.multiplier);
+function applyFreeScrimGain(intensity, win, tierMult) {
+  const formDelta = Math.round((win ? 3 : -1) * intensity.multiplier * (tierMult || 1));
   state.roster.forEach((player) => {
     player.form = clamp(player.form + formDelta, 0, 100);
     player.mental = clamp(player.mental + (win ? 1 : 0), 0, 100);
