@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.2] — 2026-06-19
+
+### Corrigé
+- **Phase de groupes internationale (MSI/Worlds) : pairings IA skippés** — après que le joueur terminait son match dans un groupe, les pairings suivants du même round (ex. CFO vs FUR) n'étaient jamais simulés. Résultat : certaines équipes restaient à 0 match joué tandis que d'autres cumulaient des défaites impossibles sur une même journée.
+  - Cause : `resolveInternationalSeries` appelait `processInternationalGroupMatchday(finishedGroup + 1)` — sautant directement au groupe suivant au lieu de continuer depuis le pairing suivant dans le même groupe.
+  - Fix : `pendingMatch` stocke maintenant `pairingIndex`; après le match du joueur, la reprise se fait depuis `processInternationalGroupMatchday(finishedGroup, finishedPairingIndex + 1)`.
+
+---
+
 ## [1.7.1] — 2026-06-19
 
 ### Amélioré

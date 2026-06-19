@@ -3185,15 +3185,18 @@ function sortGroupStandings(group, standings) {
   });
 }
 
-function processInternationalGroupMatchday(startGroup) {
+function processInternationalGroupMatchday(startGroup, startPairing) {
   const intl = state.international;
-  for (let g = startGroup || 0; g < intl.groups.length; g++) {
+  const gStart = startGroup || 0;
+  for (let g = gStart; g < intl.groups.length; g++) {
     const rounds = intl.groupSchedules[g];
     const pairings = rounds[intl.groupMatchday - 1] || [];
-    for (const p of pairings) {
+    const pStart = (g === gStart) ? (startPairing || 0) : 0;
+    for (let pi = pStart; pi < pairings.length; pi++) {
+      const p = pairings[pi];
       if (p.home === 'player' || p.away === 'player') {
         const opponentId = p.home === 'player' ? p.away : p.home;
-        intl.pendingMatch = { type: 'group', groupIndex: g, opponentTeamId: opponentId, isHome: p.home === 'player', started: false };
+        intl.pendingMatch = { type: 'group', groupIndex: g, pairingIndex: pi, opponentTeamId: opponentId, isHome: p.home === 'player', started: false };
         saveGame();
         return;
       }
@@ -3370,8 +3373,9 @@ function resolveInternationalSeries(rt) {
     recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, goldDiff, scoreFor, scoreAgainst);
     intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     const finishedGroup = pm.groupIndex;
+    const finishedPairing = pm.pairingIndex || 0;
     intl.pendingMatch = null;
-    processInternationalGroupMatchday(finishedGroup + 1);
+    processInternationalGroupMatchday(finishedGroup, finishedPairing + 1);
   } else if (pm.type === 'bracket') {
     const bracket = intl.bracket;
     const m = bracket.matches[pm.matchKey];
