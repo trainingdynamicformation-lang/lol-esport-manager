@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.4.2] — 2026-06-19
+
+### Corrigé
+- **Filtre de rôle en draft — rôles secondaires inclus** : le filtre Top/Jungle/Mid/ADC/Support affiche désormais aussi les champions dont ce rôle est un rôle secondaire (ex : Gragas avec `role: TOP` et `secondaryRoles: ['JUNGLE']` apparaît dans le filtre Jungle). Alignement avec ce que l'IA peut picker.
+
+---
+
 ## [1.4.1] — 2026-06-19
 
 ### Corrigé

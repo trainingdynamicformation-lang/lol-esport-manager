@@ -2105,7 +2105,7 @@ function getBestRosterComfort(champName) {
 
 function renderChampionGrid(draft, mode, role, roleFilter, search) {
   let pool = CHAMPIONS;
-  if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter);
+  if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter || (c.secondaryRoles && c.secondaryRoles.includes(roleFilter)));
   if (search && search.trim()) {
     const q = search.trim().toLowerCase();
     pool = pool.filter(c => c.name.toLowerCase().includes(q));
