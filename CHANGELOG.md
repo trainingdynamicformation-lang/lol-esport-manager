@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.0] — 2026-06-19
+
+### Ajouté
+- **Système de prestige pour les scrims** : les équipes hors-région de tier élevé peuvent désormais refuser une demande de scrim si le prestige du joueur est insuffisant.
+  - Tier 1 (T1, Gen.G, BLG, JDG…) : **75 prestige** requis.
+  - Tier 2 : **40 prestige** requis.
+  - Tier 3+ : aucune restriction.
+  - **Exemption région** : les équipes de la même région que le joueur acceptent toujours.
+  - **Exemption tournoi partagé** : si le joueur et l'équipe cible sont tous deux qualifiés au même tournoi international actif (MSI ou Worlds), l'équipe accepte et un message l'explique.
+  - **En cas de refus** : 100 % des points de coaching engagés (intensité choisie) sont consommés, et une modale explicative indique la cause (prestige insuffisant, staff mobilisé en vain).
+  - **Indicateur dans le sélecteur d'adversaire** : chaque équipe affiche son seuil de prestige requis, avec un ✓ si le joueur le remplit, ⚠ sinon, ou ★ si une exemption tournoi s'applique.
+
+---
+
 ## [1.6.2] — 2026-06-19
 
 ### Corrigé

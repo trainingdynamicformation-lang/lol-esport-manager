@@ -810,6 +810,20 @@ const REST_OPTIONS = [
   { id: 'long', label: 'Longue (3 jours)', fatigueReduction: 35, cost: 18 }
 ];
 
+// Seuil de prestige requis pour demander un scrim à une équipe hors-région selon son tier
+const SCRIM_PRESTIGE_REQ = { 1: 75, 2: 40 };
+
+function getScrimPrestigeReq(tier) {
+  return SCRIM_PRESTIGE_REQ[tier] || 0;
+}
+
+// Retourne la raison d'exemption si l'équipe accepte malgré le seuil, null sinon
+function getScrimExemptionReason(opponent) {
+  if (!state.international) return null;
+  if (!state.international.teams.includes(opponent.id)) return null;
+  return `votre organisation partage la même compétition internationale (${eventLabel(state.international)} ${state.international.year})`;
+}
+
 /* ------------------------------------------------------------
    Compte-rendu narratif (CR de scrim)
    ------------------------------------------------------------ */
@@ -926,6 +940,37 @@ function buildScrimReport(plan, opponent, win, before, after) {
   }
 
   return lines;
+}
+
+function showScrimRefusalModal(opponent, required, costSpent, currentPrestige) {
+  showModal(`
+    <h3 class="panel-title" style="color:var(--color-danger, #e05);">&#10007; Demande de scrim refusée</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+      <p style="color:var(--color-text);">
+        <strong>${opponent.name}</strong> a refusé votre demande de scrim.
+      </p>
+      <div style="background:var(--color-surface-alt);border:1px solid var(--color-border);border-radius:6px;padding:12px 14px;">
+        <p style="color:var(--color-text-muted);margin:0 0 6px;">
+          &#127942; Prestige requis : <strong style="color:var(--color-gold);">${required}</strong>
+          &nbsp;|&nbsp; Votre prestige : <strong style="color:${currentPrestige >= required ? 'var(--color-seafoam)' : '#e05'};">${currentPrestige}</strong>
+        </p>
+        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">
+          L'organisation <em>${opponent.name}</em> estime que votre réputation n'est pas encore suffisante pour justifier un scrim.
+          Terminez des splits et des tournois internationaux pour gagner en prestige.
+        </p>
+      </div>
+      <div style="background:var(--color-surface-alt);border:1px solid var(--color-border);border-radius:6px;padding:12px 14px;">
+        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">
+          &#128464; <strong style="color:var(--color-text);">−${costSpent} pts de coaching consommés.</strong>
+          Votre staff avait mobilisé les ressources nécessaires pour préparer cette demande.
+          La sollicitation d'une organisation de ce standing sans le prestige requis est considérée comme un manque de préparation.
+        </p>
+      </div>
+    </div>
+    <div class="modal-content__actions" style="margin-top:20px;">
+      <button class="btn-primary" onclick="closeModal();renderTraining();">Compris</button>
+    </div>
+  `);
 }
 
 function showScrimReportModal(report) {
@@ -1477,8 +1522,21 @@ function setupTrainingFormHandlers() {
   const runBtn = document.getElementById('btn-run-scrim');
 
   function updateOpponentOptions() {
+    const playerAiRegion = (REGIONS.find(r => r.id === state.region) || {}).aiRegion;
     const opponents = getAITeamsForRegion(regionSelect.value).filter((t) => t.id !== state.aiTeamId);
-    opponentSelect.innerHTML = opponents.map((t) => `<option value="${t.id}">${t.name} (${t.shortName})</option>`).join('');
+    opponentSelect.innerHTML = opponents.map((t) => {
+      const isSameRegion = t.region === playerAiRegion;
+      const req = getScrimPrestigeReq(t.tier);
+      const hasPrestige = state.resources.prestige >= req;
+      const exemption = getScrimExemptionReason(t);
+      let suffix = '';
+      if (!isSameRegion && req > 0 && !exemption) {
+        suffix = hasPrestige ? ` ✓ Prestige OK (${req})` : ` ⚠ Prestige requis : ${req}`;
+      } else if (!isSameRegion && exemption) {
+        suffix = ' ★ Même compétition';
+      }
+      return `<option value="${t.id}">${t.name} (${t.shortName})${suffix}</option>`;
+    }).join('');
   }
 
   function updateObjectiveVisibility() {
@@ -1593,6 +1651,27 @@ function runScrim(plan) {
     showToast('Pas assez de points de coaching pour ce scrim.', 'error');
     return;
   }
+
+  // --- Vérification prestige (v1.7.0) ---
+  const playerAiRegion = (REGIONS.find(r => r.id === state.region) || {}).aiRegion;
+  const isSameRegion = opponent.region === playerAiRegion;
+  const exemptionReason = !isSameRegion ? getScrimExemptionReason(opponent) : null;
+  const prestigeReq = getScrimPrestigeReq(opponent.tier || 3);
+  const playerPrestige = state.resources.prestige;
+
+  if (!isSameRegion && !exemptionReason && prestigeReq > 0 && playerPrestige < prestigeReq) {
+    state.resources.coachingPoints -= intensity.cost;
+    saveGame();
+    updateResourceBar();
+    showScrimRefusalModal(opponent, prestigeReq, intensity.cost, playerPrestige);
+    return;
+  }
+
+  if (exemptionReason) {
+    showToast(`${opponent.name} a accepté votre demande : ${exemptionReason}.`, 'info');
+  }
+  // --- Fin vérification prestige ---
+
   state.resources.coachingPoints -= intensity.cost;
 
   const myRating = averageRosterLevel(state.roster);
