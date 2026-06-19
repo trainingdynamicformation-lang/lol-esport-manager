@@ -2941,6 +2941,21 @@ function applyAICareerProgression() {
         if (Math.random() < declineChance) delta = -1;
       }
       if (delta !== 0) player.level = clamp(player.level + delta, 30, 99);
+
+      // v1.7.4 — Progression des maîtrises sur les champions signature (top 3),
+      // pour que l'IA reste compétitive saison après saison. Plafond 100.
+      // Rookies progressent un peu plus vite (+2 vs +1).
+      if (Array.isArray(player.masteries) && player.masteries.length > 0) {
+        const masteryGain = isRookie ? 2 : 1;
+        const topIdx = player.masteries
+          .map((m, i) => ({ m, i }))
+          .sort((a, b) => b.m - a.m)
+          .slice(0, 3)
+          .map((x) => x.i);
+        topIdx.forEach((i) => {
+          player.masteries[i] = clamp(player.masteries[i] + masteryGain, 0, 100);
+        });
+      }
     });
   });
 }

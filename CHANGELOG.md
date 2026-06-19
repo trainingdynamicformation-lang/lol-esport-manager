@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.4] — 2026-06-20
+
+### Amélioré
+- **Les maîtrises de l'IA évoluent dans le temps** — auparavant figées, les maîtrises champion des équipes IA progressent désormais à chaque fin de split, pour qu'elles restent compétitives saison après saison (et n'accumulent plus un retard permanent face à un roster joueur qui, lui, s'entraîne).
+  - **Portée** : seuls les **champions signature** (top 3 maîtrises de chaque joueur) progressent — l'IA se spécialise, et sortir une équipe de ses champions de confort (bans/scouting) reste un levier tactique fort.
+  - **Vitesse** : +1 par split (+2 pour les rookies), en parallèle de la progression de niveau existante.
+  - **Plafond** : 100.
+  - Appliqué dans `applyAICareerProgression` (fin de saison), répercuté en match via la copie évolutive `state.aiRosters`.
+
+---
+
 ## [1.7.3] — 2026-06-20
 
 ### Amélioré
