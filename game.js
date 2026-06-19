@@ -4588,7 +4588,7 @@ function simulateTick() {
       eventGold += Math.min(Math.abs(winnerLead) * 0.12, 600);
     }
   }
-  rt.gold[winner] += eventGold;
+  rt.gold[winner] += Math.round(eventGold);
 
   if (template.objective && template.objective !== 'towers') {
     const grubsExhausted = template.objective === 'grubs' && (rt.objectives.grubs.blue + rt.objectives.grubs.red) >= MATCH_GRUBS_TOTAL;
@@ -4661,7 +4661,7 @@ function updateMatchScoreboard() {
       goldDiffEl.className = 'scoreboard__gold-diff';
     } else {
       const leader = diff > 0 ? 'blue' : 'red';
-      const abs = Math.abs(diff);
+      const abs = Math.round(Math.abs(diff));
       const formatted = abs >= 1000 ? `${(abs / 1000).toFixed(1)}k` : String(abs);
       goldDiffEl.textContent = `+${formatted}g`;
       goldDiffEl.className = `scoreboard__gold-diff scoreboard__gold-diff--${leader}`;
