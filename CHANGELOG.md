@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.5.4] — 2026-06-19
+
+### Corrigé
+- **Arbre de phase finale sur les écrans de fin** : l'arbre du bracket réapparaît désormais sur l'écran récapitulatif de fin de saison (« … - Terminée ») ainsi qu'en fin de MSI et de Worlds. Il avait disparu de ces écrans pourtant essentiels pour visualiser le résultat final après les playoffs.
+
+---
+
 ## [1.5.3] — 2026-06-19
 
 ### Amélioré

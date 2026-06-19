@@ -3719,17 +3719,23 @@ function renderSeasonRecap(el, season) {
   const logHtml = season.log.slice(0, 10).map((l) => `<div class="result-chip">${l}</div>`).join('');
   const nextLabel = season.split === 'spring' ? 'Continuer vers le MSI' : 'Continuer vers les Worlds';
   const progressionHtml = careerProgressionHtml(state.lastCareerProgression);
+  const bracketHtml = season.playoffs
+    ? buildSeasonBracketHtml(season.playoffs, null, `${splitLabel(season.split)} ${season.year} - ${season.region}`)
+    : '';
 
   el.innerHTML = `
     <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Terminee</h3>
     <p class="card__count">Classement final : ${placementLabel(placement)}</p>
     <p class="card__count">Récompenses obtenues : +${rewards.coaching} points coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.</p>
+    ${bracketHtml}
     <div class="recent-results">${logHtml}</div>
     ${progressionHtml}
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-next-competition">${nextLabel}</button>
     </div>
   `;
+
+  if (season.playoffs) requestAnimationFrame(() => drawPoBracketLines('po-bracket-season'));
 
   const btn = document.getElementById('btn-next-competition');
   if (btn) {
@@ -3857,15 +3863,22 @@ function renderInternationalRecap(el, intl) {
     placementHtml = `<p class="card__count">Votre classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${intl.rewards.coaching} coaching, +${intl.rewards.budget} budget, +${intl.rewards.prestige} prestige.</p>`;
   }
 
+  const bracketHtml = intl.bracket
+    ? buildIntlBracketHtml(intl.bracket, null, `${eventLabel(intl)} ${intl.year}`)
+    : '';
+
   el.innerHTML = `
     <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Terminé</h3>
     <p class="card__count">Champion : ${getTeamName(intl.bracket.champion)}</p>
     ${placementHtml}
+    ${bracketHtml}
     <div class="recent-results">${logHtml}</div>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-international-continue">Continuer</button>
     </div>
   `;
+
+  if (intl.bracket) requestAnimationFrame(() => drawPoBracketLines('po-bracket-intl'));
 
   const btn = document.getElementById('btn-international-continue');
   if (btn) {
