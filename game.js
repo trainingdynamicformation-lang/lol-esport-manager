@@ -253,6 +253,22 @@ function loadGame() {
         }
       });
     }
+    // Migration âge (v1.8.4) : backfill baseAge/retirementAge depuis les data files.
+    if (Array.isArray(merged.roster) && merged.roster.length) {
+      const lookup = {};
+      if (typeof AI_TEAMS !== 'undefined') AI_TEAMS.forEach(t => (t.roster || []).forEach(r => {
+        if (r.name && r.baseAge != null) lookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+      }));
+      if (typeof TRANSFER_PLAYERS !== 'undefined') TRANSFER_PLAYERS.forEach(r => {
+        if (r.name && r.baseAge != null) lookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+      });
+      merged.roster.forEach((p) => {
+        if (p.baseAge == null) {
+          const found = p.name && lookup[p.name.toLowerCase()];
+          if (found) { p.baseAge = found.baseAge; p.retirementAge = found.retirementAge; }
+        }
+      });
+    }
     return merged;
   } catch (e) {
     console.error('Erreur de chargement', e);
@@ -331,6 +347,7 @@ async function cloudImport() {
     state = createDefaultState();
     state = parsed;
     ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves cloud
+    ensureRosterAges();       // migration âge (v1.8.4)
     saveGame();
     updateResourceBar();
     showView('home');
@@ -416,6 +433,7 @@ function importSave(file) {
       }
       state = parsed;
       ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves importées
+      ensureRosterAges();       // migration âge (v1.8.4)
       saveGame();
       updateResourceBar();
       showView('home');
@@ -906,6 +924,57 @@ function ensureRosterContracts(minExtra) {
   });
 }
 
+// ─── Âge et retraite (v1.8.4) ────────────────────────────────────────────────
+
+function playerAge(p) {
+  return (p.baseAge != null ? p.baseAge : 22) + (currentGameYear() - 1);
+}
+
+// Année de jeu (numéro de Worlds) à partir de laquelle le joueur est à la retraite.
+function playerRetirementYear(p) {
+  const base = p.baseAge != null ? p.baseAge : 22;
+  const ret  = p.retirementAge != null ? p.retirementAge : 30;
+  return ret - base + 1;
+}
+
+// Peut-on prolonger le contrat de `years` années supplémentaires sans dépasser la retraite ?
+function canExtendForYears(p, years) {
+  if (p.baseAge == null || p.retirementAge == null) return true;
+  return (p.contractUntil || currentGameYear()) + years <= playerRetirementYear(p);
+}
+
+// Attribue baseAge/retirementAge à un joueur sans âge.
+// Cherche en priorité dans AI_TEAMS + TRANSFER_PLAYERS, sinon génère par tier.
+function assignPlayerAge(p) {
+  const lookup = {};
+  if (typeof AI_TEAMS !== 'undefined') AI_TEAMS.forEach(t => (t.roster || []).forEach(r => {
+    if (r.name && r.baseAge != null) lookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+  }));
+  if (typeof TRANSFER_PLAYERS !== 'undefined') TRANSFER_PLAYERS.forEach(r => {
+    if (r.name && r.baseAge != null) lookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+  });
+  const found = p.name && lookup[p.name.toLowerCase()];
+  if (found) {
+    p.baseAge = found.baseAge;
+    p.retirementAge = found.retirementAge;
+  } else {
+    const tier = getContractTier(p);
+    const minAge = { superstar: 22, star: 20, solid: 19, role: 18 }[tier] ?? 20;
+    const maxAge = { superstar: 26, star: 25, solid: 24, role: 23 }[tier] ?? 24;
+    const baseRet = { superstar: 33, star: 31, solid: 29, role: 28 }[tier] ?? 29;
+    p.baseAge = minAge + Math.floor(Math.random() * (maxAge - minAge + 1));
+    const rv = Math.random();
+    p.retirementAge = baseRet + (rv < 0.33 ? -1 : rv < 0.67 ? 0 : 1);
+  }
+}
+
+function ensureRosterAges() {
+  if (!Array.isArray(state.roster)) return;
+  state.roster.forEach(p => { if (p.baseAge == null) assignPlayerAge(p); });
+}
+
+// ─── Fin de saison Worlds ────────────────────────────────────────────────────
+
 // Fin de saison Worlds : les joueurs dont le contrat s'acheve et qui n'ont pas
 // ete prolonges quittent l'equipe (postes a pourvoir au marche des transferts).
 function processContractExpirations(completedYear) {
@@ -1386,6 +1455,7 @@ function confirmTeamSelection(team, regionId) {
   state.aiTeamId = team.id;
   state.roster = JSON.parse(JSON.stringify(team.roster));
   ensureRosterContracts(0); // contrats initiaux (fin Worlds 1 ou 2, pondéré par tier)
+  ensureRosterAges();       // âge initial (v1.8.4)
   initChampionProgress();
 
   closeModal();
@@ -1510,7 +1580,7 @@ function playerCardHtml(p) {
         <div class="mini-avatar">${getInitials(p.name)}</div>
         <div class="player-card__identity">
           <div class="player-card__name">${p.name}</div>
-          <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
+          <div class="player-card__role">${p.role} &mdash; ${p.nationality}${p.baseAge != null ? ` &mdash; ${playerAge(p)} ans` : ''}</div>
           ${p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
         </div>
         <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
@@ -5815,7 +5885,7 @@ function renderTransferCard(c, budget) {
         <div class="mini-avatar">${getInitials(c.name)}</div>
         <div class="transfer-card__identity">
           <div class="transfer-card__name">${c.name}${c.scoutGrade ? ` <span class="transfer-grade">${c.scoutGrade}</span>` : ''}</div>
-          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}</div>
+          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}${c.baseAge != null ? ` &mdash; ${playerAge(c)} ans` : ''}</div>
         </div>
         <div class="transfer-card__level">${avg}</div>
       </div>
@@ -5959,8 +6029,17 @@ function renderContractsPanel() {
     const c1 = getExtensionCost(p, 1);
     const c2 = getExtensionCost(p, 2);
     const alreadyExtended = p.contractExtendedYear === curYear;
+    const retYear = playerRetirementYear(p);
+    const age = playerAge(p);
+    const yearsToRet = retYear - curYear;
+    const retWarning = p.baseAge != null && yearsToRet <= 2
+      ? `<span style="font-size:11px;color:#e05;margin-left:6px;">⚠ retraite W${retYear}</span>`
+      : '';
     const btn = (years, c) => {
       if (alreadyExtended) return '';
+      if (!canExtendForYears(p, years)) {
+        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;">+${years} an${years > 1 ? 's' : ''} impossible (retraite W${retYear})</span>`;
+      }
       const affordable = prestige >= c.prestige && budget >= c.budget;
       const ready = windowOpen && affordable;
       const title = !windowOpen ? 'Disponible en inter-saison (après le MSI ou les Worlds)'
@@ -5980,14 +6059,14 @@ function renderContractsPanel() {
           <div class="mini-avatar">${getInitials(p.name)}</div>
           <div class="transfer-card__identity">
             <div class="transfer-card__name">${p.name} <span class="transfer-grade">${CONTRACT_TIER_LABELS[tier]}</span></div>
-            <div class="transfer-card__meta">${p.role} &mdash; Niveau ${computeLevel(p)}</div>
+            <div class="transfer-card__meta">${p.role}${p.baseAge != null ? ` &mdash; ${age} ans` : ''} &mdash; Niveau ${computeLevel(p)}${retWarning}</div>
           </div>
           <div class="transfer-card__level" style="color:${final ? '#e0a020' : 'inherit'};">W${p.contractUntil}</div>
         </div>
         <div style="font-size:12px;margin:6px 0;color:${final ? '#e0a020' : 'var(--color-text-muted)'};">
           Contrat jusqu'à Worlds ${p.contractUntil}${final ? ' — ⚠ dernière année' : ''}
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">${extendedBadge}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">${extendedBadge}</div>
       </div>`;
   }).join('');
 
@@ -6020,8 +6099,16 @@ function showExtendModal(playerId, years) {
     showToast(`${p.name} a déjà été prolongé cette saison. Une seule prolongation par joueur par saison.`, 'info');
     return;
   }
+  if (!canExtendForYears(p, years)) {
+    const retYear = playerRetirementYear(p);
+    showToast(`Impossible : ${p.name} part à la retraite à W${retYear}, une prolongation de ${years} an${years > 1 ? 's' : ''} dépasserait cette limite.`, 'info');
+    return;
+  }
   const c = getExtensionCost(p, years);
   const newEnd = (p.contractUntil || currentGameYear()) + years;
+  const retNote = p.baseAge != null && newEnd === playerRetirementYear(p)
+    ? `<p style="font-size:11px;color:#e0a020;margin-bottom:8px;">⚠ Ce contrat court jusqu'à sa retraite prévue (W${newEnd}).</p>`
+    : '';
   const okPrestige = state.resources.prestige >= c.prestige;
   const okBudget = state.resources.budget >= c.budget;
   showModal(`
@@ -6031,6 +6118,7 @@ function showExtendModal(playerId, years) {
       <span>Prestige exigé : <strong style="color:${okPrestige ? 'var(--color-seafoam)' : '#e05'};">${c.prestige}</strong> <span style="opacity:.7;">(vous : ${state.resources.prestige})</span></span>
       <span>Budget payé : <strong style="color:${okBudget ? 'inherit' : '#e05'};">💰 ${c.budget}</strong> <span style="opacity:.7;">(vous : ${state.resources.budget})</span></span>
     </div>
+    ${retNote}
     <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;">Le prestige n'est pas décrémenté : c'est un seuil de standing. Seul le budget est dépensé.</p>
     <div class="modal-content__actions">
       <button class="btn-primary" id="btn-confirm-extend" ${okPrestige && okBudget ? '' : 'disabled'}>Signer la prolongation</button>
@@ -6048,6 +6136,7 @@ function extendContract(playerId, years) {
   const p = state.roster.find((x) => x.id === playerId);
   if (!p) return;
   if (!isContractWindowOpen()) { showToast('Mercato fermé : prolongations indisponibles pendant le split.', 'error'); return; }
+  if (!canExtendForYears(p, years)) { showToast(`${p.name} atteindrait l'âge de retraite avant la fin du contrat.`, 'error'); return; }
   const c = getExtensionCost(p, years);
   if (state.resources.prestige < c.prestige) {
     showToast(`Prestige insuffisant : ${p.name} exige ${c.prestige} de prestige (vous : ${state.resources.prestige}).`, 'error');
@@ -6160,6 +6249,8 @@ function signPlayer(candidate, releasePlayerId) {
   });
   // Contrat de la recrue : au moins 1 an pleine (pas d'expiration immédiate).
   newPlayer.contractUntil = assignInitialContract(newPlayer, currentGameYear(), 1);
+  // Âge de la recrue : depuis les data files si disponible, sinon généré par tier.
+  if (newPlayer.baseAge == null) assignPlayerAge(newPlayer);
 
   // Remplacer dans le roster (ou ajouter si poste vacant)
   if (idx !== -1) {

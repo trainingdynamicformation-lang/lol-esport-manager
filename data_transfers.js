@@ -6,6 +6,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-01",
   "name": "Carlsen",
+  "baseAge": 25,
+  "retirementAge": 28,
   "role": "TOP",
   "fromTeam": "Galions",
   "league": "LFL / EMEA Masters",
@@ -56,6 +58,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-02",
   "name": "Kryze",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Solary",
   "league": "LFL",
@@ -106,6 +110,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-03",
   "name": "Spooder",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "TLN Pirates",
   "league": "LFL",
@@ -156,6 +162,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-04",
   "name": "Tao",
+  "baseAge": 21,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL",
@@ -206,6 +214,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-05",
   "name": "Potent",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Vitality.Bee",
   "league": "LFL",
@@ -256,6 +266,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-06",
   "name": "Wao",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "ZYB Esport",
   "league": "LFL",
@@ -306,6 +318,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-07",
   "name": "Jenax",
+  "baseAge": 29,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Eintracht Spandau",
   "league": "Prime League / EMEA Masters",
@@ -356,6 +370,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-08",
   "name": "Kozi",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "UCAM Esports",
   "league": "SuperLiga / EMEA Masters",
@@ -406,6 +422,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-09",
   "name": "Papiteero",
+  "baseAge": 21,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Team Heretics Academy",
   "league": "SuperLiga / EMEA Masters",
@@ -456,6 +474,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-10",
   "name": "Vizicsacsi",
+  "baseAge": 33,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "E WIE EINFACH E-SPORTS",
   "league": "Prime League / EMEA Masters",
@@ -506,6 +526,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-11",
   "name": "Ragner",
+  "baseAge": 23,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Misa Esports",
   "league": "TCL / EMEA Masters",
@@ -556,6 +578,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-12",
   "name": "Leny",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Esprit Shonen",
   "league": "LFL",
@@ -606,6 +630,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-13",
   "name": "Badlulu",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Ici Japon Corp. Esport",
   "league": "LFL",
@@ -656,6 +682,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-14",
   "name": "iBo",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Forsaken",
   "league": "Ultraliga / EMEA Masters",
@@ -706,6 +734,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-TOP-15",
   "name": "Vertigo",
+  "baseAge": 21,
+  "retirementAge": 27,
   "role": "TOP",
   "fromTeam": "Joblife",
   "league": "LFL",
@@ -756,6 +786,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-01",
   "name": "Zicssi",
+  "baseAge": 24,
+  "retirementAge": 28,
   "role": "JUNGLE",
   "fromTeam": "Solary",
   "league": "LFL",
@@ -806,6 +838,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-02",
   "name": "Thayger",
+  "baseAge": 22,
+  "retirementAge": 28,
   "role": "JUNGLE",
   "fromTeam": "Galions",
   "league": "LFL / EMEA Masters",
@@ -856,6 +890,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-03",
   "name": "Yukino",
+  "baseAge": 18,
+  "retirementAge": 27,
   "role": "JUNGLE",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL",
@@ -906,6 +942,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-04",
   "name": "Markoon",
+  "baseAge": 23,
+  "retirementAge": 27,
   "role": "JUNGLE",
   "fromTeam": "G2 NORD",
   "league": "NLC / EMEA Masters",
@@ -956,6 +994,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-05",
   "name": "Lurox",
+  "baseAge": 24,
+  "retirementAge": 27,
   "role": "JUNGLE",
   "fromTeam": "Team Heretics Academy",
   "league": "SuperLiga / EMEA Masters",
@@ -1006,6 +1046,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-06",
   "name": "Stefan",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "JUNGLE",
   "fromTeam": "TLN Pirates",
   "league": "LFL",
@@ -1056,6 +1098,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-07",
   "name": "bluerzor",
+  "baseAge": 25,
+  "retirementAge": 27,
   "role": "JUNGLE",
   "fromTeam": "UCAM Esports",
   "league": "SuperLiga / EMEA Masters",
@@ -1106,6 +1150,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-08",
   "name": "Xagog",
+  "baseAge": 21,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Eintracht Spandau",
   "league": "Prime League / EMEA Masters",
@@ -1156,6 +1202,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-09",
   "name": "Afroboi",
+  "baseAge": 21,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "E WIE EINFACH E-SPORTS",
   "league": "Prime League / EMEA Masters",
@@ -1206,6 +1254,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-10",
   "name": "Manaty",
+  "baseAge": 23,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "ZYB Esport",
   "league": "LFL",
@@ -1256,6 +1306,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-11",
   "name": "Dawciu",
+  "baseAge": 19,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Vitality.Bee",
   "league": "LFL",
@@ -1306,6 +1358,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-12",
   "name": "Kobs",
+  "baseAge": 21,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Esprit Shonen",
   "league": "LFL",
@@ -1356,6 +1410,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-13",
   "name": "Kaboom",
+  "baseAge": 19,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Ici Japon Corp. Esport",
   "league": "LFL",
@@ -1406,6 +1462,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-14",
   "name": "Shift",
+  "baseAge": 21,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Joblife",
   "league": "LFL",
@@ -1456,6 +1514,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-JUN-15",
   "name": "Spooky",
+  "baseAge": 18,
+  "retirementAge": 26,
   "role": "JUNGLE",
   "fromTeam": "Skillcamp",
   "league": "LFL",
@@ -1506,6 +1566,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-01",
   "name": "Kamiloo",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "MID",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL",
@@ -1556,6 +1618,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-02",
   "name": "OMON",
+  "baseAge": 24,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Galions",
   "league": "LFL / EMEA Masters",
@@ -1606,6 +1670,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-03",
   "name": "Jool",
+  "baseAge": 24,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Solary",
   "league": "LFL",
@@ -1656,6 +1722,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-04",
   "name": "Czajek",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Vitality.Bee",
   "league": "LFL",
@@ -1706,6 +1774,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-05",
   "name": "PowerOfEvil",
+  "baseAge": 28,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Eintracht Spandau",
   "league": "Prime League / EMEA Masters",
@@ -1756,6 +1826,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-06",
   "name": "Toffe",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "TLN Pirates",
   "league": "LFL",
@@ -1806,6 +1878,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-07",
   "name": "Mercy9",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Team Heretics Academy",
   "league": "SuperLiga / EMEA Masters",
@@ -1856,6 +1930,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-08",
   "name": "Nisqy",
+  "baseAge": 27,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "ZYB Esport",
   "league": "LFL",
@@ -1906,6 +1982,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-09",
   "name": "ESCIK",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "UCAM Esports",
   "league": "SuperLiga / EMEA Masters",
@@ -1956,6 +2034,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-10",
   "name": "Ruby",
+  "baseAge": 29,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Partizan Esports",
   "league": "Balkan / EMEA Masters",
@@ -2006,6 +2086,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-11",
   "name": "Relative",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "E WIE EINFACH E-SPORTS",
   "league": "Prime League / EMEA Masters",
@@ -2056,6 +2138,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-12",
   "name": "xKenzuke",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Esprit Shonen",
   "league": "LFL",
@@ -2106,6 +2190,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-13",
   "name": "Dajor",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Ici Japon Corp. Esport",
   "league": "LFL",
@@ -2156,6 +2242,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-14",
   "name": "Czekolad",
+  "baseAge": 27,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Joblife",
   "league": "LFL",
@@ -2206,6 +2294,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-MID-15",
   "name": "Nafkelah",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "MID",
   "fromTeam": "Skillcamp",
   "league": "LFL",
@@ -2256,6 +2346,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-01",
   "name": "Harpoon",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "ADC",
   "fromTeam": "Galions",
   "league": "LFL / EMEA Masters",
@@ -2306,6 +2398,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-02",
   "name": "Aetinoth",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "ADC",
   "fromTeam": "Solary",
   "league": "LFL",
@@ -2356,6 +2450,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-03",
   "name": "Lure",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Team Heretics Academy",
   "league": "SuperLiga / EMEA Masters",
@@ -2406,6 +2502,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-04",
   "name": "Looki",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL / EMEA Masters",
@@ -2456,6 +2554,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-05",
   "name": "Keduii",
+  "baseAge": 25,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Eintracht Spandau",
   "league": "Prime League / EMEA Masters",
@@ -2506,6 +2606,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-06",
   "name": "Yakkey",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Vitality.Bee",
   "league": "LFL",
@@ -2556,6 +2658,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-07",
   "name": "Hazel",
+  "baseAge": 21,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL",
@@ -2606,6 +2710,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-08",
   "name": "ANDARIEL",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "UCAM Esports",
   "league": "SuperLiga / EMEA Masters",
@@ -2656,6 +2762,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-09",
   "name": "Axelent",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "TLN Pirates",
   "league": "LFL",
@@ -2706,6 +2814,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-10",
   "name": "Nawa",
+  "baseAge": 22,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "PCIFIC Esports",
   "league": "TCL / EMEA Masters",
@@ -2756,6 +2866,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-11",
   "name": "Jezu",
+  "baseAge": 28,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "ZYB Esport",
   "league": "LFL",
@@ -2806,6 +2918,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-12",
   "name": "Unkn0wn",
+  "baseAge": 19,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "WLGaming Esports",
   "league": "Greek Legends / EMEA Masters",
@@ -2856,6 +2970,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-13",
   "name": "Soldier",
+  "baseAge": 24,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Ici Japon Corp. Esport",
   "league": "LFL",
@@ -2906,6 +3022,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-14",
   "name": "Comp",
+  "baseAge": 24,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Joblife",
   "league": "LFL",
@@ -2956,6 +3074,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-ADC-15",
   "name": "AVRA",
+  "baseAge": 20,
+  "retirementAge": 27,
   "role": "ADC",
   "fromTeam": "Esprit Shonen",
   "league": "LFL",
@@ -3006,6 +3126,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-01",
   "name": "Zoelys",
+  "baseAge": 22,
+  "retirementAge": 29,
   "role": "SUPPORT",
   "fromTeam": "Galions",
   "league": "LFL / EMEA Masters",
@@ -3056,6 +3178,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-02",
   "name": "Piero",
+  "baseAge": 25,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Solary",
   "league": "LFL",
@@ -3106,6 +3230,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-03",
   "name": "Prime",
+  "baseAge": 27,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Karmine Corp Blue",
   "league": "LFL",
@@ -3156,6 +3282,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-04",
   "name": "Batuuu",
+  "baseAge": 22,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Team Heretics Academy",
   "league": "SuperLiga / EMEA Masters",
@@ -3206,6 +3334,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-05",
   "name": "Thomas",
+  "baseAge": 25,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "TLN Pirates",
   "league": "LFL",
@@ -3256,6 +3386,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-06",
   "name": "iLevi",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "UCAM Esports",
   "league": "SuperLiga / EMEA Masters",
@@ -3306,6 +3438,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-07",
   "name": "seaz",
+  "baseAge": 22,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Eintracht Spandau",
   "league": "Prime League / EMEA Masters",
@@ -3356,6 +3490,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-08",
   "name": "Tockimo",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "G2 NORD",
   "league": "NLC / EMEA Masters",
@@ -3406,6 +3542,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-09",
   "name": "Dekap",
+  "baseAge": 22,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Vitality.Bee",
   "league": "LFL",
@@ -3456,6 +3594,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-10",
   "name": "RIIPPP",
+  "baseAge": 19,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "ZYB Esport",
   "league": "LFL",
@@ -3506,6 +3646,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-11",
   "name": "Wildenbruch",
+  "baseAge": 21,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "E WIE EINFACH E-SPORTS",
   "league": "Prime League / EMEA Masters",
@@ -3556,6 +3698,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-12",
   "name": "Mersa",
+  "baseAge": 27,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Joblife",
   "league": "LFL",
@@ -3606,6 +3750,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-13",
   "name": "whiteinn",
+  "baseAge": 25,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Ici Japon Corp. Esport",
   "league": "LFL",
@@ -3656,6 +3802,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-14",
   "name": "Mxe",
+  "baseAge": 20,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Esprit Shonen",
   "league": "LFL",
@@ -3706,6 +3854,8 @@ const TRANSFER_PLAYERS = [
  {
   "id": "TR-SUP-15",
   "name": "Steeelback",
+  "baseAge": 29,
+  "retirementAge": 28,
   "role": "SUPPORT",
   "fromTeam": "Skillcamp",
   "league": "LFL",

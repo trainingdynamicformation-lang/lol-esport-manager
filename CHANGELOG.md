@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.4] — 2026-06-20
+
+### Ajouté
+- **Système d'âge joueurs** — chaque joueur a désormais un `baseAge` (âge en saison 1) et un `retirementAge` (âge de retraite). L'âge s'affiche sur les cartes du roster et du marché des transferts. `data_teams.js` (330 joueurs) et `data_transfers.js` (75 joueurs) ont été enrichis depuis l'Excel `lol_esports_update_2026_contracts_age.xlsx`.
+- **Boutons de prolongation intelligents** — si une prolongation dépasse l'âge de retraite, le bouton est remplacé par un texte explicatif ("impossible – retraite W{N}"). Un avertissement ⚠ rouge apparaît sur la carte quand la retraite est dans ≤ 2 saisons.
+- **Note de retraite dans le modal de prolongation** — quand le contrat proposé court exactement jusqu'à la retraite, un message ⚠ l'indique clairement.
+- **Migration rétroactive** — les sauvegardes existantes reçoivent `baseAge`/`retirementAge` au chargement (lookup par nom dans AI_TEAMS/TRANSFER_PLAYERS, sinon assignation aléatoire par tier). Couvre `loadGame`, `importSave`, `cloudImport` et `confirmTeamSelection`.
+- **Joueurs générés/recrutés** — les nouvelles recrues sans âge dans les data files reçoivent un âge aléatoire cohérent avec leur tier à la signature.
+
+---
+
 ## [1.8.3] — 2026-06-20
 
 ### Ajouté

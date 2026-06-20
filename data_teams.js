@@ -17,6 +17,8 @@ const AI_TEAMS = [
       {
         "id": "fnc_top",
         "name": "Empyros",
+        "baseAge": 20,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 87,
@@ -49,6 +51,8 @@ const AI_TEAMS = [
       {
         "id": "fnc_jungle",
         "name": "Razork",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 90,
@@ -83,6 +87,8 @@ const AI_TEAMS = [
       {
         "id": "fnc_mid",
         "name": "Vladi",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "EMEA",
         "level": 86,
@@ -115,6 +121,8 @@ const AI_TEAMS = [
       {
         "id": "fnc_adc",
         "name": "Upset",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 86,
@@ -147,6 +155,8 @@ const AI_TEAMS = [
       {
         "id": "fnc_support",
         "name": "Lospa",
+        "baseAge": 23,
+        "retirementAge": 29,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 86,
@@ -223,6 +233,8 @@ const AI_TEAMS = [
       {
         "id": "g2_top",
         "name": "BrokenBlade",
+        "baseAge": 26,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 90,
@@ -255,6 +267,8 @@ const AI_TEAMS = [
       {
         "id": "g2_jungle",
         "name": "SkewMond",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 87,
@@ -285,6 +299,8 @@ const AI_TEAMS = [
       {
         "id": "g2_mid",
         "name": "Caps",
+        "baseAge": 26,
+        "retirementAge": 32,
         "role": "MID",
         "nationality": "EMEA",
         "level": 95,
@@ -320,6 +336,8 @@ const AI_TEAMS = [
       {
         "id": "g2_adc",
         "name": "Hans Sama",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 89,
@@ -353,6 +371,8 @@ const AI_TEAMS = [
       {
         "id": "g2_support",
         "name": "Labrov",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 89,
@@ -432,6 +452,8 @@ const AI_TEAMS = [
       {
         "id": "gx_top",
         "name": "Lot",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 72,
@@ -462,6 +484,8 @@ const AI_TEAMS = [
       {
         "id": "gx_jungle",
         "name": "ISMA",
+        "baseAge": 21,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 77,
@@ -494,6 +518,8 @@ const AI_TEAMS = [
       {
         "id": "gx_mid",
         "name": "Jackies",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "EMEA",
         "level": 77,
@@ -524,6 +550,8 @@ const AI_TEAMS = [
       {
         "id": "gx_adc",
         "name": "Noah",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 73,
@@ -556,6 +584,8 @@ const AI_TEAMS = [
       {
         "id": "gx_support",
         "name": "Jun",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 78,
@@ -634,6 +664,8 @@ const AI_TEAMS = [
       {
         "id": "kc_top",
         "name": "Canna",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 84,
@@ -666,6 +698,8 @@ const AI_TEAMS = [
       {
         "id": "kc_jungle",
         "name": "Yike",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 82,
@@ -696,6 +730,8 @@ const AI_TEAMS = [
       {
         "id": "kc_mid",
         "name": "kyeahoo",
+        "baseAge": 19,
+        "retirementAge": 29,
         "role": "MID",
         "nationality": "KR",
         "level": 89,
@@ -730,6 +766,8 @@ const AI_TEAMS = [
       {
         "id": "kc_adc",
         "name": "Caliste",
+        "baseAge": 19,
+        "retirementAge": 29,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 88,
@@ -763,6 +801,8 @@ const AI_TEAMS = [
       {
         "id": "kc_support",
         "name": "Busio",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 82,
@@ -841,6 +881,8 @@ const AI_TEAMS = [
       {
         "id": "mkoi_top",
         "name": "Myrwn",
+        "baseAge": 25,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 92,
@@ -874,6 +916,8 @@ const AI_TEAMS = [
       {
         "id": "mkoi_jungle",
         "name": "Elyoya",
+        "baseAge": 26,
+        "retirementAge": 30,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 91,
@@ -909,6 +953,8 @@ const AI_TEAMS = [
       {
         "id": "mkoi_mid",
         "name": "Jojopyun",
+        "baseAge": 21,
+        "retirementAge": 29,
         "role": "MID",
         "nationality": "NA",
         "level": 90,
@@ -942,6 +988,8 @@ const AI_TEAMS = [
       {
         "id": "mkoi_adc",
         "name": "Supa",
+        "baseAge": 24,
+        "retirementAge": 29,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 90,
@@ -974,6 +1022,8 @@ const AI_TEAMS = [
       {
         "id": "mkoi_support",
         "name": "Alvaro",
+        "baseAge": 23,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 90,
@@ -1053,6 +1103,8 @@ const AI_TEAMS = [
       {
         "id": "navi_top",
         "name": "Maynter",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 73,
@@ -1085,6 +1137,8 @@ const AI_TEAMS = [
       {
         "id": "navi_jungle",
         "name": "Rhilech",
+        "baseAge": 23,
+        "retirementAge": 24,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 68,
@@ -1117,6 +1171,8 @@ const AI_TEAMS = [
       {
         "id": "navi_mid",
         "name": "Poby",
+        "baseAge": 24,
+        "retirementAge": 25,
         "role": "MID",
         "nationality": "KR",
         "level": 68,
@@ -1149,6 +1205,8 @@ const AI_TEAMS = [
       {
         "id": "navi_adc",
         "name": "SamD",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "KR",
         "level": 70,
@@ -1181,6 +1239,8 @@ const AI_TEAMS = [
       {
         "id": "navi_support",
         "name": "Parus",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 68,
@@ -1259,6 +1319,8 @@ const AI_TEAMS = [
       {
         "id": "shf_top",
         "name": "Rooster",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 75,
@@ -1291,6 +1353,8 @@ const AI_TEAMS = [
       {
         "id": "shf_jungle",
         "name": "Boukada",
+        "baseAge": 26,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 75,
@@ -1323,6 +1387,8 @@ const AI_TEAMS = [
       {
         "id": "shf_mid",
         "name": "nuc",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "EMEA",
         "level": 78,
@@ -1353,6 +1419,8 @@ const AI_TEAMS = [
       {
         "id": "shf_adc",
         "name": "Paduck",
+        "baseAge": 20,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 77,
@@ -1383,6 +1451,8 @@ const AI_TEAMS = [
       {
         "id": "shf_support",
         "name": "Trymbi",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 72,
@@ -1461,6 +1531,8 @@ const AI_TEAMS = [
       {
         "id": "sk_top",
         "name": "Wunder",
+        "baseAge": 27,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 72,
@@ -1494,6 +1566,8 @@ const AI_TEAMS = [
       {
         "id": "sk_jungle",
         "name": "Skeanz",
+        "baseAge": 25,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 76,
@@ -1524,6 +1598,8 @@ const AI_TEAMS = [
       {
         "id": "sk_mid",
         "name": "LIDER",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "MID",
         "nationality": "EMEA",
         "level": 72,
@@ -1556,6 +1632,8 @@ const AI_TEAMS = [
       {
         "id": "sk_adc",
         "name": "Jopa",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 72,
@@ -1588,6 +1666,8 @@ const AI_TEAMS = [
       {
         "id": "sk_support",
         "name": "Mikyx",
+        "baseAge": 27,
+        "retirementAge": 32,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 86,
@@ -1668,6 +1748,8 @@ const AI_TEAMS = [
       {
         "id": "th_top",
         "name": "Tracyn",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 83,
@@ -1700,6 +1782,8 @@ const AI_TEAMS = [
       {
         "id": "th_jungle",
         "name": "Daglas",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 82,
@@ -1732,6 +1816,8 @@ const AI_TEAMS = [
       {
         "id": "th_mid",
         "name": "Serin",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "EMEA",
         "level": 77,
@@ -1764,6 +1850,8 @@ const AI_TEAMS = [
       {
         "id": "th_adc",
         "name": "Ice",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 82,
@@ -1794,6 +1882,8 @@ const AI_TEAMS = [
       {
         "id": "th_support",
         "name": "Way",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 78,
@@ -1870,6 +1960,8 @@ const AI_TEAMS = [
       {
         "id": "vit_top",
         "name": "Naak",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 83,
@@ -1902,6 +1994,8 @@ const AI_TEAMS = [
       {
         "id": "vit_jungle",
         "name": "Lyncas",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "EMEA",
         "level": 79,
@@ -1934,6 +2028,8 @@ const AI_TEAMS = [
       {
         "id": "vit_mid",
         "name": "Humanoid",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "EMEA",
         "level": 81,
@@ -1964,6 +2060,8 @@ const AI_TEAMS = [
       {
         "id": "vit_adc",
         "name": "Carzzy",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "EMEA",
         "level": 83,
@@ -1996,6 +2094,8 @@ const AI_TEAMS = [
       {
         "id": "vit_support",
         "name": "Fleshy",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "EMEA",
         "level": 79,
@@ -2074,6 +2174,8 @@ const AI_TEAMS = [
       {
         "id": "fx_top",
         "name": "Clear",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 73,
@@ -2106,6 +2208,8 @@ const AI_TEAMS = [
       {
         "id": "fx_jungle",
         "name": "Raptor",
+        "baseAge": 26,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 73,
@@ -2138,6 +2242,8 @@ const AI_TEAMS = [
       {
         "id": "fx_mid",
         "name": "VicLa",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 75,
@@ -2170,6 +2276,8 @@ const AI_TEAMS = [
       {
         "id": "fx_adc",
         "name": "Diable",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 76,
@@ -2202,6 +2310,8 @@ const AI_TEAMS = [
       {
         "id": "fx_support",
         "name": "Kellin",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 72,
@@ -2280,6 +2390,8 @@ const AI_TEAMS = [
       {
         "id": "soop_top",
         "name": "DuDu",
+        "baseAge": 25,
+        "retirementAge": 25,
         "role": "TOP",
         "nationality": "KR",
         "level": 68,
@@ -2313,6 +2425,8 @@ const AI_TEAMS = [
       {
         "id": "soop_jungle",
         "name": "Pyosik",
+        "baseAge": 26,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 69,
@@ -2345,6 +2459,8 @@ const AI_TEAMS = [
       {
         "id": "soop_mid",
         "name": "Clozer",
+        "baseAge": 26,
+        "retirementAge": 25,
         "role": "MID",
         "nationality": "KR",
         "level": 68,
@@ -2378,6 +2494,8 @@ const AI_TEAMS = [
       {
         "id": "soop_adc",
         "name": "deokdam",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "KR",
         "level": 70,
@@ -2408,6 +2526,8 @@ const AI_TEAMS = [
       {
         "id": "soop_support",
         "name": "Life",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 72,
@@ -2486,6 +2606,8 @@ const AI_TEAMS = [
       {
         "id": "dk_top",
         "name": "Siwoo",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 82,
@@ -2518,6 +2640,8 @@ const AI_TEAMS = [
       {
         "id": "dk_jungle",
         "name": "Lucid",
+        "baseAge": 24,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 86,
@@ -2550,6 +2674,8 @@ const AI_TEAMS = [
       {
         "id": "dk_mid",
         "name": "ShowMaker",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "MID",
         "nationality": "KR",
         "level": 92,
@@ -2583,6 +2709,8 @@ const AI_TEAMS = [
       {
         "id": "dk_adc",
         "name": "Smash",
+        "baseAge": 20,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 83,
@@ -2616,6 +2744,8 @@ const AI_TEAMS = [
       {
         "id": "dk_support",
         "name": "Career",
+        "baseAge": 20,
+        "retirementAge": 29,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 87,
@@ -2692,6 +2822,8 @@ const AI_TEAMS = [
       {
         "id": "gen_top",
         "name": "Kiin",
+        "baseAge": 27,
+        "retirementAge": 31,
         "role": "TOP",
         "nationality": "KR",
         "level": 95,
@@ -2724,6 +2856,8 @@ const AI_TEAMS = [
       {
         "id": "gen_jungle",
         "name": "Canyon",
+        "baseAge": 25,
+        "retirementAge": 32,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 97,
@@ -2759,6 +2893,8 @@ const AI_TEAMS = [
       {
         "id": "gen_mid",
         "name": "Chovy",
+        "baseAge": 25,
+        "retirementAge": 32,
         "role": "MID",
         "nationality": "KR",
         "level": 97,
@@ -2792,6 +2928,8 @@ const AI_TEAMS = [
       {
         "id": "gen_adc",
         "name": "Ruler",
+        "baseAge": 27,
+        "retirementAge": 33,
         "role": "ADC",
         "nationality": "KR",
         "level": 97,
@@ -2827,6 +2965,8 @@ const AI_TEAMS = [
       {
         "id": "gen_support",
         "name": "Duro",
+        "baseAge": 20,
+        "retirementAge": 32,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 91,
@@ -2906,6 +3046,8 @@ const AI_TEAMS = [
       {
         "id": "bro_top",
         "name": "Casting",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 80,
@@ -2936,6 +3078,8 @@ const AI_TEAMS = [
       {
         "id": "bro_jungle",
         "name": "GIDEON",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 82,
@@ -2968,6 +3112,8 @@ const AI_TEAMS = [
       {
         "id": "bro_mid",
         "name": "Roamer",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 83,
@@ -3000,6 +3146,8 @@ const AI_TEAMS = [
       {
         "id": "bro_adc",
         "name": "Teddy",
+        "baseAge": 28,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 81,
@@ -3030,6 +3178,8 @@ const AI_TEAMS = [
       {
         "id": "bro_support",
         "name": "Namgung",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 81,
@@ -3108,6 +3258,8 @@ const AI_TEAMS = [
       {
         "id": "hle_top",
         "name": "Zeus",
+        "baseAge": 22,
+        "retirementAge": 32,
         "role": "TOP",
         "nationality": "KR",
         "level": 97,
@@ -3141,6 +3293,8 @@ const AI_TEAMS = [
       {
         "id": "hle_jungle",
         "name": "Kanavi",
+        "baseAge": 25,
+        "retirementAge": 32,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 97,
@@ -3175,6 +3329,8 @@ const AI_TEAMS = [
       {
         "id": "hle_mid",
         "name": "Zeka",
+        "baseAge": 23,
+        "retirementAge": 30,
         "role": "MID",
         "nationality": "KR",
         "level": 94,
@@ -3208,6 +3364,8 @@ const AI_TEAMS = [
       {
         "id": "hle_adc",
         "name": "Gumayusi",
+        "baseAge": 24,
+        "retirementAge": 31,
         "role": "ADC",
         "nationality": "KR",
         "level": 95,
@@ -3240,6 +3398,8 @@ const AI_TEAMS = [
       {
         "id": "hle_support",
         "name": "Delight",
+        "baseAge": 23,
+        "retirementAge": 33,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 95,
@@ -3321,6 +3481,8 @@ const AI_TEAMS = [
       {
         "id": "drx_top",
         "name": "Rich",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 76,
@@ -3353,6 +3515,8 @@ const AI_TEAMS = [
       {
         "id": "drx_jungle",
         "name": "Willer",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 75,
@@ -3385,6 +3549,8 @@ const AI_TEAMS = [
       {
         "id": "drx_mid",
         "name": "Ucal",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 73,
@@ -3417,6 +3583,8 @@ const AI_TEAMS = [
       {
         "id": "drx_adc",
         "name": "Jiwoo",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 77,
@@ -3447,6 +3615,8 @@ const AI_TEAMS = [
       {
         "id": "drx_support",
         "name": "Andil",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 78,
@@ -3523,6 +3693,8 @@ const AI_TEAMS = [
       {
         "id": "kt_top",
         "name": "PerfecT",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 82,
@@ -3555,6 +3727,8 @@ const AI_TEAMS = [
       {
         "id": "kt_jungle",
         "name": "Cuzz",
+        "baseAge": 26,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 88,
@@ -3588,6 +3762,8 @@ const AI_TEAMS = [
       {
         "id": "kt_mid",
         "name": "Bdd",
+        "baseAge": 27,
+        "retirementAge": 30,
         "role": "MID",
         "nationality": "KR",
         "level": 91,
@@ -3621,6 +3797,8 @@ const AI_TEAMS = [
       {
         "id": "kt_adc",
         "name": "Aiming",
+        "baseAge": 25,
+        "retirementAge": 29,
         "role": "ADC",
         "nationality": "KR",
         "level": 91,
@@ -3653,6 +3831,8 @@ const AI_TEAMS = [
       {
         "id": "kt_support",
         "name": "Effort",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 88,
@@ -3731,6 +3911,8 @@ const AI_TEAMS = [
       {
         "id": "ns_top",
         "name": "Kingen",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 77,
@@ -3763,6 +3945,8 @@ const AI_TEAMS = [
       {
         "id": "ns_jungle",
         "name": "Sponge",
+        "baseAge": 22,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 72,
@@ -3795,6 +3979,8 @@ const AI_TEAMS = [
       {
         "id": "ns_mid",
         "name": "Scout",
+        "baseAge": 28,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "CN",
         "level": 77,
@@ -3827,6 +4013,8 @@ const AI_TEAMS = [
       {
         "id": "ns_adc",
         "name": "Taeyoon",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "KR",
         "level": 72,
@@ -3859,6 +4047,8 @@ const AI_TEAMS = [
       {
         "id": "ns_support",
         "name": "Lehends",
+        "baseAge": 27,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 87,
@@ -3937,6 +4127,8 @@ const AI_TEAMS = [
       {
         "id": "t1_top",
         "name": "Doran",
+        "baseAge": 25,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "KR",
         "level": 92,
@@ -3970,6 +4162,8 @@ const AI_TEAMS = [
       {
         "id": "t1_jungle",
         "name": "Oner",
+        "baseAge": 23,
+        "retirementAge": 32,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 95,
@@ -4006,6 +4200,8 @@ const AI_TEAMS = [
       {
         "id": "t1_mid",
         "name": "Faker",
+        "baseAge": 30,
+        "retirementAge": 33,
         "role": "MID",
         "nationality": "KR",
         "level": 97,
@@ -4041,6 +4237,8 @@ const AI_TEAMS = [
       {
         "id": "t1_adc",
         "name": "Peyz",
+        "baseAge": 20,
+        "retirementAge": 31,
         "role": "ADC",
         "nationality": "KR",
         "level": 94,
@@ -4074,6 +4272,8 @@ const AI_TEAMS = [
       {
         "id": "t1_support",
         "name": "Keria",
+        "baseAge": 23,
+        "retirementAge": 33,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 97,
@@ -4155,6 +4355,8 @@ const AI_TEAMS = [
       {
         "id": "al_top",
         "name": "Flandre",
+        "baseAge": 27,
+        "retirementAge": 32,
         "role": "TOP",
         "nationality": "CN",
         "level": 90,
@@ -4188,6 +4390,8 @@ const AI_TEAMS = [
       {
         "id": "al_jungle",
         "name": "Tarzan",
+        "baseAge": 26,
+        "retirementAge": 31,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 94,
@@ -4223,6 +4427,8 @@ const AI_TEAMS = [
       {
         "id": "al_mid",
         "name": "Shanks",
+        "baseAge": 20,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "CN",
         "level": 87,
@@ -4255,6 +4461,8 @@ const AI_TEAMS = [
       {
         "id": "al_adc",
         "name": "Hope",
+        "baseAge": 26,
+        "retirementAge": 30,
         "role": "ADC",
         "nationality": "CN",
         "level": 93,
@@ -4287,6 +4495,8 @@ const AI_TEAMS = [
       {
         "id": "al_support",
         "name": "Kael",
+        "baseAge": 26,
+        "retirementAge": 32,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 93,
@@ -4366,6 +4576,8 @@ const AI_TEAMS = [
       {
         "id": "blg_top",
         "name": "Bin",
+        "baseAge": 23,
+        "retirementAge": 32,
         "role": "TOP",
         "nationality": "CN",
         "level": 97,
@@ -4399,6 +4611,8 @@ const AI_TEAMS = [
       {
         "id": "blg_jungle",
         "name": "Xun",
+        "baseAge": 24,
+        "retirementAge": 32,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 95,
@@ -4433,6 +4647,8 @@ const AI_TEAMS = [
       {
         "id": "blg_mid",
         "name": "Knight",
+        "baseAge": 26,
+        "retirementAge": 32,
         "role": "MID",
         "nationality": "CN",
         "level": 97,
@@ -4466,6 +4682,8 @@ const AI_TEAMS = [
       {
         "id": "blg_adc",
         "name": "Viper",
+        "baseAge": 25,
+        "retirementAge": 32,
         "role": "ADC",
         "nationality": "KR",
         "level": 97,
@@ -4500,6 +4718,8 @@ const AI_TEAMS = [
       {
         "id": "blg_support",
         "name": "ON",
+        "baseAge": 23,
+        "retirementAge": 32,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 94,
@@ -4580,6 +4800,8 @@ const AI_TEAMS = [
       {
         "id": "edg_top",
         "name": "Zdz",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "CN",
         "level": 77,
@@ -4612,6 +4834,8 @@ const AI_TEAMS = [
       {
         "id": "edg_jungle",
         "name": "Xiaohao",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 74,
@@ -4644,6 +4868,8 @@ const AI_TEAMS = [
       {
         "id": "edg_mid",
         "name": "Angel",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "CN",
         "level": 74,
@@ -4674,6 +4900,8 @@ const AI_TEAMS = [
       {
         "id": "edg_adc",
         "name": "Leave",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "CN",
         "level": 77,
@@ -4704,6 +4932,8 @@ const AI_TEAMS = [
       {
         "id": "edg_support",
         "name": "Jwei",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 73,
@@ -4782,6 +5012,8 @@ const AI_TEAMS = [
       {
         "id": "ig_top",
         "name": "Breathe",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "CN",
         "level": 83,
@@ -4812,6 +5044,8 @@ const AI_TEAMS = [
       {
         "id": "ig_jungle",
         "name": "Wei",
+        "baseAge": 21,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 87,
@@ -4845,6 +5079,8 @@ const AI_TEAMS = [
       {
         "id": "ig_mid",
         "name": "Renard",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "CN",
         "level": 86,
@@ -4877,6 +5113,8 @@ const AI_TEAMS = [
       {
         "id": "ig_adc",
         "name": "Nia",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "CN",
         "level": 82,
@@ -4909,6 +5147,8 @@ const AI_TEAMS = [
       {
         "id": "ig_support",
         "name": "Meiko",
+        "baseAge": 28,
+        "retirementAge": 33,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 92,
@@ -4990,6 +5230,8 @@ const AI_TEAMS = [
       {
         "id": "jdg_top",
         "name": "Xiaoxu",
+        "baseAge": 23,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "CN",
         "level": 92,
@@ -5022,6 +5264,8 @@ const AI_TEAMS = [
       {
         "id": "jdg_jungle",
         "name": "JunJia",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 88,
@@ -5054,6 +5298,8 @@ const AI_TEAMS = [
       {
         "id": "jdg_mid",
         "name": "HongQ",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "APAC",
         "level": 87,
@@ -5086,6 +5332,8 @@ const AI_TEAMS = [
       {
         "id": "jdg_adc",
         "name": "GALA",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "ADC",
         "nationality": "CN",
         "level": 93,
@@ -5118,6 +5366,8 @@ const AI_TEAMS = [
       {
         "id": "jdg_support",
         "name": "Vampire",
+        "baseAge": 23,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 91,
@@ -5197,6 +5447,8 @@ const AI_TEAMS = [
       {
         "id": "lgd_top",
         "name": "Burdol",
+        "baseAge": 24,
+        "retirementAge": 25,
         "role": "TOP",
         "nationality": "KR",
         "level": 68,
@@ -5230,6 +5482,8 @@ const AI_TEAMS = [
       {
         "id": "lgd_jungle",
         "name": "Heng",
+        "baseAge": 24,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 69,
@@ -5262,6 +5516,8 @@ const AI_TEAMS = [
       {
         "id": "lgd_mid",
         "name": "Tangyuan",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "CN",
         "level": 73,
@@ -5294,6 +5550,8 @@ const AI_TEAMS = [
       {
         "id": "lgd_adc",
         "name": "Shaoye",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "CN",
         "level": 71,
@@ -5324,6 +5582,8 @@ const AI_TEAMS = [
       {
         "id": "lgd_support",
         "name": "Ycx",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 73,
@@ -5400,6 +5660,8 @@ const AI_TEAMS = [
       {
         "id": "lng_top",
         "name": "sheer",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "CN",
         "level": 71,
@@ -5432,6 +5694,8 @@ const AI_TEAMS = [
       {
         "id": "lng_jungle",
         "name": "Croco",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 75,
@@ -5464,6 +5728,8 @@ const AI_TEAMS = [
       {
         "id": "lng_mid",
         "name": "BuLLDoG",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 76,
@@ -5496,6 +5762,8 @@ const AI_TEAMS = [
       {
         "id": "lng_adc",
         "name": "1xn",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "CN",
         "level": 71,
@@ -5528,6 +5796,8 @@ const AI_TEAMS = [
       {
         "id": "lng_support",
         "name": "MISSING",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 75,
@@ -5606,6 +5876,8 @@ const AI_TEAMS = [
       {
         "id": "nip_top",
         "name": "HOYA",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 82,
@@ -5636,6 +5908,8 @@ const AI_TEAMS = [
       {
         "id": "nip_jungle",
         "name": "Guwon",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 80,
@@ -5668,6 +5942,8 @@ const AI_TEAMS = [
       {
         "id": "nip_mid",
         "name": "Care",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "CN",
         "level": 81,
@@ -5700,6 +5976,8 @@ const AI_TEAMS = [
       {
         "id": "nip_adc",
         "name": "Assum",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "CN",
         "level": 80,
@@ -5732,6 +6010,8 @@ const AI_TEAMS = [
       {
         "id": "nip_support",
         "name": "Zhuo",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 78,
@@ -5808,6 +6088,8 @@ const AI_TEAMS = [
       {
         "id": "omg_top",
         "name": "Hery",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "CN",
         "level": 74,
@@ -5840,6 +6122,8 @@ const AI_TEAMS = [
       {
         "id": "omg_jungle",
         "name": "Juhan",
+        "baseAge": 26,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 71,
@@ -5872,6 +6156,8 @@ const AI_TEAMS = [
       {
         "id": "omg_mid",
         "name": "haichao",
+        "baseAge": 26,
+        "retirementAge": 25,
         "role": "MID",
         "nationality": "CN",
         "level": 71,
@@ -5905,6 +6191,8 @@ const AI_TEAMS = [
       {
         "id": "omg_adc",
         "name": "Photic",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "CN",
         "level": 77,
@@ -5937,6 +6225,8 @@ const AI_TEAMS = [
       {
         "id": "omg_support",
         "name": "Moham",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 73,
@@ -6013,6 +6303,8 @@ const AI_TEAMS = [
       {
         "id": "we_top",
         "name": "Cube",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "CN",
         "level": 83,
@@ -6045,6 +6337,8 @@ const AI_TEAMS = [
       {
         "id": "we_jungle",
         "name": "Monki",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 80,
@@ -6075,6 +6369,8 @@ const AI_TEAMS = [
       {
         "id": "we_mid",
         "name": "Karis",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 82,
@@ -6107,6 +6403,8 @@ const AI_TEAMS = [
       {
         "id": "we_adc",
         "name": "About",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 81,
@@ -6139,6 +6437,8 @@ const AI_TEAMS = [
       {
         "id": "we_support",
         "name": "Erha",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 76,
@@ -6217,6 +6517,8 @@ const AI_TEAMS = [
       {
         "id": "ttg_top",
         "name": "Keshi",
+        "baseAge": 23,
+        "retirementAge": 25,
         "role": "TOP",
         "nationality": "CN",
         "level": 68,
@@ -6250,6 +6552,8 @@ const AI_TEAMS = [
       {
         "id": "ttg_jungle",
         "name": "Junhao",
+        "baseAge": 23,
+        "retirementAge": 24,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 68,
@@ -6283,6 +6587,8 @@ const AI_TEAMS = [
       {
         "id": "ttg_mid",
         "name": "Heru",
+        "baseAge": 19,
+        "retirementAge": 26,
         "role": "MID",
         "nationality": "KR",
         "level": 71,
@@ -6315,6 +6621,8 @@ const AI_TEAMS = [
       {
         "id": "ttg_adc",
         "name": "Ahn",
+        "baseAge": 25,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "CN",
         "level": 72,
@@ -6345,6 +6653,8 @@ const AI_TEAMS = [
       {
         "id": "ttg_support",
         "name": "Feather",
+        "baseAge": 26,
+        "retirementAge": 26,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 68,
@@ -6424,6 +6734,8 @@ const AI_TEAMS = [
       {
         "id": "tes_top",
         "name": "ZUIAN",
+        "baseAge": 20,
+        "retirementAge": 30,
         "role": "TOP",
         "nationality": "CN",
         "level": 90,
@@ -6457,6 +6769,8 @@ const AI_TEAMS = [
       {
         "id": "tes_jungle",
         "name": "Tian",
+        "baseAge": 25,
+        "retirementAge": 31,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 93,
@@ -6490,6 +6804,8 @@ const AI_TEAMS = [
       {
         "id": "tes_mid",
         "name": "Creme",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "CN",
         "level": 88,
@@ -6522,6 +6838,8 @@ const AI_TEAMS = [
       {
         "id": "tes_adc",
         "name": "JackeyLove",
+        "baseAge": 25,
+        "retirementAge": 30,
         "role": "ADC",
         "nationality": "CN",
         "level": 93,
@@ -6554,6 +6872,8 @@ const AI_TEAMS = [
       {
         "id": "tes_support",
         "name": "fengyue",
+        "baseAge": 26,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 90,
@@ -6632,6 +6952,8 @@ const AI_TEAMS = [
       {
         "id": "up_top",
         "name": "sasi",
+        "baseAge": 26,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "CN",
         "level": 71,
@@ -6664,6 +6986,8 @@ const AI_TEAMS = [
       {
         "id": "up_jungle",
         "name": "Climber",
+        "baseAge": 23,
+        "retirementAge": 24,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 68,
@@ -6697,6 +7021,8 @@ const AI_TEAMS = [
       {
         "id": "up_mid",
         "name": "Saber",
+        "baseAge": 23,
+        "retirementAge": 25,
         "role": "MID",
         "nationality": "CN",
         "level": 70,
@@ -6730,6 +7056,8 @@ const AI_TEAMS = [
       {
         "id": "up_adc",
         "name": "Hena",
+        "baseAge": 25,
+        "retirementAge": 25,
         "role": "ADC",
         "nationality": "KR",
         "level": 68,
@@ -6763,6 +7091,8 @@ const AI_TEAMS = [
       {
         "id": "up_support",
         "name": "Xiaoxia",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 71,
@@ -6839,6 +7169,8 @@ const AI_TEAMS = [
       {
         "id": "wbg_top",
         "name": "Zika",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "CN",
         "level": 83,
@@ -6871,6 +7203,8 @@ const AI_TEAMS = [
       {
         "id": "wbg_jungle",
         "name": "Jiejie",
+        "baseAge": 24,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 85,
@@ -6903,6 +7237,8 @@ const AI_TEAMS = [
       {
         "id": "wbg_mid",
         "name": "Xiaohu",
+        "baseAge": 28,
+        "retirementAge": 32,
         "role": "MID",
         "nationality": "CN",
         "level": 93,
@@ -6938,6 +7274,8 @@ const AI_TEAMS = [
       {
         "id": "wbg_adc",
         "name": "Elk",
+        "baseAge": 24,
+        "retirementAge": 30,
         "role": "ADC",
         "nationality": "CN",
         "level": 93,
@@ -6970,6 +7308,8 @@ const AI_TEAMS = [
       {
         "id": "wbg_support",
         "name": "Hang",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "CN",
         "level": 83,
@@ -7048,6 +7388,8 @@ const AI_TEAMS = [
       {
         "id": "c9_top",
         "name": "Thanatos",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "KR",
         "level": 86,
@@ -7078,6 +7420,8 @@ const AI_TEAMS = [
       {
         "id": "c9_jungle",
         "name": "Blaber",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 89,
@@ -7110,6 +7454,8 @@ const AI_TEAMS = [
       {
         "id": "c9_mid",
         "name": "APA",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "NA",
         "level": 86,
@@ -7140,6 +7486,8 @@ const AI_TEAMS = [
       {
         "id": "c9_adc",
         "name": "Zven",
+        "baseAge": 28,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "NA",
         "level": 86,
@@ -7172,6 +7520,8 @@ const AI_TEAMS = [
       {
         "id": "c9_support",
         "name": "Vulcan",
+        "baseAge": 27,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 90,
@@ -7251,6 +7601,8 @@ const AI_TEAMS = [
       {
         "id": "dig_top",
         "name": "Photon",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 76,
@@ -7283,6 +7635,8 @@ const AI_TEAMS = [
       {
         "id": "dig_jungle",
         "name": "eXyu",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 74,
@@ -7313,6 +7667,8 @@ const AI_TEAMS = [
       {
         "id": "dig_mid",
         "name": "Palafox",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "NA",
         "level": 76,
@@ -7345,6 +7701,8 @@ const AI_TEAMS = [
       {
         "id": "dig_adc",
         "name": "FBI",
+        "baseAge": 27,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "NA",
         "level": 76,
@@ -7377,6 +7735,8 @@ const AI_TEAMS = [
       {
         "id": "dig_support",
         "name": "Ignar",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 71,
@@ -7455,6 +7815,8 @@ const AI_TEAMS = [
       {
         "id": "dsg_top",
         "name": "Castle",
+        "baseAge": 25,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "KR",
         "level": 68,
@@ -7487,6 +7849,8 @@ const AI_TEAMS = [
       {
         "id": "dsg_jungle",
         "name": "Kisno",
+        "baseAge": 26,
+        "retirementAge": 24,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 67,
@@ -7520,6 +7884,8 @@ const AI_TEAMS = [
       {
         "id": "dsg_mid",
         "name": "KryRa",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "MID",
         "nationality": "NA",
         "level": 71,
@@ -7552,6 +7918,8 @@ const AI_TEAMS = [
       {
         "id": "dsg_adc",
         "name": "Callme",
+        "baseAge": 24,
+        "retirementAge": 25,
         "role": "ADC",
         "nationality": "KR",
         "level": 67,
@@ -7585,6 +7953,8 @@ const AI_TEAMS = [
       {
         "id": "dsg_support",
         "name": "Lyonz",
+        "baseAge": 25,
+        "retirementAge": 26,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 69,
@@ -7664,6 +8034,8 @@ const AI_TEAMS = [
       {
         "id": "fly_top",
         "name": "Gakgos",
+        "baseAge": 20,
+        "retirementAge": 29,
         "role": "TOP",
         "nationality": "EMEA",
         "level": 89,
@@ -7697,6 +8069,8 @@ const AI_TEAMS = [
       {
         "id": "fly_jungle",
         "name": "Gryffinn",
+        "baseAge": 18,
+        "retirementAge": 31,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 91,
@@ -7732,6 +8106,8 @@ const AI_TEAMS = [
       {
         "id": "fly_mid",
         "name": "Quad",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "KR",
         "level": 86,
@@ -7762,6 +8138,8 @@ const AI_TEAMS = [
       {
         "id": "fly_adc",
         "name": "Massu",
+        "baseAge": 20,
+        "retirementAge": 30,
         "role": "ADC",
         "nationality": "NA",
         "level": 92,
@@ -7795,6 +8173,8 @@ const AI_TEAMS = [
       {
         "id": "fly_support",
         "name": "Cryogen",
+        "baseAge": 18,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 89,
@@ -7874,6 +8254,8 @@ const AI_TEAMS = [
       {
         "id": "lyo_top",
         "name": "Dhokla",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "NA",
         "level": 84,
@@ -7906,6 +8288,8 @@ const AI_TEAMS = [
       {
         "id": "lyo_jungle",
         "name": "Inspired",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 82,
@@ -7936,6 +8320,8 @@ const AI_TEAMS = [
       {
         "id": "lyo_mid",
         "name": "Saint",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 82,
@@ -7968,6 +8354,8 @@ const AI_TEAMS = [
       {
         "id": "lyo_adc",
         "name": "Berserker",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "KR",
         "level": 89,
@@ -8000,6 +8388,8 @@ const AI_TEAMS = [
       {
         "id": "lyo_support",
         "name": "Isles",
+        "baseAge": 22,
+        "retirementAge": 29,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 84,
@@ -8079,6 +8469,8 @@ const AI_TEAMS = [
       {
         "id": "sen_top",
         "name": "Impact",
+        "baseAge": 31,
+        "retirementAge": 31,
         "role": "TOP",
         "nationality": "NA",
         "level": 88,
@@ -8114,6 +8506,8 @@ const AI_TEAMS = [
       {
         "id": "sen_jungle",
         "name": "HamBak",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 82,
@@ -8144,6 +8538,8 @@ const AI_TEAMS = [
       {
         "id": "sen_mid",
         "name": "DARKWINGS",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "NA",
         "level": 84,
@@ -8174,6 +8570,8 @@ const AI_TEAMS = [
       {
         "id": "sen_adc",
         "name": "Rahel",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 83,
@@ -8204,6 +8602,8 @@ const AI_TEAMS = [
       {
         "id": "sen_support",
         "name": "huhi",
+        "baseAge": 31,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 85,
@@ -8282,6 +8682,8 @@ const AI_TEAMS = [
       {
         "id": "sr_top",
         "name": "Fudge",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "NA",
         "level": 82,
@@ -8314,6 +8716,8 @@ const AI_TEAMS = [
       {
         "id": "sr_jungle",
         "name": "Contractz",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 81,
@@ -8344,6 +8748,8 @@ const AI_TEAMS = [
       {
         "id": "sr_mid",
         "name": "Zinie",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 81,
@@ -8374,6 +8780,8 @@ const AI_TEAMS = [
       {
         "id": "sr_adc",
         "name": "Bvoy",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 82,
@@ -8406,6 +8814,8 @@ const AI_TEAMS = [
       {
         "id": "sr_support",
         "name": "Ceos",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 80,
@@ -8482,6 +8892,8 @@ const AI_TEAMS = [
       {
         "id": "tl_top",
         "name": "Morgan",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "KR",
         "level": 89,
@@ -8514,6 +8926,8 @@ const AI_TEAMS = [
       {
         "id": "tl_jungle",
         "name": "Josedeodo",
+        "baseAge": 23,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "NA",
         "level": 88,
@@ -8548,6 +8962,8 @@ const AI_TEAMS = [
       {
         "id": "tl_mid",
         "name": "Quid",
+        "baseAge": 20,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "KR",
         "level": 87,
@@ -8578,6 +8994,8 @@ const AI_TEAMS = [
       {
         "id": "tl_adc",
         "name": "Yeon",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "NA",
         "level": 88,
@@ -8608,6 +9026,8 @@ const AI_TEAMS = [
       {
         "id": "tl_support",
         "name": "CoreJJ",
+        "baseAge": 31,
+        "retirementAge": 33,
         "role": "SUPPORT",
         "nationality": "NA",
         "level": 90,
@@ -8689,6 +9109,8 @@ const AI_TEAMS = [
       {
         "id": "fxw_top",
         "name": "curty",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "BR",
         "level": 81,
@@ -8719,6 +9141,8 @@ const AI_TEAMS = [
       {
         "id": "fxw_jungle",
         "name": "Peach",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 81,
@@ -8751,6 +9175,8 @@ const AI_TEAMS = [
       {
         "id": "fxw_mid",
         "name": "cody",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "BR",
         "level": 82,
@@ -8783,6 +9209,8 @@ const AI_TEAMS = [
       {
         "id": "fxw_adc",
         "name": "BAO",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 76,
@@ -8815,6 +9243,8 @@ const AI_TEAMS = [
       {
         "id": "fxw_support",
         "name": "Momochi",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 80,
@@ -8893,6 +9323,8 @@ const AI_TEAMS = [
       {
         "id": "fur_top",
         "name": "Guigo",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "BR",
         "level": 85,
@@ -8925,6 +9357,8 @@ const AI_TEAMS = [
       {
         "id": "fur_jungle",
         "name": "Tatu",
+        "baseAge": 23,
+        "retirementAge": 30,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 92,
@@ -8958,6 +9392,8 @@ const AI_TEAMS = [
       {
         "id": "fur_mid",
         "name": "Tutsz",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "BR",
         "level": 85,
@@ -8990,6 +9426,8 @@ const AI_TEAMS = [
       {
         "id": "fur_adc",
         "name": "Ayu",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "BR",
         "level": 89,
@@ -9022,6 +9460,8 @@ const AI_TEAMS = [
       {
         "id": "fur_support",
         "name": "JoJo",
+        "baseAge": 25,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 90,
@@ -9101,6 +9541,8 @@ const AI_TEAMS = [
       {
         "id": "lev_top",
         "name": "Devost",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "BR",
         "level": 71,
@@ -9131,6 +9573,8 @@ const AI_TEAMS = [
       {
         "id": "lev_jungle",
         "name": "Booki",
+        "baseAge": 25,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 72,
@@ -9161,6 +9605,8 @@ const AI_TEAMS = [
       {
         "id": "lev_mid",
         "name": "Enga",
+        "baseAge": 24,
+        "retirementAge": 25,
         "role": "MID",
         "nationality": "BR",
         "level": 66,
@@ -9194,6 +9640,8 @@ const AI_TEAMS = [
       {
         "id": "lev_adc",
         "name": "Snaker",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "BR",
         "level": 69,
@@ -9224,6 +9672,8 @@ const AI_TEAMS = [
       {
         "id": "lev_support",
         "name": "TopLop",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 71,
@@ -9302,6 +9752,8 @@ const AI_TEAMS = [
       {
         "id": "loud_top",
         "name": "xyno",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "BR",
         "level": 77,
@@ -9334,6 +9786,8 @@ const AI_TEAMS = [
       {
         "id": "loud_jungle",
         "name": "YoungJae",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 79,
@@ -9366,6 +9820,8 @@ const AI_TEAMS = [
       {
         "id": "loud_mid",
         "name": "Envy",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "BR",
         "level": 77,
@@ -9398,6 +9854,8 @@ const AI_TEAMS = [
       {
         "id": "loud_adc",
         "name": "Bull",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 75,
@@ -9430,6 +9888,8 @@ const AI_TEAMS = [
       {
         "id": "loud_support",
         "name": "RedBert",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 77,
@@ -9508,6 +9968,8 @@ const AI_TEAMS = [
       {
         "id": "los_top",
         "name": "Zest",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 81,
@@ -9540,6 +10002,8 @@ const AI_TEAMS = [
       {
         "id": "los_jungle",
         "name": "Drakehero",
+        "baseAge": 21,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 86,
@@ -9570,6 +10034,8 @@ const AI_TEAMS = [
       {
         "id": "los_mid",
         "name": "Curse",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "BR",
         "level": 84,
@@ -9602,6 +10068,8 @@ const AI_TEAMS = [
       {
         "id": "los_adc",
         "name": "Feisty",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 84,
@@ -9632,6 +10100,8 @@ const AI_TEAMS = [
       {
         "id": "los_support",
         "name": "Duduhh",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 81,
@@ -9710,6 +10180,8 @@ const AI_TEAMS = [
       {
         "id": "png_top",
         "name": "Robo",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "BR",
         "level": 82,
@@ -9740,6 +10212,8 @@ const AI_TEAMS = [
       {
         "id": "png_jungle",
         "name": "CarioK",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 73,
@@ -9772,6 +10246,8 @@ const AI_TEAMS = [
       {
         "id": "png_mid",
         "name": "Keine",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 73,
@@ -9802,6 +10278,8 @@ const AI_TEAMS = [
       {
         "id": "png_adc",
         "name": "Trigger",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 77,
@@ -9832,6 +10310,8 @@ const AI_TEAMS = [
       {
         "id": "png_support",
         "name": "Kuri",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 76,
@@ -9908,6 +10388,8 @@ const AI_TEAMS = [
       {
         "id": "red_top",
         "name": "zynts",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "BR",
         "level": 86,
@@ -9940,6 +10422,8 @@ const AI_TEAMS = [
       {
         "id": "red_jungle",
         "name": "STEPZ",
+        "baseAge": 21,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 86,
@@ -9972,6 +10456,8 @@ const AI_TEAMS = [
       {
         "id": "red_mid",
         "name": "Kaze",
+        "baseAge": 26,
+        "retirementAge": 29,
         "role": "MID",
         "nationality": "BR",
         "level": 90,
@@ -10002,6 +10488,8 @@ const AI_TEAMS = [
       {
         "id": "red_adc",
         "name": "Rabelo",
+        "baseAge": 22,
+        "retirementAge": 29,
         "role": "ADC",
         "nationality": "BR",
         "level": 90,
@@ -10034,6 +10522,8 @@ const AI_TEAMS = [
       {
         "id": "red_support",
         "name": "frosty",
+        "baseAge": 24,
+        "retirementAge": 31,
         "role": "SUPPORT",
         "nationality": "BR",
         "level": 90,
@@ -10112,6 +10602,8 @@ const AI_TEAMS = [
       {
         "id": "key_top",
         "name": "Wizer",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "BR",
         "level": 85,
@@ -10142,6 +10634,8 @@ const AI_TEAMS = [
       {
         "id": "key_jungle",
         "name": "Disamis",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "BR",
         "level": 83,
@@ -10172,6 +10666,8 @@ const AI_TEAMS = [
       {
         "id": "key_mid",
         "name": "Mireu",
+        "baseAge": 21,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "KR",
         "level": 85,
@@ -10202,6 +10698,8 @@ const AI_TEAMS = [
       {
         "id": "key_adc",
         "name": "ceo",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "BR",
         "level": 81,
@@ -10234,6 +10732,8 @@ const AI_TEAMS = [
       {
         "id": "key_support",
         "name": "Kaiwing",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 82,
@@ -10312,6 +10812,8 @@ const AI_TEAMS = [
       {
         "id": "cfo_top",
         "name": "Rest",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "APAC",
         "level": 88,
@@ -10342,6 +10844,8 @@ const AI_TEAMS = [
       {
         "id": "cfo_jungle",
         "name": "Shad0w",
+        "baseAge": 25,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "CN",
         "level": 89,
@@ -10375,6 +10879,8 @@ const AI_TEAMS = [
       {
         "id": "cfo_mid",
         "name": "Pungyeon",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "KR",
         "level": 88,
@@ -10405,6 +10911,8 @@ const AI_TEAMS = [
       {
         "id": "cfo_adc",
         "name": "Doggo",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "APAC",
         "level": 86,
@@ -10437,6 +10945,8 @@ const AI_TEAMS = [
       {
         "id": "cfo_support",
         "name": "Kino",
+        "baseAge": 23,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 86,
@@ -10516,6 +11026,8 @@ const AI_TEAMS = [
       {
         "id": "dcg_top",
         "name": "Flauren",
+        "baseAge": 25,
+        "retirementAge": 25,
         "role": "TOP",
         "nationality": "APAC",
         "level": 70,
@@ -10549,6 +11061,8 @@ const AI_TEAMS = [
       {
         "id": "dcg_jungle",
         "name": "Pop9",
+        "baseAge": 27,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 73,
@@ -10581,6 +11095,8 @@ const AI_TEAMS = [
       {
         "id": "dcg_mid",
         "name": "HongSuo",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 75,
@@ -10611,6 +11127,8 @@ const AI_TEAMS = [
       {
         "id": "dcg_adc",
         "name": "XiaoXiang",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 76,
@@ -10643,6 +11161,8 @@ const AI_TEAMS = [
       {
         "id": "dcg_support",
         "name": "ShiauC",
+        "baseAge": 27,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 75,
@@ -10721,6 +11241,8 @@ const AI_TEAMS = [
       {
         "id": "dfm_top",
         "name": "Momo",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 81,
@@ -10751,6 +11273,8 @@ const AI_TEAMS = [
       {
         "id": "dfm_jungle",
         "name": "Citrus",
+        "baseAge": 21,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 79,
@@ -10781,6 +11305,8 @@ const AI_TEAMS = [
       {
         "id": "dfm_mid",
         "name": "Fisher",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 81,
@@ -10813,6 +11339,8 @@ const AI_TEAMS = [
       {
         "id": "dfm_adc",
         "name": "Kakkun",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 76,
@@ -10845,6 +11373,8 @@ const AI_TEAMS = [
       {
         "id": "dfm_support",
         "name": "Woody",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 82,
@@ -10923,6 +11453,8 @@ const AI_TEAMS = [
       {
         "id": "fsh_top",
         "name": "Evi",
+        "baseAge": 30,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 84,
@@ -10953,6 +11485,8 @@ const AI_TEAMS = [
       {
         "id": "fsh_jungle",
         "name": "Van1",
+        "baseAge": 21,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 84,
@@ -10986,6 +11520,8 @@ const AI_TEAMS = [
       {
         "id": "fsh_mid",
         "name": "Aria",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 84,
@@ -11018,6 +11554,8 @@ const AI_TEAMS = [
       {
         "id": "fsh_adc",
         "name": "Marble",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "APAC",
         "level": 87,
@@ -11050,6 +11588,8 @@ const AI_TEAMS = [
       {
         "id": "fsh_support",
         "name": "Vsta",
+        "baseAge": 26,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 84,
@@ -11126,6 +11666,8 @@ const AI_TEAMS = [
       {
         "id": "gam_top",
         "name": "Kiaya",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "APAC",
         "level": 85,
@@ -11156,6 +11698,8 @@ const AI_TEAMS = [
       {
         "id": "gam_jungle",
         "name": "Draktharr",
+        "baseAge": 22,
+        "retirementAge": 30,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 91,
@@ -11190,6 +11734,8 @@ const AI_TEAMS = [
       {
         "id": "gam_mid",
         "name": "Aress",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "APAC",
         "level": 85,
@@ -11222,6 +11768,8 @@ const AI_TEAMS = [
       {
         "id": "gam_adc",
         "name": "Artemis",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "APAC",
         "level": 86,
@@ -11254,6 +11802,8 @@ const AI_TEAMS = [
       {
         "id": "gam_support",
         "name": "Taki",
+        "baseAge": 22,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 85,
@@ -11333,6 +11883,8 @@ const AI_TEAMS = [
       {
         "id": "gzg_top",
         "name": "1Jiang",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "APAC",
         "level": 72,
@@ -11365,6 +11917,8 @@ const AI_TEAMS = [
       {
         "id": "gzg_jungle",
         "name": "Husha",
+        "baseAge": 23,
+        "retirementAge": 24,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 70,
@@ -11398,6 +11952,8 @@ const AI_TEAMS = [
       {
         "id": "gzg_mid",
         "name": "JimieN",
+        "baseAge": 23,
+        "retirementAge": 26,
         "role": "MID",
         "nationality": "APAC",
         "level": 72,
@@ -11430,6 +11986,8 @@ const AI_TEAMS = [
       {
         "id": "gzg_adc",
         "name": "Shunn",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 77,
@@ -11460,6 +12018,8 @@ const AI_TEAMS = [
       {
         "id": "gzg_support",
         "name": "Orca",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 75,
@@ -11538,6 +12098,8 @@ const AI_TEAMS = [
       {
         "id": "mvk_top",
         "name": "Steller",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 82,
@@ -11568,6 +12130,8 @@ const AI_TEAMS = [
       {
         "id": "mvk_jungle",
         "name": "Kratos",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 80,
@@ -11598,6 +12162,8 @@ const AI_TEAMS = [
       {
         "id": "mvk_mid",
         "name": "Gury",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 80,
@@ -11628,6 +12194,8 @@ const AI_TEAMS = [
       {
         "id": "mvk_adc",
         "name": "Chika",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 76,
@@ -11660,6 +12228,8 @@ const AI_TEAMS = [
       {
         "id": "mvk_support",
         "name": "SiuLoong",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 80,
@@ -11738,6 +12308,8 @@ const AI_TEAMS = [
       {
         "id": "tsw_top",
         "name": "Pun",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "APAC",
         "level": 87,
@@ -11768,6 +12340,8 @@ const AI_TEAMS = [
       {
         "id": "tsw_jungle",
         "name": "Hizto",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 81,
@@ -11800,6 +12374,8 @@ const AI_TEAMS = [
       {
         "id": "tsw_mid",
         "name": "Dire",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 82,
@@ -11832,6 +12408,8 @@ const AI_TEAMS = [
       {
         "id": "tsw_adc",
         "name": "Eddie",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 83,
@@ -11864,6 +12442,8 @@ const AI_TEAMS = [
       {
         "id": "tsw_support",
         "name": "Bie",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 82,
@@ -11942,6 +12522,8 @@ const AI_TEAMS = [
       {
         "id": "arn_top",
         "name": "leaf",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 76,
@@ -11974,6 +12556,8 @@ const AI_TEAMS = [
       {
         "id": "arn_jungle",
         "name": "Kania",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 80,
@@ -12006,6 +12590,8 @@ const AI_TEAMS = [
       {
         "id": "arn_mid",
         "name": "Daemi",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "KR",
         "level": 81,
@@ -12036,6 +12622,8 @@ const AI_TEAMS = [
       {
         "id": "arn_adc",
         "name": "dresscode",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 75,
@@ -12068,6 +12656,8 @@ const AI_TEAMS = [
       {
         "id": "arn_support",
         "name": "Taiyaki",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 80,
@@ -12146,6 +12736,8 @@ const AI_TEAMS = [
       {
         "id": "dfma_top",
         "name": "Potential",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 84,
@@ -12178,6 +12770,8 @@ const AI_TEAMS = [
       {
         "id": "dfma_jungle",
         "name": "Grit",
+        "baseAge": 25,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 85,
@@ -12211,6 +12805,8 @@ const AI_TEAMS = [
       {
         "id": "dfma_mid",
         "name": "Ravvy",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 80,
@@ -12243,6 +12839,8 @@ const AI_TEAMS = [
       {
         "id": "dfma_adc",
         "name": "Damocles",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 80,
@@ -12273,6 +12871,8 @@ const AI_TEAMS = [
       {
         "id": "dfma_support",
         "name": "Kurahuto",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 82,
@@ -12349,6 +12949,8 @@ const AI_TEAMS = [
       {
         "id": "fnl_top",
         "name": "kkkkkkkkk",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "TOP",
         "nationality": "APAC",
         "level": 87,
@@ -12382,6 +12984,8 @@ const AI_TEAMS = [
       {
         "id": "fnl_jungle",
         "name": "Ellim",
+        "baseAge": 23,
+        "retirementAge": 29,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 89,
@@ -12415,6 +13019,8 @@ const AI_TEAMS = [
       {
         "id": "fnl_mid",
         "name": "DICE",
+        "baseAge": 22,
+        "retirementAge": 28,
         "role": "MID",
         "nationality": "KR",
         "level": 87,
@@ -12448,6 +13054,8 @@ const AI_TEAMS = [
       {
         "id": "fnl_adc",
         "name": "MayR",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "ADC",
         "nationality": "APAC",
         "level": 89,
@@ -12480,6 +13088,8 @@ const AI_TEAMS = [
       {
         "id": "fnl_support",
         "name": "Bruce",
+        "baseAge": 23,
+        "retirementAge": 30,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 87,
@@ -12558,6 +13168,8 @@ const AI_TEAMS = [
       {
         "id": "lgg_top",
         "name": "SnowRabbit",
+        "baseAge": 27,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "APAC",
         "level": 72,
@@ -12590,6 +13202,8 @@ const AI_TEAMS = [
       {
         "id": "lgg_jungle",
         "name": "HyunSim",
+        "baseAge": 21,
+        "retirementAge": 26,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 74,
@@ -12620,6 +13234,8 @@ const AI_TEAMS = [
       {
         "id": "lgg_mid",
         "name": "p1ng",
+        "baseAge": 24,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 75,
@@ -12652,6 +13268,8 @@ const AI_TEAMS = [
       {
         "id": "lgg_adc",
         "name": "Karaage",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "APAC",
         "level": 72,
@@ -12684,6 +13302,8 @@ const AI_TEAMS = [
       {
         "id": "lgg_support",
         "name": "rre",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 70,
@@ -12762,6 +13382,8 @@ const AI_TEAMS = [
       {
         "id": "nm_top",
         "name": "advance",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "KR",
         "level": 82,
@@ -12794,6 +13416,8 @@ const AI_TEAMS = [
       {
         "id": "nm_jungle",
         "name": "HRK",
+        "baseAge": 21,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 82,
@@ -12826,6 +13450,8 @@ const AI_TEAMS = [
       {
         "id": "nm_mid",
         "name": "Zlatan",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 83,
@@ -12856,6 +13482,8 @@ const AI_TEAMS = [
       {
         "id": "nm_adc",
         "name": "Eria",
+        "baseAge": 22,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "APAC",
         "level": 84,
@@ -12886,6 +13514,8 @@ const AI_TEAMS = [
       {
         "id": "nm_support",
         "name": "Alps",
+        "baseAge": 25,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 80,
@@ -12962,6 +13592,8 @@ const AI_TEAMS = [
       {
         "id": "ryn_top",
         "name": "Gecko",
+        "baseAge": 25,
+        "retirementAge": 26,
         "role": "TOP",
         "nationality": "KR",
         "level": 72,
@@ -12994,6 +13626,8 @@ const AI_TEAMS = [
       {
         "id": "ryn_jungle",
         "name": "Kangkuk",
+        "baseAge": 26,
+        "retirementAge": 25,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 71,
@@ -13024,6 +13658,8 @@ const AI_TEAMS = [
       {
         "id": "ryn_mid",
         "name": "Razer",
+        "baseAge": 22,
+        "retirementAge": 26,
         "role": "MID",
         "nationality": "APAC",
         "level": 70,
@@ -13056,6 +13692,8 @@ const AI_TEAMS = [
       {
         "id": "ryn_adc",
         "name": "Fluid",
+        "baseAge": 24,
+        "retirementAge": 26,
         "role": "ADC",
         "nationality": "APAC",
         "level": 72,
@@ -13088,6 +13726,8 @@ const AI_TEAMS = [
       {
         "id": "ryn_support",
         "name": "chico",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 75,
@@ -13164,6 +13804,8 @@ const AI_TEAMS = [
       {
         "id": "rsg_top",
         "name": "YellowYoshi",
+        "baseAge": 26,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 80,
@@ -13196,6 +13838,8 @@ const AI_TEAMS = [
       {
         "id": "rsg_jungle",
         "name": "ankochan",
+        "baseAge": 25,
+        "retirementAge": 27,
         "role": "JUNGLE",
         "nationality": "APAC",
         "level": 80,
@@ -13228,6 +13872,8 @@ const AI_TEAMS = [
       {
         "id": "rsg_mid",
         "name": "Ramune",
+        "baseAge": 21,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 80,
@@ -13260,6 +13906,8 @@ const AI_TEAMS = [
       {
         "id": "rsg_adc",
         "name": "Archer",
+        "baseAge": 20,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 80,
@@ -13292,6 +13940,8 @@ const AI_TEAMS = [
       {
         "id": "rsg_support",
         "name": "Patch",
+        "baseAge": 23,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "KR",
         "level": 80,
@@ -13368,6 +14018,8 @@ const AI_TEAMS = [
       {
         "id": "uwk_top",
         "name": "tol2",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "TOP",
         "nationality": "APAC",
         "level": 74,
@@ -13400,6 +14052,8 @@ const AI_TEAMS = [
       {
         "id": "uwk_jungle",
         "name": "Elative",
+        "baseAge": 24,
+        "retirementAge": 28,
         "role": "JUNGLE",
         "nationality": "KR",
         "level": 81,
@@ -13432,6 +14086,8 @@ const AI_TEAMS = [
       {
         "id": "uwk_mid",
         "name": "Jericho",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "MID",
         "nationality": "APAC",
         "level": 77,
@@ -13464,6 +14120,8 @@ const AI_TEAMS = [
       {
         "id": "uwk_adc",
         "name": "Gimi",
+        "baseAge": 23,
+        "retirementAge": 27,
         "role": "ADC",
         "nationality": "KR",
         "level": 80,
@@ -13496,6 +14154,8 @@ const AI_TEAMS = [
       {
         "id": "uwk_support",
         "name": "f4ke",
+        "baseAge": 27,
+        "retirementAge": 28,
         "role": "SUPPORT",
         "nationality": "APAC",
         "level": 79,
