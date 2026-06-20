@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.7] — 2026-06-20
+
+### Équilibrage
+- **Renouvellements de contrat — budget revus à la hausse** : Superstar 💰100/185, Star 💰75/140, Solide 💰50/95, Role 💰30/55 (prestige inchangé). Les négociations de carrière ×1.5 s'appliquent sur ces nouveaux montants.
+- **Gains budget par compétition — +60%** : 1er split 100→160, 2e 80→125, 3e-4e 60→95, 5e-6e 40→65, 7e-8e 20→35, 9e-10e 0→15. Les tournois internationaux (MSI ×1.25 / Worlds ×1.5) héritent automatiquement de ces nouvelles bases. Les éliminations en phase de groupes internationale donnent désormais ~19 budget (MSI) et ~23 budget (Worlds) au lieu de 0.
+
+---
+
 ## [1.8.6] — 2026-06-20
 
 ### Équilibrage

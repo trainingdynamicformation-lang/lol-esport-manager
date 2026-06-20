@@ -864,10 +864,10 @@ function getScrimPrestigeReq(tier) {
    ------------------------------------------------------------ */
 // Cout d'une prolongation selon le tier du joueur et la duree (1 ou 2 ans).
 const CONTRACT_EXTENSION_COSTS = {
-  superstar: { 1: { prestige: 50, budget: 65 }, 2: { prestige: 70, budget: 120 } },
-  star:      { 1: { prestige: 35, budget: 50 }, 2: { prestige: 50, budget:  90 } },
-  solid:     { 1: { prestige: 20, budget: 35 }, 2: { prestige: 32, budget:  65 } },
-  role:      { 1: { prestige: 8,  budget: 20 }, 2: { prestige: 15, budget:  38 } }
+  superstar: { 1: { prestige: 50, budget: 100 }, 2: { prestige: 70, budget: 185 } },
+  star:      { 1: { prestige: 35, budget:  75 }, 2: { prestige: 50, budget: 140 } },
+  solid:     { 1: { prestige: 20, budget:  50 }, 2: { prestige: 32, budget:  95 } },
+  role:      { 1: { prestige: 8,  budget:  30 }, 2: { prestige: 15, budget:  55 } }
 };
 const CONTRACT_TIER_LABELS = { superstar: 'Superstar', star: 'Star', solid: 'Solide', role: 'Role player' };
 // Probabilite qu'un joueur recoive un contrat long (annee de base +1) selon son tier.
@@ -3016,12 +3016,12 @@ function getFinalPlacement() {
 }
 
 function getPlacementRewards(placement) {
-  if (placement === 1) return { coaching: 120, budget: 100, prestige: 15 };
-  if (placement === 2) return { coaching: 90, budget: 80, prestige: 10 };
-  if (placement <= 4) return { coaching: 70, budget: 60, prestige: 6 };
-  if (placement <= 6) return { coaching: 50, budget: 40, prestige: 3 };
-  if (placement <= 8) return { coaching: 25, budget: 20, prestige: 1 };
-  return { coaching: 10, budget: 0, prestige: 0 };
+  if (placement === 1) return { coaching: 120, budget: 160, prestige: 15 };
+  if (placement === 2) return { coaching: 90,  budget: 125, prestige: 10 };
+  if (placement <= 4) return { coaching: 70,  budget:  95, prestige: 6 };
+  if (placement <= 6) return { coaching: 50,  budget:  65, prestige: 3 };
+  if (placement <= 8) return { coaching: 25,  budget:  35, prestige: 1 };
+  return { coaching: 10, budget: 15, prestige: 0 };
 }
 
 function placementLabel(placement) {
