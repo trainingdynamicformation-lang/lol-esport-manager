@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.6] — 2026-06-20
+
+### Équilibrage
+- **Coûts de renouvellement de contrat revus à la hausse** — les budgets étaient trop bas par rapport aux prix du marché des transferts (renouveler une Star coûtait 22 budget, recruter un remplaçant plus faible en coûtait 61). Nouveau barème aligné sur le marché : Superstar 💰65/120, Star 💰50/90, Solide 💰35/65, Role player 💰20/38. Les exigences de prestige restent inchangées.
+
+---
+
 ## [1.8.5] — 2026-06-20
 
 ### Ajouté

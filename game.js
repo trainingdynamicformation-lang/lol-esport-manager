@@ -864,10 +864,10 @@ function getScrimPrestigeReq(tier) {
    ------------------------------------------------------------ */
 // Cout d'une prolongation selon le tier du joueur et la duree (1 ou 2 ans).
 const CONTRACT_EXTENSION_COSTS = {
-  superstar: { 1: { prestige: 50, budget: 30 }, 2: { prestige: 70, budget: 60 } },
-  star:      { 1: { prestige: 35, budget: 22 }, 2: { prestige: 50, budget: 45 } },
-  solid:     { 1: { prestige: 20, budget: 15 }, 2: { prestige: 32, budget: 30 } },
-  role:      { 1: { prestige: 8,  budget: 10 }, 2: { prestige: 15, budget: 20 } }
+  superstar: { 1: { prestige: 50, budget: 65 }, 2: { prestige: 70, budget: 120 } },
+  star:      { 1: { prestige: 35, budget: 50 }, 2: { prestige: 50, budget:  90 } },
+  solid:     { 1: { prestige: 20, budget: 35 }, 2: { prestige: 32, budget:  65 } },
+  role:      { 1: { prestige: 8,  budget: 20 }, 2: { prestige: 15, budget:  38 } }
 };
 const CONTRACT_TIER_LABELS = { superstar: 'Superstar', star: 'Star', solid: 'Solide', role: 'Role player' };
 // Probabilite qu'un joueur recoive un contrat long (annee de base +1) selon son tier.
