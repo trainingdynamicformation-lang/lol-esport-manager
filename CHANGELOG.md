@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.9] — 2026-06-20
+
+### Ajouté
+- **Tooltips de retraite (immersion/lore)** — survoler le badge ⚠ retraite W{N} affiche : *"Choix personnel : {joueur} a décidé de mettre fin à sa carrière à {age} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5)."* Survoler le texte "impossible (limite 33 ans)" affiche : *"La réglementation ne permet pas de jouer après 33 ans."*
+
+---
+
 ## [1.8.8] — 2026-06-20
 
 ### Modifié
