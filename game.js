@@ -3587,8 +3587,13 @@ function poBracketCard(poId, label, m, seedA, seedB, isUpcoming, isFinal) {
   const bName = teamB ? getTeamShortName(teamB) : 'TBD';
   const aWins = isDone && result.winner === teamA;
   const bWins = isDone && result.winner === teamB;
-  const aScore = isDone ? (aWins ? result.scoreA : result.scoreB) : '';
-  const bScore = isDone ? (bWins ? result.scoreA : result.scoreB) : '';
+  // v1.7.6 — scoreA/scoreB sont stockés selon des conventions différentes
+  // (home/away pour l'IA, joueur/adversaire pour le joueur). Invariant fiable :
+  // dans une série, le gagnant a toujours plus de manches que le perdant.
+  const winScore = isDone ? Math.max(result.scoreA, result.scoreB) : '';
+  const loseScore = isDone ? Math.min(result.scoreA, result.scoreB) : '';
+  const aScore = isDone ? (aWins ? winScore : loseScore) : '';
+  const bScore = isDone ? (bWins ? winScore : loseScore) : '';
   const aSt = isDone ? (aWins ? 'winner' : 'loser') : '';
   const bSt = isDone ? (bWins ? 'winner' : 'loser') : '';
   const aScCl = isDone ? (aWins ? 'win' : 'loss') : '';

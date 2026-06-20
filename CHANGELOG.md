@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.6] — 2026-06-20
+
+### Corrigé
+- **Scores inversés dans l'arbre de phase finale** — sur l'écran de synthèse (saison, MSI, Worlds), les scores de chaque série étaient affichés à l'envers (le gagnant montrait le score du perdant et inversement), par ex. une défaite 0-3 affichée comme 3-0.
+  - Cause : `scoreA`/`scoreB` sont stockés selon deux conventions différentes (home/away pour les matchs IA, joueur/adversaire pour le match du joueur), alors que l'affichage supposait `scoreA` = score du gagnant.
+  - Fix : `poBracketCard` déduit désormais le score de chaque équipe via un invariant fiable — dans une série, le gagnant a toujours plus de manches que le perdant (`max`/`min` de scoreA/scoreB). Robuste pour tous les cas (joueur/IA, home/away, saison/international).
+  - Bug purement visuel : les sauvegardes existantes sont saines, l'affichage se corrige automatiquement.
+
+---
+
 ## [1.7.5] — 2026-06-20
 
 ### Corrigé
