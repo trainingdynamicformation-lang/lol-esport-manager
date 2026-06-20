@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.10] — 2026-06-20
+
+### Modifié
+- **Tooltips retraite — compatibilité mobile/tablette/Mac** : les badges ⚠ retraite et "impossible (limite 33 ans)" utilisent désormais `data-lore-tooltip` + délégation globale au clic en plus du `title` natif. Un tap/clic affiche le message via toast, ce qui fonctionne sur tous les appareils.
+
+---
+
 ## [1.8.9] — 2026-06-20
 
 ### Ajouté

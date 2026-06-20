@@ -6060,14 +6060,15 @@ function renderContractsPanel() {
     const retYear = playerRetirementYear(p);
     const age = playerAge(p);
     const yearsToRet = retYear - curYear;
+    const retTooltip = escapeAttr(`Choix personnel : ${p.name} a décidé de mettre fin à sa carrière à ${p.retirementAge} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5).`);
     const retWarning = p.baseAge != null && yearsToRet <= 2
-      ? `<span style="font-size:11px;color:#e05;margin-left:6px;cursor:help;" title="Choix personnel : ${escapeAttr(p.name)} a décidé de mettre fin à sa carrière à ${p.retirementAge} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5).">⚠ retraite W${retYear}</span>`
+      ? `<span style="font-size:11px;color:#e05;margin-left:6px;cursor:help;" title="${retTooltip}" data-lore-tooltip="${retTooltip}">⚠ retraite W${retYear}</span>`
       : '';
     const btn = (years, c) => {
       if (alreadyExtended) return '';
       const extType = getExtensionType(p, years);
       if (extType === 'blocked') {
-        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;cursor:help;" title="La réglementation ne permet pas de jouer après 33 ans.">+${years} an${years > 1 ? 's' : ''} impossible (limite 33 ans)</span>`;
+        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;cursor:help;" title="La réglementation ne permet pas de jouer après 33 ans." data-lore-tooltip="La réglementation ne permet pas de jouer après 33 ans.">+${years} an${years > 1 ? 's' : ''} impossible (limite 33 ans)</span>`;
       }
       const cost = extType === 'special'
         ? { prestige: Math.ceil(c.prestige * 1.5), budget: Math.ceil(c.budget * 1.5) }
@@ -6484,3 +6485,9 @@ function setupNavigation() {
 }
 
 document.addEventListener('DOMContentLoaded', initGame);
+
+// Délégation globale : clic sur tout élément [data-lore-tooltip] → showToast (mobile + Mac)
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-lore-tooltip]');
+  if (el) showToast(el.dataset.loreTooltip, 'info');
+});
