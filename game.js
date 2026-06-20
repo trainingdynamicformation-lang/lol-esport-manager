@@ -2564,6 +2564,16 @@ function showSeasonIntroModal(split, year, teamIds) {
   const splitName = split === 'summer' ? 'Summer Split' : 'Spring Split';
   const intlEvent = split === 'summer' ? 'Worlds' : 'MSI';
   const totalMatchdays = teamIds.length - 1;
+  // Nombre de places de la région du joueur pour l'événement international,
+  // dérivé de la même source que la qualification réelle (évite tout écart).
+  const eventType = split === 'summer' ? 'worlds' : 'msi';
+  const playerRegion = REGIONS.find((r) => r.id === state.region);
+  const playerAiRegion = playerRegion ? playerRegion.aiRegion : 'LEC';
+  const regionSlots = getRegionRepCounts(eventType, playerAiRegion)[playerAiRegion] || 2;
+  const qualifTiersHtml = `
+    <li>Le <strong>champion des playoffs</strong>.</li>
+    <li>Le <strong>finaliste</strong> (perdant de la grande finale).</li>
+    ${regionSlots >= 3 ? `<li>Le <strong>meilleur demi-finaliste éliminé</strong>, départagé selon le classement de la saison reguliere (meilleur seed).</li>` : ''}`;
   const teamListHtml = teamIds.map((id, i) => {
     const t = getTeamRef(id);
     const name = t ? t.name : id;
@@ -2593,9 +2603,12 @@ function showSeasonIntroModal(split, year, teamIds) {
       <div>
         <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127758; Qualification ${intlEvent}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Les <strong>2 meilleures équipes</strong> de votre region se qualifient pour le <strong>${intlEvent}</strong>.
-          Terminez dans le top 2 du classement final (après playoffs) pour representer votre region sur la scene internationale.
+          Les <strong>${regionSlots} meilleures équipes</strong> de votre region se qualifient pour le <strong>${intlEvent}</strong>.
+          Pour representer votre region sur la scene internationale, votre équipe doit faire partie de ces ${regionSlots} qualifiés à l'issue des playoffs :
         </p>
+        <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
+          ${qualifTiersHtml}
+        </ul>
       </div>
       <div>
         <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Équipes participantes</h3>

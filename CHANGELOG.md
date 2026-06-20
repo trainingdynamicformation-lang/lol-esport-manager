@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.7] — 2026-06-20
+
+### Corrigé
+- **Popup d'intro de saison : nombre de qualifiés pour l'international** — la popup annonçait toujours « les 2 meilleures équipes » quel que soit le split, alors que le Summer Split qualifie **3 équipes** de la région du joueur pour les Worlds (contre 2 pour le MSI au Spring).
+  - Le nombre est désormais dérivé de la même source que la qualification réelle (`getRegionRepCounts`) → plus aucun écart possible.
+
+### Ajouté
+- **Détail des qualifiés pour le MSI/Worlds dans la popup d'intro** — explication de qui se qualifie et comment :
+  - Le champion des playoffs.
+  - Le finaliste (perdant de la grande finale).
+  - (Worlds uniquement) Le meilleur demi-finaliste éliminé, départagé selon le classement de la saison reguliere (meilleur seed).
+
+---
+
 ## [1.7.6] — 2026-06-20
 
 ### Corrigé
