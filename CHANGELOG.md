@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.11] — 2026-06-21
+
+### Modifié
+- **Carte joueur (marché des transferts)** — l'âge s'affiche désormais sur sa propre ligne entre le nom et la ligne "Rôle — Équipe", cohérent avec l'affichage du roster.
+
+---
+
 ## [1.8.10] — 2026-06-20
 
 ### Modifié

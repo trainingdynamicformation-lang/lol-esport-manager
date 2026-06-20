@@ -5913,7 +5913,8 @@ function renderTransferCard(c, budget) {
         <div class="mini-avatar">${getInitials(c.name)}</div>
         <div class="transfer-card__identity">
           <div class="transfer-card__name">${c.name}${c.scoutGrade ? ` <span class="transfer-grade">${c.scoutGrade}</span>` : ''}</div>
-          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}${c.baseAge != null ? ` &mdash; ${playerAge(c)} ans` : ''}</div>
+          ${c.baseAge != null ? `<div style="font-size:11px;color:var(--color-text-muted);margin-top:1px;">${playerAge(c)} ans</div>` : ''}
+          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}</div>
         </div>
         <div class="transfer-card__level">${avg}</div>
       </div>
