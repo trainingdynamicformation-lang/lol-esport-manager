@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.8] — 2026-06-20
+
+### Modifié
+- **Carte joueur (roster)** — l'âge est maintenant affiché sur sa propre ligne entre "Rôle — Nationalité" et la date de fin de contrat, au lieu d'être accolé sur la même ligne que la nationalité.
+
+---
+
 ## [1.8.7] — 2026-06-20
 
 ### Équilibrage

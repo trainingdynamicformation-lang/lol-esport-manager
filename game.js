@@ -1607,7 +1607,8 @@ function playerCardHtml(p) {
         <div class="mini-avatar">${getInitials(p.name)}</div>
         <div class="player-card__identity">
           <div class="player-card__name">${p.name}</div>
-          <div class="player-card__role">${p.role} &mdash; ${p.nationality}${p.baseAge != null ? ` &mdash; ${playerAge(p)} ans` : ''}</div>
+          <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
+          ${p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${playerAge(p)} ans</div>` : ''}
           ${p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
         </div>
         <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
