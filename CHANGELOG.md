@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.7.8] — 2026-06-20
+
+### Corrigé
+- **Palmarès : qualifications MSI/Worlds comptées plusieurs fois** — un clic répété sur « Continuer vers le MSI/les Worlds » (possible à l'époque du bug d'enchaînement v1.6.2) appelait `startInternational` plusieurs fois, incrémentant le compteur de qualifications à chaque clic et réinitialisant les groupes.
+  - Ajout d'une garde anti-double-appel : si un événement international est déjà en cours, `startInternational` ne le relance pas (les groupes et le palmarès ne sont plus recomptés).
+  - Bug de comptage uniquement : aucune incidence sur le déroulement des compétitions.
+
+---
+
 ## [1.7.7] — 2026-06-20
 
 ### Corrigé

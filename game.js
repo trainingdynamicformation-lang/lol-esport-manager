@@ -3057,6 +3057,14 @@ function getPlayoffQualifiers(count) {
 }
 
 function startInternational(eventType) {
+  // Garde anti-double-appel (v1.7.8) : si un événement international est déjà
+  // en cours, ne pas le relancer — cela réinitialiserait les groupes et
+  // recompterait la qualification au palmarès (cause du bug "qualified" gonflé).
+  // startSeason() remet state.international à null avant chaque nouvelle saison.
+  if (state.international) {
+    renderCalendar();
+    return;
+  }
   const season = state.season;
   const playerRegion = REGIONS.find((r) => r.id === state.region);
   const playerAiRegion = playerRegion ? playerRegion.aiRegion : 'LEC';
