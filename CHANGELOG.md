@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.5] — 2026-06-20
+
+### Ajouté
+- **Négociation de carrière (prolongation au-delà de la retraite prévue)** — quand une extension dépasse `retirementAge` mais reste dans la limite absolue de 33 ans, un mode "négociation de carrière" s'active : coût x1.5 (prestige et budget, arrondi au supérieur), bouton ⭐ ambré distinctif, bannière explicative dans le modal.
+- **Limite absolue infranchissable à 33 ans** (`playerAbsoluteRetirementYear`) — au-delà, le bouton est remplacé par un texte "impossible (limite 33 ans)". Garde de sécurité identique dans `extendContract`.
+- **`getExtensionType(p, years)`** — retourne `'normal'`, `'special'` ou `'blocked'`, utilisé par tous les points de décision (bouton, modal, fonction d'extension).
+
+---
+
 ## [1.8.4] — 2026-06-20
 
 ### Ajouté

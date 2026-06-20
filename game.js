@@ -937,10 +937,37 @@ function playerRetirementYear(p) {
   return ret - base + 1;
 }
 
-// Peut-on prolonger le contrat de `years` années supplémentaires sans dépasser la retraite ?
+// Limite absolue infranchissable : 33 ans.
+function playerAbsoluteRetirementYear(p) {
+  if (p.baseAge == null) return 999;
+  return 33 - p.baseAge + 1;
+}
+
+// Type d'extension :
+//   'normal'  → dans les limites de retraite prévue
+//   'special' → dépasse retirementAge mais reste ≤ 33 ans (x1.5)
+//   'blocked' → dépasserait les 33 ans (interdit)
+function getExtensionType(p, years) {
+  if (p.baseAge == null || p.retirementAge == null) return 'normal';
+  const newEnd = (p.contractUntil || currentGameYear()) + years;
+  if (newEnd > playerAbsoluteRetirementYear(p)) return 'blocked';
+  if (newEnd > playerRetirementYear(p)) return 'special';
+  return 'normal';
+}
+
+// Coût final : x1.5 arrondi au supérieur pour les extensions spéciales.
+function getExtensionCostFinal(p, years) {
+  const base = getExtensionCost(p, years);
+  if (getExtensionType(p, years) === 'special') {
+    return { prestige: Math.ceil(base.prestige * 1.5), budget: Math.ceil(base.budget * 1.5) };
+  }
+  return base;
+}
+
+// Peut-on prolonger le contrat de `years` années supplémentaires ?
+// (normal ou spécial = oui ; bloqué = non)
 function canExtendForYears(p, years) {
-  if (p.baseAge == null || p.retirementAge == null) return true;
-  return (p.contractUntil || currentGameYear()) + years <= playerRetirementYear(p);
+  return getExtensionType(p, years) !== 'blocked';
 }
 
 // Attribue baseAge/retirementAge à un joueur sans âge.
@@ -6037,17 +6064,24 @@ function renderContractsPanel() {
       : '';
     const btn = (years, c) => {
       if (alreadyExtended) return '';
-      if (!canExtendForYears(p, years)) {
-        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;">+${years} an${years > 1 ? 's' : ''} impossible (retraite W${retYear})</span>`;
+      const extType = getExtensionType(p, years);
+      if (extType === 'blocked') {
+        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;">+${years} an${years > 1 ? 's' : ''} impossible (limite 33 ans)</span>`;
       }
-      const affordable = prestige >= c.prestige && budget >= c.budget;
+      const cost = extType === 'special'
+        ? { prestige: Math.ceil(c.prestige * 1.5), budget: Math.ceil(c.budget * 1.5) }
+        : c;
+      const affordable = prestige >= cost.prestige && budget >= cost.budget;
       const ready = windowOpen && affordable;
+      const specialStyle = extType === 'special' ? 'border-color:#e0a020;color:#e0a020;' : '';
+      const label = extType === 'special' ? `+${years} an${years > 1 ? 's' : ''} ⭐` : `+${years} an${years > 1 ? 's' : ''}`;
       const title = !windowOpen ? 'Disponible en inter-saison (après le MSI ou les Worlds)'
-        : (prestige < c.prestige ? `Prestige requis : ${c.prestige}` : (budget < c.budget ? `Budget requis : ${c.budget}` : 'Prolonger'));
+        : extType === 'special' ? `Négociation de carrière — coût x1.5 (retraite dépassée)`
+        : (prestige < cost.prestige ? `Prestige requis : ${cost.prestige}` : (budget < cost.budget ? `Budget requis : ${cost.budget}` : 'Prolonger'));
       // Jamais `disabled` : un bouton désactivé n'émet aucun clic. On garde le
       // bouton cliquable et c'est showExtendModal qui explique le blocage.
-      return `<button class="btn-small ${ready ? 'btn-primary' : 'btn-secondary'}" style="${ready ? '' : 'opacity:.6;'}" data-extend-id="${escapeAttr(p.id)}" data-extend-years="${years}" title="${escapeAttr(title)}">
-        +${years} an${years > 1 ? 's' : ''} <span style="opacity:.85;">(P${c.prestige} · 💰${c.budget})</span>
+      return `<button class="btn-small ${ready ? 'btn-primary' : 'btn-secondary'}" style="${ready ? '' : 'opacity:.6;'}${specialStyle}" data-extend-id="${escapeAttr(p.id)}" data-extend-years="${years}" title="${escapeAttr(title)}">
+        ${label} <span style="opacity:.85;">(P${cost.prestige} · 💰${cost.budget})</span>
       </button>`;
     };
     const extendedBadge = alreadyExtended
@@ -6099,26 +6133,32 @@ function showExtendModal(playerId, years) {
     showToast(`${p.name} a déjà été prolongé cette saison. Une seule prolongation par joueur par saison.`, 'info');
     return;
   }
-  if (!canExtendForYears(p, years)) {
-    const retYear = playerRetirementYear(p);
-    showToast(`Impossible : ${p.name} part à la retraite à W${retYear}, une prolongation de ${years} an${years > 1 ? 's' : ''} dépasserait cette limite.`, 'info');
+  const extType = getExtensionType(p, years);
+  if (extType === 'blocked') {
+    showToast(`Impossible : prolonger ${p.name} de ${years} an${years > 1 ? 's' : ''} dépasserait la limite absolue de 33 ans.`, 'info');
     return;
   }
-  const c = getExtensionCost(p, years);
+  const c = getExtensionCostFinal(p, years);
   const newEnd = (p.contractUntil || currentGameYear()) + years;
-  const retNote = p.baseAge != null && newEnd === playerRetirementYear(p)
-    ? `<p style="font-size:11px;color:#e0a020;margin-bottom:8px;">⚠ Ce contrat court jusqu'à sa retraite prévue (W${newEnd}).</p>`
-    : '';
+  const isSpecial = extType === 'special';
+  const specialBanner = isSpecial
+    ? `<div style="background:rgba(224,160,32,.12);border:1px solid #e0a020;border-radius:8px;padding:8px 12px;margin-bottom:10px;">
+        <span style="color:#e0a020;font-weight:600;">⭐ Négociation de carrière</span>
+        <span style="font-size:12px;color:var(--color-text-muted);"> — ${p.name} a dépassé son âge de retraite prévu. Il exige des conditions exceptionnelles : <strong>coût x1.5</strong>.</span>
+       </div>`
+    : (p.baseAge != null && newEnd === playerRetirementYear(p)
+        ? `<p style="font-size:11px;color:#e0a020;margin-bottom:8px;">⚠ Ce contrat court jusqu'à sa retraite prévue (W${newEnd}).</p>`
+        : '');
   const okPrestige = state.resources.prestige >= c.prestige;
   const okBudget = state.resources.budget >= c.budget;
   showModal(`
-    <h3 class="panel-title">Prolonger ${p.name}</h3>
+    <h3 class="panel-title">${isSpecial ? '⭐ ' : ''}Prolonger ${p.name}</h3>
     <p style="margin-bottom:10px;">${p.name} (${CONTRACT_TIER_LABELS[getContractTier(p)]}) demande, pour <strong>${years} an${years > 1 ? 's' : ''}</strong> de plus (jusqu'à Worlds ${newEnd}) :</p>
     <div class="transfer-card__stats" style="margin-bottom:12px;">
       <span>Prestige exigé : <strong style="color:${okPrestige ? 'var(--color-seafoam)' : '#e05'};">${c.prestige}</strong> <span style="opacity:.7;">(vous : ${state.resources.prestige})</span></span>
       <span>Budget payé : <strong style="color:${okBudget ? 'inherit' : '#e05'};">💰 ${c.budget}</strong> <span style="opacity:.7;">(vous : ${state.resources.budget})</span></span>
     </div>
-    ${retNote}
+    ${specialBanner}
     <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;">Le prestige n'est pas décrémenté : c'est un seuil de standing. Seul le budget est dépensé.</p>
     <div class="modal-content__actions">
       <button class="btn-primary" id="btn-confirm-extend" ${okPrestige && okBudget ? '' : 'disabled'}>Signer la prolongation</button>
@@ -6136,8 +6176,9 @@ function extendContract(playerId, years) {
   const p = state.roster.find((x) => x.id === playerId);
   if (!p) return;
   if (!isContractWindowOpen()) { showToast('Mercato fermé : prolongations indisponibles pendant le split.', 'error'); return; }
-  if (!canExtendForYears(p, years)) { showToast(`${p.name} atteindrait l'âge de retraite avant la fin du contrat.`, 'error'); return; }
-  const c = getExtensionCost(p, years);
+  const extType = getExtensionType(p, years);
+  if (extType === 'blocked') { showToast(`${p.name} dépasserait la limite absolue de 33 ans.`, 'error'); return; }
+  const c = getExtensionCostFinal(p, years);
   if (state.resources.prestige < c.prestige) {
     showToast(`Prestige insuffisant : ${p.name} exige ${c.prestige} de prestige (vous : ${state.resources.prestige}).`, 'error');
     return;
@@ -6151,7 +6192,8 @@ function extendContract(playerId, years) {
   p.contractExtendedYear = currentGameYear();
   saveGame();
   updateResourceBar();
-  showToast(`${p.name} prolongé jusqu'à Worlds ${p.contractUntil}. -${c.budget} budget.`, 'success');
+  const specialLabel = extType === 'special' ? ' (négociation de carrière)' : '';
+  showToast(`${p.name} prolongé jusqu'à Worlds ${p.contractUntil}${specialLabel}. -${c.budget} budget.`, 'success');
   renderTransfers();
 }
 
