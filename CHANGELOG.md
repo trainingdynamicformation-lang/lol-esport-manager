@@ -5,6 +5,44 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.8.3] — 2026-06-20
+
+### Ajouté
+- **Limite de prolongation : une seule fois par joueur par saison** — il n'était pas possible d'empêcher l'abus de cliquer plusieurs fois sur +1 an / +2 ans pour un même joueur. Désormais, dès qu'un joueur est prolongé, un champ `contractExtendedYear` est enregistré. Toute tentative supplémentaire pendant la même saison affiche un message clair et les boutons sont remplacés par un badge « ✓ Prolongé cette saison ».
+
+---
+
+## [1.8.2] — 2026-06-20
+
+### Corrigé
+- **Boutons « +1 an / +2 ans » sans effet au clic** — les boutons étaient rendus `disabled` quand la fenêtre était fermée ou le coût non payable ; or un bouton désactivé n'émet aucun clic → « rien ne se passe », sans explication. Les boutons sont désormais toujours cliquables et un message clair indique le blocage (mercato fermé, prestige ou budget insuffisant).
+
+### Modifié
+- **Fenêtre de prolongation transformée en vrai « mercato »** (`state.mercatoOpen`) — auparavant ouverte seulement sur l'écran de récap MSI/Worlds (refermée dès le clic « Continuer »), un piège. Désormais : le mercato s'ouvre à la fin du MSI/Worlds **et reste ouvert toute la pré-saison suivante**, jusqu'au 1er match du split. Bannière d'état claire (🟢 ouvert / 🔒 fermé) dans la section contrats. Migration : les sauvegardes existantes ouvrent le mercato par défaut (prolongations possibles immédiatement).
+
+---
+
+## [1.8.1] — 2026-06-20
+
+### Corrigé
+- **Contrats « Worlds undefined » sur les sauvegardes importées** — les chemins d'import (fichier `importSave` et cloud `cloudImport`) affectaient l'état directement (`state = parsed`) sans passer par la migration de `loadGame`, laissant `contractUntil` indéfini → affichage « Wundefined / Worlds undefined » dans la section contrats.
+  - Appel de `ensureRosterContracts(0)` après import (fichier **et** cloud) : les joueurs sans contrat reçoivent une échéance pondérée par tier, ancrée sur l'année en cours.
+  - Une sauvegarde déjà importée se répare au simple rechargement (la migration de `loadGame` rattrape les `contractUntil` indéfinis du localStorage).
+
+---
+
+## [1.8.0] — 2026-06-20
+
+### Ajouté
+- **Système de contrats joueurs** — chaque joueur du roster est désormais engagé jusqu'à la fin d'un Worlds donné (« jusqu'à Worlds 1 », « Worlds 2 »…). L'échéance est affichée sur sa carte (avec alerte ⚠ « dernière année »).
+  - **Génération pondérée par tier** : les superstars/stars sont sécurisées plus longtemps (souvent +1 an) que les role players. Vaut pour les nouvelles parties **et** rétroactivement pour les sauvegardes existantes (migration au chargement, ancrée sur l'année en cours — aucune donnée perdue).
+  - **Prolongations en inter-saison** (après le MSI ou les Worlds), depuis le marché des transferts, section « Mon effectif — contrats » : +1 an ou +2 ans, au coût tier-scalé.
+  - **Le prestige est une exigence (seuil, non décrémenté), le budget est payé** — même logique que les scrims hors-région. Barème : Superstar P50/💰30 (1 an) · P70/💰60 (2 ans), Star P35/💰22 · P50/💰45, Solide P20/💰15 · P32/💰30, Role player P8/💰10 · P15/💰20.
+  - **Expiration = départ** : un contrat non prolongé à la fin des Worlds → le joueur quitte l'équipe (annonce dédiée), laissant un poste à pourvoir.
+  - **Signature sur poste vacant** : le marché des transferts permet désormais de signer sans libérer de joueur quand un poste est vide. Les recrues reçoivent un contrat (≥ 1 an).
+
+---
+
 ## [1.7.8] — 2026-06-20
 
 ### Corrigé

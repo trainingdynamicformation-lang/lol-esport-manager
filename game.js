@@ -122,6 +122,7 @@ function createDefaultState() {
     matchSeries: null,
     season: null,
     international: null,
+    mercatoOpen: true, // fenêtre de prolongation : ouverte en pré-saison, fermée au 1er match du split
     aiRosters: {},
     aiMatchHistory: {},
     careerLog: [],
@@ -226,6 +227,7 @@ function loadGame() {
       matchSeries: parsed.matchSeries !== undefined ? parsed.matchSeries : defaults.matchSeries,
       season: parsed.season !== undefined ? parsed.season : defaults.season,
       international: parsed.international !== undefined ? parsed.international : defaults.international,
+      mercatoOpen: parsed.mercatoOpen !== undefined ? parsed.mercatoOpen : true,
       aiRosters: parsed.aiRosters || defaults.aiRosters,
       aiMatchHistory: parsed.aiMatchHistory || defaults.aiMatchHistory,
       careerLog: parsed.careerLog || defaults.careerLog,
@@ -239,6 +241,17 @@ function loadGame() {
     // Migration palmarès : backfill depuis les titres si absent de la sauvegarde
     if (!(parsed.progress && parsed.progress.palmares)) {
       merged.progress.palmares = buildPalmaresFromTitles(merged.progress.titlesEarned);
+    }
+    // Migration contrats (v1.8.0) : attribue un contrat aux joueurs qui n'en ont
+    // pas, pondéré par tier, ancré sur l'année en cours de la sauvegarde.
+    if (Array.isArray(merged.roster) && merged.roster.length) {
+      const baseYear = merged.season ? merged.season.year : 1;
+      merged.roster.forEach((p) => {
+        if (p.contractUntil == null) {
+          const longProb = CONTRACT_LONG_PROB[getContractTier(p)];
+          p.contractUntil = baseYear + (Math.random() < longProb ? 1 : 0);
+        }
+      });
     }
     return merged;
   } catch (e) {
@@ -317,6 +330,7 @@ async function cloudImport() {
     matchRuntime = null;
     state = createDefaultState();
     state = parsed;
+    ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves cloud
     saveGame();
     updateResourceBar();
     showView('home');
@@ -401,6 +415,7 @@ function importSave(file) {
         throw new Error('Format invalide');
       }
       state = parsed;
+      ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves importées
       saveGame();
       updateResourceBar();
       showView('home');
@@ -822,6 +837,89 @@ function getScrimTierMultiplier(tier) {
 
 function getScrimPrestigeReq(tier) {
   return SCRIM_PRESTIGE_REQ[tier] || 0;
+}
+
+/* ------------------------------------------------------------
+   Systeme de contrats (v1.8.0)
+   Le prestige est une EXIGENCE (seuil a atteindre, non depense) ;
+   le budget est PAYE. Calque sur la mecanique des scrims hors-region.
+   ------------------------------------------------------------ */
+// Cout d'une prolongation selon le tier du joueur et la duree (1 ou 2 ans).
+const CONTRACT_EXTENSION_COSTS = {
+  superstar: { 1: { prestige: 50, budget: 30 }, 2: { prestige: 70, budget: 60 } },
+  star:      { 1: { prestige: 35, budget: 22 }, 2: { prestige: 50, budget: 45 } },
+  solid:     { 1: { prestige: 20, budget: 15 }, 2: { prestige: 32, budget: 30 } },
+  role:      { 1: { prestige: 8,  budget: 10 }, 2: { prestige: 15, budget: 20 } }
+};
+const CONTRACT_TIER_LABELS = { superstar: 'Superstar', star: 'Star', solid: 'Solide', role: 'Role player' };
+// Probabilite qu'un joueur recoive un contrat long (annee de base +1) selon son tier.
+const CONTRACT_LONG_PROB = { superstar: 0.80, star: 0.65, solid: 0.45, role: 0.25 };
+
+function getContractTier(p) {
+  const lvl = computeLevel(p);
+  if (lvl >= 90) return 'superstar';
+  if (lvl >= 85) return 'star';
+  if (lvl >= 78) return 'solid';
+  return 'role';
+}
+
+function getExtensionCost(p, years) {
+  return CONTRACT_EXTENSION_COSTS[getContractTier(p)][years];
+}
+
+function currentGameYear() {
+  return state.season ? state.season.year : 1;
+}
+
+// Attribue un contrat initial pondere par tier : les meilleurs joueurs sont
+// securises plus longtemps. baseYear = annee en cours ; minExtra force une duree
+// minimale (utile pour les signatures, qui ne doivent pas expirer instantanement).
+function assignInitialContract(p, baseYear, minExtra) {
+  minExtra = minExtra || 0;
+  const longProb = CONTRACT_LONG_PROB[getContractTier(p)];
+  const extra = Math.max(minExtra, Math.random() < longProb ? 1 : 0);
+  return baseYear + extra; // fin Worlds baseYear ou baseYear+1
+}
+
+// Fenetre de prolongation (mercato) : ouverte de la fin du MSI/Worlds jusqu'au
+// 1er match du split suivant (toute la pre-saison). Piloté par state.mercatoOpen,
+// ouvert aussi tant que l'international est en cours de cloture (filet de securite).
+function isContractWindowOpen() {
+  if (state.mercatoOpen !== undefined) return state.mercatoOpen !== false;
+  return !!(state.international && state.international.phase === 'done');
+}
+
+// Un contrat est dans sa derniere annee si son echeance est l'annee en cours.
+function isContractFinalYear(p) {
+  return p.contractUntil != null && p.contractUntil <= currentGameYear();
+}
+
+// Backfill : attribue un contrat a tout joueur du roster qui n'en a pas
+// (nouvelle partie, migration d'une sauvegarde anterieure a la v1.8.0).
+function ensureRosterContracts(minExtra) {
+  if (!Array.isArray(state.roster)) return;
+  const baseYear = currentGameYear();
+  state.roster.forEach((p) => {
+    if (p.contractUntil == null) {
+      p.contractUntil = assignInitialContract(p, baseYear, minExtra);
+    }
+  });
+}
+
+// Fin de saison Worlds : les joueurs dont le contrat s'acheve et qui n'ont pas
+// ete prolonges quittent l'equipe (postes a pourvoir au marche des transferts).
+function processContractExpirations(completedYear) {
+  if (!Array.isArray(state.roster)) return [];
+  const leaving = state.roster.filter((p) => p.contractUntil != null && p.contractUntil <= completedYear);
+  if (!leaving.length) return [];
+  const leavingIds = new Set(leaving.map((p) => p.id));
+  leaving.forEach((p) => { if (state.championProgress) delete state.championProgress[p.id]; });
+  state.roster = state.roster.filter((p) => !leavingIds.has(p.id));
+  const names = leaving.map((p) => `${p.name} (${p.role})`).join(', ');
+  if (Array.isArray(state.careerLog)) {
+    state.careerLog.unshift(`Fin de contrat : ${names} quitte(nt) l'equipe. Poste(s) a pourvoir.`);
+  }
+  return leaving;
 }
 
 // Retourne la raison d'exemption si l'équipe accepte malgré le seuil, null sinon
@@ -1287,6 +1385,7 @@ function confirmTeamSelection(team, regionId) {
   state.teamShortName = team.shortName;
   state.aiTeamId = team.id;
   state.roster = JSON.parse(JSON.stringify(team.roster));
+  ensureRosterContracts(0); // contrats initiaux (fin Worlds 1 ou 2, pondéré par tier)
   initChampionProgress();
 
   closeModal();
@@ -1412,6 +1511,7 @@ function playerCardHtml(p) {
         <div class="player-card__identity">
           <div class="player-card__name">${p.name}</div>
           <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
+          ${p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
         </div>
         <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
       </div>
@@ -3381,6 +3481,7 @@ function finishInternational() {
   } else {
     intl.log.unshift(`${eventLabel(intl)} ${intl.year} terminé. Champion : ${getTeamName(intl.bracket.champion)}.`);
   }
+  state.mercatoOpen = true; // ouverture du mercato : prolongations possibles jusqu'au 1er match du prochain split
   saveGame();
 }
 
@@ -3389,9 +3490,42 @@ function proceedAfterInternational() {
   const season = state.season;
   if (intl.event === 'msi') {
     startSeason('summer', season.year);
-  } else {
-    startSeason('spring', season.year + 1);
+    return;
   }
+  // Worlds terminé : traiter les fins de contrat avant la nouvelle saison.
+  const completedYear = season.year;
+  const nextYear = season.year + 1;
+  const leaving = processContractExpirations(completedYear);
+  if (leaving.length) {
+    showContractDeparturesModal(leaving, () => startSeason('spring', nextYear));
+  } else {
+    startSeason('spring', nextYear);
+  }
+}
+
+// Annonce les joueurs partis en fin de contrat, puis enchaîne sur la nouvelle saison.
+function showContractDeparturesModal(leaving, onContinue) {
+  const rows = leaving.map((p) => `
+    <div class="transfer-card__header" style="margin-bottom:8px;">
+      <div class="mini-avatar">${getInitials(p.name)}</div>
+      <div class="transfer-card__identity">
+        <div class="transfer-card__name">${p.name}</div>
+        <div class="transfer-card__meta">${p.role} &mdash; fin de contrat</div>
+      </div>
+    </div>
+  `).join('');
+  showModal(`
+    <h3 class="panel-title">&#128203; Fins de contrat</h3>
+    <p style="margin-bottom:12px;">Faute de prolongation, ${leaving.length === 1 ? 'ce joueur quitte' : 'ces joueurs quittent'} l'équipe. Recrutez ${leaving.length === 1 ? 'un remplaçant' : 'des remplaçants'} au marché des transferts.</p>
+    <div class="transfer-release-list">${rows}</div>
+    <div class="modal-content__actions" style="margin-top:16px;">
+      <button class="btn-primary" id="btn-departures-continue">Continuer</button>
+    </div>
+  `);
+  document.getElementById('btn-departures-continue').addEventListener('click', () => {
+    closeModal();
+    if (typeof onContinue === 'function') onContinue();
+  });
 }
 
 function resolveInternationalSeries(rt) {
@@ -3578,9 +3712,11 @@ function renderRegularSeasonCalendar(el, season) {
       } else if (actionType === 'play') {
         const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
         season.pendingMatch = { type: 'regular', opponentTeamId: opponentId };
+        state.mercatoOpen = false; // le split démarre : fermeture du mercato
         saveGame();
         startMatchSeries(opponentId, 'BO3', 'on', `${splitLabel(season.split)} ${season.year} - ${season.region}`);
       } else {
+        state.mercatoOpen = false; // le split démarre : fermeture du mercato
         const pairings = season.schedule[season.matchday - 1] || [];
         pairings.forEach((p) => {
           if (p.home === 'player' || p.away === 'player') return;
@@ -5744,6 +5880,7 @@ function renderTransfers() {
     : '<div class="empty-state">Aucun joueur ne correspond aux filtres.</div>';
 
   el.innerHTML = `
+    ${renderContractsPanel()}
     <div class="panel">
       <div class="transfer-header">
         <div>
@@ -5798,16 +5935,141 @@ function renderTransfers() {
       if (candidate) showSignModal(candidate);
     });
   });
+
+  el.querySelectorAll('[data-extend-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showExtendModal(btn.dataset.extendId, parseInt(btn.dataset.extendYears, 10));
+    });
+  });
+}
+
+/* Section « Mon effectif — contrats » en tête du marché des transferts (v1.8.0). */
+function renderContractsPanel() {
+  if (!state.roster.length) return '';
+  const roleOrder = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
+  const windowOpen = isContractWindowOpen();
+  const sorted = [...state.roster].sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role));
+  const prestige = state.resources.prestige;
+  const budget = state.resources.budget;
+
+  const curYear = currentGameYear();
+  const rows = sorted.map((p) => {
+    const tier = getContractTier(p);
+    const final = isContractFinalYear(p);
+    const c1 = getExtensionCost(p, 1);
+    const c2 = getExtensionCost(p, 2);
+    const alreadyExtended = p.contractExtendedYear === curYear;
+    const btn = (years, c) => {
+      if (alreadyExtended) return '';
+      const affordable = prestige >= c.prestige && budget >= c.budget;
+      const ready = windowOpen && affordable;
+      const title = !windowOpen ? 'Disponible en inter-saison (après le MSI ou les Worlds)'
+        : (prestige < c.prestige ? `Prestige requis : ${c.prestige}` : (budget < c.budget ? `Budget requis : ${c.budget}` : 'Prolonger'));
+      // Jamais `disabled` : un bouton désactivé n'émet aucun clic. On garde le
+      // bouton cliquable et c'est showExtendModal qui explique le blocage.
+      return `<button class="btn-small ${ready ? 'btn-primary' : 'btn-secondary'}" style="${ready ? '' : 'opacity:.6;'}" data-extend-id="${escapeAttr(p.id)}" data-extend-years="${years}" title="${escapeAttr(title)}">
+        +${years} an${years > 1 ? 's' : ''} <span style="opacity:.85;">(P${c.prestige} · 💰${c.budget})</span>
+      </button>`;
+    };
+    const extendedBadge = alreadyExtended
+      ? `<span style="font-size:12px;color:var(--color-seafoam);font-weight:600;">✓ Prolongé cette saison</span>`
+      : `${btn(1, c1)}${btn(2, c2)}`;
+    return `
+      <div class="transfer-card" style="padding:10px;">
+        <div class="transfer-card__header">
+          <div class="mini-avatar">${getInitials(p.name)}</div>
+          <div class="transfer-card__identity">
+            <div class="transfer-card__name">${p.name} <span class="transfer-grade">${CONTRACT_TIER_LABELS[tier]}</span></div>
+            <div class="transfer-card__meta">${p.role} &mdash; Niveau ${computeLevel(p)}</div>
+          </div>
+          <div class="transfer-card__level" style="color:${final ? '#e0a020' : 'inherit'};">W${p.contractUntil}</div>
+        </div>
+        <div style="font-size:12px;margin:6px 0;color:${final ? '#e0a020' : 'var(--color-text-muted)'};">
+          Contrat jusqu'à Worlds ${p.contractUntil}${final ? ' — ⚠ dernière année' : ''}
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">${extendedBadge}</div>
+      </div>`;
+  }).join('');
+
+  const note = windowOpen
+    ? `<div style="background:rgba(46,204,160,.12);border:1px solid var(--color-seafoam);border-radius:8px;padding:8px 12px;margin-bottom:4px;">
+         <span style="color:var(--color-seafoam);font-weight:600;">🟢 Mercato ouvert</span>
+         <span style="font-size:12px;color:var(--color-text-muted);"> — prolongations possibles jusqu'au 1er match du prochain split. Le prestige est une exigence (non dépensé) ; seul le budget est payé.</span>
+       </div>`
+    : `<div style="background:rgba(255,255,255,.04);border:1px solid var(--color-border, #333);border-radius:8px;padding:8px 12px;margin-bottom:4px;">
+         <span style="color:#e0a020;font-weight:600;">🔒 Mercato fermé</span>
+         <span style="font-size:12px;color:var(--color-text-muted);"> — le split a commencé. La fenêtre rouvrira après le prochain MSI / Worlds. Prestige : <strong>${prestige}</strong> — Budget : <strong>${budget}</strong>.</span>
+       </div>`;
+
+  return `
+    <div class="panel">
+      <h3 class="panel-title">📜 Mon effectif — contrats</h3>
+      ${note}
+      <div class="transfer-grid" style="margin-top:10px;">${rows}</div>
+    </div>`;
+}
+
+function showExtendModal(playerId, years) {
+  const p = state.roster.find((x) => x.id === playerId);
+  if (!p) return;
+  if (!isContractWindowOpen()) {
+    showToast('Mercato fermé : le split a commencé. Les prolongations rouvriront après le prochain MSI / Worlds (toute la pré-saison).', 'info');
+    return;
+  }
+  if (p.contractExtendedYear === currentGameYear()) {
+    showToast(`${p.name} a déjà été prolongé cette saison. Une seule prolongation par joueur par saison.`, 'info');
+    return;
+  }
+  const c = getExtensionCost(p, years);
+  const newEnd = (p.contractUntil || currentGameYear()) + years;
+  const okPrestige = state.resources.prestige >= c.prestige;
+  const okBudget = state.resources.budget >= c.budget;
+  showModal(`
+    <h3 class="panel-title">Prolonger ${p.name}</h3>
+    <p style="margin-bottom:10px;">${p.name} (${CONTRACT_TIER_LABELS[getContractTier(p)]}) demande, pour <strong>${years} an${years > 1 ? 's' : ''}</strong> de plus (jusqu'à Worlds ${newEnd}) :</p>
+    <div class="transfer-card__stats" style="margin-bottom:12px;">
+      <span>Prestige exigé : <strong style="color:${okPrestige ? 'var(--color-seafoam)' : '#e05'};">${c.prestige}</strong> <span style="opacity:.7;">(vous : ${state.resources.prestige})</span></span>
+      <span>Budget payé : <strong style="color:${okBudget ? 'inherit' : '#e05'};">💰 ${c.budget}</strong> <span style="opacity:.7;">(vous : ${state.resources.budget})</span></span>
+    </div>
+    <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;">Le prestige n'est pas décrémenté : c'est un seuil de standing. Seul le budget est dépensé.</p>
+    <div class="modal-content__actions">
+      <button class="btn-primary" id="btn-confirm-extend" ${okPrestige && okBudget ? '' : 'disabled'}>Signer la prolongation</button>
+      <button class="btn-secondary" id="btn-cancel-extend">Annuler</button>
+    </div>
+  `);
+  document.getElementById('btn-cancel-extend').addEventListener('click', closeModal);
+  document.getElementById('btn-confirm-extend').addEventListener('click', () => {
+    extendContract(playerId, years);
+    closeModal();
+  });
+}
+
+function extendContract(playerId, years) {
+  const p = state.roster.find((x) => x.id === playerId);
+  if (!p) return;
+  if (!isContractWindowOpen()) { showToast('Mercato fermé : prolongations indisponibles pendant le split.', 'error'); return; }
+  const c = getExtensionCost(p, years);
+  if (state.resources.prestige < c.prestige) {
+    showToast(`Prestige insuffisant : ${p.name} exige ${c.prestige} de prestige (vous : ${state.resources.prestige}).`, 'error');
+    return;
+  }
+  if (state.resources.budget < c.budget) {
+    showToast(`Budget insuffisant : ${c.budget} requis (vous : ${state.resources.budget}).`, 'error');
+    return;
+  }
+  state.resources.budget -= c.budget; // prestige NON décrémenté (seuil de standing)
+  p.contractUntil = (p.contractUntil || currentGameYear()) + years;
+  p.contractExtendedYear = currentGameYear();
+  saveGame();
+  updateResourceBar();
+  showToast(`${p.name} prolongé jusqu'à Worlds ${p.contractUntil}. -${c.budget} budget.`, 'success');
+  renderTransfers();
 }
 
 function showSignModal(candidate) {
   const cost = getPlayerCost(candidate);
   const myPlayers = state.roster.filter(p => p.role === candidate.role);
-
-  if (myPlayers.length === 0) {
-    showToast('Aucun joueur a remplacer pour ce role.', 'error');
-    return;
-  }
+  const hasReplacements = myPlayers.length > 0;
 
   const releaseOptions = myPlayers.map(p => {
     const avg = getPlayerAvg(p);
@@ -5834,8 +6096,10 @@ function showSignModal(candidate) {
       <span>Niveau moy. : <strong>${avg}</strong></span>
       <span>Coût : <strong>💰 ${cost} budget</strong></span>
     </div>
-    <p style="margin-bottom:10px;">Choisissez le joueur a libérer :</p>
-    <div class="transfer-release-list">${releaseOptions}</div>
+    ${hasReplacements
+      ? `<p style="margin-bottom:10px;">Choisissez le joueur a libérer :</p>
+         <div class="transfer-release-list">${releaseOptions}</div>`
+      : `<p style="margin-bottom:10px;color:var(--color-seafoam);">Poste <strong>${candidate.role}</strong> vacant : signature directe, aucun joueur à libérer.</p>`}
     <div class="modal-content__actions" style="margin-top:16px;">
       <button class="btn-primary" id="btn-confirm-sign">Confirmer la signature</button>
       <button class="btn-secondary" id="btn-cancel-sign">Annuler</button>
@@ -5849,9 +6113,13 @@ function showSignModal(candidate) {
   document.getElementById('btn-cancel-sign').addEventListener('click', closeModal);
 
   document.getElementById('btn-confirm-sign').addEventListener('click', () => {
-    const selected = document.querySelector('input[name="release-player"]:checked');
-    if (!selected) { showToast('Selectionnez un joueur a libérer.', 'error'); return; }
-    signPlayer(candidate, selected.value);
+    if (hasReplacements) {
+      const selected = document.querySelector('input[name="release-player"]:checked');
+      if (!selected) { showToast('Selectionnez un joueur a libérer.', 'error'); return; }
+      signPlayer(candidate, selected.value);
+    } else {
+      signPlayer(candidate, null); // poste vacant : aucune libération
+    }
     closeModal();
   });
 }
@@ -5863,10 +6131,11 @@ function signPlayer(candidate, releasePlayerId) {
     return;
   }
 
-  const idx = state.roster.findIndex(p => p.id === releasePlayerId);
-  if (idx === -1) { showToast('Joueur introuvable.', 'error'); return; }
+  // releasePlayerId peut être null : signature sur un poste vacant (fin de contrat).
+  const idx = releasePlayerId ? state.roster.findIndex(p => p.id === releasePlayerId) : -1;
+  if (releasePlayerId && idx === -1) { showToast('Joueur introuvable.', 'error'); return; }
 
-  const released = state.roster[idx];
+  const released = idx !== -1 ? state.roster[idx] : null;
 
   // Champion pool : privilégier les comfort picks (champions + scores réels)
   const comforts = (candidate.comforts && candidate.comforts.length) ? candidate.comforts : null;
@@ -5889,9 +6158,15 @@ function signPlayer(candidate, releasePlayerId) {
     forme: undefined,
     comforts: undefined
   });
+  // Contrat de la recrue : au moins 1 an pleine (pas d'expiration immédiate).
+  newPlayer.contractUntil = assignInitialContract(newPlayer, currentGameYear(), 1);
 
-  // Remplacer dans le roster
-  state.roster[idx] = newPlayer;
+  // Remplacer dans le roster (ou ajouter si poste vacant)
+  if (idx !== -1) {
+    state.roster[idx] = newPlayer;
+  } else {
+    state.roster.push(newPlayer);
+  }
 
   // Initialiser la maîtrise champion (depuis les comfort picks si dispo, sinon décroissante)
   if (!state.championProgress) state.championProgress = {};
@@ -5924,7 +6199,7 @@ function signPlayer(candidate, releasePlayerId) {
 
   saveGame();
   updateResourceBar();
-  showToast(`${candidate.name} signé ! ${released.name} libéré. -${cost} budget.`, 'success');
+  showToast(released ? `${candidate.name} signé ! ${released.name} libéré. -${cost} budget.` : `${candidate.name} signé (poste vacant comblé). -${cost} budget.`, 'success');
   renderTransfers();
 }
 
