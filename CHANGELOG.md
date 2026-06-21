@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.9.1] — 2026-06-21
+
+### Corrigé
+- **Scouting — noms d'équipes invisibles** : les boutons de sélection d'équipe adverse n'avaient pas de couleur de texte explicite et héritaient d'une valeur sombre sur fond sombre. Ajout de `color: var(--color-text)` sur `.comp-tag-option` dans `style.css`.
+
+---
+
 ## [1.9.0] — 2026-06-21
 
 ### Ajouté

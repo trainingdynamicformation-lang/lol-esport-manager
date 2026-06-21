@@ -777,6 +777,7 @@ img { max-width: 100%; height: auto; }
   border-radius: 6px;
   padding: 5px 10px;
   font-size: var(--fs-label);
+  color: var(--color-text);
   cursor: pointer;
 }
 
