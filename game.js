@@ -2138,35 +2138,76 @@ function aiChooseBan(draft) {
   return fallback ? fallback.name : null;
 }
 
+// Un champion de l'IA contre-t-il le champion du joueur ?
+// Source de vérité identique à computeDraftScore : entrée de counter explicite,
+// repli sur les counterTags.
+function aiChampCounters(aiChampName, playerChampName) {
+  const aiChamp = getChampionByName(aiChampName);
+  const playerChamp = getChampionByName(playerChampName);
+  if (!aiChamp || !playerChamp) return false;
+  if (getCounterEntry(aiChamp.id, playerChamp.id)) return true;
+  return playerChamp.tags.some((t) => aiChamp.counterTags.includes(t));
+}
+
+// Meilleur champion candidat de l'IA pour un rôle donné (confort → flex → pool → repli).
+function aiCandidateForRole(draft, role) {
+  const opponent = getOpponentTeam(draft);
+  const profile = opponent.draftProfile;
+  const fitsRole = (champName) => {
+    const champion = getChampionByName(champName);
+    return champion && (champion.role === role || champion.secondaryRoles.includes(role));
+  };
+  if (profile) {
+    const comfort = ((profile.comfortPicks || {})[role] || []).find((c) => !isChampionTaken(draft, c) && fitsRole(c));
+    if (comfort) return comfort;
+    const flex = (profile.flexPicks || []).find((c) => !isChampionTaken(draft, c) && fitsRole(c));
+    if (flex) return flex;
+  }
+  const aiPlayer = opponent.roster.find((p) => p.role === role);
+  if (aiPlayer) {
+    const champName = aiPlayer.championPool.find((c) => !isChampionTaken(draft, c) && fitsRole(c));
+    if (champName) return champName;
+  }
+  const fallback = getChampionsForRole(role).find((c) => !isChampionTaken(draft, c.name));
+  return fallback ? fallback.name : null;
+}
+
+// Sélection non-linéaire (v1.9.0) : l'IA ne suit plus l'ordre TOP→SUP.
+// Elle cherche d'abord un rôle où elle peut contre-pick un champion déjà choisi
+// par le joueur dans la même lane ; sinon elle retombe sur l'ordre habituel.
 function aiChoosePick(draft) {
   const side = aiSide(draft);
   const picks = draft[side + 'Picks'];
   const roles = emptyRoles(picks);
   if (roles.length === 0) return null;
+
   const opponent = getOpponentTeam(draft);
   const profile = opponent.draftProfile;
+  const riskTolerance = profile ? (profile.riskTolerance != null ? profile.riskTolerance : 50) : 50;
+  const playerPicks = draft[draft.playerSide + 'Picks'];
+
+  // Recherche d'une opportunité de contre-pick : un rôle vide où le joueur a déjà
+  // pické et où l'IA dispose d'un candidat qui le contre dans la même lane.
+  const counterOpportunities = [];
+  roles.forEach((role) => {
+    const playerChamp = playerPicks[role];
+    if (!playerChamp) return;
+    const candidate = aiCandidateForRole(draft, role);
+    if (candidate && aiChampCounters(candidate, playerChamp)) {
+      counterOpportunities.push({ role, champName: candidate });
+    }
+  });
+
+  // L'IA saisit le contre-pick selon son agressivité (riskTolerance) : une équipe
+  // prudente ne le fait pas systématiquement, ce qui la garde imprévisible.
+  if (counterOpportunities.length && Math.random() * 100 < riskTolerance) {
+    return counterOpportunities[0];
+  }
+
+  // Repli : ordre habituel (premier rôle vide) + meilleur candidat.
   const role = roles[0];
-
-  const fitsRole = (champName) => {
-    const champion = getChampionByName(champName);
-    return champion && (champion.role === role || champion.secondaryRoles.includes(role));
-  };
-
-  if (profile) {
-    const comfort = ((profile.comfortPicks || {})[role] || []).find((c) => !isChampionTaken(draft, c) && fitsRole(c));
-    if (comfort) return { role, champName: comfort };
-
-    const flex = (profile.flexPicks || []).find((c) => !isChampionTaken(draft, c) && fitsRole(c));
-    if (flex) return { role, champName: flex };
-  }
-
-  const aiPlayer = opponent.roster.find((p) => p.role === role);
-  if (aiPlayer) {
-    const champName = aiPlayer.championPool.find((c) => !isChampionTaken(draft, c));
-    if (champName) return { role, champName };
-  }
-  const fallback = getChampionsForRole(role).find((c) => !isChampionTaken(draft, c.name));
-  return fallback ? { role, champName: fallback.name } : null;
+  const champName = aiCandidateForRole(draft, role);
+  return champName ? { role, champName } : null;
 }
 
 function resolveAiTurnsUntilPlayer() {
@@ -2432,6 +2473,20 @@ function getBestRosterComfort(champName) {
   return best;
 }
 
+/**
+ * Tous les joueurs du roster qui savent jouer ce champion (maîtrise >= 1),
+ * triés du plus maîtrisé au moins maîtrisé. Pour les flex picks (TF TOP+MID...),
+ * cela liste chaque joueur concerné avec son niveau.
+ */
+function getAllRosterComforts(champName) {
+  const list = [];
+  state.roster.forEach((p) => {
+    const mastery = (getChampionMastery(p.id, champName) || {}).mastery || 0;
+    if (mastery >= 1) list.push({ mastery, playerName: p.name, role: p.role, tier: getMasteryTier(mastery) });
+  });
+  return list.sort((a, b) => b.mastery - a.mastery);
+}
+
 function renderChampionGrid(draft, mode, role, roleFilter, search) {
   let pool = CHAMPIONS;
   if (roleFilter && roleFilter !== 'ALL') pool = pool.filter(c => c.role === roleFilter || (c.secondaryRoles && c.secondaryRoles.includes(roleFilter)));
@@ -2451,12 +2506,28 @@ function renderChampionGrid(draft, mode, role, roleFilter, search) {
           const tier = getMasteryTier(mastery);
           masteryBadge = `<span class="champion-chip champion-chip--${tier.id}">${mastery}</span>`;
         }
-        // Liséré de confort : champions qu'un de mes joueurs sait jouer (confort >= 1)
-        const comfort = getBestRosterComfort(c.name);
-        const comfortClass = comfort ? ` draft-champion-card--comfort draft-champion-card--comfort-${comfort.tier.id}` : '';
-        const comfortTitle = comfort ? ` title="${comfort.playerName} (${comfort.role}) — ${comfort.tier.label} ${comfort.mastery}"` : '';
+        // Liséré contextuel (v1.9.0) : en pick, basé sur la maîtrise du joueur DU
+        // rôle pické (TF pické au TOP = liséré du top, même si le mid le maîtrise mieux).
+        // En ban (pas de rôle), repli sur le meilleur confort tous rôles.
+        let borderTier = null;
+        if (mode === 'pick' && player) {
+          const roleMastery = (getChampionMastery(player.id, c.name) || {}).mastery || 0;
+          if (roleMastery >= 1) borderTier = getMasteryTier(roleMastery).id;
+        } else {
+          const best = getBestRosterComfort(c.name);
+          if (best) borderTier = best.tier.id;
+        }
+        const comfortClass = borderTier ? ` draft-champion-card--comfort draft-champion-card--comfort-${borderTier}` : '';
+        // Tooltip : tous les joueurs qui savent jouer ce champion (flex picks inclus).
+        const comforts = getAllRosterComforts(c.name);
+        const tooltipText = comforts.length
+          ? comforts.map((cf) => `${cf.role} — ${cf.playerName} : maîtrise ${cf.mastery}${cf.mastery < 25 ? ' ⚠ peu maîtrisé' : ` (${cf.tier.label})`}`).join('\n')
+          : '';
+        // Pas de data-lore-tooltip ici : la carte est un bouton de pick, un clic ne
+        // doit pas déclencher à la fois le pick ET un toast. title = hover desktop.
+        const tooltipAttr = tooltipText ? ` title="${escapeAttr(tooltipText)}"` : '';
         return `
-          <button class="draft-champion-card ${taken ? 'draft-champion-card--taken' : ''}${comfortClass}" data-champion="${c.name}"${comfortTitle} ${taken ? 'disabled' : ''}>
+          <button class="draft-champion-card ${taken ? 'draft-champion-card--taken' : ''}${comfortClass}" data-champion="${c.name}"${tooltipAttr} ${taken ? 'disabled' : ''}>
             <span class="draft-champion-card__name">${c.name}</span>
             <span class="draft-champion-card__role">${ROLE_NAMES[c.role] || c.role}</span>
             ${masteryBadge}

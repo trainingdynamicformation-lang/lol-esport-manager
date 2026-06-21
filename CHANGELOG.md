@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.9.0] — 2026-06-21
+
+### Ajouté
+- **IA de draft non-linéaire (counter-pick)** — l'IA ne suit plus strictement l'ordre TOP→JUNGLE→MID→ADC→SUPPORT. À chaque pick, elle cherche d'abord un rôle vide où le joueur a déjà choisi un champion qu'elle peut contrer dans la même lane (via `data_counters.js` + repli sur les counterTags), et y répond en priorité. Si aucun contre pertinent, elle retombe sur l'ordre habituel (confort pick). L'agressivité est pilotée par `riskTolerance` du profil IA : une équipe prudente ne contre pas systématiquement, ce qui la garde imprévisible. Nouvelles fonctions : `aiChampCounters`, `aiCandidateForRole`, `aiChoosePick` réécrit.
+- **Affichage champion contextuel au rôle (flex picks)** — pendant un pick, le liséré de confort d'un champion reflète désormais la maîtrise du joueur **du rôle en cours de sélection**, et non plus le meilleur score tous rôles confondus. Exemple : Twisted Fate maîtrisé 93 par le mid et 7 par le top affiche un liséré or quand on picke pour le mid, mais faible quand on picke pour le top.
+- **Tooltip multi-joueurs sur les champions de draft** — au survol d'un champion, la bulle liste désormais **tous** les joueurs du roster qui savent le jouer, avec leur rôle, leur maîtrise et un ⚠ « peu maîtrisé » si < 25. Nouvelle fonction `getAllRosterComforts`.
+
+---
+
 ## [1.8.11] — 2026-06-21
 
 ### Modifié
