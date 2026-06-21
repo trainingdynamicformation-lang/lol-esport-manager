@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.9.2] — 2026-06-21
+
+### Modifié
+- **Nouveau logo (logoV2.png)** — logo principal remplacé dans le jeu, le header et l'écran d'accueil. Icônes PWA régénérées : `icon-512.png` (512×512), `icon-192.png` (192×192), `apple-touch-icon.png` (180×180 iOS). Favicons navigateur : `favicon-32.png` et `favicon-16.png` avec balises `<link sizes>` dans `index.html` pour une meilleure prise en charge multi-navigateur.
+
+---
+
 ## [1.9.1] — 2026-06-21
 
 ### Corrigé
