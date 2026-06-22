@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.9.4] — 2026-06-22
+
+### Corrigé
+- **Phase de groupes internationale jouée deux fois** — au démarrage du MSI/Worlds, les groupes 100 % IA (sans le joueur) voyaient leur journée 1 simulée deux fois : chaque équipe affichait 1V-1D (2 séries) alors qu'un seul match aurait dû être joué, pendant que le groupe du joueur restait à 0-0 et que l'en-tête indiquait toujours « Journée 1/3 ». Cause : deux points d'entrée déclenchaient la simulation (l'effet de bord du rendu du calendrier **et** le bouton « C'est parti ! » du modal d'intro), et un appel « frais » repartait du groupe 0 sans que la journée se soit incrémentée. Ajout d'une garde dans `processInternationalGroupMatchday()` : un démarrage sans argument ne resimule plus une journée déjà lancée et en attente du match du joueur. Le déroulé reprend désormais un seul round par journée pour tous les groupes.
+
+---
+
 ## [1.9.3] — 2026-06-22
 
 ### Ajouté

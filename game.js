@@ -3525,6 +3525,12 @@ function sortGroupStandings(group, standings) {
 
 function processInternationalGroupMatchday(startGroup, startPairing) {
   const intl = state.international;
+  // Garde anti-double-simulation (v1.9.4) : un démarrage « frais » (appel sans
+  // argument, donc qui repart du groupe 0) ne doit jamais resimuler une journée
+  // déjà lancée et en attente du match du joueur. Sans cette garde, les deux
+  // points d'entrée du démarrage (rendu du calendrier + bouton « C'est parti ! »)
+  // faisaient jouer deux fois la même journée aux groupes 100 % IA.
+  if (startGroup == null && intl.pendingMatch) return;
   const gStart = startGroup || 0;
   for (let g = gStart; g < intl.groups.length; g++) {
     const rounds = intl.groupSchedules[g];
