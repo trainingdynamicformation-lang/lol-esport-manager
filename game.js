@@ -3476,7 +3476,9 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
         </p>
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
           <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} équipes, round-robin en BO3. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
-          <li><strong>Bracket a élimination directe</strong> — ${isMSI ? 'Demi-finales et finale en BO5.' : 'Quarts de finale, demi-finales et grande finale, tous en BO5.'}</li>
+          ${isMSI
+            ? `<li><strong>Bracket a élimination directe</strong> — demi-finales et finale en BO5.</li>`
+            : `<li><strong>Bracket a double élimination</strong> (BO5) — un <strong>upper bracket</strong> où une défaite vous fait basculer en <strong>lower bracket</strong>, et une seconde défaite vous élimine. Le vainqueur de l'upper et celui qui survit au lower s'affrontent en grande finale.</li>`}
         </ul>
       </div>
       <div>
@@ -3558,21 +3560,44 @@ function processInternationalGroupMatchday(startGroup, startPairing) {
   processInternationalGroupMatchday();
 }
 
-function buildInternationalBracket(seeds) {
+function loserOf(m) {
+  return m.result.loser;
+}
+
+function buildInternationalBracket(seeds, eventType) {
   const matches = {};
+  const M = (home, away) => ({ home: home != null ? home : null, away: away != null ? away : null, format: 'BO5', result: null });
   if (seeds.length === 4) {
-    matches.sf1 = { home: seeds[0], away: seeds[3], format: 'BO5', result: null };
-    matches.sf2 = { home: seeds[1], away: seeds[2], format: 'BO5', result: null };
-    matches.final = { home: null, away: null, format: 'BO5', result: null };
+    // MSI : 4 équipes, simple élimination (inchangé)
+    matches.sf1 = M(seeds[0], seeds[3]);
+    matches.sf2 = M(seeds[1], seeds[2]);
+    matches.final = M();
     return { matches, round: 'sf' };
   }
-  matches.qf1 = { home: seeds[0], away: seeds[7], format: 'BO5', result: null };
-  matches.qf2 = { home: seeds[3], away: seeds[4], format: 'BO5', result: null };
-  matches.qf3 = { home: seeds[2], away: seeds[5], format: 'BO5', result: null };
-  matches.qf4 = { home: seeds[1], away: seeds[6], format: 'BO5', result: null };
-  matches.sf1 = { home: null, away: null, format: 'BO5', result: null };
-  matches.sf2 = { home: null, away: null, format: 'BO5', result: null };
-  matches.final = { home: null, away: null, format: 'BO5', result: null };
+  if (eventType === 'worlds') {
+    // Worlds : 8 équipes, DOUBLE ÉLIMINATION (v1.10.0).
+    // Upper bracket — quarts (même seeding anti-clash que l'ancien format)
+    matches.qf1 = M(seeds[0], seeds[7]);
+    matches.qf2 = M(seeds[3], seeds[4]);
+    matches.qf3 = M(seeds[2], seeds[5]);
+    matches.qf4 = M(seeds[1], seeds[6]);
+    matches.df1 = M(); matches.df2 = M(); // demis upper bracket
+    matches.f = M();                       // finale upper bracket
+    // Lower bracket
+    matches.lb1 = M(); matches.lb2 = M(); // perdants des quarts
+    matches.lb3 = M(); matches.lb4 = M(); // vainqueur LB1/LB2 vs perdants demis UB
+    matches.lb5 = M();                     // demi lower bracket
+    matches.lb6 = M();                     // finale lower bracket (vs perdant finale UB)
+    matches.gf = M();                      // grande finale
+    return { matches, type: 'double', stage: 'qf' };
+  }
+  // Fallback simple élimination 8 (ne devrait plus servir)
+  matches.qf1 = M(seeds[0], seeds[7]);
+  matches.qf2 = M(seeds[3], seeds[4]);
+  matches.qf3 = M(seeds[2], seeds[5]);
+  matches.qf4 = M(seeds[1], seeds[6]);
+  matches.sf1 = M(); matches.sf2 = M();
+  matches.final = M();
   return { matches, round: 'qf' };
 }
 
@@ -3587,13 +3612,21 @@ function finishGroupStage() {
     intl.log.unshift(`Groupe ${String.fromCharCode(65 + idx)} : 1. ${getTeamShortName(ranked[0])}, 2. ${getTeamShortName(ranked[1])} qualifiés.`);
   });
   const seedsOrdered = winners.concat(runnersup);
-  const built = buildInternationalBracket(seedsOrdered);
-  intl.bracket = { seeds: seedsOrdered, matches: built.matches, round: built.round, champion: null };
+  const built = buildInternationalBracket(seedsOrdered, intl.event);
+  intl.bracket = {
+    seeds: seedsOrdered,
+    matches: built.matches,
+    type: built.type || 'single',
+    round: built.round || null,
+    stage: built.stage || null,
+    champion: null
+  };
   intl.phase = 'bracket';
   processInternationalBracketRound();
 }
 
 function advanceInternationalBracket(bracket) {
+  if (bracket.type === 'double') { advanceDoubleBracket(bracket); return; }
   const m = bracket.matches;
   if (bracket.round === 'qf') {
     m.sf1.home = winnerOf(m.qf1);
@@ -3611,23 +3644,86 @@ function advanceInternationalBracket(bracket) {
   }
 }
 
+// Double élimination Worlds : propage vainqueurs (upper) et perdants (vers lower)
+// à chaque transition d'étape. Étapes : qf -> r2 -> r3 -> lb5 -> lb6 -> gf -> done.
+function advanceDoubleBracket(bracket) {
+  const m = bracket.matches;
+  const W = (k) => winnerOf(m[k]);
+  const L = (k) => loserOf(m[k]);
+  switch (bracket.stage) {
+    case 'qf':
+      m.df1.home = W('qf1'); m.df1.away = W('qf2');
+      m.df2.home = W('qf3'); m.df2.away = W('qf4');
+      m.lb1.home = L('qf1'); m.lb1.away = L('qf2');
+      m.lb2.home = L('qf3'); m.lb2.away = L('qf4');
+      bracket.stage = 'r2';
+      break;
+    case 'r2':
+      m.f.home = W('df1'); m.f.away = W('df2');
+      m.lb3.home = W('lb1'); m.lb3.away = L('df2');
+      m.lb4.home = W('lb2'); m.lb4.away = L('df1');
+      bracket.stage = 'r3';
+      break;
+    case 'r3':
+      m.lb5.home = W('lb3'); m.lb5.away = W('lb4');
+      bracket.stage = 'lb5';
+      break;
+    case 'lb5':
+      m.lb6.home = W('lb5'); m.lb6.away = L('f');
+      bracket.stage = 'lb6';
+      break;
+    case 'lb6':
+      m.gf.home = W('f'); m.gf.away = W('lb6');
+      bracket.stage = 'gf';
+      break;
+    case 'gf':
+      bracket.champion = W('gf');
+      bracket.stage = 'done';
+      break;
+  }
+}
+
+const DOUBLE_STAGE_KEYS = {
+  qf: ['qf1', 'qf2', 'qf3', 'qf4'],
+  r2: ['df1', 'df2', 'lb1', 'lb2'],
+  r3: ['f', 'lb3', 'lb4'],
+  lb5: ['lb5'],
+  lb6: ['lb6'],
+  gf: ['gf']
+};
+
 function internationalRoundLabel(round) {
   return { qf: 'Quarts de finale', sf: 'Demi-finales', final: 'Finale' }[round] || round;
 }
 
+// Libellé court d'un match par sa clé — couvre simple ET double élimination.
+function intlMatchLabel(key) {
+  return {
+    qf1: 'Quart 1', qf2: 'Quart 2', qf3: 'Quart 3', qf4: 'Quart 4',
+    sf1: 'Demi 1', sf2: 'Demi 2', final: 'Finale',
+    df1: 'UB Demi 1', df2: 'UB Demi 2', f: 'UB Finale',
+    lb1: 'LB Tour 1', lb2: 'LB Tour 1', lb3: 'LB Tour 2', lb4: 'LB Tour 2',
+    lb5: 'LB Demi', lb6: 'LB Finale', gf: 'Grande Finale'
+  }[key] || key;
+}
+
 function internationalRoundLabelFromKey(key) {
-  return { qf1: 'Quart 1', qf2: 'Quart 2', qf3: 'Quart 3', qf4: 'Quart 4', sf1: 'Demi 1', sf2: 'Demi 2', final: 'Finale' }[key] || key;
+  return intlMatchLabel(key);
 }
 
 function processInternationalBracketRound() {
   const intl = state.international;
   const bracket = intl.bracket;
-  if (bracket.round === 'done') {
+  const isDouble = bracket.type === 'double';
+  const stage = isDouble ? bracket.stage : bracket.round;
+  if (stage === 'done') {
     finishInternational();
     return;
   }
 
-  const keys = bracket.round === 'qf' ? ['qf1', 'qf2', 'qf3', 'qf4'] : (bracket.round === 'sf' ? ['sf1', 'sf2'] : ['final']);
+  const keys = isDouble
+    ? DOUBLE_STAGE_KEYS[stage]
+    : (stage === 'qf' ? ['qf1', 'qf2', 'qf3', 'qf4'] : (stage === 'sf' ? ['sf1', 'sf2'] : ['final']));
 
   for (const key of keys) {
     const m = bracket.matches[key];
@@ -3641,7 +3737,7 @@ function processInternationalBracketRound() {
     const res = simulateAISeries(m.home, m.away, m.format);
     recordAIMatchResult(m.home, m.away, res.winner);
     m.result = { winner: res.winner, loser: res.loser, scoreA: res.scoreA, scoreB: res.scoreB };
-    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${getTeamName(res.winner)} éliminé ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+    intl.log.unshift(`${eventLabel(intl)} (${intlMatchLabel(key)}) : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
   }
 
   advanceInternationalBracket(bracket);
@@ -3653,6 +3749,16 @@ function getInternationalPlacement(intl) {
   if (!intl.bracket || !intl.bracket.seeds.includes('player')) return 9;
   const b = intl.bracket;
   if (b.champion === 'player') return 1;
+  if (b.type === 'double') {
+    // L'élimination est déterminée par la dernière défaite en lower bracket (ou grande finale).
+    const lostIn = (k) => b.matches[k] && b.matches[k].result && b.matches[k].result.loser === 'player';
+    if (lostIn('gf')) return 2;
+    if (lostIn('lb6')) return 3;
+    if (lostIn('lb5')) return 4;
+    if (lostIn('lb3') || lostIn('lb4')) return 5;
+    if (lostIn('lb1') || lostIn('lb2')) return 7;
+    return 5;
+  }
   const f = b.matches.final;
   if (f.home === 'player' || f.away === 'player') return 2;
   if (['sf1', 'sf2'].some((k) => b.matches[k] && (b.matches[k].home === 'player' || b.matches[k].away === 'player'))) return 3;
@@ -3780,7 +3886,7 @@ function resolveInternationalSeries(rt) {
       scoreA: scoreFor,
       scoreB: scoreAgainst
     };
-    intl.log.unshift(`${eventLabel(intl)} (${internationalRoundLabel(bracket.round)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    intl.log.unshift(`${eventLabel(intl)} (${intlMatchLabel(pm.matchKey)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
     intl.pendingMatch = null;
     processInternationalBracketRound();
   }
@@ -4058,10 +4164,33 @@ function drawPoBracketLines(bracketId) {
   // Worlds (8 équipes) : 4 quarts -> 2 demis
   connect(get('po-qf1-top'), get('po-qf1-bot'), get('po-sf-top'), BL);
   connect(get('po-qf2-top'), get('po-qf2-bot'), get('po-sf-bot'), BL);
-  // Demi-finales -> Finale (saison, MSI, Worlds)
+  // Demi-finales -> Finale (saison, MSI, Worlds simple élim)
   connect(get('po-sf-top'), get('po-sf-bot'), get('po-final'), GD);
   // Finale -> bloc Vainqueur
   single(get('po-final'), get('po-champion'), GD);
+  // Worlds double élimination — connecteurs internes par section (null-safe).
+  // Upper bracket
+  connect(get('po-ub-qf1'), get('po-ub-qf2'), get('po-ub-df1'), BL);
+  connect(get('po-ub-qf3'), get('po-ub-qf4'), get('po-ub-df2'), BL);
+  connect(get('po-ub-df1'), get('po-ub-df2'), get('po-ub-f'), GD);
+  // Lower bracket (les arrivées externes depuis l'upper sont indiquées par les libellés)
+  single(get('po-lb-1'), get('po-lb-3'), BL);
+  single(get('po-lb-2'), get('po-lb-4'), BL);
+  connect(get('po-lb-3'), get('po-lb-4'), get('po-lb-5'), BL);
+  single(get('po-lb-5'), get('po-lb-6'), GD);
+  // Grande finale -> bloc Vainqueur
+  single(get('po-gf'), get('po-champion'), GD);
+}
+
+// Trace les lignes du bracket international : 3 sous-conteneurs si double élim.
+function drawIntlBracketLines(b) {
+  if (b && b.type === 'double') {
+    drawPoBracketLines('po-bracket-intl-ub');
+    drawPoBracketLines('po-bracket-intl-lb');
+    drawPoBracketLines('po-bracket-intl-gf');
+  } else {
+    drawPoBracketLines('po-bracket-intl');
+  }
 }
 
 function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
@@ -4104,7 +4233,90 @@ function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
   </div>`;
 }
 
+// Bracket double élimination (Worlds, v1.10.0) : Upper + Lower + Grande Finale.
+function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
+  const m = b.matches;
+  const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
+  const champ = b.champion || (m.gf.result ? m.gf.result.winner : null);
+  const legend = `<div class="po-legend">
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+  </div>`;
+  const pairCol = (H, lbl, c1, c2) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">${c1}${c2}</div>
+  </div>`;
+  const singleCol = (H, lbl, card) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">${card}</div>
+  </div>`;
+  const sectionTitle = (t, sub) => `<div class="dbl-section-title">${t}${sub ? ` <span class="dbl-section-sub">${sub}</span>` : ''}</div>`;
+
+  // ---------- UPPER BRACKET ----------
+  const Hub = 430;
+  const halfH = Math.floor((Hub - 38) / 2);
+  const ubQfCol = `<div style="height:${Hub}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">Quarts UB<br>BO5</div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
+        ${poBracketCard('po-ub-qf1', 'Quart 1', m.qf1, 1, 8, isUp('qf1'), false)}
+        ${poBracketCard('po-ub-qf2', 'Quart 2', m.qf2, 4, 5, isUp('qf2'), false)}
+      </div>
+      <div style="flex:1;"></div>
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
+        ${poBracketCard('po-ub-qf3', 'Quart 3', m.qf3, 3, 6, isUp('qf3'), false)}
+        ${poBracketCard('po-ub-qf4', 'Quart 4', m.qf4, 2, 7, isUp('qf4'), false)}
+      </div>
+    </div>
+  </div>`;
+  const ubHtml = `<div class="po-bracket" id="po-bracket-intl-ub">
+    <svg class="po-bracket__svg"></svg>
+    ${ubQfCol}
+    <div class="po-gap"></div>
+    ${pairCol(Hub, 'Demis UB<br>BO5', poBracketCard('po-ub-df1', 'Demi UB 1', m.df1, null, null, isUp('df1'), false), poBracketCard('po-ub-df2', 'Demi UB 2', m.df2, null, null, isUp('df2'), false))}
+    <div class="po-gap"></div>
+    ${singleCol(Hub, 'Finale UB<br>BO5', poBracketCard('po-ub-f', 'Finale UB', m.f, null, null, isUp('f'), false))}
+  </div>`;
+
+  // ---------- LOWER BRACKET ----------
+  const Hlb = 300;
+  const lbHtml = `<div class="po-bracket" id="po-bracket-intl-lb">
+    <svg class="po-bracket__svg"></svg>
+    ${pairCol(Hlb, 'LB Tour 1<br>BO5', poBracketCard('po-lb-1', 'Perd. Q1/Q2', m.lb1, null, null, isUp('lb1'), false), poBracketCard('po-lb-2', 'Perd. Q3/Q4', m.lb2, null, null, isUp('lb2'), false))}
+    <div class="po-gap"></div>
+    ${pairCol(Hlb, 'LB Tour 2<br>BO5', poBracketCard('po-lb-3', 'vs Perd. Demi UB 2', m.lb3, null, null, isUp('lb3'), false), poBracketCard('po-lb-4', 'vs Perd. Demi UB 1', m.lb4, null, null, isUp('lb4'), false))}
+    <div class="po-gap"></div>
+    ${singleCol(Hlb, 'LB Demi<br>BO5', poBracketCard('po-lb-5', 'LB Demi', m.lb5, null, null, isUp('lb5'), false))}
+    <div class="po-gap"></div>
+    ${singleCol(Hlb, 'LB Finale<br>BO5', poBracketCard('po-lb-6', 'vs Perd. Finale UB', m.lb6, null, null, isUp('lb6'), false))}
+  </div>`;
+
+  // ---------- GRANDE FINALE ----------
+  const Hgf = 240;
+  const gfHtml = `<div class="po-bracket" id="po-bracket-intl-gf">
+    <svg class="po-bracket__svg"></svg>
+    ${singleCol(Hgf, 'Grande Finale<br>BO5', poBracketCard('po-gf', 'Vainq. UB vs Vainq. LB', m.gf, null, null, isUp('gf'), true))}
+    <div class="po-gap"></div>
+    <div style="height:${Hgf}px;display:flex;flex-direction:column;">
+      <div class="po-col__label">&nbsp;<br>&nbsp;</div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;">${poChampionBlock(seasonLabel || '', champ)}</div>
+    </div>
+  </div>`;
+
+  return `<div class="po-bracket-wrapper dbl-bracket">
+    ${sectionTitle('Upper Bracket', 'le perdant tombe en lower bracket')}
+    ${ubHtml}
+    ${sectionTitle('Lower Bracket', 'une défaite = élimination')}
+    ${lbHtml}
+    ${sectionTitle('Grande Finale')}
+    ${gfHtml}
+    ${legend}
+  </div>`;
+}
+
 function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
+  if (b.type === 'double') return buildDoubleBracketHtml(b, pendingMatch, seasonLabel);
   const m = b.matches;
   const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
   const has8 = !!m.qf1;
@@ -4342,7 +4554,7 @@ function renderInternationalBracket(el, intl) {
     <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
   `;
 
-  requestAnimationFrame(() => drawPoBracketLines('po-bracket-intl'));
+  requestAnimationFrame(() => drawIntlBracketLines(b));
 
   const btn = document.getElementById('btn-international-action');
   if (btn) {
@@ -4383,7 +4595,7 @@ function renderInternationalRecap(el, intl) {
     </div>
   `;
 
-  if (intl.bracket) requestAnimationFrame(() => drawPoBracketLines('po-bracket-intl'));
+  if (intl.bracket) requestAnimationFrame(() => drawIntlBracketLines(intl.bracket));
 
   const btn = document.getElementById('btn-international-continue');
   if (btn) {

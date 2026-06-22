@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.10.0] — 2026-06-22
+
+### Ajouté
+- **Worlds en double élimination** — la phase finale des Worlds adopte le format réaliste à upper/lower bracket (le MSI reste en simple élimination). Les 8 qualifiés des groupes entrent dans un **upper bracket** (Quarts → Demis UB → Finale UB) ; chaque défaite fait basculer dans le **lower bracket** (LB Tour 1 → LB Tour 2 → LB Demi → LB Finale), où une 2ᵉ défaite élimine. Le vainqueur de l'upper et le survivant du lower s'affrontent en **grande finale** (BO5). 14 séries au total au lieu de 7.
+  - **Classements distincts** : 1er (vainqueur grande finale), 2e (finaliste), 3e (perdant LB Finale), 4e (perdant LB Demi), 5e-6e (perdants LB Tour 2), 7e-8e (perdants LB Tour 1). Les récompenses budget/prestige suivent ce classement via le barème existant (multiplicateur Worlds ×1.5).
+  - **Nouveau visuel** : bracket sur 3 sections (Upper / Lower / Grande Finale) avec connecteurs, états colorés (qualifié, prochain match, éliminé) et bloc champion.
+  - Le modal d'intro des Worlds décrit désormais le format double élimination.
+
+### Technique
+- Modèle de bracket étendu (`type: 'double'`, machine d'étapes `qf → r2 → r3 → lb5 → lb6 → gf`). Nouvelles fonctions : `advanceDoubleBracket`, `buildDoubleBracketHtml`, `drawIntlBracketLines`, `loserOf`, `intlMatchLabel`. `buildInternationalBracket`, `processInternationalBracketRound` et `getInternationalPlacement` gèrent les deux formats. Moteur de phase de groupes et MSI inchangés.
+
+---
+
 ## [1.9.4] — 2026-06-22
 
 ### Corrigé
