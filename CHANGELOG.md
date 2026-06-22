@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.10.2] — 2026-06-22
+
+### Corrigé
+- **Worlds — alignement visuel de l'upper bracket** : les demi-finales upper bracket n'étaient pas centrées verticalement par rapport à leurs quarts (Demi 1 collée au Quart 1, Demi 2 collée au Quart 4), ce qui rendait les lignes de liaison asymétriques. Demi UB 1 est désormais centrée sur le couple Quart 1/Quart 2 et Demi UB 2 sur le couple Quart 3/Quart 4 → liaisons centrées et symétriques.
+
+---
+
 ## [1.10.1] — 2026-06-22
 
 ### Modifié

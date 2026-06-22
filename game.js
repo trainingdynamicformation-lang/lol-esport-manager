@@ -4264,6 +4264,17 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
   // ---------- UPPER BRACKET ----------
   const Hub = 430;
   const halfH = Math.floor((Hub - 38) / 2);
+  // Colonne "demis" alignée sur la structure en deux moitiés des quarts : la carte
+  // du haut est centrée sur le couple Q1/Q2, celle du bas sur Q3/Q4 → liaisons
+  // centrées et symétriques (v1.10.2).
+  const halfSplitCol = (H, lbl, cTop, cBot) => `<div style="height:${H}px;display:flex;flex-direction:column;">
+    <div class="po-col__label">${lbl}</div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:center;">${cTop}</div>
+      <div style="flex:1;"></div>
+      <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:center;">${cBot}</div>
+    </div>
+  </div>`;
   const ubQfCol = `<div style="height:${Hub}px;display:flex;flex-direction:column;">
     <div class="po-col__label">Quarts UB<br>BO5</div>
     <div style="flex:1;display:flex;flex-direction:column;">
@@ -4282,7 +4293,7 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
     <svg class="po-bracket__svg"></svg>
     ${ubQfCol}
     <div class="po-gap"></div>
-    ${pairCol(Hub, 'Demis UB<br>BO5', poBracketCard('po-ub-df1', 'Demi UB 1', m.df1, null, null, isUp('df1'), false), poBracketCard('po-ub-df2', 'Demi UB 2', m.df2, null, null, isUp('df2'), false))}
+    ${halfSplitCol(Hub, 'Demis UB<br>BO5', poBracketCard('po-ub-df1', 'Demi UB 1', m.df1, null, null, isUp('df1'), false), poBracketCard('po-ub-df2', 'Demi UB 2', m.df2, null, null, isUp('df2'), false))}
     <div class="po-gap"></div>
     ${singleCol(Hub, 'Finale UB<br>BO5', poBracketCard('po-ub-f', 'Finale UB', m.f, null, null, isUp('f'), false))}
   </div>`;
