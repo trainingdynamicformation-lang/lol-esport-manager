@@ -3768,11 +3768,19 @@ function getInternationalPlacement(intl) {
 function getInternationalRewards(event, placement) {
   const mult = event === 'worlds' ? 1.5 : 1.25;
   const base = getPlacementRewards(placement);
-  return {
+  const rewards = {
     coaching: Math.round(base.coaching * mult),
     budget: Math.round(base.budget * mult),
     prestige: Math.round(base.prestige * mult) + (event === 'worlds' ? 2 : 1)
   };
+  // v1.10.1 — Worlds : la 3e place (perdant de la finale lower bracket) devient un
+  // palier distinct, mieux récompensé que la 4e pour valoriser le parcours plus long.
+  if (event === 'worlds' && placement === 3) {
+    rewards.coaching = 120;
+    rewards.budget = 165;
+    rewards.prestige = 13;
+  }
+  return rewards;
 }
 
 // Région d'une équipe (joueur ou IA), pour mémoriser le vainqueur international.

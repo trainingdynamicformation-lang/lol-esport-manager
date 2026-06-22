@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.10.1] — 2026-06-22
+
+### Modifié
+- **Worlds — 3e place mieux récompensée** : le perdant de la finale lower bracket (3e) constitue désormais un palier distinct du 4e, pour valoriser son parcours plus long. Récompenses 3e : **165 budget / 120 coaching / 13 prestige** (au lieu de 143 / 105 / 11, identiques au 4e auparavant). Le 4e et les autres places sont inchangés ; le barème domestique et le MSI ne sont pas affectés.
+
+---
+
 ## [1.10.0] — 2026-06-22
 
 ### Ajouté
