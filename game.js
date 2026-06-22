@@ -122,6 +122,8 @@ function createDefaultState() {
     matchSeries: null,
     season: null,
     international: null,
+    lastMsiWinnerRegion: null, // région du dernier vainqueur MSI → ouvre une 3e place Worlds (même année)
+    lastWorldsWinnerRegion: null, // région du dernier vainqueur Worlds → ouvre une 2e place MSI (année suivante)
     mercatoOpen: true, // fenêtre de prolongation : ouverte en pré-saison, fermée au 1er match du split
     aiRosters: {},
     aiMatchHistory: {},
@@ -227,6 +229,8 @@ function loadGame() {
       matchSeries: parsed.matchSeries !== undefined ? parsed.matchSeries : defaults.matchSeries,
       season: parsed.season !== undefined ? parsed.season : defaults.season,
       international: parsed.international !== undefined ? parsed.international : defaults.international,
+      lastMsiWinnerRegion: parsed.lastMsiWinnerRegion !== undefined ? parsed.lastMsiWinnerRegion : defaults.lastMsiWinnerRegion,
+      lastWorldsWinnerRegion: parsed.lastWorldsWinnerRegion !== undefined ? parsed.lastWorldsWinnerRegion : defaults.lastWorldsWinnerRegion,
       mercatoOpen: parsed.mercatoOpen !== undefined ? parsed.mercatoOpen : true,
       aiRosters: parsed.aiRosters || defaults.aiRosters,
       aiMatchHistory: parsed.aiMatchHistory || defaults.aiMatchHistory,
@@ -2841,8 +2845,21 @@ function showSeasonIntroModal(split, year, teamIds) {
   const regionSlots = getRegionRepCounts(eventType, playerAiRegion)[playerAiRegion] || 2;
   const qualifTiersHtml = `
     <li>Le <strong>champion des playoffs</strong>.</li>
-    <li>Le <strong>finaliste</strong> (perdant de la grande finale).</li>
+    ${regionSlots >= 2 ? `<li>Le <strong>finaliste</strong> (perdant de la grande finale).</li>` : ''}
     ${regionSlots >= 3 ? `<li>Le <strong>meilleur demi-finaliste éliminé</strong>, départagé selon le classement de la saison reguliere (meilleur seed).</li>` : ''}`;
+  // Note explicative sur la place bonus liée à l'autre tournoi (boucle MSI <-> Worlds).
+  let linkNoteHtml = '';
+  if (eventType === 'msi') {
+    const w = state.lastWorldsWinnerRegion;
+    linkNoteHtml = w
+      ? `&#128279; La <strong>2ᵉ place MSI</strong> revient à la région vainqueure des derniers Worlds : <strong>${w}</strong>${w === playerAiRegion ? ' (votre région — vous avez donc 2 places)' : ' — votre région n\'a qu\'1 place, seul votre champion ira au MSI'}.`
+      : `&#128279; Aucun Worlds n'a encore eu lieu : par défaut, votre région bénéficie de la <strong>2ᵉ place MSI</strong> cette année.`;
+  } else {
+    const m = state.lastMsiWinnerRegion;
+    linkNoteHtml = m
+      ? `&#128279; Le vainqueur du MSI ouvre une <strong>3ᵉ place Worlds</strong> pour sa région : <strong>${m}</strong>. Une place structurelle majeure (LCK/LPL) complète les 16 qualifiés.`
+      : `&#128279; Aucun MSI enregistré : par défaut, votre région bénéficie d'une <strong>3ᵉ place Worlds</strong> cette année.`;
+  }
   const teamListHtml = teamIds.map((id, i) => {
     const t = getTeamRef(id);
     const name = t ? t.name : id;
@@ -2878,6 +2895,9 @@ function showSeasonIntroModal(split, year, teamIds) {
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
           ${qualifTiersHtml}
         </ul>
+        <p style="color:var(--color-text-muted);line-height:1.6;margin-top:8px;font-size:13px;border-left:2px solid var(--color-gold);padding-left:10px;">
+          ${linkNoteHtml}
+        </p>
       </div>
       <div>
         <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Équipes participantes</h3>
@@ -3289,17 +3309,30 @@ function teamPowerRating(teamId) {
   return averageRosterLevel(t.roster) + (t.tier ? (6 - t.tier) : 0);
 }
 
+// Région qui reçoit la place bonus liée au tournoi précédent, avec filet de
+// sécurité : si aucun vainqueur n'est encore enregistré (1re saison / vieille
+// sauvegarde), la place revient à la région du joueur — garantit le total fixe.
+function getBonusRegion(storedRegion, counts, playerAiRegion) {
+  return (storedRegion && counts[storedRegion] != null) ? storedRegion : playerAiRegion;
+}
+
 function getRegionRepCounts(eventType, playerAiRegion) {
   const allAiRegions = ['LEC', 'LCK', 'LPL', 'LTAN', 'LTAS', 'LCP', 'LJL'];
   const counts = {};
   if (eventType === 'msi') {
     allAiRegions.forEach((r) => { counts[r] = 1; });
-    counts[playerAiRegion] += 1; // 6*1 + 2 = 8 équipes
+    // 2e place MSI : région vainqueure des derniers Worlds (filet année 1 : région du joueur).
+    const worldsWinner = getBonusRegion(state.lastWorldsWinnerRegion, counts, playerAiRegion);
+    counts[worldsWinner] += 1; // 7*1 + 1 = 8 équipes
   } else {
     allAiRegions.forEach((r) => { counts[r] = 2; });
-    counts[playerAiRegion] += 1; // base 14 + 1 = 15
-    const extra = playerAiRegion === 'LPL' ? 'LCK' : 'LPL';
-    counts[extra] += 1; // + 1 = 16 équipes
+    // Place MSI : 3e qualif Worlds pour la région du vainqueur du MSI (filet : région du joueur).
+    const msiWinner = getBonusRegion(state.lastMsiWinnerRegion, counts, playerAiRegion);
+    counts[msiWinner] += 1;
+    // Place structurelle majeure : LCK par défaut, glisse vers LPL si LCK détient déjà la place MSI
+    // (évite 4 équipes d'une même région et garde LCK+LPL à 3 quand une majeure gagne le MSI).
+    const structural = msiWinner === 'LCK' ? 'LPL' : 'LCK';
+    counts[structural] += 1; // base 14 + 1 + 1 = 16 équipes
   }
   return counts;
 }
@@ -3630,9 +3663,26 @@ function getInternationalRewards(event, placement) {
   };
 }
 
+// Région d'une équipe (joueur ou IA), pour mémoriser le vainqueur international.
+function getTeamRegionId(teamId) {
+  if (teamId === 'player') {
+    const pr = REGIONS.find((r) => r.id === state.region);
+    return pr ? pr.aiRegion : 'LEC';
+  }
+  const t = AI_TEAMS.find((tt) => tt.id === teamId);
+  return t ? t.region : null;
+}
+
 function finishInternational() {
   const intl = state.international;
   intl.phase = 'done';
+  // Mémorise la région du champion → débloque la place bonus du tournoi suivant
+  // (MSI → 3e place Worlds même année ; Worlds → 2e place MSI année suivante).
+  const championRegion = intl.bracket ? getTeamRegionId(intl.bracket.champion) : null;
+  if (championRegion) {
+    if (intl.event === 'msi') state.lastMsiWinnerRegion = championRegion;
+    else state.lastWorldsWinnerRegion = championRegion;
+  }
   const placement = getInternationalPlacement(intl);
   if (placement !== null) {
     const rewards = getInternationalRewards(intl.event, placement);

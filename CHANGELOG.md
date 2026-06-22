@@ -5,6 +5,23 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.9.3] — 2026-06-22
+
+### Ajouté
+- **Boucle de qualification MSI ↔ Worlds (système réaliste)** — les places internationales de chaque région ne sont plus figées, elles se gagnent sur la scène internationale :
+  - **MSI → Worlds (même année)** : le vainqueur du MSI ouvre une **3ᵉ place Worlds** pour sa région. Une place structurelle majeure (LCK par défaut) complète les 16 qualifiés ; si une majeure remporte le MSI, la place structurelle **glisse** vers l'autre majeure pour éviter qu'une région ait 4 équipes (LCK et LPL restent alors toutes deux à 3).
+  - **Worlds → MSI (année suivante)** : le vainqueur des Worlds ouvre une **2ᵉ place MSI** pour sa région au printemps suivant.
+  - **Filet de sécurité (année 1 / vieilles sauvegardes)** : tant qu'aucun vainqueur n'est encore enregistré, la place bonus revient par défaut à la région du joueur — le MSI reste à 8 équipes, les Worlds à 16.
+  - **Conséquence gameplay** : la 3ᵉ place Worlds et la 2ᵉ place MSI de votre région ne sont plus automatiques. Hors LCK/LPL, il faut désormais gagner le tournoi international correspondant pour les débloquer.
+
+### Modifié
+- **Messages d'intro de saison** — la section « Qualification » indique le nombre exact de places de votre région (1, 2 ou 3 selon le contexte), n'affiche le palier « finaliste » que si la région a au moins 2 places, et ajoute une note expliquant l'origine de la place bonus (région vainqueure du tournoi précédent).
+
+### Technique
+- Deux champs persistants : `lastMsiWinnerRegion` et `lastWorldsWinnerRegion`, renseignés à la fin de chaque événement international dans `finishInternational()` et restaurés au chargement des sauvegardes. Logique centralisée dans `getRegionRepCounts()` ; moteur de phase de groupes inchangé (total d'équipes constant).
+
+---
+
 ## [1.9.2] — 2026-06-21
 
 ### Modifié
