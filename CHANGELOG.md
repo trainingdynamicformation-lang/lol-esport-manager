@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.10.4] — 2026-06-22
+
+### Modifié
+- **Worlds — bracket centré et noms complets** : les arbres de la phase finale (upper bracket, lower bracket, grande finale) étaient tassés à gauche ; ils sont désormais **centrés horizontalement** et prennent davantage de place (cartes élargies, espacements plus larges), tout en conservant le centrage vertical. Sur écran large (≥ 900 px), les cartes affichent le **nom complet** des équipes (ex. « CTBC Flying Oyster » au lieu de « CFO ») ; sur petit écran (smartphone/tablette), l'abréviation est conservée pour la lisibilité.
+
+---
+
 ## [1.10.3] — 2026-06-22
 
 ### Modifié

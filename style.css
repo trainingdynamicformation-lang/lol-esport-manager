@@ -1950,7 +1950,19 @@ table.history-table th {
 
 /* ── Arbre de phase finale — Playoffs / MSI / Worlds (v1.5.1) ── */
 .po-bracket-wrapper { position: relative; margin-bottom: 16px; overflow-x: auto; }
-.dbl-bracket .po-bracket { margin: 0; }
+.dbl-bracket .po-bracket { margin: 0 auto; }
+/* Noms : abréviation par défaut (saison, MSI, Worlds sur petit écran) */
+.tname-full { display: none; }
+.tname-short { display: inline; }
+/* Worlds (double élim) sur écran large : noms complets + cartes plus larges,
+   l'arbre prend ainsi la place horizontale disponible. */
+@media (min-width: 900px) {
+  .dbl-bracket .tname-full { display: inline; }
+  .dbl-bracket .tname-short { display: none; }
+  .dbl-bracket .po-card { width: 210px; }
+  .dbl-bracket .po-card--final { width: 230px; }
+  .dbl-bracket .po-gap { width: 64px; }
+}
 .dbl-section-title { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-gold); margin: 18px 0 10px; padding-bottom: 5px; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
 .dbl-section-title:first-child { margin-top: 0; }
 .dbl-section-sub { font-weight: 400; font-size: .68rem; letter-spacing: .02em; text-transform: none; color: var(--color-text-muted); }

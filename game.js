@@ -4102,8 +4102,13 @@ function poBracketCard(poId, label, m, seedA, seedB, isUpcoming, isFinal) {
   const teamB = m ? m.away : null;
   const result = m ? m.result : null;
   const isDone = !!result;
-  const aName = teamA ? getTeamShortName(teamA) : 'TBD';
-  const bName = teamB ? getTeamShortName(teamB) : 'TBD';
+  // Deux variantes de nom : la CSS affiche le complet sur écran large (Worlds),
+  // l'abréviation sur petit écran / autres brackets.
+  const nameHtml = (team) => team
+    ? `<span class="tname-full">${getTeamName(team)}</span><span class="tname-short">${getTeamShortName(team)}</span>`
+    : 'TBD';
+  const aName = nameHtml(teamA);
+  const bName = nameHtml(teamB);
   const aWins = isDone && result.winner === teamA;
   const bWins = isDone && result.winner === teamB;
   // v1.7.6 — scoreA/scoreB sont stockés selon des conventions différentes
@@ -4138,7 +4143,9 @@ function poByeCard(poId, teamId, seed) {
 
 function poChampionBlock(seasonLabel, championId) {
   const pending = !championId;
-  const name = championId ? getTeamShortName(championId) : 'À déterminer';
+  const name = championId
+    ? `<span class="tname-full">${getTeamName(championId)}</span><span class="tname-short">${getTeamShortName(championId)}</span>`
+    : 'À déterminer';
   return `<div class="po-champion${pending ? ' po-champion--pending' : ''}" data-po="po-champion">
     <div class="po-champion__crown">👑</div>
     <div class="po-champion__title">Vainqueur</div>
