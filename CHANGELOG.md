@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.10.3] — 2026-06-22
+
+### Modifié
+- **Worlds — le bracket s'alimente match par match** : les blocs suivants (demis UB, finale UB, tours du lower bracket…) affichent désormais les équipes qualifiées **dès que les matchs sources sont joués**, sans attendre la fin de l'étape. Exemple : si les Quarts 1 et 2 sont terminés mais que le Quart 3 (votre match) est encore en attente, la Demi UB 1 et le LB Tour 1 affichent déjà leurs équipes au lieu de « TBD ». Nouvelle fonction `propagateDoubleBracket` (purement visuelle, n'avance pas la compétition).
+
+---
+
 ## [1.10.2] — 2026-06-22
 
 ### Corrigé

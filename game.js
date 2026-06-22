@@ -3683,6 +3683,28 @@ function advanceDoubleBracket(bracket) {
   }
 }
 
+// Remplit les emplacements (home/away) de chaque match aval dès que ses matchs
+// sources sont joués — sans attendre la fin de l'étape, pour que le bracket
+// s'alimente visuellement match par match (v1.10.3). Purement cosmétique :
+// n'avance pas l'étape et ne déclenche aucun match (géré par advanceDoubleBracket).
+function propagateDoubleBracket(bracket) {
+  const m = bracket.matches;
+  if (!m.gf) return;
+  const W = (k) => (m[k] && m[k].result) ? m[k].result.winner : null;
+  const L = (k) => (m[k] && m[k].result) ? m[k].result.loser : null;
+  const set = (key, side, val) => { if (val != null && m[key][side] == null) m[key][side] = val; };
+  set('df1', 'home', W('qf1')); set('df1', 'away', W('qf2'));
+  set('df2', 'home', W('qf3')); set('df2', 'away', W('qf4'));
+  set('lb1', 'home', L('qf1')); set('lb1', 'away', L('qf2'));
+  set('lb2', 'home', L('qf3')); set('lb2', 'away', L('qf4'));
+  set('f', 'home', W('df1')); set('f', 'away', W('df2'));
+  set('lb3', 'home', W('lb1')); set('lb3', 'away', L('df2'));
+  set('lb4', 'home', W('lb2')); set('lb4', 'away', L('df1'));
+  set('lb5', 'home', W('lb3')); set('lb5', 'away', W('lb4'));
+  set('lb6', 'home', W('lb5')); set('lb6', 'away', L('f'));
+  set('gf', 'home', W('f')); set('gf', 'away', W('lb6'));
+}
+
 const DOUBLE_STAGE_KEYS = {
   qf: ['qf1', 'qf2', 'qf3', 'qf4'],
   r2: ['df1', 'df2', 'lb1', 'lb2'],
@@ -3731,6 +3753,7 @@ function processInternationalBracketRound() {
     if (m.home === 'player' || m.away === 'player') {
       const opponentId = m.home === 'player' ? m.away : m.home;
       intl.pendingMatch = { type: 'bracket', matchKey: key, opponentTeamId: opponentId, format: m.format, started: false };
+      if (isDouble) propagateDoubleBracket(bracket); // persiste les blocs aval déjà déterminés
       saveGame();
       return;
     }
@@ -4243,6 +4266,7 @@ function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
 
 // Bracket double élimination (Worlds, v1.10.0) : Upper + Lower + Grande Finale.
 function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
+  propagateDoubleBracket(b); // alimente les blocs aval déjà déterminés
   const m = b.matches;
   const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
   const champ = b.champion || (m.gf.result ? m.gf.result.winner : null);
