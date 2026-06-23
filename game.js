@@ -135,10 +135,14 @@ function createDefaultState() {
     },
     matchHistory: [],
     scouting: {},
+    transferLog: [], // journal des transferts (v1.11.0), plafonné à 10 ans
     settings: {
       speed: 2,
       soundEnabled: true,
-      mapAnimations: true
+      mapAnimations: true,
+      aiRotation: true,        // v1.11.0 : rotation des effectifs IA (retraites + remplaçants)
+      playerContracts: true,   // v1.11.0 : âge + gestion des contrats de l'équipe du joueur
+      seenOnboarding1110: false // v1.11.0 : popup d'explication vue au moins une fois
     },
     progress: {
       matchesPlayed: 0,
@@ -239,6 +243,7 @@ function loadGame() {
       scrims: Object.assign({}, defaults.scrims, parsed.scrims),
       matchHistory: parsed.matchHistory || defaults.matchHistory,
       scouting: Object.assign({}, defaults.scouting, parsed.scouting),
+      transferLog: parsed.transferLog || defaults.transferLog,
       settings: Object.assign({}, defaults.settings, parsed.settings),
       progress: Object.assign({}, defaults.progress, parsed.progress)
     };
@@ -1009,6 +1014,8 @@ function ensureRosterAges() {
 // Fin de saison Worlds : les joueurs dont le contrat s'acheve et qui n'ont pas
 // ete prolonges quittent l'equipe (postes a pourvoir au marche des transferts).
 function processContractExpirations(completedYear) {
+  // v1.11.0 : si la gestion des contrats est désactivée, aucun joueur ne part.
+  if (state.settings && state.settings.playerContracts === false) return [];
   if (!Array.isArray(state.roster)) return [];
   const leaving = state.roster.filter((p) => p.contractUntil != null && p.contractUntil <= completedYear);
   if (!leaving.length) return [];
@@ -1497,6 +1504,7 @@ function confirmTeamSelection(team, regionId) {
   updateAllTeamNameDisplays();
   showView('home');
   showToast(`Bienvenue chez ${team.name} !`, 'success');
+  maybeShowOnboarding1110();
 }
 
 /* ------------------------------------------------------------
@@ -1612,8 +1620,8 @@ function playerCardHtml(p) {
         <div class="player-card__identity">
           <div class="player-card__name">${p.name}</div>
           <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
-          ${p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${playerAge(p)} ans</div>` : ''}
-          ${p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
+          ${state.settings.playerContracts !== false && p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${playerAge(p)} ans</div>` : ''}
+          ${state.settings.playerContracts !== false && p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
         </div>
         <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
       </div>
@@ -3231,7 +3239,9 @@ function applyAICareerProgression() {
     const baseTeam = AI_TEAMS.find((t) => t.id === teamId);
     roster.forEach((player, idx) => {
       const basePlayer = baseTeam && baseTeam.roster[idx];
-      const potential = basePlayer ? basePlayer.potential : 80;
+      // v1.11.0 : on lit le potential porté par le joueur (les remplaçants générés
+      // par la rotation IA en ont un, et l'index vers AI_TEAMS ne correspond plus).
+      const potential = (player.potential != null) ? player.potential : (basePlayer ? basePlayer.potential : 80);
       const diff = potential - player.level;
       const isRookie = (player.traits || []).includes('rookie');
       const isVeteran = (player.traits || []).includes('veteran');
@@ -3259,6 +3269,123 @@ function applyAICareerProgression() {
         });
       }
     });
+  });
+}
+
+// ─── Rotation des effectifs IA (v1.11.0) ─────────────────────────────────────
+// Quand un joueur IA atteint son âge de retraite, il quitte son équipe et est
+// remplacé par un jeune généré au niveau moyen de l'équipe (± 3), pour que la
+// hiérarchie par tier reste stable saison après saison.
+
+// Pseudos fictifs variés (inspirés du style esport, sans copier de vrais noms).
+const AI_REPLACEMENT_NAMES = [
+  'Vesper', 'Kryo', 'Naelin', 'Solund', 'Maximo', 'Drael', 'Onric', 'Pyx', 'Kavu', 'Zenith',
+  'Lumio', 'Tarn', 'Wex', 'Quill', 'Brann', 'Ysor', 'Velko', 'Doru', 'Krane', 'Soven',
+  'Mirko', 'Tavi', 'Renji', 'Castor', 'Velm', 'Drix', 'Oryx', 'Saji', 'Kemp', 'Volt',
+  'Brizz', 'Cyne', 'Dovo', 'Esca', 'Fyre', 'Hael', 'Iro', 'Jace', 'Kolt', 'Lior',
+  'Mavi', 'Nael', 'Orin', 'Pavo', 'Quen', 'Rovel', 'Suun', 'Tovi', 'Veyl', 'Wraen',
+  'Yorbe', 'Zael', 'Krios', 'Maelo', 'Nuvo', 'Praxis', 'Tyro', 'Vael', 'Wisp', 'Zaro',
+  'Kael', 'Brevo', 'Drayn', 'Espen', 'Garo', 'Helic', 'Ivar', 'Joren', 'Kavi', 'Loxe',
+  'Nireo', 'Ovan', 'Pruun', 'Ryze9', 'Sett', 'Tovik', 'Zylo', 'Aro', 'Brux', 'Cael',
+  'Nyx7', 'Fabr', 'Goven', 'Hroar', 'Juno', 'Kestr', 'Mire', 'Riv4', 'Tann', 'Vexx'
+];
+
+function pickReplacementName(teamId) {
+  const used = new Set();
+  Object.values(state.aiRosters || {}).forEach((r) => (r || []).forEach((p) => used.add(p.name)));
+  state.roster.forEach((p) => used.add(p.name));
+  const free = AI_REPLACEMENT_NAMES.filter((n) => !used.has(n));
+  if (free.length) return randomChoice(free);
+  // Tous pris : on suffixe pour rester unique.
+  return randomChoice(AI_REPLACEMENT_NAMES) + randomInt(2, 99);
+}
+
+function getChampionsForRole(role) {
+  return CHAMPIONS.filter((c) => c.role === role).map((c) => c.name);
+}
+
+// Génère un remplaçant complet (tous les champs consommés par la sim/draft/scouting).
+// `year` = saison à laquelle il arrive (pour caler l'âge via playerAge).
+function generateAIReplacement(teamId, retiree, remainingRoster, year) {
+  const role = retiree.role;
+  const baseAvg = remainingRoster.length ? Math.round(averageRosterLevel(remainingRoster)) : 75;
+  const target = clamp(baseAvg + randomInt(-3, 3), 55, 95);
+  const stat = () => clamp(target + randomInt(-5, 5), 40, 99);
+  const mental = stat(), shotcalling = stat(), laning = stat(), teamfight = stat(), mechanics = stat();
+  const lvl = Math.round((mental + shotcalling + laning + teamfight + mechanics) / 5);
+
+  const curAge = randomInt(18, 22);
+  // baseAge calé pour que playerAge() == curAge à l'année 'year' (playerAge = baseAge + year - 1).
+  const baseAge = curAge - (year - 1);
+  const retirementAge = clamp(curAge + randomInt(6, 11), curAge + 3, 33);
+
+  const rolePool = getChampionsForRole(role);
+  const shuffled = rolePool.slice().sort(() => Math.random() - 0.5);
+  const pool = shuffled.slice(0, 5);
+  while (pool.length < 5 && rolePool.length) pool.push(rolePool[pool.length % rolePool.length]);
+  const masteries = pool.map((_, i) => clamp(88 - i * randomInt(4, 8) + randomInt(-3, 3), 30, 99));
+
+  return {
+    id: `${teamId}_${role.toLowerCase()}_g${year}_${randomInt(1000, 9999)}`,
+    name: pickReplacementName(teamId),
+    baseAge, retirementAge,
+    role,
+    nationality: retiree.nationality || 'EU',
+    level: lvl,
+    potential: clamp(lvl + randomInt(4, 10), lvl + 1, 99),
+    form: randomInt(60, 75),
+    fatigue: 0,
+    mental, shotcalling, laning, teamfight, mechanics,
+    championPool: pool,
+    traits: ['rookie'],
+    masteries
+  };
+}
+
+// Traite les retraites IA pour la saison `year` et remplace les partants.
+// Renvoie la liste des mouvements { teamId, out, in } pour le journal.
+function applyAIRetirementRotation(year) {
+  const movements = [];
+  if (state.settings && state.settings.aiRotation === false) return movements;
+  if (!state.aiRosters) return movements;
+  Object.keys(state.aiRosters).forEach((teamId) => {
+    const roster = state.aiRosters[teamId];
+    if (!Array.isArray(roster)) return;
+    roster.forEach((player, idx) => {
+      const base = player.baseAge != null ? player.baseAge : 22;
+      const age = base + (year - 1);
+      const retAge = player.retirementAge != null ? player.retirementAge : 30;
+      if (age >= retAge) {
+        const remaining = roster.filter((_, i) => i !== idx);
+        const rep = generateAIReplacement(teamId, player, remaining, year);
+        roster[idx] = rep;
+        movements.push({ teamId, out: player, in: rep });
+      }
+    });
+  });
+  return movements;
+}
+
+// ─── Journal des transferts (v1.11.0) ────────────────────────────────────────
+// Entrées compactes { y: année, k: type, t: équipe, p: joueur, r: rôle },
+// plafonnées aux 10 dernières saisons.
+function logTransfer(year, kind, teamLabel, playerName, role) {
+  if (!Array.isArray(state.transferLog)) state.transferLog = [];
+  state.transferLog.unshift({ y: year, k: kind, t: teamLabel, p: playerName, r: role });
+  const cutoff = year - 9; // on conserve l'année courante + les 9 précédentes
+  state.transferLog = state.transferLog.filter((e) => e.y >= cutoff);
+}
+
+function teamShortById(teamId) {
+  const t = AI_TEAMS.find((x) => x.id === teamId);
+  return t ? t.shortName : teamId;
+}
+
+function logAIRotation(year, movements) {
+  movements.forEach((mv) => {
+    const team = teamShortById(mv.teamId);
+    logTransfer(year, 'retraite', team, mv.out.name, mv.out.role);
+    logTransfer(year, 'arrivee', team, mv.in.name, mv.in.role);
   });
 }
 
@@ -3857,7 +3984,11 @@ function proceedAfterInternational() {
   // Worlds terminé : traiter les fins de contrat avant la nouvelle saison.
   const completedYear = season.year;
   const nextYear = season.year + 1;
+  // v1.11.0 — Rotation des effectifs IA (retraites + remplaçants) pour la saison à venir.
+  const aiMovements = applyAIRetirementRotation(nextYear);
+  if (aiMovements.length) logAIRotation(nextYear, aiMovements);
   const leaving = processContractExpirations(completedYear);
+  leaving.forEach((p) => logTransfer(nextYear, 'depart', 'Vous', p.name, p.role));
   if (leaving.length) {
     showContractDeparturesModal(leaving, () => startSeason('spring', nextYear));
   } else {
@@ -6327,6 +6458,40 @@ function renderTransferCard(c, budget) {
   `;
 }
 
+const TRANSFER_KIND_META = {
+  retraite:  { label: 'Retraite',        icon: '🎖️', cls: 'tj-row--out' },
+  arrivee:   { label: 'Arrivée',         icon: '🌱', cls: 'tj-row--in' },
+  depart:    { label: 'Fin de contrat',  icon: '📤', cls: 'tj-row--out' },
+  signature: { label: 'Signature',       icon: '✍️', cls: 'tj-row--in' }
+};
+
+// Journal des transferts (v1.11.0) — groupé par saison décroissante.
+function renderTransferJournal() {
+  const log = Array.isArray(state.transferLog) ? state.transferLog : [];
+  if (!log.length) {
+    return `<div class="panel"><h3 class="panel-title">Journal des transferts</h3><p class="card__count">Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.</p></div>`;
+  }
+  const byYear = {};
+  log.forEach((e) => { (byYear[e.y] = byYear[e.y] || []).push(e); });
+  const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+  const sections = years.map((y) => {
+    const rows = byYear[y].map((e) => {
+      const meta = TRANSFER_KIND_META[e.k] || { label: e.k, icon: '•', cls: '' };
+      return `<div class="tj-row ${meta.cls}">
+        <span class="tj-row__icon">${meta.icon}</span>
+        <span class="tj-row__team">${e.t}</span>
+        <span class="tj-row__player">${e.p} <span class="tj-row__role">${e.r}</span></span>
+        <span class="tj-row__kind">${meta.label}</span>
+      </div>`;
+    }).join('');
+    return `<div class="tj-season"><div class="tj-season__title">Saison ${y}</div>${rows}</div>`;
+  }).join('');
+  return `<div class="panel">
+    <h3 class="panel-title">Journal des transferts <span style="font-size:.7em;color:var(--color-text-muted);font-weight:400;">(10 dernières saisons)</span></h3>
+    ${sections}
+  </div>`;
+}
+
 function renderTransfers() {
   const el = document.getElementById('transfers-content');
   if (!el) return;
@@ -6397,6 +6562,7 @@ function renderTransfers() {
       </div>
     </div>
     <div class="transfer-grid">${cardsHtml}</div>
+    ${renderTransferJournal()}
   `;
 
   el.querySelectorAll('[data-transfer-role]').forEach(btn => {
@@ -6434,6 +6600,10 @@ function renderTransfers() {
 /* Section « Mon effectif — contrats » en tête du marché des transferts (v1.8.0). */
 function renderContractsPanel() {
   if (!state.roster.length) return '';
+  // v1.11.0 : gestion des contrats désactivée → on masque tout le panneau.
+  if (state.settings && state.settings.playerContracts === false) {
+    return `<div class="panel"><p class="card__count">Gestion de l'âge et des contrats désactivée. Vos joueurs restent dans l'équipe indéfiniment. Vous pouvez réactiver cette option dans l'onglet <strong>Progression</strong>.</p></div>`;
+  }
   const roleOrder = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
   const windowOpen = isContractWindowOpen();
   const sorted = [...state.roster].sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role));
@@ -6722,6 +6892,11 @@ function signPlayer(candidate, releasePlayerId) {
   if (!state.transferMarket.signedIds) state.transferMarket.signedIds = [];
   state.transferMarket.signedIds.push(candidate.id);
 
+  // Journal des transferts (v1.11.0)
+  const sigYear = currentGameYear();
+  if (released) logTransfer(sigYear, 'depart', 'Vous', released.name, released.role);
+  logTransfer(sigYear, 'signature', 'Vous', candidate.name, candidate.role);
+
   saveGame();
   updateResourceBar();
   showToast(released ? `${candidate.name} signé ! ${released.name} libéré. -${cost} budget.` : `${candidate.name} signé (poste vacant comblé). -${cost} budget.`, 'success');
@@ -6731,6 +6906,65 @@ function signPlayer(candidate, releasePlayerId) {
 /* ------------------------------------------------------------
    Ecran de progression
    ------------------------------------------------------------ */
+// ─── Réglages du monde + onboarding (v1.11.0) ────────────────────────────────
+function worldToggleRow(key, title, desc, on) {
+  return `<label class="world-setting">
+    <span class="world-setting__text">
+      <span class="world-setting__title">${title}</span>
+      <span class="world-setting__desc">${desc}</span>
+    </span>
+    <input type="checkbox" class="world-setting__toggle" data-setting="${key}" ${on ? 'checked' : ''}>
+    <span class="world-setting__switch"></span>
+  </label>`;
+}
+
+function worldSettingsHtml() {
+  const s = state.settings;
+  return worldToggleRow('aiRotation', 'Rotation des effectifs IA',
+    'Les joueurs IA partent à la retraite et sont remplacés par de jeunes talents du niveau de leur équipe. Désactivé : les rosters adverses restent figés.',
+    s.aiRotation !== false)
+  + worldToggleRow('playerContracts', 'Âge &amp; contrats de mon équipe',
+    'Vos joueurs vieillissent et leurs contrats expirent (prolongations à gérer). Désactivé : ils restent dans l\'équipe indéfiniment, sans gestion de contrat.',
+    s.playerContracts !== false);
+}
+
+// Branche les toggles ; onChange optionnel rafraîchit la vue appelante.
+function wireWorldSettings(container, onChange) {
+  container.querySelectorAll('[data-setting]').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      state.settings[cb.dataset.setting] = cb.checked;
+      saveGame();
+      if (typeof onChange === 'function') onChange();
+    });
+  });
+}
+
+// Popup unique au 1er lancement de la 1.11.0 : explique et laisse choisir.
+function maybeShowOnboarding1110() {
+  if (!state.settings || state.settings.seenOnboarding1110) return;
+  if (!Array.isArray(state.roster) || !state.roster.length) return;
+  showModal(`
+    <h2 class="panel-title" style="margin-bottom:6px;">&#127881; Nouveautés 1.11.0 — un monde vivant</h2>
+    <p style="color:var(--color-text-muted);line-height:1.6;margin-bottom:14px;">
+      Deux nouvelles mécaniques rythment désormais ta carrière sur le long terme. Choisis ce que tu veux activer —
+      tu pourras tout changer à tout moment dans l'onglet <strong>Progression</strong>.
+    </p>
+    <div id="onboarding-settings" class="world-settings-list">${worldSettingsHtml()}</div>
+    <div class="modal-content__actions" style="margin-top:18px;">
+      <button class="btn-primary" id="btn-onboarding-validate">Valider mes choix</button>
+    </div>
+  `);
+  const cont = document.getElementById('onboarding-settings');
+  if (cont) wireWorldSettings(cont);
+  const btn = document.getElementById('btn-onboarding-validate');
+  if (btn) btn.addEventListener('click', () => {
+    state.settings.seenOnboarding1110 = true;
+    saveGame();
+    closeModal();
+    showToast('Réglages enregistrés. Modifiables dans Progression.', 'success');
+  });
+}
+
 function renderProgression() {
   const p = state.progress;
   const winRate = p.matchesPlayed > 0 ? Math.round((p.wins / p.matchesPlayed) * 100) : 0;
@@ -6772,6 +7006,12 @@ function renderProgression() {
     `;
   }).join('') || '<tr><td colspan="5" class="card__count">Aucun match joue</td></tr>';
 
+  const settingsEl = document.getElementById('progression-settings');
+  if (settingsEl) {
+    settingsEl.innerHTML = worldSettingsHtml();
+    wireWorldSettings(settingsEl, () => renderProgression());
+  }
+
   const careerEl = document.getElementById('progression-career');
   if (careerEl) {
     careerEl.innerHTML = state.careerLog.slice(0, 20).map((e) => {
@@ -6801,6 +7041,7 @@ function initGame() {
     showRegionSelection();
   } else {
     showView('home');
+    maybeShowOnboarding1110();
   }
 }
 

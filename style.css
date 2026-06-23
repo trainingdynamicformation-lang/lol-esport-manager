@@ -2008,3 +2008,29 @@ table.history-table th {
 
 /* Palmarès — valeurs textuelles (v1.5.2) */
 .stat-card__value--text { font-size: clamp(13px, 2.4vw, 16px); line-height: 1.25; }
+
+/* ─── Réglages du monde — toggles (v1.11.0) ─────────────────────────────── */
+.world-setting { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--color-border); cursor: pointer; }
+.world-setting:last-child { border-bottom: none; }
+.world-setting__text { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.world-setting__title { font-weight: 600; color: var(--color-text); }
+.world-setting__desc { font-size: 12px; color: var(--color-text-muted); line-height: 1.45; }
+.world-setting__toggle { position: absolute; opacity: 0; width: 0; height: 0; }
+.world-setting__switch { flex-shrink: 0; width: 46px; height: 25px; border-radius: 13px; background: var(--color-surface-alt); border: 1px solid var(--color-border); position: relative; transition: background .2s, border-color .2s; }
+.world-setting__switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 19px; height: 19px; border-radius: 50%; background: var(--color-text-muted); transition: transform .2s, background .2s; }
+.world-setting__toggle:checked ~ .world-setting__switch { background: rgba(200,155,60,.22); border-color: var(--color-gold); }
+.world-setting__toggle:checked ~ .world-setting__switch::after { transform: translateX(21px); background: var(--color-gold); }
+.world-setting__toggle:focus-visible ~ .world-setting__switch { box-shadow: 0 0 0 2px rgba(200,155,60,.4); }
+
+/* ─── Journal des transferts (v1.11.0) ──────────────────────────────────── */
+.tj-season { margin-bottom: 14px; }
+.tj-season__title { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-gold); font-weight: 700; margin: 0 0 6px; }
+.tj-row { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 6px; font-size: 13px; border-left: 2px solid transparent; }
+.tj-row:nth-child(even) { background: rgba(255,255,255,.02); }
+.tj-row--in { border-left-color: var(--color-seafoam, #4ec9a8); }
+.tj-row--out { border-left-color: #c8643c; }
+.tj-row__icon { width: 18px; text-align: center; flex-shrink: 0; }
+.tj-row__team { width: 56px; flex-shrink: 0; font-weight: 600; color: var(--color-text-muted); }
+.tj-row__player { flex: 1; color: var(--color-text); }
+.tj-row__role { font-size: 11px; color: var(--color-text-muted); margin-left: 4px; }
+.tj-row__kind { flex-shrink: 0; font-size: 11px; color: var(--color-text-muted); }

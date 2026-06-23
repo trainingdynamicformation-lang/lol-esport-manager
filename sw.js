@@ -1,14 +1,14 @@
-const CACHE_NAME = 'lol-esport-manager-v1.10.4';
+const CACHE_NAME = 'lol-esport-manager-v1.11.0';
 const ASSETS = [
   '/',
   '/index.html',
-  '/style.css?v=1.10.4',
-  '/game.js?v=1.10.4',
-  '/map.js?v=1.10.4',
-  '/data_teams.js?v=1.10.4',
-  '/data_champions.js?v=1.10.4',
-  '/data_counters.js?v=1.10.4',
-  '/data_transfers.js?v=1.10.4',
+  '/style.css?v=1.11.0',
+  '/game.js?v=1.11.0',
+  '/map.js?v=1.11.0',
+  '/data_teams.js?v=1.11.0',
+  '/data_champions.js?v=1.11.0',
+  '/data_counters.js?v=1.11.0',
+  '/data_transfers.js?v=1.11.0',
   '/img/logo.png',
   '/img/logoV2.png',
   '/img/map.png',

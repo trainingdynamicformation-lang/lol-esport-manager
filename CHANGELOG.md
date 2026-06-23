@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.0] — 2026-06-23
+
+### Ajouté
+- **Rotation des effectifs IA** — les rosters adverses vivent enfin : à la fin de chaque saison Worlds, les joueurs IA qui atteignent leur âge de retraite quittent leur équipe et sont remplacés par un **jeune talent généré** (18–22 ans, `potential > niveau`) au **niveau moyen de l'équipe ± 3**, avec un pool de 5 champions cohérent avec son rôle, des masteries et un nom fictif varié. La hiérarchie par tier reste ainsi stable saison après saison.
+- **Journal des transferts** — nouvelle section dans l'onglet Transferts qui retrace, **saison par saison** (10 dernières années), tous les mouvements : retraites et arrivées IA, fins de contrat et signatures de votre équipe. Stockage compact et plafonné.
+- **Réglages du monde (onglet Progression)** — deux interrupteurs pour adapter l'expérience :
+  - **Rotation des effectifs IA** : activer/désactiver le vieillissement des équipes adverses (désactivé = les rosters restent figés, « T1 reste T1 »).
+  - **Âge & contrats de mon équipe** : activer/désactiver le vieillissement et la gestion des contrats de vos joueurs (désactivé = effectif figé, sans prolongations à gérer ; la progression de niveau reste active).
+- **Popup d'accueil 1.11.0** — au premier lancement de cette version, une fenêtre explique les nouvelles mécaniques et laisse choisir les deux réglages directement, en rappelant qu'ils sont modifiables à tout moment dans Progression.
+
+### Technique
+- Nouvelles fonctions : `applyAIRetirementRotation`, `generateAIReplacement`, `getChampionsForRole`, `pickReplacementName`, `logTransfer` / `logAIRotation`, `renderTransferJournal`, `worldSettingsHtml` / `wireWorldSettings`, `maybeShowOnboarding1110`. `applyAICareerProgression` lit désormais `player.potential` (compatible avec les remplaçants générés). Nouveaux champs persistants : `state.transferLog`, `state.settings.aiRotation`, `state.settings.playerContracts`, `state.settings.seenOnboarding1110`.
+
+---
+
 ## [1.10.4] — 2026-06-22
 
 ### Modifié
