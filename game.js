@@ -3303,10 +3303,6 @@ function pickReplacementName(teamId) {
   return randomChoice(AI_REPLACEMENT_NAMES) + randomInt(2, 99);
 }
 
-function getChampionsForRole(role) {
-  return CHAMPIONS.filter((c) => c.role === role).map((c) => c.name);
-}
-
 // Génère un remplaçant complet (tous les champs consommés par la sim/draft/scouting).
 // `year` = saison à laquelle il arrive (pour caler l'âge via playerAge).
 function generateAIReplacement(teamId, retiree, remainingRoster, year) {
@@ -3322,7 +3318,7 @@ function generateAIReplacement(teamId, retiree, remainingRoster, year) {
   const baseAge = curAge - (year - 1);
   const retirementAge = clamp(curAge + randomInt(6, 11), curAge + 3, 33);
 
-  const rolePool = getChampionsForRole(role);
+  const rolePool = getChampionsForRole(role).map((c) => c.name); // objets -> noms
   const shuffled = rolePool.slice().sort(() => Math.random() - 0.5);
   const pool = shuffled.slice(0, 5);
   while (pool.length < 5 && rolePool.length) pool.push(rolePool[pool.length % rolePool.length]);
