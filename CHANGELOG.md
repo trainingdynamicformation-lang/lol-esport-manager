@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.2] — 2026-06-23
+
+### Ajouté
+- **Tooltip gains par compétition** — survoler la bulle 💰 Budget ou ⭐ Prestige en haut de l'écran affiche une popup récapitulant les récompenses (budget, prestige, coaching) pour chaque placement en saison régulière, MSI et Worlds.
+
+---
+
 ## [1.11.1] — 2026-06-23
 
 ### Corrigé

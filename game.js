@@ -7059,6 +7059,7 @@ function initGame() {
 }
 
 function setupNavigation() {
+  wireRewardTooltip();
   document.querySelectorAll('.nav-btn').forEach((btn) => {
     if (!btn.dataset.view) return;
     btn.addEventListener('click', () => {
@@ -7129,6 +7130,72 @@ function setupNavigation() {
 }
 
 document.addEventListener('DOMContentLoaded', initGame);
+
+// ---------- Tooltip récompenses (survol chip budget / prestige) ----------
+
+function buildRewardTooltipHtml() {
+  const row = (label, r) =>
+    `<tr><td>${label}</td>` +
+    `<td class="rt-budget">+${r.budget}</td>` +
+    `<td class="rt-prestige">+${r.prestige}</td>` +
+    `<td class="rt-coaching">+${r.coaching}</td></tr>`;
+  const section = (label) =>
+    `<tr class="rt-section-row"><td colspan="4">${label}</td></tr>`;
+
+  return `<div class="rt-title">Gains par compétition</div>
+<table class="rt-table">
+<thead><tr><th></th><th>💰</th><th>⭐</th><th>📚</th></tr></thead>
+<tbody>
+${section('Saison régulière')}
+${row('1er', getPlacementRewards(1))}
+${row('2e', getPlacementRewards(2))}
+${row('3e–4e', getPlacementRewards(3))}
+${row('5e–6e', getPlacementRewards(5))}
+${row('7e–8e', getPlacementRewards(7))}
+${section('MSI')}
+${row('1er', getInternationalRewards('msi', 1))}
+${row('2e', getInternationalRewards('msi', 2))}
+${row('3e–4e', getInternationalRewards('msi', 3))}
+${row('5e–6e', getInternationalRewards('msi', 5))}
+${row('7e–8e', getInternationalRewards('msi', 7))}
+${section('Worlds')}
+${row('1er', getInternationalRewards('worlds', 1))}
+${row('2e', getInternationalRewards('worlds', 2))}
+${row('3e (LB finale)', getInternationalRewards('worlds', 3))}
+${row('4e', getInternationalRewards('worlds', 4))}
+${row('5e–7e', getInternationalRewards('worlds', 5))}
+</tbody>
+</table>`;
+}
+
+function wireRewardTooltip() {
+  const tooltip = document.getElementById('rewards-tooltip');
+  if (!tooltip) return;
+  tooltip.innerHTML = buildRewardTooltipHtml();
+
+  ['chip-budget', 'chip-prestige'].forEach((chipId) => {
+    const chip = document.getElementById(chipId);
+    if (!chip) return;
+    chip.style.cursor = 'help';
+    chip.addEventListener('mouseenter', () => {
+      tooltip.classList.remove('rt-hidden');
+      requestAnimationFrame(() => {
+        const rect = chip.getBoundingClientRect();
+        const tw = tooltip.offsetWidth;
+        let left = rect.left + rect.width / 2 - tw / 2;
+        left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = (rect.bottom + 8) + 'px';
+        // Ajuste la flèche de la bulle
+        const arrowLeft = (rect.left + rect.width / 2) - left;
+        tooltip.style.setProperty('--rt-arrow-left', arrowLeft + 'px');
+      });
+    });
+    chip.addEventListener('mouseleave', () => {
+      tooltip.classList.add('rt-hidden');
+    });
+  });
+}
 
 // Délégation globale : clic sur tout élément [data-lore-tooltip] → showToast (mobile + Mac)
 document.addEventListener('click', (e) => {
