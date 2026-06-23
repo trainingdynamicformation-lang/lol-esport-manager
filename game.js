@@ -3922,12 +3922,23 @@ function getInternationalRewards(event, placement) {
     budget: Math.round(base.budget * mult),
     prestige: Math.round(base.prestige * mult) + (event === 'worlds' ? 2 : 1)
   };
-  // v1.10.1 — Worlds : la 3e place (perdant de la finale lower bracket) devient un
-  // palier distinct, mieux récompensé que la 4e pour valoriser le parcours plus long.
-  if (event === 'worlds' && placement === 3) {
-    rewards.coaching = 120;
-    rewards.budget = 165;
-    rewards.prestige = 13;
+  // Budgets exacts par palier (v1.11.2). Prestige et coaching calculés par formule.
+  if (event === 'msi') {
+    if (placement === 1)       rewards.budget = 200;
+    else if (placement === 2)  rewards.budget = 157;
+    else if (placement <= 4)   rewards.budget = 119;
+    else if (placement <= 6)   rewards.budget = 81;
+    else if (placement <= 8)   rewards.budget = 31;
+    else                       rewards.budget = 25; // éliminé en phase de groupes
+  } else {
+    if (placement === 1)       rewards.budget = 240;
+    else if (placement === 2)  rewards.budget = 188;
+    else if (placement <= 4)   rewards.budget = 143;
+    else if (placement <= 6)   rewards.budget = 98;
+    else if (placement <= 8)   rewards.budget = 53;
+    else                       rewards.budget = 35; // éliminé en phase de groupes
+    // 3e Worlds (perdant LB finale) : coaching et prestige bonifiés (v1.10.1)
+    if (placement === 3) { rewards.coaching = 120; rewards.prestige = 13; }
   }
   return rewards;
 }
@@ -7133,51 +7144,46 @@ document.addEventListener('DOMContentLoaded', initGame);
 
 // ---------- Tooltip récompenses (survol chip budget / prestige) ----------
 
-function buildRewardTooltipHtml() {
-  const row = (label, r) =>
-    `<tr><td>${label}</td>` +
-    `<td class="rt-budget">+${r.budget}</td>` +
-    `<td class="rt-prestige">+${r.prestige}</td>` +
-    `<td class="rt-coaching">+${r.coaching}</td></tr>`;
-  const section = (label) =>
-    `<tr class="rt-section-row"><td colspan="4">${label}</td></tr>`;
+function buildRewardTooltipHtml(resource) {
+  const cls   = resource === 'budget' ? 'rt-budget' : 'rt-prestige';
+  const icon  = resource === 'budget' ? '💰 Budget' : '⭐ Prestige';
+  const sp = (p) => '+' + getPlacementRewards(p)[resource];
+  const intl = (ev, p) => '+' + getInternationalRewards(ev, p)[resource];
 
-  return `<div class="rt-title">Gains par compétition</div>
+  const ROWS = [
+    { label: '1er',     s: sp(1), m: intl('msi',1), w: intl('worlds',1) },
+    { label: '2e',      s: sp(2), m: intl('msi',2), w: intl('worlds',2) },
+    { label: '3e–4e',   s: sp(3), m: intl('msi',3), w: intl('worlds',3) },
+    { label: '5e–6e',   s: sp(5), m: intl('msi',5), w: intl('worlds',5) },
+    { label: '7e–8e',   s: sp(7), m: intl('msi',7), w: intl('worlds',7) },
+    { label: '9e–10e',  s: sp(9), m: '—',            w: '—' },
+    { label: 'Groupes', s: '—',   m: intl('msi',9), w: intl('worlds',9) },
+  ];
+
+  const trs = ROWS.map(r =>
+    `<tr><td class="rt-pl">${r.label}</td>` +
+    `<td class="${cls}">${r.s}</td>` +
+    `<td class="${cls}">${r.m}</td>` +
+    `<td class="${cls}">${r.w}</td></tr>`
+  ).join('');
+
+  return `<div class="rt-title">Gains ${icon}</div>
 <table class="rt-table">
-<thead><tr><th></th><th>💰</th><th>⭐</th><th>📚</th></tr></thead>
-<tbody>
-${section('Saison régulière')}
-${row('1er', getPlacementRewards(1))}
-${row('2e', getPlacementRewards(2))}
-${row('3e–4e', getPlacementRewards(3))}
-${row('5e–6e', getPlacementRewards(5))}
-${row('7e–8e', getPlacementRewards(7))}
-${section('MSI')}
-${row('1er', getInternationalRewards('msi', 1))}
-${row('2e', getInternationalRewards('msi', 2))}
-${row('3e–4e', getInternationalRewards('msi', 3))}
-${row('5e–6e', getInternationalRewards('msi', 5))}
-${row('7e–8e', getInternationalRewards('msi', 7))}
-${section('Worlds')}
-${row('1er', getInternationalRewards('worlds', 1))}
-${row('2e', getInternationalRewards('worlds', 2))}
-${row('3e (LB finale)', getInternationalRewards('worlds', 3))}
-${row('4e', getInternationalRewards('worlds', 4))}
-${row('5e–7e', getInternationalRewards('worlds', 5))}
-</tbody>
+<thead><tr><th></th><th>Split</th><th>MSI</th><th>Worlds</th></tr></thead>
+<tbody>${trs}</tbody>
 </table>`;
 }
 
 function wireRewardTooltip() {
   const tooltip = document.getElementById('rewards-tooltip');
   if (!tooltip) return;
-  tooltip.innerHTML = buildRewardTooltipHtml();
 
-  ['chip-budget', 'chip-prestige'].forEach((chipId) => {
+  [['chip-budget','budget'], ['chip-prestige','prestige']].forEach(([chipId, resource]) => {
     const chip = document.getElementById(chipId);
     if (!chip) return;
     chip.style.cursor = 'help';
     chip.addEventListener('mouseenter', () => {
+      tooltip.innerHTML = buildRewardTooltipHtml(resource);
       tooltip.classList.remove('rt-hidden');
       requestAnimationFrame(() => {
         const rect = chip.getBoundingClientRect();
@@ -7186,7 +7192,6 @@ function wireRewardTooltip() {
         left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
         tooltip.style.left = left + 'px';
         tooltip.style.top = (rect.bottom + 8) + 'px';
-        // Ajuste la flèche de la bulle
         const arrowLeft = (rect.left + rect.width / 2) - left;
         tooltip.style.setProperty('--rt-arrow-left', arrowLeft + 'px');
       });

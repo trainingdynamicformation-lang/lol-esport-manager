@@ -376,7 +376,7 @@ img { max-width: 100%; height: auto; }
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 12px 14px;
-  min-width: 230px;
+  min-width: 270px;
   box-shadow: 0 8px 32px rgba(0,0,0,.6);
   pointer-events: none;
 }
@@ -424,6 +424,7 @@ img { max-width: 100%; height: auto; }
   color: var(--color-text);
   text-align: center;
 }
+.rt-pl { text-align: left !important; color: var(--color-text-muted); }
 .rt-table td:first-child { text-align: left; color: var(--color-text-muted); }
 .rt-budget   { color: var(--color-gold) !important; }
 .rt-prestige { color: #a78bfa !important; }
