@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.1] — 2026-06-23
+
+### Corrigé
+- **Régression Training / Draft / Scouting** — les menus de sélection de champion affichaient « undefined (nouveau) » au lieu des noms. Cause : la fonction `getChampionsForRole` ajoutée en v1.11.0 pour la génération de remplaçants IA (retournant des chaînes) écrasait la version originale (retournant des objets champion), cassant tous les appels `.name` / `.id`. Fix : suppression du doublon ; `generateAIReplacement` appelle désormais `getChampionsForRole(role).map(c => c.name)` pour extraire les noms.
+
+---
+
 ## [1.11.0] — 2026-06-23
 
 ### Ajouté
