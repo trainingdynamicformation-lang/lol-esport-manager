@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.3] — 2026-06-23
+
+### Corrigé
+- **Calendrier varié entre les saisons** — l'ordre des adversaires en saison régulière était toujours identique (Spring = Summer = saison suivante). Les équipes IA sont désormais mélangées aléatoirement (Fisher-Yates) à chaque début de saison, en conservant le joueur en position fixe du round-robin. Le format (tout le monde affronte tout le monde une fois) est inchangé.
+
+---
+
 ## [1.11.2] — 2026-06-23
 
 ### Ajouté

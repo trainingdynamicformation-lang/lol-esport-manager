@@ -2791,7 +2791,12 @@ function renderDraft() {
    ------------------------------------------------------------ */
 function getSeasonTeamIds() {
   const aiTeams = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
-  return ['player', ...aiTeams.map((t) => t.id)];
+  const aiIds = aiTeams.map((t) => t.id);
+  for (let i = aiIds.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [aiIds[i], aiIds[j]] = [aiIds[j], aiIds[i]];
+  }
+  return ['player', ...aiIds];
 }
 
 function getTeamRef(teamId) {
