@@ -837,6 +837,76 @@ const SCRIM_OBJECTIVES = [
   { id: 'free_scrim', label: 'Scrim libre', description: "Match d'entraînement général, bon pour la forme et la cohesion.", risk: 'Moins rentable.' }
 ];
 
+const OBJECTIVE_GUIDE = {
+  champion_mastery: {
+    icon: '🎯',
+    gains: [{ label: 'Maîtrise champion', dots: 3 }, { label: 'Mécanique', dots: 1 }],
+    best: 'Développer le pool · Débloquer un pick pour la draft',
+    warning: 'Aucune stat générale améliorée. Rendement faible si maîtrise déjà > 80.'
+  },
+  composition_test: {
+    icon: '⚔️',
+    gains: [{ label: 'Maîtrise (multi-champions)', dots: 2 }, { label: 'Teamfight / Shotcalling', dots: 1 }],
+    best: 'Préparer un style de jeu · Polir plusieurs picks en parallèle',
+    warning: 'Gain réduit vs Champion ciblé. Inefficace si le pool ne contient pas le tag visé.'
+  },
+  matchup_prep: {
+    icon: '🔍',
+    gains: [{ label: 'Scouting (confiance adversaire)', dots: 3 }, { label: 'Laning (si victoire)', dots: 1 }],
+    best: 'Avant un match clé · Débloquer les rapports scouting avancés',
+    warning: 'Très peu de progression en stats joueurs. Peu utile hors contexte d\'un prochain adversaire.'
+  },
+  macro_objectives: {
+    icon: '🗺️',
+    gains: [{ label: 'Shotcalling (toute l\'équipe)', dots: 3 }, { label: 'Mental (+1 si victoire)', dots: 1 }],
+    best: 'Améliorer la coordination collective · Jungle & Support progressent 1,5× plus vite',
+    warning: 'Aucun effet sur la maîtrise des champions ni la mécanique individuelle.'
+  },
+  free_scrim: {
+    icon: '🎲',
+    gains: [{ label: 'Forme (toute l\'équipe)', dots: 2 }, { label: 'Mental (+1 si victoire)', dots: 1 }],
+    best: 'Maintenir la Forme · Gain amplifié contre un adversaire Tier 1 (×1.2)',
+    warning: 'N\'améliore aucune stat permanente. Défaite en haute intensité peut faire baisser la forme.'
+  }
+};
+
+function buildObjectiveCardHtml(objectiveId, def) {
+  const guide = OBJECTIVE_GUIDE[objectiveId] || {};
+  const dotsHtml = (n) => {
+    return [1, 2, 3].map((i) =>
+      `<span class="obj-dot ${i <= n ? 'obj-dot--on' : 'obj-dot--off'}">●</span>`
+    ).join('');
+  };
+  const gainsHtml = (guide.gains || []).map((g) =>
+    `<span class="obj-card__gain">${g.label} <span class="obj-dots">${dotsHtml(g.dots)}</span></span>`
+  ).join('');
+
+  return `<div class="obj-card">
+    <div class="obj-card__header">
+      <span class="obj-card__icon">${guide.icon || ''}</span>
+      <span class="obj-card__name">${def.label}</span>
+    </div>
+    <p class="obj-card__desc">${def.description}</p>
+    ${guide.gains ? `<div class="obj-card__row"><span class="obj-card__row-label">Développe</span><div class="obj-card__gain-list">${gainsHtml}</div></div>` : ''}
+    ${guide.best ? `<div class="obj-card__row obj-card__row--best"><span class="obj-card__row-icon">⚡</span><span>${guide.best}</span></div>` : ''}
+    ${guide.warning ? `<div class="obj-card__row obj-card__row--warn"><span class="obj-card__row-icon">⚠</span><span>${guide.warning}</span></div>` : ''}
+  </div>`;
+}
+
+function showObjectiveGuideModal() {
+  const cards = SCRIM_OBJECTIVES.map((o) =>
+    `<div class="obj-guide-entry">${buildObjectiveCardHtml(o.id, o)}</div>`
+  ).join('');
+  showModal(`
+    <h3 class="panel-title">Guide des objectifs d'entraînement</h3>
+    <p style="color:var(--color-text-muted);font-size:13px;margin:0 0 16px;">Chaque objectif de scrim cible des aspects différents du jeu. Variez-les pour un développement équilibré.</p>
+    <div class="obj-guide-grid">${cards}</div>
+    <div class="modal-content__actions" style="margin-top:20px;">
+      <button class="btn-primary" onclick="closeModal();">Fermer</button>
+    </div>
+  `);
+}
+
 const COMP_TAGS = ['engage', 'poke', 'scaling', 'splitpush', 'pick', 'protect', 'dive', 'disengage'];
 const COMP_TAG_LABELS = {
   engage: 'Engage', poke: 'Poke', scaling: 'Scaling', splitpush: 'Splitpush',
@@ -1670,11 +1740,14 @@ function renderTraining() {
     <h3 class="panel-title">Planifier un scrim</h3>
     <div class="training-form">
       <div class="training-form__group">
-        <label for="scrim-objective">Objectif</label>
+        <div class="training-form__label-row">
+          <label for="scrim-objective">Objectif</label>
+          <button type="button" class="btn-obj-guide" id="btn-obj-guide">&#x3F; Guide</button>
+        </div>
         <select id="scrim-objective">
           ${SCRIM_OBJECTIVES.map((o) => `<option value="${o.id}">${o.label}</option>`).join('')}
         </select>
-        <div class="objective-description" id="scrim-objective-description"></div>
+        <div id="scrim-objective-description"></div>
       </div>
 
       <div class="training-form__group">
@@ -1762,7 +1835,7 @@ function setupTrainingFormHandlers() {
   function updateObjectiveVisibility() {
     const objective = objectiveSelect.value;
     const def = SCRIM_OBJECTIVES.find((o) => o.id === objective);
-    document.getElementById('scrim-objective-description').textContent = `${def.description} ${def.risk}`;
+    document.getElementById('scrim-objective-description').innerHTML = buildObjectiveCardHtml(objective, def);
 
     document.getElementById('scrim-focus-player-group').style.display =
       (objective === 'champion_mastery' || objective === 'matchup_prep') ? '' : 'none';
@@ -1794,6 +1867,8 @@ function setupTrainingFormHandlers() {
   focusPlayerSelect.addEventListener('change', updateChampionOptions);
   intensitySelect.addEventListener('change', updateCostLabel);
   regionSelect.addEventListener('change', updateOpponentOptions);
+  const guideBtn = document.getElementById('btn-obj-guide');
+  if (guideBtn) guideBtn.addEventListener('click', showObjectiveGuideModal);
 
   updateOpponentOptions();
   updateObjectiveVisibility();

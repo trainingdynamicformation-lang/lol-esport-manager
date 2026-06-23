@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.4] — 2026-06-23
+
+### Ajouté
+- **Guide des objectifs d'entraînement** — chaque objectif de scrim affiche désormais une carte enrichie dès sa sélection : icône, description, barres de gains (●●● / ●●○ / ●○○), cas d'usage idéal et mise en garde. Un bouton **? Guide** ouvre une modale défilable comparant les 5 objectifs côte à côte, accessible à tout moment depuis l'écran Entraînement.
+
+---
+
 ## [1.11.3] — 2026-06-23
 
 ### Corrigé
