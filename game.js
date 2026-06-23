@@ -502,6 +502,9 @@ function showView(viewName) {
     case 'transfers':
       if (typeof renderTransfers === 'function') renderTransfers();
       break;
+    case 'journal':
+      if (typeof renderJournal === 'function') renderJournal();
+      break;
     case 'progression':
       if (typeof renderProgression === 'function') renderProgression();
       break;
@@ -3988,7 +3991,7 @@ function proceedAfterInternational() {
   const aiMovements = applyAIRetirementRotation(nextYear);
   if (aiMovements.length) logAIRotation(nextYear, aiMovements);
   const leaving = processContractExpirations(completedYear);
-  leaving.forEach((p) => logTransfer(nextYear, 'depart', 'Vous', p.name, p.role));
+  leaving.forEach((p) => logTransfer(nextYear, 'depart', playerTeamLabel(), p.name, p.role));
   if (leaving.length) {
     showContractDeparturesModal(leaving, () => startSeason('spring', nextYear));
   } else {
@@ -6465,21 +6468,29 @@ const TRANSFER_KIND_META = {
   signature: { label: 'Signature',       icon: '✍️', cls: 'tj-row--in' }
 };
 
+// Libellé de l'équipe du joueur dans le journal (remplace l'ancien "Vous").
+function playerTeamLabel() {
+  return state.teamShortName || state.teamName || 'Vous';
+}
+
 // Journal des transferts (v1.11.0) — groupé par saison décroissante.
 function renderTransferJournal() {
   const log = Array.isArray(state.transferLog) ? state.transferLog : [];
   if (!log.length) {
-    return `<div class="panel"><h3 class="panel-title">Journal des transferts</h3><p class="card__count">Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.</p></div>`;
+    return `<div class="panel"><p class="card__count">Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.</p></div>`;
   }
+  const mine = playerTeamLabel();
   const byYear = {};
   log.forEach((e) => { (byYear[e.y] = byYear[e.y] || []).push(e); });
   const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
   const sections = years.map((y) => {
     const rows = byYear[y].map((e) => {
       const meta = TRANSFER_KIND_META[e.k] || { label: e.k, icon: '•', cls: '' };
-      return `<div class="tj-row ${meta.cls}">
+      const isMine = (e.t === 'Vous' || e.t === mine);
+      const team = isMine ? mine : e.t;
+      return `<div class="tj-row ${meta.cls}${isMine ? ' tj-row--mine' : ''}">
         <span class="tj-row__icon">${meta.icon}</span>
-        <span class="tj-row__team">${e.t}</span>
+        <span class="tj-row__team">${team}</span>
         <span class="tj-row__player">${e.p} <span class="tj-row__role">${e.r}</span></span>
         <span class="tj-row__kind">${meta.label}</span>
       </div>`;
@@ -6487,9 +6498,16 @@ function renderTransferJournal() {
     return `<div class="tj-season"><div class="tj-season__title">Saison ${y}</div>${rows}</div>`;
   }).join('');
   return `<div class="panel">
-    <h3 class="panel-title">Journal des transferts <span style="font-size:.7em;color:var(--color-text-muted);font-weight:400;">(10 dernières saisons)</span></h3>
+    <p class="card__count" style="margin-bottom:12px;">Tous les mouvements de la scène, saison par saison (10 dernières années).</p>
     ${sections}
   </div>`;
+}
+
+// Écran dédié Journal des transferts.
+function renderJournal() {
+  const el = document.getElementById('journal-content');
+  if (!el) return;
+  el.innerHTML = renderTransferJournal();
 }
 
 function renderTransfers() {
@@ -6562,7 +6580,6 @@ function renderTransfers() {
       </div>
     </div>
     <div class="transfer-grid">${cardsHtml}</div>
-    ${renderTransferJournal()}
   `;
 
   el.querySelectorAll('[data-transfer-role]').forEach(btn => {
@@ -6894,8 +6911,8 @@ function signPlayer(candidate, releasePlayerId) {
 
   // Journal des transferts (v1.11.0)
   const sigYear = currentGameYear();
-  if (released) logTransfer(sigYear, 'depart', 'Vous', released.name, released.role);
-  logTransfer(sigYear, 'signature', 'Vous', candidate.name, candidate.role);
+  if (released) logTransfer(sigYear, 'depart', playerTeamLabel(), released.name, released.role);
+  logTransfer(sigYear, 'signature', playerTeamLabel(), candidate.name, candidate.role);
 
   saveGame();
   updateResourceBar();

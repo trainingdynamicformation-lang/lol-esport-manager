@@ -2034,3 +2034,5 @@ table.history-table th {
 .tj-row__player { flex: 1; color: var(--color-text); }
 .tj-row__role { font-size: 11px; color: var(--color-text-muted); margin-left: 4px; }
 .tj-row__kind { flex-shrink: 0; font-size: 11px; color: var(--color-text-muted); }
+.tj-row--mine { background: rgba(200,155,60,.08); }
+.tj-row--mine .tj-row__team { color: var(--color-gold); }
