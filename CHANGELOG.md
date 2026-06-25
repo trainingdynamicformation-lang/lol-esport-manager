@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.5] — 2026-06-23
+
+### Modifié
+- **Score de série avec acronymes** — le label au-dessus du timer affiche désormais les abréviations des deux équipes de part et d'autre du score, ex. `BO3 - Game 2 · G2 2 - 0 GX`.
+
+---
+
 ## [1.11.4] — 2026-06-23
 
 ### Ajouté

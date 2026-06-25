@@ -5962,9 +5962,13 @@ function renderMatchArena() {
   const seriesLabelEl = document.getElementById('match-series-label');
   if (seriesLabelEl) {
     const series = state.matchSeries;
-    seriesLabelEl.textContent = series
-      ? `${series.format} - Game ${series.gameNumber} (score de la serie : ${series.scoreFor}-${series.scoreAgainst})`
-      : '';
+    if (series) {
+      const myShort = state.teamShortName || 'YOU';
+      const oppShort = getTeamShortName(series.opponentTeamId);
+      seriesLabelEl.textContent = `${series.format} - Game ${series.gameNumber} · ${myShort} ${series.scoreFor} - ${series.scoreAgainst} ${oppShort}`;
+    } else {
+      seriesLabelEl.textContent = '';
+    }
   }
 
   document.getElementById('match-log').innerHTML = '';
