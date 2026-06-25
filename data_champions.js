@@ -1,5 +1,6 @@
 // data_champions.js - Base champions (CDC §4.1 et §14.2)
 // v1.6.0 : liste officielle complete Riot - 172 champions.
+// v1.11.6 : +1 champion — Locke (patch 26.13, données CDC/lol_esports_locke_counters_2026.xlsx). Total : 173 champions.
 // Genere depuis CDC/lol_esports_update_2026_full_champion_counters.xlsx (Champions_All_Complete).
 // Champs : id, name, role, secondaryRoles, difficulty, tags, phasePower{early,mid,late}, objectivePower, synergyTags, counterTags.
 
@@ -105,6 +106,7 @@ const CHAMPIONS = [
   { id: 'katarina', name: 'Katarina', role: 'MID', secondaryRoles: [], difficulty: 5, tags: ["poke", "pick"], phasePower: { early: 8, mid: 8, late: 5 }, objectivePower: 3, synergyTags: ["poke", "pick"], counterTags: ["engage", "protect", "scaling", "poke"] },
   { id: 'leblanc', name: 'LeBlanc', role: 'MID', secondaryRoles: ["SUPPORT"], difficulty: 4, tags: ["pick", "poke"], phasePower: { early: 8, mid: 8, late: 5 }, objectivePower: 2, synergyTags: ["pick", "poke"], counterTags: ["engage"] },
   { id: 'lissandra', name: 'Lissandra', role: 'MID', secondaryRoles: [], difficulty: 4, tags: ["pick"], phasePower: { early: 7, mid: 7, late: 5 }, objectivePower: 3, synergyTags: ["pick"], counterTags: ["scaling", "poke", "protect"] },
+  { id: 'locke', name: 'Locke', role: 'MID', secondaryRoles: ['JUNGLE'], difficulty: 4, tags: ['dive', 'pick', 'scaling'], phasePower: { early: 7, mid: 8, late: 6 }, objectivePower: 2, synergyTags: ['pick', 'dive'], counterTags: ['disengage', 'poke', 'protect'] },
   { id: 'lux', name: 'Lux', role: 'MID', secondaryRoles: ["SUPPORT"], difficulty: 4, tags: ["poke", "pick", "siege"], phasePower: { early: 8, mid: 8, late: 5 }, objectivePower: 3, synergyTags: ["poke", "pick"], counterTags: ["engage", "protect", "scaling", "poke"] },
   { id: 'malzahar', name: 'Malzahar', role: 'MID', secondaryRoles: [], difficulty: 2, tags: ["pick", "protect"], phasePower: { early: 5, mid: 7, late: 7 }, objectivePower: 3, synergyTags: ["pick", "protect"], counterTags: ["poke"] },
   { id: 'mel', name: 'Mel', role: 'MID', secondaryRoles: ["SUPPORT"], difficulty: 3, tags: ["poke", "teamfight"], phasePower: { early: 6, mid: 9, late: 6 }, objectivePower: 4, synergyTags: ["poke", "teamfight"], counterTags: ["engage", "protect", "scaling", "splitpush"] },

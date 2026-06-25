@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.6] — 2026-06-25
+
+### Ajouté
+- **Nouveau champion : Locke** (patch 26.13) — AP assassin/skirmisher MID (rôle secondaire JUNGLE). Difficulty 4, tags `dive / pick / scaling`, phase early 7 / mid 8 / late 6. Disponible en draft dès l'installation ; absent des pools de joueurs au départ (à débloquer via Champion ciblé). 22 matchups défavorables (X bat Locke) et 8 matchups favorables (Locke bat X) ajoutés dans `data_counters.js`. Données issues de `CDC/lol_esports_locke_counters_2026.xlsx` — valeurs à affiner dans une version ultérieure.
+
+---
+
 ## [1.11.5] — 2026-06-23
 
 ### Modifié
