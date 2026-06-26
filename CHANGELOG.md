@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.7] — 2026-06-26
+
+### Modifié
+- **Accueil — Prochain match** : la zone affichait toujours "À définir". Elle indique désormais la compétition active et le prochain adversaire selon le contexte : saison régulière (`Spring Split · J3 · vs FNC`), playoffs (`Playoffs · vs T1`), phase de groupes internationale (`MSI 2027 · Phase de groupes · vs BLG`) ou bracket international (`Worlds 2027 · Bracket · vs G2`). Se met à jour à chaque retour sur l'écran Accueil.
+
+---
+
 ## [1.11.6] — 2026-06-25
 
 ### Ajouté

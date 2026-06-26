@@ -1583,6 +1583,42 @@ function confirmTeamSelection(team, regionId) {
 /* ------------------------------------------------------------
    Ecran d'accueil (CDC 12.1)
    ------------------------------------------------------------ */
+function getNextMatchInfo() {
+  // International en cours (priorité sur la saison régulière)
+  const intl = state.international;
+  if (intl && intl.phase !== 'done' && intl.pendingMatch) {
+    const pm = intl.pendingMatch;
+    const ev = intl.event === 'worlds' ? 'Worlds' : 'MSI';
+    const phase = pm.type === 'group' ? 'Phase de groupes' : 'Bracket';
+    return { competition: `${ev} ${intl.year} · ${phase}`, opponent: getTeamName(pm.opponentTeamId) };
+  }
+
+  const season = state.season;
+  if (!season) return null;
+  const splitName = season.split === 'summer' ? 'Summer Split' : 'Spring Split';
+
+  // Playoffs avec match en attente
+  if (season.phase === 'playoffs' && season.pendingMatch) {
+    return { competition: `${splitName} · Playoffs`, opponent: getTeamName(season.pendingMatch.opponentTeamId) };
+  }
+
+  // Saison régulière avec match en attente
+  if (season.phase === 'regular' && season.pendingMatch) {
+    return { competition: `${splitName} · J${season.matchday}`, opponent: getTeamName(season.pendingMatch.opponentTeamId) };
+  }
+
+  // Saison régulière entre deux journées — cherche le prochain match du joueur
+  if (season.phase === 'regular' && season.matchday <= season.schedule.length) {
+    const fixture = getPlayerFixture(season.matchday);
+    if (fixture) {
+      const oppId = fixture.home === 'player' ? fixture.away : fixture.home;
+      return { competition: `${splitName} · J${season.matchday}`, opponent: getTeamName(oppId) };
+    }
+  }
+
+  return null;
+}
+
 function renderHome() {
   updateAllTeamNameDisplays();
 
@@ -1600,6 +1636,13 @@ function renderHome() {
     } else {
       avatarsEl.innerHTML = state.roster.slice(0, 5).map((p) => `<div class="mini-avatar">${getInitials(p.name)}</div>`).join('');
     }
+  }
+
+  const nextEl = document.getElementById('home-next-match');
+  if (nextEl) {
+    const info = getNextMatchInfo();
+    nextEl.querySelector('.match-card--next__label').textContent = info ? info.competition : 'Prochain match';
+    nextEl.querySelector('.match-card--next__teams').textContent = info ? `vs ${info.opponent}` : 'À définir';
   }
 
   const resultsEl = document.getElementById('home-recent-results');
