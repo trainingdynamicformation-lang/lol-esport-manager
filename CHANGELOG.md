@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.3] — 2026-06-27
+
+### Modifié
+- **Popup d'onboarding (rotation IA / contrats)** : le sélecteur de langue en a été retiré — il faisait doublon avec la popup de bienvenue. Le choix de langue reste accessible à tout moment dans **Progression → Réglages du monde**.
+
+---
+
 ## [1.12.2] — 2026-06-27
 
 ### Ajouté — Internationalisation FR/EN (Phase 1/3 du chantier v1.13.0)

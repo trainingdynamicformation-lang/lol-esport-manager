@@ -7371,9 +7371,11 @@ function languageSettingRow() {
   </div>`;
 }
 
-function worldSettingsHtml() {
+// includeLang : affiche le sélecteur de langue (Progression) ou non (popup onboarding).
+function worldSettingsHtml(includeLang) {
   const s = state.settings;
-  return languageSettingRow()
+  const langRow = includeLang === false ? '' : languageSettingRow();
+  return langRow
   + worldToggleRow('aiRotation', t('settings.aiRotation.title'), t('settings.aiRotation.desc'), s.aiRotation !== false)
   + worldToggleRow('playerContracts', t('settings.playerContracts.title'), t('settings.playerContracts.desc'), s.playerContracts !== false);
 }
@@ -7407,7 +7409,7 @@ function maybeShowOnboarding1110() {
       Deux nouvelles mécaniques rythment désormais ta carrière sur le long terme. Choisis ce que tu veux activer —
       tu pourras tout changer à tout moment dans l'onglet <strong>Progression</strong>.
     </p>
-    <div id="onboarding-settings" class="world-settings-list">${worldSettingsHtml()}</div>
+    <div id="onboarding-settings" class="world-settings-list">${worldSettingsHtml(false)}</div>
     <div class="modal-content__actions" style="margin-top:18px;">
       <button class="btn-primary" id="btn-onboarding-validate">Valider mes choix</button>
     </div>
