@@ -5,6 +5,22 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.1] — 2026-06-26
+
+### Ajouté — Assistant Coach de draft
+
+Remplace la ligne de suggestion unique par un **panneau coach structuré** affiché à chaque tour du joueur (ban et pick), avec jusqu'à 3 cartes colorées hiérarchisées par priorité :
+
+- ⚡ **Counter-pick** — quand l'adversaire a déjà pick dans votre rôle, identifie le meilleur champion de votre pool qui le contrecarre (via `CHAMPION_COUNTERS`, score ≥ 65). Ex. : « Vex contre leur Viktor MID — avantage de matchup (score 87) »
+- 🔥 **Pick proactif** — champion de votre pool qui met en difficulté plusieurs champions probables du pool adverse. Calcul basé sur les counters croisés avec le pool réel de l'équipe IA
+- 🛡 **Ban prioritaire** — si scouting avancé ou premium, signale le champion que l'adversaire va prioriser
+- ⚠️ **Menace retour** — votre meilleur champion pourrait être dangereux côté adverse, pensez à le bannir
+- 🧩 **Composition** — alerte si votre comp (après 2+ picks) manque de engage / disengage / scaling / teamfight
+- 📋 **Scouting** — rappelle le rôle le plus faible de l'adversaire si vous avez un rapport avancé/premium
+- 👁 **Flex adverse** — détecte les champions adverses multi-rôles dont l'assignation est ambiguë
+
+---
+
 ## [1.12.0] — 2026-06-26
 
 ### Ajouté — Scouting enrichi (apprentissage progressif maintenu)

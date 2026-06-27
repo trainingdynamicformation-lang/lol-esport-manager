@@ -2675,63 +2675,173 @@ function computeDraftScore(draft) {
   };
 }
 
-function getDraftSuggestion(draft) {
+// ---- Assistant Coach de draft (v1.12.1) ----
+
+function getDraftCoachAdvice(draft) {
   const turn = currentTurn(draft);
-  if (!turn || turn.side !== draft.playerSide) return null;
+  if (!turn || turn.side !== draft.playerSide) return [];
+
+  const advice = [];
+  const opponent = getOpponentTeam(draft);
+  const oppSide = aiSide(draft);
+  const oppPicks = draft[oppSide + 'Picks'];
+  const myPicks = draft[draft.playerSide + 'Picks'];
+  const freeRoles = emptyRoles(myPicks);
 
   if (turn.type === 'ban') {
-    const opponent = getOpponentTeam(draft);
+    // Ban prioritaire scouting
     const report = getScoutingReport(opponent.id);
     if (getScoutingTier(report.confidence) !== 'basic') {
-      const target = (opponent.draftProfile && opponent.draftProfile.banPriorities || []).find((c) => !isChampionTaken(draft, c));
-      if (target) {
-        return `Suggestion (scouting) : ${opponent.shortName} compte sur ${target} dans son plan de draft, envisagez de le bannir.`;
-      }
+      const target = ((opponent.draftProfile || {}).banPriorities || []).find((c) => !isChampionTaken(draft, c));
+      if (target) advice.push({ type: 'ban', icon: '🛡', label: 'Ban prioritaire', text: `${opponent.shortName} compte sur ${target} dans son plan — ciblez-le.` });
     }
+    // Menace retour : notre meilleur champion pourrait être pris par l'adversaire
+    let bestOurs = null;
+    state.roster.forEach((p) => p.championPool.forEach((n) => {
+      if (isChampionTaken(draft, n)) return;
+      const m = (getChampionMastery(p.id, n) || {}).mastery || 0;
+      if (!bestOurs || m > bestOurs.mastery) bestOurs = { champName: n, mastery: m };
+    }));
+    if (bestOurs && bestOurs.mastery >= 60) {
+      advice.push({ type: 'threat', icon: '⚠️', label: 'Menace retour', text: `${bestOurs.champName} (maîtrise ${bestOurs.mastery}) vous serait dangereux côté adverse.` });
+    }
+    // Flex pick adverse déjà pickés
+    Object.values(oppPicks).filter(Boolean).forEach((champName) => {
+      const champ = getChampionByName(champName);
+      if (champ && champ.secondaryRoles && champ.secondaryRoles.length > 0) {
+        const roles = [champ.role, ...champ.secondaryRoles].map((r) => ROLE_NAMES[r]).join(' ou ');
+        advice.push({ type: 'flex', icon: '👁', label: 'Flex adverse', text: `${champName} peut aller ${roles} — leur répartition de rôles est incertaine.` });
+      }
+    });
+    if (advice.length === 0) advice.push({ type: 'info', icon: '📋', label: 'Conseil', text: 'Bannissez un champion clé de leur composition ou un counter-pick dangereux pour votre roster.' });
 
-    let best = null;
-    state.roster.forEach((player) => {
-      player.championPool.forEach((champName) => {
+  } else {
+    // PICK TURN
+
+    // 1. Counter-picks : adversaire a déjà pick dans notre rôle
+    freeRoles.forEach((role) => {
+      const oppChampName = oppPicks[role];
+      if (!oppChampName) return;
+      const oppChamp = getChampionByName(oppChampName);
+      if (!oppChamp) return;
+      const myPlayer = state.roster.find((p) => p.role === role);
+      let best = null;
+      if (myPlayer) {
+        myPlayer.championPool.forEach((champName) => {
+          if (isChampionTaken(draft, champName)) return;
+          const champ = getChampionByName(champName);
+          if (!champ) return;
+          const entry = CHAMPION_COUNTERS.find((e) => e.counter === champ.id && e.target === oppChamp.id && e.score >= 65);
+          if (entry && (!best || entry.score > best.score)) {
+            const mastery = (getChampionMastery(myPlayer.id, champName) || {}).mastery || 0;
+            best = { champName, score: entry.score, mastery, playerName: myPlayer.name };
+          }
+        });
+      }
+      if (best) {
+        advice.push({ type: 'counter', icon: '⚡', label: 'Counter-pick', text: `${best.champName} (maîtrise ${best.mastery}) contrecarre leur ${oppChampName} en ${ROLE_NAMES[role]} — avantage de matchup (score ${best.score}).`, priority: best.score });
+      }
+    });
+
+    // 2. Pick proactif : champion de notre pool qui met en difficulté leur pool probable
+    const proactives = [];
+    freeRoles.forEach((role) => {
+      const myPlayer = state.roster.find((p) => p.role === role);
+      if (!myPlayer) return;
+      const oppPool = opponent.roster.flatMap((p) => p.championPool.slice(0, 3));
+      myPlayer.championPool.slice(0, 6).forEach((champName) => {
         if (isChampionTaken(draft, champName)) return;
-        const mastery = (getChampionMastery(player.id, champName) || {}).mastery || 0;
-        if (!best || mastery > best.mastery) best = { champName, mastery };
+        const champ = getChampionByName(champName);
+        if (!champ) return;
+        let score = 0;
+        const targets = [];
+        oppPool.forEach((oppName) => {
+          const oC = getChampionByName(oppName);
+          if (!oC) return;
+          const e = CHAMPION_COUNTERS.find((e) => e.counter === champ.id && e.target === oC.id && e.score >= 72);
+          if (e) { score += e.score; targets.push(oppName); }
+        });
+        if (score >= 72 && targets.length >= 1) {
+          const mastery = (getChampionMastery(myPlayer.id, champName) || {}).mastery || 0;
+          proactives.push({ champName, role, score, targets: [...new Set(targets)].slice(0, 2), mastery });
+        }
       });
     });
-    if (best && best.mastery >= 50) {
-      return `Suggestion : surveillez ${best.champName}, un champion fort qui pourrait revenir cote adverse.`;
+    if (proactives.length > 0) {
+      proactives.sort((a, b) => b.score - a.score);
+      const p = proactives[0];
+      advice.push({ type: 'proactive', icon: '🔥', label: 'Pick proactif', text: `${p.champName} met en difficulté leur ${p.targets.join(' et ')} — pick agressif qui force leur plan.`, priority: p.score });
     }
-    return 'Suggestion : bannissez un champion cle de la composition adverse ou un contre-pick dangereux.';
-  }
 
-  const side = draft.playerSide;
-  const myPicks = draft[side + 'Picks'];
-  const roles = emptyRoles(myPicks);
-  if (roles.length === 0) return null;
-
-  let best = null;
-  roles.forEach((role) => {
-    const player = state.roster.find((p) => p.role === role);
-    if (!player) return;
-    player.championPool.forEach((champName) => {
-      if (isChampionTaken(draft, champName)) return;
-      const mastery = (getChampionMastery(player.id, champName) || {}).mastery || 0;
-      if (!best || mastery > best.mastery) best = { role, champName, mastery, player };
+    // 3. Analyse composition
+    const myTagCounts = {};
+    Object.values(myPicks).filter(Boolean).forEach((champName) => {
+      const champ = getChampionByName(champName);
+      (champ ? champ.tags : []).forEach((t) => { myTagCounts[t] = (myTagCounts[t] || 0) + 1; });
     });
-  });
-
-  if (best) {
-    let suggestion = `Suggestion : ${best.player.name} sur ${best.champName} (${ROLE_NAMES[best.role]}, maîtrise ${best.mastery}) pour un pick confort.`;
-    const opponent = getOpponentTeam(draft);
-    const report = getScoutingReport(opponent.id);
-    if (getScoutingTier(report.confidence) === 'premium') {
-      const weak = getTeamWeakestRole(opponent);
-      if (weak && weak.role === best.role) {
-        suggestion += ` Scouting premium : leur ${ROLE_NAMES[weak.role]} (${weak.player.name}) est leur point faible, exploitez cet avantage.`;
+    const pickedCount = Object.values(myPicks).filter(Boolean).length;
+    if (pickedCount >= 2) {
+      const missing = ['engage', 'disengage', 'scaling', 'teamfight'].filter((t) => !myTagCounts[t]);
+      if (missing.length >= 1 && missing.length <= 2) {
+        advice.push({ type: 'comp', icon: '🧩', label: 'Composition', text: `Votre comp manque de ${missing.map((t) => SCOUT_TAG_LABELS[t] || t).join(' / ')} — anticipez vos prochains picks.` });
       }
     }
-    return suggestion;
+
+    // 4. Scouting insight
+    const scoutReport = getScoutingReport(opponent.id);
+    if (getScoutingTier(scoutReport.confidence) !== 'basic') {
+      const weak = getTeamWeakestRole(opponent);
+      if (weak && freeRoles.includes(weak.role)) {
+        advice.push({ type: 'scouting', icon: '📋', label: 'Scouting', text: `Leur ${ROLE_NAMES[weak.role]} (${weak.player.name}, niv. ${weak.score}) est leur point faible — priorisez un pick fort dans ce rôle.` });
+      }
+    }
+
+    // 5. Flex pick alerte
+    Object.values(oppPicks).filter(Boolean).forEach((champName) => {
+      const champ = getChampionByName(champName);
+      if (champ && champ.secondaryRoles && champ.secondaryRoles.length > 0) {
+        const roles = [champ.role, ...champ.secondaryRoles].map((r) => ROLE_NAMES[r]).join(' ou ');
+        advice.push({ type: 'flex', icon: '👁', label: 'Flex adverse', text: `${champName} peut aller ${roles} — rôle incertain.` });
+      }
+    });
+
+    // 6. Fallback : pick confort
+    if (advice.length === 0) {
+      let best = null;
+      freeRoles.forEach((role) => {
+        const player = state.roster.find((p) => p.role === role);
+        if (!player) return;
+        player.championPool.forEach((n) => {
+          if (isChampionTaken(draft, n)) return;
+          const m = (getChampionMastery(player.id, n) || {}).mastery || 0;
+          if (!best || m > best.mastery) best = { role, champName: n, mastery: m, playerName: player.name };
+        });
+      });
+      if (best) advice.push({ type: 'pick', icon: '🎯', label: 'Pick confort', text: `${best.playerName} sur ${best.champName} (${ROLE_NAMES[best.role]}, maîtrise ${best.mastery}).` });
+      else if (freeRoles.length > 0) advice.push({ type: 'info', icon: '📋', label: 'Conseil', text: `Complétez le rôle ${ROLE_NAMES[freeRoles[0]]}, même avec un champion peu maîtrisé pour l'instant.` });
+    }
   }
-  return `Suggestion : completez le role ${ROLE_NAMES[roles[0]]}, même avec un champion peu maîtrise pour l'instant.`;
+
+  // Trier par type prioritaire et limiter à 3 cartes
+  const prio = { counter: 0, proactive: 1, ban: 2, scouting: 3, comp: 4, threat: 5, flex: 6, pick: 7, info: 8 };
+  return advice.sort((a, b) => (prio[a.type] ?? 9) - (prio[b.type] ?? 9)).slice(0, 3);
+}
+
+function renderCoachPanel(advice) {
+  if (!advice || advice.length === 0) return '';
+  const colorClass = { counter: 'coach-card--counter', proactive: 'coach-card--proactive', ban: 'coach-card--ban',
+    scouting: 'coach-card--scouting', comp: 'coach-card--comp', flex: 'coach-card--flex',
+    threat: 'coach-card--threat', pick: 'coach-card--pick', info: 'coach-card--info' };
+  const cards = advice.map((a) =>
+    `<div class="coach-card ${colorClass[a.type] || ''}">
+      <span class="coach-card__icon">${a.icon}</span>
+      <div class="coach-card__body">
+        <span class="coach-card__label">${a.label}</span>
+        <span class="coach-card__text">${a.text}</span>
+      </div>
+    </div>`
+  ).join('');
+  return `<div class="coach-panel"><div class="coach-panel__title">🧠 Assistant Coach</div><div class="coach-panel__cards">${cards}</div></div>`;
 }
 
 function renderBansRow(draft, side) {
@@ -2920,7 +3030,8 @@ function renderDraft() {
       </div>
     `;
   } else if (isPlayerTurn) {
-    const suggestion = getDraftSuggestion(draft);
+    const coachAdvice = getDraftCoachAdvice(draft);
+    const coachHtml = renderCoachPanel(coachAdvice);
     const ROLE_FILTERS = [
       { id: 'ALL', label: 'Tous' },
       { id: 'TOP', label: 'Top' },
@@ -2935,7 +3046,7 @@ function renderDraft() {
       const banFilter = draft._banRoleFilter || 'ALL';
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un ban (${sideLabel(turn.side)}).</div>
-        ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
+        ${coachHtml}
         <div class="draft-filter-row">
           <div class="draft-role-filter">
             ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === banFilter ? 'comp-tag-option--active' : ''}" data-ban-filter="${f.id}">${f.label}</button>`).join('')}
@@ -2952,7 +3063,7 @@ function renderDraft() {
         : (draft._pendingRole && roles.includes(draft._pendingRole) ? draft._pendingRole : roles[0]);
       actionHtml = `
         <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
-        ${suggestion ? `<div class="objective-description">${suggestion}</div>` : ''}
+        ${coachHtml}
         <div class="draft-filter-row">
           <div class="draft-role-filter">
             ${ROLE_FILTERS.map(f => `<button class="comp-tag-option ${f.id === pickFilter ? 'comp-tag-option--active' : ''}" data-pick-filter="${f.id}">${f.label}</button>`).join('')}

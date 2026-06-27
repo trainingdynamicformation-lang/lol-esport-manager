@@ -641,6 +641,60 @@ img { max-width: 100%; height: auto; }
   border-radius: 8px;
 }
 
+/* Assistant Coach de draft (v1.12.1) */
+.coach-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.coach-panel__title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+.coach-panel__cards { display: flex; flex-direction: column; gap: 6px; }
+.coach-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--color-border);
+  background: var(--color-surface-alt);
+  font-size: 12px;
+}
+.coach-card__icon { font-size: 14px; flex-shrink: 0; padding-top: 1px; }
+.coach-card__body { display: flex; flex-direction: column; gap: 2px; }
+.coach-card__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--color-text-muted);
+}
+.coach-card__text { color: var(--color-text); line-height: 1.45; }
+
+.coach-card--counter  { border-left-color: var(--color-seafoam); }
+.coach-card--counter  .coach-card__label { color: var(--color-seafoam); }
+.coach-card--proactive { border-left-color: #f97316; }
+.coach-card--proactive .coach-card__label { color: #f97316; }
+.coach-card--ban      { border-left-color: var(--color-danger); }
+.coach-card--ban      .coach-card__label { color: var(--color-danger); }
+.coach-card--scouting { border-left-color: #a78bfa; }
+.coach-card--scouting .coach-card__label { color: #a78bfa; }
+.coach-card--comp     { border-left-color: var(--color-gold); }
+.coach-card--comp     .coach-card__label { color: var(--color-gold); }
+.coach-card--threat   { border-left-color: var(--color-warning); }
+.coach-card--threat   .coach-card__label { color: var(--color-warning); }
+.coach-card--pick     { border-left-color: var(--color-seafoam); }
+.coach-card--pick     .coach-card__label { color: var(--color-seafoam); }
+.coach-card--flex, .coach-card--info { border-left-color: var(--color-text-muted); }
+
 /* Scouting enrichi (v1.12.0) */
 .scout-comp-tag {
   display: inline-block;
