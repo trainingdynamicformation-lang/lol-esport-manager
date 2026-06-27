@@ -5,6 +5,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.11.8] — 2026-06-26
+
+### Modifié
+- **Draft — noms des joueurs** : les colonnes de picks affichent désormais le nom du joueur à la place du rôle (TOP → Caps, JUNGLE → Jankos, etc.) pour les deux équipes. Si un joueur est introuvable pour un rôle, le nom de rôle reste affiché en fallback.
+
+---
+
 ## [1.11.7] — 2026-06-26
 
 ### Modifié

@@ -2581,7 +2581,7 @@ function renderPicksColumn(draft, side) {
     }
     return `
       <div class="draft-pick-slot ${champName ? 'draft-pick-slot--filled' : ''}">
-        <span class="draft-pick-slot__role">${ROLE_NAMES[role]}</span>
+        <span class="draft-pick-slot__role">${player ? player.name : ROLE_NAMES[role]}</span>
         <span class="draft-pick-slot__champion">${champName || '—'}</span>
         ${masteryInfo}
       </div>
