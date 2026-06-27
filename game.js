@@ -1845,7 +1845,7 @@ function renderRoster() {
   if (!el) return;
 
   if (state.roster.length === 0) {
-    el.innerHTML = '<div class="empty-state">Aucun joueur dans le roster pour le moment.</div>';
+    el.innerHTML = `<div class="empty-state">${t('empty.roster')}</div>`;
     return;
   }
 
@@ -1856,10 +1856,10 @@ function renderRoster() {
 
   el.innerHTML = `
     <div class="panel-subsection rest-panel">
-      <h3 class="panel-title">Repos de l'équipe</h3>
-      <p class="card__count">Fatigue moyenne actuelle : ${avgFatigue}/100</p>
+      <h3 class="panel-title">${t('roster.restTitle')}</h3>
+      <p class="card__count">${t('roster.avgFatigue', { n: avgFatigue })}</p>
       <div class="training-form__actions">
-        ${REST_OPTIONS.map((o) => `<button class="btn-secondary" data-rest="${o.id}">${o.label} (-${o.fatigueReduction} fatigue, ${o.cost} pts coaching)</button>`).join('')}
+        ${REST_OPTIONS.map((o) => `<button class="btn-secondary" data-rest="${o.id}">${t('roster.restBtn', { label: restLabel(o.id), red: o.fatigueReduction, cost: o.cost })}</button>`).join('')}
       </div>
     </div>
     <div class="player-grid">${sorted.map(playerCardHtml).join('')}</div>
@@ -1875,7 +1875,7 @@ function restTeam(optionId) {
   if (!option) return;
 
   if (state.resources.coachingPoints < option.cost) {
-    showToast('Pas assez de points de coaching pour ce repos.', 'error');
+    showToast(t('toast.restNoCoaching'), 'error');
     return;
   }
 
@@ -1887,7 +1887,7 @@ function restTeam(optionId) {
   saveGame();
   updateResourceBar();
   renderRoster();
-  showToast(`Repos (${option.label}) effectué : fatigué de l'équipe reduite.`, 'success');
+  showToast(t('toast.restDone', { label: restLabel(option.id) }), 'success');
 }
 
 function playerStatRow(label, value) {
@@ -1903,7 +1903,7 @@ function playerStatRow(label, value) {
 function playerCardHtml(p) {
   const progression = (state.lastCareerProgression || []).find((e) => e.playerId === p.id);
   const deltaHtml = progression ? `
-    <span class="level-delta ${progression.delta > 0 ? 'level-delta--up' : 'level-delta--down'}" title="Evolution du dernier split">
+    <span class="level-delta ${progression.delta > 0 ? 'level-delta--up' : 'level-delta--down'}" title="${t('roster.evolTitle')}">
       ${progression.delta > 0 ? '&#9650;' : '&#9660;'} ${progression.delta > 0 ? '+' : ''}${progression.delta}
     </span>
   ` : '';
@@ -1915,22 +1915,22 @@ function playerCardHtml(p) {
         <div class="player-card__identity">
           <div class="player-card__name">${p.name}</div>
           <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
-          ${state.settings.playerContracts !== false && p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${playerAge(p)} ans</div>` : ''}
-          ${state.settings.playerContracts !== false && p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">&#128203; Contrat : Worlds ${p.contractUntil}${isContractFinalYear(p) ? ' &mdash; derni&egrave;re ann&eacute;e' : ''}</div>` : ''}
+          ${state.settings.playerContracts !== false && p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${t('roster.age', { n: playerAge(p) })}</div>` : ''}
+          ${state.settings.playerContracts !== false && p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">${t('roster.contract', { y: p.contractUntil })}${isContractFinalYear(p) ? t('roster.lastYear') : ''}</div>` : ''}
         </div>
         <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
       </div>
       <div class="player-card__stats">
-        ${playerStatRow('Forme', p.form)}
-        ${playerStatRow('Fatigue', p.fatigue)}
-        ${playerStatRow('Mental', p.mental)}
-        ${playerStatRow('Shotcalling', p.shotcalling)}
-        ${playerStatRow('Laning', p.laning)}
-        ${playerStatRow('Teamfight', p.teamfight)}
-        ${playerStatRow('Mécaniques', p.mechanics)}
+        ${playerStatRow(t('stat.form'), p.form)}
+        ${playerStatRow(t('stat.fatigue'), p.fatigue)}
+        ${playerStatRow(t('stat.mental'), p.mental)}
+        ${playerStatRow(t('stat.shotcalling'), p.shotcalling)}
+        ${playerStatRow(t('stat.laning'), p.laning)}
+        ${playerStatRow(t('stat.teamfight'), p.teamfight)}
+        ${playerStatRow(t('stat.mechanics'), p.mechanics)}
       </div>
       <div class="player-card__pool">
-        <span class="player-card__pool-label">Champion pool</span>
+        <span class="player-card__pool-label">${t('roster.championPool')}</span>
         <div class="champion-chip-list">
           ${p.championPool.map((c) => {
             const mastery = getChampionMastery(p.id, c);
@@ -1942,7 +1942,7 @@ function playerCardHtml(p) {
       </div>
       ${p.traits.length ? `
         <div class="player-card__traits">
-          ${p.traits.map((t) => `<span class="trait-chip">${t}</span>`).join('')}
+          ${p.traits.map((tr) => `<span class="trait-chip">${traitLabel(tr)}</span>`).join('')}
         </div>
       ` : ''}
     </div>
@@ -6491,7 +6491,7 @@ function renderChampions() {
   const el = document.getElementById('champions-content');
   if (!el) return;
   if (typeof CHAMPIONS === 'undefined') {
-    el.innerHTML = '<div class="empty-state">Donnees des champions indisponibles.</div>';
+    el.innerHTML = `<div class="empty-state">${t('champ.dataUnavailable')}</div>`;
     return;
   }
   if (championsView.selected) {
@@ -6503,7 +6503,7 @@ function renderChampions() {
 
 function renderChampionsList(el) {
   const roles = ['', 'TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
-  const roleLabels = { '': 'Tous', TOP: 'TOP', JUNGLE: 'JUNGLE', MID: 'MID', ADC: 'ADC', SUPPORT: 'SUPPORT' };
+  const roleLabels = { '': t('common.all'), TOP: 'TOP', JUNGLE: 'JUNGLE', MID: 'MID', ADC: 'ADC', SUPPORT: 'SUPPORT' };
   const searchInput = document.getElementById('champions-search');
   const search = (searchInput ? searchInput.value : '').trim().toLowerCase();
 
@@ -6523,11 +6523,11 @@ function renderChampionsList(el) {
       <span class="champ-card__role champ-card__role--${c.role}">${c.role}</span>
       <span class="champ-card__tags">${(c.tags || []).slice(0, 3).join(' · ') || '—'}</span>
     </button>
-  `).join('') : '<div class="empty-state">Aucun champion ne correspond.</div>';
+  `).join('') : `<div class="empty-state">${t('champ.noMatch')}</div>`;
 
   el.innerHTML = `
     <div class="draft-role-filter">${filterHtml}</div>
-    <p class="card__count">${list.length} champion${list.length > 1 ? 's' : ''}</p>
+    <p class="card__count">${list.length} ${t(list.length > 1 ? 'champ.champions' : 'champ.champion')}</p>
     <div class="champ-grid">${cardsHtml}</div>
   `;
 
@@ -6551,7 +6551,7 @@ function renderChampionDetail(el, champId) {
     .slice().sort((a, b) => b.score - a.score);
 
   const chips = (arr) => (arr && arr.length)
-    ? arr.map((t) => `<span class="champ-chip">${t}</span>`).join('')
+    ? arr.map((tag) => `<span class="champ-chip">${tag}</span>`).join('')
     : '<span class="champ-chip champ-chip--empty">—</span>';
   const stat = (val, label) => `<div class="stat-card"><div class="stat-card__value">${val}</div><div class="stat-card__label">${label}</div></div>`;
   const roleLine = [c.role].concat(c.secondaryRoles || []).join(' / ');
@@ -6567,38 +6567,38 @@ function renderChampionDetail(el, champId) {
         <span><strong>${otherName}</strong> <span class="champ-card__role champ-card__role--${otherRole}">${otherRole}</span></span>
         <span class="counter-row__score ${confClass}">${e.score} · ${e.confidence}</span>
       </div>
-      <div class="counter-row__tags">Tags communs : ${(e.matchedTags || []).join(', ') || '-'}</div>
+      <div class="counter-row__tags">${t('champ.commonTags')}${(e.matchedTags || []).join(', ') || '-'}</div>
       <div class="counter-row__reason">${e.gameplayReason || ''}</div>
     </button>`;
   };
 
   el.innerHTML = `
-    <button class="btn-back" id="champ-detail-back">← Retour</button>
+    <button class="btn-back" id="champ-detail-back">${t('common.back')}</button>
     <div class="panel">
       <div class="champ-detail__head">
         <h3 class="panel-title">${c.name}</h3>
         <span class="champ-card__role champ-card__role--${c.role}">${roleLine}</span>
       </div>
       <div class="stats-grid">
-        ${stat(c.difficulty + '/5', 'Difficulté')}
+        ${stat(c.difficulty + '/5', t('champ.difficulty'))}
         ${stat(c.phasePower.early, 'Early')}
         ${stat(c.phasePower.mid, 'Mid')}
         ${stat(c.phasePower.late, 'Late')}
-        ${stat(c.objectivePower, 'Objectifs')}
+        ${stat(c.objectivePower, t('champ.objectives'))}
       </div>
       <div class="champ-detail__tags">
-        <div><span class="champ-detail__label">Style</span> ${chips(c.tags)}</div>
-        <div><span class="champ-detail__label">Synergies</span> ${chips(c.synergyTags)}</div>
-        <div><span class="champ-detail__label">Fort contre les profils</span> ${chips(c.counterTags)}</div>
+        <div><span class="champ-detail__label">${t('champ.style')}</span> ${chips(c.tags)}</div>
+        <div><span class="champ-detail__label">${t('champ.synergies')}</span> ${chips(c.synergyTags)}</div>
+        <div><span class="champ-detail__label">${t('champ.strongVs')}</span> ${chips(c.counterTags)}</div>
       </div>
     </div>
     <div class="panel">
-      <h3 class="panel-title">${c.name} contre (${counters.length})</h3>
-      ${counters.length ? counters.map((e) => counterRow(e, 'counter')).join('') : '<div class="empty-state">Aucune donnée de counter.</div>'}
+      <h3 class="panel-title">${t('champ.vsTitle', { name: c.name, n: counters.length })}</h3>
+      ${counters.length ? counters.map((e) => counterRow(e, 'counter')).join('') : `<div class="empty-state">${t('champ.noCounterData')}</div>`}
     </div>
     <div class="panel">
-      <h3 class="panel-title">Contré par (${counteredBy.length})</h3>
-      ${counteredBy.length ? counteredBy.map((e) => counterRow(e, 'target')).join('') : '<div class="empty-state">Aucune donnée de counter.</div>'}
+      <h3 class="panel-title">${t('champ.counteredBy', { n: counteredBy.length })}</h3>
+      ${counteredBy.length ? counteredBy.map((e) => counterRow(e, 'target')).join('') : `<div class="empty-state">${t('champ.noCounterData')}</div>`}
     </div>
   `;
 
@@ -6617,7 +6617,7 @@ function renderCounters() {
   if (!el) return;
 
   if (typeof CHAMPION_COUNTERS === 'undefined') {
-    el.innerHTML = '<div class="empty-state">Donnees de counter indisponibles.</div>';
+    el.innerHTML = `<div class="empty-state">${t('counters.dataUnavailable')}</div>`;
     return;
   }
 
@@ -6630,7 +6630,7 @@ function renderCounters() {
   const confidence = confidenceFilter ? confidenceFilter.value : '';
 
   if (!search) {
-    el.innerHTML = '<div class="empty-state">Recherchez un champion pour voir ses matchups.</div>';
+    el.innerHTML = `<div class="empty-state">${t('empty.counters')}</div>`;
     return;
   }
 
@@ -6659,10 +6659,10 @@ function renderCounters() {
     return `
       <div class="counter-row">
         <div class="counter-row__main">
-          <strong>${counterName}</strong> (${e.counterRole}) contre <strong>${targetName}</strong> (${e.targetRole})
+          <strong>${counterName}</strong> (${e.counterRole}) ${t('counters.vs')} <strong>${targetName}</strong> (${e.targetRole})
           <span class="counter-row__score ${confClass}">${e.score} - ${e.confidence}</span>
         </div>
-        <div class="counter-row__tags">Tags : ${(e.matchedTags || []).join(', ') || '-'}</div>
+        <div class="counter-row__tags">${t('counters.tags')}${(e.matchedTags || []).join(', ') || '-'}</div>
         <div class="counter-row__reason">${e.gameplayReason || ''}</div>
         <div class="counter-row__advice">${e.draftUse || ''}</div>
       </div>
@@ -6671,12 +6671,12 @@ function renderCounters() {
 
   el.innerHTML = `
     <div class="panel">
-      <h3 class="panel-title">Champions contres par "${search}"</h3>
-      ${champCounters.length ? champCounters.map((e) => renderRow(e, 'counter')).join('') : '<div class="empty-state">Aucun résultat.</div>'}
+      <h3 class="panel-title">${t('counters.counteredTitle', { q: search })}</h3>
+      ${champCounters.length ? champCounters.map((e) => renderRow(e, 'counter')).join('') : `<div class="empty-state">${t('common.noResult')}</div>`}
     </div>
     <div class="panel">
-      <h3 class="panel-title">Champions qui contrent "${search}"</h3>
-      ${champCountered.length ? champCountered.map((e) => renderRow(e, 'target')).join('') : '<div class="empty-state">Aucun résultat.</div>'}
+      <h3 class="panel-title">${t('counters.counterTitle', { q: search })}</h3>
+      ${champCountered.length ? champCountered.map((e) => renderRow(e, 'target')).join('') : `<div class="empty-state">${t('common.noResult')}</div>`}
     </div>
   `;
 }

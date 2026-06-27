@@ -120,6 +120,63 @@ const I18N = {
     'footer.localStorage': 'Les données de progression sont stockées localement dans votre navigateur (localStorage) et ne sont jamais transmises à des tiers.',
     'footer.disclaimer': "LOL Esport Manager est un projet indépendant non affilié à Riot Games. League of Legends est une marque déposée de Riot Games, Inc. Ce jeu est créé à titre de fan project à but non commercial.",
 
+    // -- Roster --
+    'roster.restTitle': "Repos de l'équipe",
+    'roster.avgFatigue': 'Fatigue moyenne actuelle : {n}/100',
+    'roster.restBtn': '{label} (-{red} fatigue, {cost} pts coaching)',
+    'roster.age': '{n} ans',
+    'roster.contract': '📋 Contrat : Worlds {y}',
+    'roster.lastYear': ' — dernière année',
+    'roster.championPool': 'Champion pool',
+    'roster.evolTitle': 'Évolution du dernier split',
+    'rest.short': 'Courte (1 jour)',
+    'rest.medium': 'Moyenne (2 jours)',
+    'rest.long': 'Longue (3 jours)',
+    'stat.form': 'Forme',
+    'stat.fatigue': 'Fatigue',
+    'stat.mental': 'Mental',
+    'stat.shotcalling': 'Shotcalling',
+    'stat.laning': 'Laning',
+    'stat.teamfight': 'Teamfight',
+    'stat.mechanics': 'Mécaniques',
+    'trait.igl': 'IGL',
+    'trait.mechanical': 'Mécanique',
+    'trait.leader': 'Leader',
+    'trait.veteran': 'Vétéran',
+    'trait.rookie': 'Rookie',
+    'trait.tiltable': 'Tiltable',
+    'trait.clutch': 'Clutch',
+    'trait.consistant': 'Consistant',
+    'toast.restNoCoaching': 'Pas assez de points de coaching pour ce repos.',
+    'toast.restDone': "Repos ({label}) effectué : fatigue de l'équipe réduite.",
+
+    // -- Commun --
+    'common.all': 'Tous',
+    'common.back': '← Retour',
+    'common.noResult': 'Aucun résultat.',
+
+    // -- Champions --
+    'champ.dataUnavailable': 'Données des champions indisponibles.',
+    'champ.noMatch': 'Aucun champion ne correspond.',
+    'champ.champion': 'champion',
+    'champ.champions': 'champions',
+    'champ.difficulty': 'Difficulté',
+    'champ.objectives': 'Objectifs',
+    'champ.style': 'Style',
+    'champ.synergies': 'Synergies',
+    'champ.strongVs': 'Fort contre les profils',
+    'champ.vsTitle': '{name} contre ({n})',
+    'champ.counteredBy': 'Contré par ({n})',
+    'champ.noCounterData': 'Aucune donnée de counter.',
+    'champ.commonTags': 'Tags communs : ',
+
+    // -- Counters --
+    'counters.dataUnavailable': 'Données de counter indisponibles.',
+    'counters.vs': 'contre',
+    'counters.tags': 'Tags : ',
+    'counters.counteredTitle': 'Champions contrés par « {q} »',
+    'counters.counterTitle': 'Champions qui contrent « {q} »',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -236,10 +293,79 @@ const I18N = {
     'footer.localStorage': 'Progression data is stored locally in your browser (localStorage) and is never transmitted to third parties.',
     'footer.disclaimer': 'LOL Esport Manager is an independent project not affiliated with Riot Games. League of Legends is a registered trademark of Riot Games, Inc. This game is created as a non-commercial fan project.',
 
+    // -- Roster --
+    'roster.restTitle': 'Team rest',
+    'roster.avgFatigue': 'Current average fatigue: {n}/100',
+    'roster.restBtn': '{label} (-{red} fatigue, {cost} coaching pts)',
+    'roster.age': '{n} yrs',
+    'roster.contract': '📋 Contract: Worlds {y}',
+    'roster.lastYear': ' — final year',
+    'roster.championPool': 'Champion pool',
+    'roster.evolTitle': 'Last split evolution',
+    'rest.short': 'Short (1 day)',
+    'rest.medium': 'Medium (2 days)',
+    'rest.long': 'Long (3 days)',
+    'stat.form': 'Form',
+    'stat.fatigue': 'Fatigue',
+    'stat.mental': 'Mental',
+    'stat.shotcalling': 'Shotcalling',
+    'stat.laning': 'Laning',
+    'stat.teamfight': 'Teamfight',
+    'stat.mechanics': 'Mechanics',
+    'trait.igl': 'IGL',
+    'trait.mechanical': 'Mechanical',
+    'trait.leader': 'Leader',
+    'trait.veteran': 'Veteran',
+    'trait.rookie': 'Rookie',
+    'trait.tiltable': 'Tiltable',
+    'trait.clutch': 'Clutch',
+    'trait.consistant': 'Consistent',
+    'toast.restNoCoaching': 'Not enough coaching points for this rest.',
+    'toast.restDone': 'Rest ({label}) done: team fatigue reduced.',
+
+    // -- Common --
+    'common.all': 'All',
+    'common.back': '← Back',
+    'common.noResult': 'No results.',
+
+    // -- Champions --
+    'champ.dataUnavailable': 'Champion data unavailable.',
+    'champ.noMatch': 'No champion matches.',
+    'champ.champion': 'champion',
+    'champ.champions': 'champions',
+    'champ.difficulty': 'Difficulty',
+    'champ.objectives': 'Objectives',
+    'champ.style': 'Style',
+    'champ.synergies': 'Synergies',
+    'champ.strongVs': 'Strong against profiles',
+    'champ.vsTitle': '{name} counters ({n})',
+    'champ.counteredBy': 'Countered by ({n})',
+    'champ.noCounterData': 'No counter data.',
+    'champ.commonTags': 'Common tags: ',
+
+    // -- Counters --
+    'counters.dataUnavailable': 'Counter data unavailable.',
+    'counters.vs': 'vs',
+    'counters.tags': 'Tags: ',
+    'counters.counteredTitle': 'Champions countered by "{q}"',
+    'counters.counterTitle': 'Champions that counter "{q}"',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
 };
+
+// Libellé court traduit d'un trait joueur (igl, veteran, ...).
+function traitLabel(id) {
+  const key = 'trait.' + id;
+  const val = t(key);
+  return val === key ? id : val;
+}
+
+// Libellé traduit d'une option de repos (REST_OPTIONS) par son id.
+function restLabel(id) {
+  return t('rest.' + id);
+}
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.
 function getLang() {

@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.4] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 2 (lot 1/4 : Roster, Champions, Counters)
+
+Traduction des écrans dynamiques (le contenu rendu par JavaScript), au-delà du shell statique déjà fait.
+
+- **Roster** : panneau de repos, libellés de statistiques (Forme, Fatigue, Mental, Shotcalling…), âge, contrat, champion pool, traits des joueurs (IGL, Vétéran, Tiltable…), toasts de repos.
+- **Champions** : filtres de rôle, fiche détaillée (difficulté, style, synergies, fort/faible contre), listes « counters » et « contré par », bouton retour.
+- **Counters** : titres de résultats, libellés de matchup, états vides.
+- Nouveaux helpers `traitLabel()` et `restLabel()` dans `lang.js`. Correction de deux variables `t` locales qui masquaient la fonction de traduction.
+
+---
+
 ## [1.12.3] — 2026-06-27
 
 ### Modifié
