@@ -591,6 +591,26 @@ const I18N = {
     'masteryTier.signature': 'Signature',
     'masteryTier.elite': 'Élite',
 
+    // -- Pile ou face --
+    'coinflip.title': 'Pile ou Face',
+    'coinflip.win': 'Vous gagnez le pile ou face !',
+    'coinflip.loss': 'Vous perdez le pile ou face...',
+    'coinflip.playerChose': '<strong>{you}</strong> avez choisi : <em>{opt}</em>',
+    'coinflip.aiChose': '<strong>{name}</strong> a choisi : <em>{opt}</em>',
+    'coinflip.sideLabel': 'Côté :',
+    'coinflip.draftLabel': 'Draft :',
+    'coinflip.startDraft': 'Lancer la draft !',
+    'coinflip.youFirst': 'Vous choisissez en premier !',
+    'coinflip.chooseAdvantage': 'Choisissez votre avantage :',
+    'coinflip.catSide': '— Côté —',
+    'coinflip.catPick': '— Ordre de pick —',
+    'coinflip.aiFirst': '{name} choisit en premier...',
+    'coinflip.chooseRemaining': 'Choisissez parmi la catégorie restante :',
+    'coinflip.desc.blue': 'Spawn & vision supérieurs en early',
+    'coinflip.desc.red': 'Dragon & Baron côté droit',
+    'coinflip.desc.first': 'Contrôle le meta — impose le tempo',
+    'coinflip.desc.last': 'Contre-pick assuré en position 5',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -1177,6 +1197,26 @@ const I18N = {
     'masteryTier.confort': 'Comfort',
     'masteryTier.signature': 'Signature',
     'masteryTier.elite': 'Elite',
+
+    // -- Coin flip --
+    'coinflip.title': 'Coin Flip',
+    'coinflip.win': 'You win the coin flip!',
+    'coinflip.loss': 'You lose the coin flip...',
+    'coinflip.playerChose': '<strong>{you}</strong> chose: <em>{opt}</em>',
+    'coinflip.aiChose': '<strong>{name}</strong> chose: <em>{opt}</em>',
+    'coinflip.sideLabel': 'Side:',
+    'coinflip.draftLabel': 'Draft:',
+    'coinflip.startDraft': 'Start the draft!',
+    'coinflip.youFirst': 'You choose first!',
+    'coinflip.chooseAdvantage': 'Choose your advantage:',
+    'coinflip.catSide': '— Side —',
+    'coinflip.catPick': '— Pick order —',
+    'coinflip.aiFirst': '{name} chooses first...',
+    'coinflip.chooseRemaining': 'Choose from the remaining category:',
+    'coinflip.desc.blue': 'Better spawn & vision in early game',
+    'coinflip.desc.red': 'Dragon & Baron on the right side',
+    'coinflip.desc.first': 'Controls the meta — sets the tempo',
+    'coinflip.desc.last': 'Guaranteed counter-pick in position 5',
 
     // -- Language toast --
     'lang.changed': 'Language updated.'

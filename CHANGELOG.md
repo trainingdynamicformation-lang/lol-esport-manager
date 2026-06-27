@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.11] — 2026-06-27
+
+### Ajouté — i18n FR/EN : Pile ou Face (coin flip)
+
+Le pile ou face d'avant-draft (choix du side et de l'ordre de pick) n'était pas traduit. Désormais bilingue : titre, résultats gagné/perdu, choix d'avantage (descriptions des options Blue/Red Side, First/Last Pick), récapitulatif et boutons. Les termes LoL universels (Blue Side, First Pick…) restent inchangés.
+
+---
+
 ## [1.12.10] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 6 : Draft + Assistant Coach)

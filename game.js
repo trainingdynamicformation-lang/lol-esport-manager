@@ -5498,7 +5498,7 @@ function showCoinFlipModal(opponentTeamId) {
 
   function optionBtns(opts, prefix) {
     return opts.map(o =>
-      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}<span>${o.desc}</span></button>`
+      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}<span>${t('coinflip.desc.' + o.id)}</span></button>`
     ).join('');
   }
 
@@ -5511,13 +5511,13 @@ function showCoinFlipModal(opponentTeamId) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <p class="coin-flip__sub"><strong>Vous</strong> avez choisi : <em>${playerOpt.label}</em></p>
-        <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${aiOpt.label}</em></p>
+        <p class="coin-flip__sub">${t('coinflip.playerChose', { you: t('common.you'), opt: playerOpt.label })}</p>
+        <p class="coin-flip__sub">${t('coinflip.aiChose', { name: opName, opt: aiOpt.label })}</p>
         <div class="coin-flip__summary">
-          Côté : <strong>${sideLabel}</strong> &nbsp;|&nbsp; Draft : <strong>${pickLabel}</strong>
+          ${t('coinflip.sideLabel')} <strong>${sideLabel}</strong> &nbsp;|&nbsp; ${t('coinflip.draftLabel')} <strong>${pickLabel}</strong>
         </div>
         <div class="modal-content__actions">
-          <button class="btn-primary" id="coin-flip-go">Lancer la draft !</button>
+          <button class="btn-primary" id="coin-flip-go">${t('coinflip.startDraft')}</button>
         </div>
       </div>`;
     document.getElementById('coin-flip-go').addEventListener('click', () => {
@@ -5531,11 +5531,11 @@ function showCoinFlipModal(opponentTeamId) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <div class="coin-flip__result coin-flip__result--win">Vous choisissez en premier !</div>
-        <p class="coin-flip__sub">Choisissez votre avantage :</p>
-        <p class="coin-flip__sub coin-flip__category-label">— Côté —</p>
+        <div class="coin-flip__result coin-flip__result--win">${t('coinflip.youFirst')}</div>
+        <p class="coin-flip__sub">${t('coinflip.chooseAdvantage')}</p>
+        <p class="coin-flip__sub coin-flip__category-label">${t('coinflip.catSide')}</p>
         <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'cf-winner')}</div>
-        <p class="coin-flip__sub coin-flip__category-label">— Ordre de pick —</p>
+        <p class="coin-flip__sub coin-flip__category-label">${t('coinflip.catPick')}</p>
         <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'cf-winner')}</div>
       </div>`;
     overlay.querySelectorAll('[data-prefix="cf-winner"]').forEach(btn => {
@@ -5553,10 +5553,10 @@ function showCoinFlipModal(opponentTeamId) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <div class="coin-flip__result coin-flip__result--loss">${opName} choisit en premier...</div>
-        <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${aiOpt.label}</em></p>
-        <p class="coin-flip__sub">Choisissez parmi la catégorie restante :</p>
-        <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Côté' : 'Ordre de pick'} —</p>
+        <div class="coin-flip__result coin-flip__result--loss">${t('coinflip.aiFirst', { name: opName })}</div>
+        <p class="coin-flip__sub">${t('coinflip.aiChose', { name: opName, opt: aiOpt.label })}</p>
+        <p class="coin-flip__sub">${t('coinflip.chooseRemaining')}</p>
+        <p class="coin-flip__sub coin-flip__category-label">${playerCat === COIN_FLIP_CATEGORIES.side ? t('coinflip.catSide') : t('coinflip.catPick')}</p>
         <div class="coin-flip__options">${optionBtns(playerCat, 'cf-loser')}</div>
       </div>`;
     overlay.querySelectorAll('[data-prefix="cf-loser"]').forEach(btn => {
@@ -5565,16 +5565,16 @@ function showCoinFlipModal(opponentTeamId) {
   }
 
   const resultHtml = playerWon
-    ? `<div class="coin-flip__result coin-flip__result--win">Vous gagnez le pile ou face !</div>`
-    : `<div class="coin-flip__result coin-flip__result--loss">Vous perdez le pile ou face...</div>`;
+    ? `<div class="coin-flip__result coin-flip__result--win">${t('coinflip.win')}</div>`
+    : `<div class="coin-flip__result coin-flip__result--loss">${t('coinflip.loss')}</div>`;
 
   showModal(`
     <div class="coin-flip">
-      <h3 class="coin-flip__title">Pile ou Face</h3>
+      <h3 class="coin-flip__title">${t('coinflip.title')}</h3>
       <div class="coin-flip__coin" id="coin-anim">🪙</div>
       ${resultHtml}
       <div class="modal-content__actions">
-        <button class="btn-primary" id="coin-flip-next">Continuer</button>
+        <button class="btn-primary" id="coin-flip-next">${t('common.continue')}</button>
       </div>
     </div>`);
 
