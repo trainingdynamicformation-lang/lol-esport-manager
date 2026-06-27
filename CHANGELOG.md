@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.7] — 2026-06-27
+
+### Ajouté — i18n FR/EN : journaux de résultats (« Derniers résultats »)
+
+Les entrées de résultats récents (calendrier domestique, playoffs, phase de groupes et bracket internationaux) étaient générées en français figé et stockées telles quelles. Elles sont désormais **structurées** (`{k, p}`) et **traduites au rendu** dans la langue active — elles basculent donc en direct au changement de langue.
+
+- 17 modèles de log traduits (résultats joueur/IA, qualifications de groupe, fins de saison/tournoi, etc.).
+- Nouveau helper `logChip()` qui résout les sous-parties dynamiques (noms d'équipes, labels de tour, classements) au moment de l'affichage.
+- `playoffRoundLabel` et `intlMatchLabel` traduits.
+- **Compatibilité** : les entrées déjà enregistrées dans une sauvegarde existante (chaînes figées en français) restent affichées telles quelles ; seules les **nouvelles** entrées profitent de la traduction bilingue.
+
+---
+
 ## [1.12.6] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 3/4 : Calendrier international MSI/Worlds)

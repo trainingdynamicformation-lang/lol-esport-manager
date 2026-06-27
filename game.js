@@ -3439,7 +3439,27 @@ function recordMatchResult(homeId, awayId, winnerId, goldDiffForHome, nexusForHo
 }
 
 function playoffRoundLabel(round) {
-  return { qf: 'Quarts de finale', sf: 'Demi-finales', final: 'Finale' }[round] || round;
+  return { qf: t('bracket.quarterfinals'), sf: t('bracket.semis'), final: t('bracket.final') }[round] || round;
+}
+
+// Traduit une entrée de journal de résultats. Compat : une chaîne (anciennes
+// sauvegardes) est affichée telle quelle ; un objet {k, p} est traduit au rendu
+// dans la langue active, avec résolution des sous-parties dynamiques.
+function logChip(entry) {
+  if (typeof entry === 'string') return entry;
+  if (!entry || !entry.k) return '';
+  const p = Object.assign({}, entry.p || {});
+  if (p.winnerId != null) p.winner = getTeamName(p.winnerId);
+  if (p.loserId != null) p.loser = getTeamName(p.loserId);
+  if (p.teamId != null) p.team = getTeamName(p.teamId);
+  if (p.roundKey != null) p.round = playoffRoundLabel(p.roundKey);
+  if (p.matchKey != null) p.match = intlMatchLabel(p.matchKey);
+  if (p.placement != null) {
+    p.placementLabel = placementLabel(p.placement);
+    p.rank = p.placement === 1 ? t('intl.champion') : t('intl.nth', { n: p.placement });
+  }
+  if (p.resultWon != null) p.result = p.resultWon ? t('log.win') : t('log.loss');
+  return t(entry.k, p);
 }
 
 function winnerOf(m) {
@@ -3463,10 +3483,10 @@ function startPlayoffs() {
     round: 'qf',
     champion: null
   };
-  season.log.unshift(`Phase de playoffs ! Seeds : ${seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(', ')}.`);
+  season.log.unshift({ k: 'log.playoffsStart', p: { seeds: seeds.map((id, i) => `${i + 1}. ${getTeamShortName(id)}`).join(', ') } });
   const playerRank = ranked.indexOf('player') + 1;
   if (playerRank > 6) {
-    season.log.unshift(`Vous terminez ${playerRank}e de la saison reguliere et n'etes pas qualifié pour les playoffs.`);
+    season.log.unshift({ k: 'log.notQualified', p: { rank: playerRank } });
   }
   processPlayoffRound();
 }
@@ -3509,7 +3529,7 @@ function processPlayoffRound() {
     const res = simulateAISeries(m.home, m.away, m.format);
     recordAIMatchResult(m.home, m.away, res.winner);
     m.result = { winner: res.winner, loser: res.loser, scoreA: res.scoreA, scoreB: res.scoreB };
-    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${getTeamName(res.winner)} éliminé ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+    season.log.unshift({ k: 'log.poAiResult', p: { roundKey: po.round, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
   }
 
   advancePlayoffBracket();
@@ -3558,7 +3578,7 @@ function finishSeason() {
     state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.region})`);
     ensurePalmares().regionalTitles++;
   }
-  season.log.unshift(`Fin de saison ! Classement final : ${placementLabel(placement)}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
+  season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
   applyCareerProgression();
   applyAICareerProgression();
   saveGame();
@@ -3966,7 +3986,7 @@ function startInternational(eventType) {
     bracket: null,
     rewards: null,
     pendingMatch: null,
-    log: [`${eventType === 'msi' ? 'MSI' : 'Worlds'} ${season.year} : phase de groupes (${groups.length} groupes de ${groups[0].length}).`]
+    log: [{ k: 'log.intlGroupsStart', p: { event: eventType === 'msi' ? 'MSI' : 'Worlds', year: season.year, groups: groups.length, size: groups[0].length } }]
   };
   saveGame();
   showInternationalIntroModal(eventType, season.year, teams, groups);
@@ -4088,7 +4108,7 @@ function processInternationalGroupMatchday(startGroup, startPairing) {
       recordInternationalResult(intl, p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
     }
   }
-  intl.log.unshift(`${eventLabel(intl)} : journée ${intl.groupMatchday}/${intl.totalGroupRounds} de phase de groupes terminée.`);
+  intl.log.unshift({ k: 'log.intlMatchdayDone', p: { event: eventLabel(intl), d: intl.groupMatchday, total: intl.totalGroupRounds } });
   intl.groupMatchday++;
   if (intl.groupMatchday > intl.totalGroupRounds) {
     finishGroupStage();
@@ -4146,7 +4166,7 @@ function finishGroupStage() {
     const ranked = sortGroupStandings(group, intl.groupStandings);
     winners.push(ranked[0]);
     runnersup.push(ranked[1]);
-    intl.log.unshift(`Groupe ${String.fromCharCode(65 + idx)} : 1. ${getTeamShortName(ranked[0])}, 2. ${getTeamShortName(ranked[1])} qualifiés.`);
+    intl.log.unshift({ k: 'log.groupQualified', p: { g: String.fromCharCode(65 + idx), first: getTeamShortName(ranked[0]), second: getTeamShortName(ranked[1]) } });
   });
   const seedsOrdered = winners.concat(runnersup);
   const built = buildInternationalBracket(seedsOrdered, intl.event);
@@ -4258,11 +4278,11 @@ function internationalRoundLabel(round) {
 // Libellé court d'un match par sa clé — couvre simple ET double élimination.
 function intlMatchLabel(key) {
   return {
-    qf1: 'Quart 1', qf2: 'Quart 2', qf3: 'Quart 3', qf4: 'Quart 4',
-    sf1: 'Demi 1', sf2: 'Demi 2', final: 'Finale',
-    df1: 'UB Demi 1', df2: 'UB Demi 2', f: 'UB Finale',
-    lb1: 'LB Tour 1', lb2: 'LB Tour 1', lb3: 'LB Tour 2', lb4: 'LB Tour 2',
-    lb5: 'LB Demi', lb6: 'LB Finale', gf: 'Grande Finale'
+    qf1: t('bracket.qf1'), qf2: t('bracket.qf2'), qf3: t('bracket.qf3'), qf4: t('bracket.qf4'),
+    sf1: t('bracket.sf1'), sf2: t('bracket.sf2'), final: t('bracket.final'),
+    df1: t('dbl.ubSemi1'), df2: t('dbl.ubSemi2'), f: t('dbl.ubFinal'),
+    lb1: t('dbl.lbRound1'), lb2: t('dbl.lbRound1'), lb3: t('dbl.lbRound2'), lb4: t('dbl.lbRound2'),
+    lb5: t('dbl.lbSemi'), lb6: t('dbl.lbFinal'), gf: t('dbl.grandFinal')
   }[key] || key;
 }
 
@@ -4297,7 +4317,7 @@ function processInternationalBracketRound() {
     const res = simulateAISeries(m.home, m.away, m.format);
     recordAIMatchResult(m.home, m.away, res.winner);
     m.result = { winner: res.winner, loser: res.loser, scoreA: res.scoreA, scoreB: res.scoreB };
-    intl.log.unshift(`${eventLabel(intl)} (${intlMatchLabel(key)}) : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+    intl.log.unshift({ k: 'log.intlAiResult', p: { event: eventLabel(intl), matchKey: key, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
   }
 
   advanceInternationalBracket(bracket);
@@ -4387,9 +4407,9 @@ function finishInternational() {
       state.progress.titlesEarned.push(`Champion ${eventLabel(intl)} ${intl.year}`);
       pal.titles++;
     }
-    intl.log.unshift(`${eventLabel(intl)} terminé ! Classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${rewards.coaching} coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.`);
+    intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
   } else {
-    intl.log.unshift(`${eventLabel(intl)} ${intl.year} terminé. Champion : ${getTeamName(intl.bracket.champion)}.`);
+    intl.log.unshift({ k: 'log.intlChampion', p: { event: eventLabel(intl), year: intl.year, teamId: intl.bracket.champion } });
   }
   state.mercatoOpen = true; // ouverture du mercato : prolongations possibles jusqu'au 1er match du prochain split
   saveGame();
@@ -4455,7 +4475,7 @@ function resolveInternationalSeries(rt) {
       : (scoreFor - scoreAgainst) * randomInt(600, 1400);
     const winnerId = won ? 'player' : pm.opponentTeamId;
     recordInternationalResult(intl, 'player', pm.opponentTeamId, winnerId, goldDiff, scoreFor, scoreAgainst);
-    intl.log.unshift(`${eventLabel(intl)} (Phase de groupes) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    intl.log.unshift({ k: 'log.intlPlayerGroup', p: { event: eventLabel(intl), resultWon: won, score: `${scoreFor}-${scoreAgainst}`, teamId: pm.opponentTeamId } });
     const finishedGroup = pm.groupIndex;
     const finishedPairing = pm.pairingIndex || 0;
     intl.pendingMatch = null;
@@ -4469,7 +4489,7 @@ function resolveInternationalSeries(rt) {
       scoreA: scoreFor,
       scoreB: scoreAgainst
     };
-    intl.log.unshift(`${eventLabel(intl)} (${intlMatchLabel(pm.matchKey)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    intl.log.unshift({ k: 'log.intlPlayerMatch', p: { event: eventLabel(intl), matchKey: pm.matchKey, resultWon: won, score: `${scoreFor}-${scoreAgainst}`, teamId: pm.opponentTeamId } });
     intl.pendingMatch = null;
     processInternationalBracketRound();
   }
@@ -4491,7 +4511,7 @@ function resolveSeasonSeries(rt) {
       ? rt.seriesEvent.goldDiffTotal
       : (scoreFor - scoreAgainst) * randomInt(600, 1400);
     recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff, scoreFor, scoreAgainst);
-    season.log.unshift(`J${season.matchday} : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(opponentId)}.`);
+    season.log.unshift({ k: 'log.seasonPlayerResult', p: { d: season.matchday, resultWon: won, score: `${scoreFor}-${scoreAgainst}`, teamId: opponentId } });
 
     const pairings = season.schedule[season.matchday - 1] || [];
     pairings.forEach((p) => {
@@ -4499,7 +4519,7 @@ function resolveSeasonSeries(rt) {
       const res = simulateAISeries(p.home, p.away, 'BO3');
       recordAIMatchResult(p.home, p.away, res.winner);
       recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
-      season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+      season.log.unshift({ k: 'log.seasonAiResult', p: { d: season.matchday, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
     });
 
     season.pendingMatch = null;
@@ -4516,7 +4536,7 @@ function resolveSeasonSeries(rt) {
       scoreA: scoreFor,
       scoreB: scoreAgainst
     };
-    season.log.unshift(`Playoffs (${playoffRoundLabel(po.round)}) : ${won ? 'Victoire' : 'Défaite'} ${scoreFor}-${scoreAgainst} contre ${getTeamName(pm.opponentTeamId)}.`);
+    season.log.unshift({ k: 'log.poPlayerResult', p: { roundKey: po.round, resultWon: won, score: `${scoreFor}-${scoreAgainst}`, teamId: pm.opponentTeamId } });
     season.pendingMatch = null;
     processPlayoffRound();
   }
@@ -4601,7 +4621,7 @@ function renderRegularSeasonCalendar(el, season) {
     actionType = 'simulate';
   }
 
-  const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
 
   el.innerHTML = `
     <h3 class="panel-title">${t('cal.regularTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
@@ -4637,7 +4657,7 @@ function renderRegularSeasonCalendar(el, season) {
           const res = simulateAISeries(p.home, p.away, 'BO3');
           recordAIMatchResult(p.home, p.away, res.winner);
           recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
-          season.log.unshift(`J${season.matchday} : ${getTeamName(res.winner)} bat ${getTeamName(res.loser)} (${res.scoreA}-${res.scoreB}).`);
+          season.log.unshift({ k: 'log.seasonAiResult', p: { d: season.matchday, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
         });
         season.matchday++;
         if (season.matchday > totalMatchdays) startPlayoffs();
@@ -4999,7 +5019,7 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
 
 function renderPlayoffsCalendar(el, season) {
   const po = season.playoffs;
-  const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
 
   let actionHtml;
   if (season.pendingMatch) {
@@ -5034,7 +5054,7 @@ function renderPlayoffsCalendar(el, season) {
 function renderSeasonRecap(el, season) {
   const placement = getFinalPlacement();
   const rewards = getPlacementRewards(placement);
-  const logHtml = season.log.slice(0, 10).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = season.log.slice(0, 10).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
   const nextLabel = season.split === 'spring' ? t('cal.toMsi') : t('cal.toWorlds');
   const progressionHtml = careerProgressionHtml(state.lastCareerProgression);
   const bracketHtml = season.playoffs
@@ -5102,7 +5122,7 @@ function renderInternationalGroups(el, intl) {
     `;
   }).join('');
 
-  const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
   const pm = intl.pendingMatch;
   if (!pm) { processInternationalGroupMatchday(); renderCalendar(); return; }
   const actionLabel = pm.started ? t('cal.resume') : t('intl.playMatch');
@@ -5134,7 +5154,7 @@ function renderInternationalGroups(el, intl) {
 
 function renderInternationalBracket(el, intl) {
   const b = intl.bracket;
-  const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
 
   let actionHtml;
   if (intl.pendingMatch) {
@@ -5175,7 +5195,7 @@ function renderInternationalBracket(el, intl) {
 
 function renderInternationalRecap(el, intl) {
   const placement = getInternationalPlacement(intl);
-  const logHtml = intl.log.slice(0, 10).map((l) => `<div class="result-chip">${l}</div>`).join('');
+  const logHtml = intl.log.slice(0, 10).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
 
   let placementHtml = '';
   if (placement !== null && intl.rewards) {

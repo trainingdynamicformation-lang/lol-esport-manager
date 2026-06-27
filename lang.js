@@ -282,6 +282,25 @@ const I18N = {
     'dbl.lbVsLoserUbFinal': 'vs Perd. Finale UB',
     'dbl.gfCard': 'Vainq. UB vs Vainq. LB',
 
+    // -- Journaux de résultats (logs) --
+    'log.win': 'Victoire',
+    'log.loss': 'Défaite',
+    'log.playoffsStart': 'Phase de playoffs ! Seeds : {seeds}.',
+    'log.notQualified': "Vous terminez {rank}e de la saison régulière et n'êtes pas qualifié pour les playoffs.",
+    'log.poAiResult': 'Playoffs ({round}) : {winner} élimine {loser} ({score}).',
+    'log.seasonEnd': 'Fin de saison ! Classement final : {placementLabel}. Récompenses : +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'log.intlGroupsStart': '{event} {year} : phase de groupes ({groups} groupes de {size}).',
+    'log.intlMatchdayDone': '{event} : journée {d}/{total} de phase de groupes terminée.',
+    'log.groupQualified': 'Groupe {g} : 1. {first}, 2. {second} qualifiés.',
+    'log.intlAiResult': '{event} ({match}) : {winner} bat {loser} ({score}).',
+    'log.intlEnd': '{event} terminé ! Classement : {rank}. Récompenses : +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'log.intlChampion': '{event} {year} terminé. Champion : {team}.',
+    'log.intlPlayerGroup': '{event} (Phase de groupes) : {result} {score} contre {team}.',
+    'log.intlPlayerMatch': '{event} ({match}) : {result} {score} contre {team}.',
+    'log.seasonPlayerResult': 'J{d} : {result} {score} contre {team}.',
+    'log.seasonAiResult': 'J{d} : {winner} bat {loser} ({score}).',
+    'log.poPlayerResult': 'Playoffs ({round}) : {result} {score} contre {team}.',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -559,6 +578,25 @@ const I18N = {
     'dbl.lbFinal': 'LB Final',
     'dbl.lbVsLoserUbFinal': 'vs Loser UB Final',
     'dbl.gfCard': 'UB Winner vs LB Winner',
+
+    // -- Result logs --
+    'log.win': 'Victory',
+    'log.loss': 'Defeat',
+    'log.playoffsStart': 'Playoffs phase! Seeds: {seeds}.',
+    'log.notQualified': 'You finish {rank}th in the regular season and do not qualify for the playoffs.',
+    'log.poAiResult': 'Playoffs ({round}): {winner} eliminates {loser} ({score}).',
+    'log.seasonEnd': 'Season over! Final ranking: {placementLabel}. Rewards: +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'log.intlGroupsStart': '{event} {year}: group stage ({groups} groups of {size}).',
+    'log.intlMatchdayDone': '{event}: group stage matchday {d}/{total} completed.',
+    'log.groupQualified': 'Group {g}: 1. {first}, 2. {second} qualified.',
+    'log.intlAiResult': '{event} ({match}): {winner} beats {loser} ({score}).',
+    'log.intlEnd': '{event} finished! Ranking: {rank}. Rewards: +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'log.intlChampion': '{event} {year} finished. Champion: {team}.',
+    'log.intlPlayerGroup': '{event} (Group stage): {result} {score} vs {team}.',
+    'log.intlPlayerMatch': '{event} ({match}): {result} {score} vs {team}.',
+    'log.seasonPlayerResult': 'MD{d}: {result} {score} vs {team}.',
+    'log.seasonAiResult': 'MD{d}: {winner} beats {loser} ({score}).',
+    'log.poPlayerResult': 'Playoffs ({round}): {result} {score} vs {team}.',
 
     // -- Language toast --
     'lang.changed': 'Language updated.'
