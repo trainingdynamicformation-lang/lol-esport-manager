@@ -641,6 +641,46 @@ img { max-width: 100%; height: auto; }
   border-radius: 8px;
 }
 
+/* Scouting enrichi (v1.12.0) */
+.scout-comp-tag {
+  display: inline-block;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-gold);
+  letter-spacing: .04em;
+  margin-right: 3px;
+}
+.scout-phase--strong { color: var(--color-gold); font-weight: 700; }
+.scout-phase--normal { color: var(--color-text-muted); }
+
+.scout-pool-list { display: flex; flex-direction: column; gap: 4px; }
+.scout-pool-row, .scout-trait-row, .scout-counter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 3px 0;
+}
+.scout-pool-role {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  min-width: 52px;
+  flex-shrink: 0;
+}
+.scout-pool-name { font-weight: 600; min-width: 80px; flex-shrink: 0; }
+.scout-pool-champs { color: var(--color-text-muted); font-size: 12px; }
+
+.scout-trait { background: rgba(200,155,60,.12); border: 1px solid rgba(200,155,60,.3); border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--color-gold); margin-right: 3px; }
+.scout-trait-row { flex-wrap: wrap; gap: 4px; padding: 3px 0; }
+
+.scout-counter-pick { color: var(--color-seafoam); font-weight: 600; font-size: 12px; }
+
 /* ------------------------------------------------------------
    Toast
    ------------------------------------------------------------ */

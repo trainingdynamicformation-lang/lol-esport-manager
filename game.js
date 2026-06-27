@@ -669,6 +669,90 @@ function formatStyle(style) {
 const SCOUTING_THRESHOLDS = { advanced: 40, premium: 75 };
 const VIDEO_REVIEW_CONFIDENCE_GAIN = 15;
 
+const TRAIT_SCOUT_LABELS = {
+  igl:        { label: 'IGL',                note: 'orchestre la stratégie collective' },
+  mechanical: { label: 'Mécaniquement fort', note: 'excelle dans les duels et l\'exécution' },
+  leader:     { label: 'Leader',             note: 'renforce le mental de l\'équipe sous pression' },
+  veteran:    { label: 'Vétéran',            note: 'constant sur la durée, résistant à la fatigue' },
+  rookie:     { label: 'Rookie',             note: 'inconstant — peut surprendre ou décevoir' },
+  tiltable:   { label: 'Tiltable',           note: 'performances chutent si l\'équipe prend du retard' },
+  clutch:     { label: 'Clutch',             note: 'monte en régime en situation critique (playoffs)' },
+  consistant: { label: 'Consistant',         note: 'fiable, peu de variations de performance' }
+};
+
+const SCOUT_TAG_LABELS = {
+  engage: 'Engage', poke: 'Poke', scaling: 'Scaling', splitpush: 'Split-push',
+  pick: 'Pick', protect: 'Protect', dive: 'Dive', disengage: 'Disengage',
+  teamfight: 'Teamfight', siege: 'Siège', execute: 'Execute'
+};
+
+function getTeamCompositionTags(team) {
+  const counts = {};
+  team.roster.forEach((p) => {
+    p.championPool.forEach((champName) => {
+      const champ = getChampionByName(champName);
+      if (!champ) return;
+      (champ.tags || []).forEach((tag) => { counts[tag] = (counts[tag] || 0) + 1; });
+    });
+  });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([tag]) => tag);
+}
+
+function getTeamPhasePower(team) {
+  const totals = { early: 0, mid: 0, late: 0 };
+  let count = 0;
+  team.roster.forEach((p) => {
+    p.championPool.slice(0, 3).forEach((champName) => {
+      const champ = getChampionByName(champName);
+      if (!champ || !champ.phasePower) return;
+      totals.early += champ.phasePower.early;
+      totals.mid += champ.phasePower.mid;
+      totals.late += champ.phasePower.late;
+      count++;
+    });
+  });
+  if (count === 0) return null;
+  return {
+    early: Math.round(totals.early / count),
+    mid: Math.round(totals.mid / count),
+    late: Math.round(totals.late / count)
+  };
+}
+
+function getTeamH2HRecord(teamId) {
+  const teamName = getTeamName(teamId);
+  const real = (state.matchHistory || []).filter((m) => m.opponent === teamName && m.competition !== 'Scrim');
+  if (real.length === 0) return null;
+  const wins = real.filter((m) => m.result === 'win').length;
+  return { wins, losses: real.length - wins, total: real.length };
+}
+
+function getCounterPickSuggestions(team) {
+  const suggestions = [];
+  DRAFT_ROLES.forEach((role) => {
+    const opp = team.roster.find((p) => p.role === role);
+    if (!opp) return;
+    const comfort = (((team.draftProfile || {}).comfortPicks || {})[role] || []).slice(0, 2);
+    const likely = [...new Set([...comfort, ...opp.championPool.slice(0, 2)])].slice(0, 3);
+    let best = null;
+    likely.forEach((name) => {
+      const champ = getChampionByName(name);
+      if (!champ) return;
+      const top = CHAMPION_COUNTERS
+        .filter((e) => e.target === champ.id && e.score >= 72)
+        .sort((a, b) => b.score - a.score)[0];
+      if (top && (!best || top.score > best.score)) {
+        best = { theirChamp: name, counterId: top.counter, score: top.score };
+      }
+    });
+    if (best) {
+      const counterChamp = getChampionById(best.counterId);
+      if (counterChamp) suggestions.push({ role, theirChamp: best.theirChamp, counterName: counterChamp.name, score: best.score });
+    }
+  });
+  return suggestions;
+}
+
 function getScoutingReport(opponentId) {
   return state.scouting[opponentId] || { confidence: 0, scrimsPlayed: 0 };
 }
@@ -757,70 +841,160 @@ function buildScoutingReportBody(team) {
   const tier = getScoutingTier(report.confidence);
   const avgLevel = getTeamAverageLevel(team);
   const topChamps = getTeamTopChampions(team);
+  const compTags = getTeamCompositionTags(team);
+  const phase = getTeamPhasePower(team);
 
+  // --- Forme récente ---
   const form = getTeamRecentForm(team.id);
   const formHtml = form ? (() => {
-    const streakLabel = form.streakWin ? `<span class="level-delta level-delta--up">&#9650; ${form.streakLen}V</span>` : `<span class="level-delta level-delta--down">&#9660; ${form.streakLen}D</span>`;
-    return `<p>Forme recente (${form.total} matchs) : ${form.wins}V/${form.total - form.wins}D &mdash; ${form.winRate}% victoires &mdash; serie actuelle : ${streakLabel}</p>`;
+    const streakLabel = form.streakWin
+      ? `<span class="level-delta level-delta--up">&#9650; ${form.streakLen}V</span>`
+      : `<span class="level-delta level-delta--down">&#9660; ${form.streakLen}D</span>`;
+    return `<p>Forme récente (${form.total} matchs) : ${form.wins}V/${form.total - form.wins}D &mdash; ${form.winRate}% victoires &mdash; série : ${streakLabel}</p>`;
   })() : '';
 
+  // --- Tags de composition ---
+  const tagsHtml = compTags.length
+    ? `<p>Style de composition : ${compTags.map((t) => `<span class="scout-comp-tag">${SCOUT_TAG_LABELS[t] || t}</span>`).join(' ')}</p>`
+    : '';
+
+  // --- Force par phase ---
+  let phaseHtml = '';
+  if (phase) {
+    const vals = [['Early', phase.early], ['Mid', phase.mid], ['Late', phase.late]];
+    const maxPhase = vals.reduce((a, b) => (b[1] > a[1] ? b : a));
+    phaseHtml = `<p>Force par phase : ${vals.map(([label, val]) => {
+      const strong = label === maxPhase[0];
+      return `<span class="${strong ? 'scout-phase--strong' : 'scout-phase--normal'}">${label} ${val}/10</span>`;
+    }).join(' &bull; ')}</p>`;
+  }
+
+  // ===================== BASIQUE =====================
   let html = `
     <div class="progress-bar"><div class="progress-bar__fill" style="width:${report.confidence}%"></div></div>
     <p class="card__count">Confiance scouting : ${report.confidence}/100 &mdash; ${report.scrimsPlayed || 0} scrim(s) de préparation, matchs déjà affrontés inclus.</p>
 
     <h4>Rapport basique</h4>
+    <p>Tier : <strong>Tier ${team.tier}</strong>${team.tier === 1 ? ' — équipe majeure' : team.tier === 2 ? ' — équipe compétitive' : ' — équipe émergente'}.</p>
     <p>Style général : ${formatStyle(team.style)}.</p>
     <p>Niveau moyen de l'effectif : ${avgLevel}/100.</p>
-    <p>Champions les plus joues (pool) : ${topChamps.join(', ')}.</p>
+    <p>Champions les plus joués (pool) : ${topChamps.join(', ')}.</p>
+    ${tagsHtml}
+    ${phaseHtml}
     ${formHtml}
   `;
 
+  // ===================== AVANCÉ =====================
   if (tier === 'advanced' || tier === 'premium') {
     const priorities = getTeamDraftPriorityList(team);
     const weak = getTeamWeakestRole(team);
     const recentChamps = getTeamRecentChampions(team.id);
+    const h2h = getTeamH2HRecord(team.id);
+
+    // Pool par rôle
+    const poolRows = DRAFT_ROLES.map((role) => {
+      const p = team.roster.find((r) => r.role === role);
+      if (!p || p.championPool.length === 0) return '';
+      const picks = p.championPool.slice(0, 3).join(', ');
+      return `<div class="scout-pool-row"><span class="scout-pool-role">${ROLE_NAMES[role]}</span><span class="scout-pool-name">${p.name}</span><span class="scout-pool-champs">${picks}</span></div>`;
+    }).join('');
+
+    // Traits joueurs
+    const traitRows = DRAFT_ROLES.map((role) => {
+      const p = team.roster.find((r) => r.role === role);
+      if (!p || !p.traits || p.traits.length === 0) return '';
+      const traitLabels = p.traits.map((t) => {
+        const meta = TRAIT_SCOUT_LABELS[t];
+        return meta ? `<span class="scout-trait">${meta.label}</span>` : null;
+      }).filter(Boolean).join(' ');
+      const firstTrait = p.traits[0] && TRAIT_SCOUT_LABELS[p.traits[0]];
+      const note = firstTrait ? ` — ${firstTrait.note}` : '';
+      return traitLabels ? `<div class="scout-trait-row"><span class="scout-pool-name">${p.name} <span class="scout-pool-role">${ROLE_NAMES[role]}</span></span><span>${traitLabels}${note}</span></div>` : '';
+    }).filter(Boolean).join('');
+
     const recentChampsHtml = recentChamps
-      ? `<p>Champions joues recemment : ${recentChamps.map((c) => `${c.name} (${c.games} game${c.games > 1 ? 's' : ''})`).join(', ')}.</p>`
+      ? `<p>Champions joués récemment : ${recentChamps.map((c) => `${c.name} (${c.games}x)`).join(', ')}.</p>`
       : '';
+
+    const h2hHtml = h2h
+      ? `<p>Bilan H2H contre cette équipe : <strong>${h2h.wins}V / ${h2h.losses}D</strong> en ${h2h.total} confrontation${h2h.total > 1 ? 's' : ''} officielle${h2h.total > 1 ? 's' : ''}.</p>`
+      : '';
+
     html += `
-      <h4>Rapport avance</h4>
-      <p>Ordre de priorite en draft :</p>
+      <h4>Rapport avancé</h4>
+      <p><strong>Pool de champions par rôle</strong></p>
+      <div class="scout-pool-list">${poolRows}</div>
+      <p style="margin-top:10px;"><strong>Profils joueurs</strong></p>
+      ${traitRows || '<p class="card__count">Aucun trait notable identifié.</p>'}
+      <p style="margin-top:10px;"><strong>Priorités de draft</strong></p>
       <div class="scrim-report">${priorities.map((l) => `<p>${l}</p>`).join('')}</div>
       <p>Faiblesse de matchup : leur ${ROLE_NAMES[weak.role]} (${weak.player.name}) est leur point le plus exploitable (niveau ${weak.score}/100).</p>
       ${recentChampsHtml}
+      ${h2hHtml}
     `;
   } else {
-    html += `<div class="objective-description">Réalisez des scrims de préparation (ou affrontez cette équipe) pour débloquer le rapport avance : priorites de draft, bans probables et faiblesses de matchup.</div>`;
+    html += `<div class="objective-description">Réalisez des scrims de préparation (ou affrontez cette équipe) pour débloquer le rapport avancé : pool par rôle, traits des joueurs, priorités de draft et faiblesses de matchup.</div>`;
   }
 
+  // ===================== PREMIUM =====================
   if (tier === 'premium') {
     const weak = getTeamWeakestRole(team);
     const myPlayer = state.roster.find((p) => p.role === weak.role);
-    const topBan = (team.draftProfile && team.draftProfile.banPriorities || [])[0];
-    const roleOrder = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
-    const playerRows = roleOrder.map((role) => {
+    const topBan = ((team.draftProfile && team.draftProfile.banPriorities) || [])[0];
+    const flexPicks = (team.draftProfile && team.draftProfile.flexPicks) || [];
+    const counterSuggestions = getCounterPickSuggestions(team);
+
+    // Tableau joueurs enrichi (Lane / TF / Méca / SC / Mental + forme)
+    const playerRows = DRAFT_ROLES.map((role) => {
       const p = team.roster.find((r) => r.role === role);
       if (!p) return '';
-      const avg = Math.round((p.laning + p.teamfight + p.mechanics) / 3);
+      const avg = Math.round((p.laning + p.teamfight + p.mechanics + p.shotcalling + p.mental) / 5);
       const myP = state.roster.find((r) => r.role === role);
-      const myAvg = myP ? Math.round((myP.laning + myP.teamfight + myP.mechanics) / 3) : null;
-      const advantage = myAvg !== null ? (myAvg >= avg ? `<span class="level-delta level-delta--up">&#9650; avantage</span>` : `<span class="level-delta level-delta--down">&#9660; désavantage</span>`) : '';
+      const myAvg = myP ? Math.round((myP.laning + myP.teamfight + myP.mechanics + myP.shotcalling + myP.mental) / 5) : null;
+      const advantage = myAvg !== null
+        ? (myAvg >= avg
+          ? `<span class="level-delta level-delta--up">&#9650; avantage</span>`
+          : `<span class="level-delta level-delta--down">&#9660; désavantage</span>`)
+        : '';
+      const formIcon = p.form >= 70 ? '🔥' : p.form >= 45 ? '➡️' : '📉';
       return `
         <div class="career-progression-row">
-          <span class="career-progression-row__name">${p.name} <span class="career-progression-row__role">${role}</span></span>
-          <span class="career-progression-row__levels">Lane ${p.laning} &bull; TF ${p.teamfight} &bull; Meca ${p.mechanics}</span>
+          <span class="career-progression-row__name">${p.name} <span class="career-progression-row__role">${role}</span> ${formIcon}</span>
+          <span class="career-progression-row__levels">Lane ${p.laning} &bull; TF ${p.teamfight} &bull; Méca ${p.mechanics} &bull; SC ${p.shotcalling} &bull; Mental ${p.mental}</span>
           <span class="career-progression-row__period">Moy. ${avg}</span>
           ${advantage}
         </div>`;
     }).join('');
+
+    // Counter-picks suggérés
+    const counterHtml = counterSuggestions.length
+      ? counterSuggestions.map((s) => `<div class="scout-counter-row"><span class="scout-pool-role">${ROLE_NAMES[s.role]}</span><span class="card__count">Si ${s.theirChamp}</span><span class="scout-counter-pick">→ ${s.counterName} <span class="card__count">(score ${s.score})</span></span></div>`).join('')
+      : '<p class="card__count">Aucun counter-pick évident identifié.</p>';
+
+    // Flex picks
+    const flexHtml = flexPicks.length
+      ? `<p>Picks flexibles (multi-rôles) : ${flexPicks.slice(0, 4).join(', ')} — attention aux surprises en draft.</p>`
+      : '';
+
+    // Joueur à surveiller (potentiel le plus élevé)
+    const watchPlayer = team.roster.reduce((best, p) =>
+      (!best || (p.potential || 0) > (best.potential || 0)) ? p : best, null);
+    const watchHtml = watchPlayer && (watchPlayer.potential || 0) > avgLevel
+      ? `<p>👁 Joueur à surveiller : <strong>${watchPlayer.name}</strong> (${ROLE_NAMES[watchPlayer.role]}) — potentiel ${watchPlayer.potential}/100, peut encore progresser.</p>`
+      : '';
+
     html += `
       <h4>Rapport premium</h4>
       <div class="career-progression-list" style="margin-bottom:10px;">${playerRows}</div>
-      <p>Plan de draft suggere : misez sur un pick fort en ${ROLE_NAMES[weak.role]}${myPlayer ? ` pour ${myPlayer.name}` : ''} et bannissez ${topBan || 'leur pick signature'} en priorite.</p>
-      <p>Scrim de préparation recommandé : "Préparation matchup" ciblé sur le ${ROLE_NAMES[weak.role]} adverse.</p>
+      <p style="margin-top:10px;"><strong>Counter-picks suggérés</strong></p>
+      <div class="scout-pool-list">${counterHtml}</div>
+      ${flexHtml}
+      ${watchHtml}
+      <p style="margin-top:10px;">Plan de draft : misez sur un pick fort en ${ROLE_NAMES[weak.role]}${myPlayer ? ` pour ${myPlayer.name}` : ''} et bannissez <strong>${topBan || 'leur pick signature'}</strong> en priorité.</p>
+      <p>Scrim recommandé : "Préparation matchup" ciblé sur le ${ROLE_NAMES[weak.role]} adverse.</p>
     `;
   } else if (tier === 'advanced') {
-    html += `<div class="objective-description">Continuez le scouting pour débloquer le rapport premium : suggestion de plan de draft et scrim de préparation recommandé.</div>`;
+    html += `<div class="objective-description">Continuez le scouting pour débloquer le rapport premium : stats complètes par joueur, forme individuelle, counter-picks suggérés et joueur à surveiller.</div>`;
   }
 
   return html;

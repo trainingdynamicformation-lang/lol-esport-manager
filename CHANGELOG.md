@@ -5,6 +5,29 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.0] — 2026-06-26
+
+### Ajouté — Scouting enrichi (apprentissage progressif maintenu)
+
+**Rapport basique (0 → 39 de confiance)**
+- Tier de l'équipe (Tier 1 majeure / Tier 2 compétitive / Tier 3 émergente)
+- Style de composition en tags visuels (Engage, Poke, Scaling, Teamfight…) dérivés des pools de champions
+- Force par phase (Early / Mid / Late) calculée depuis le `phasePower` des champions du pool — la phase dominante est mise en or
+
+**Rapport avancé (40 → 74)**
+- Pool de champions **par rôle** (TOP : Rumble · Gnar, MID : Azir · Viktor…) au lieu du top 3 global
+- Profils des joueurs avec leurs **traits** et implications tactiques (IGL, Vétéran, Tiltable, Clutch…)
+- **Bilan H2H** : résultat de tes confrontations officielles passées contre cette équipe
+
+**Rapport premium (75+)**
+- Tableau joueurs enrichi : **Shotcalling et Mental** ajoutés aux colonnes Lane / TF / Méca
+- **Forme individuelle** de chaque joueur (🔥 chaud / ➡️ neutre / 📉 en baisse)
+- **Counter-picks suggérés** par rôle (si adversaire joue Orianna MID → Ahri score 85)
+- **Flex picks** adverses identifiés (surprises potentielles en draft)
+- **Joueur à surveiller** : celui dont le potentiel dépasse le niveau actuel de l'équipe
+
+---
+
 ## [1.11.8] — 2026-06-26
 
 ### Modifié
