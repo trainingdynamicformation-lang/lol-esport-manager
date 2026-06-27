@@ -5,6 +5,23 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.8] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 2 (lot 4/4 : Transferts + contrats)
+
+Le plus gros écran narratif du jeu, entièrement traduit (~55 chaînes).
+
+- **Marché des transferts** : état vide, budget, compteur, filtres (divisions/équipes/champions), recherche, cartes joueurs (stats, agent libre, coût, bouton Signer / Budget insuffisant).
+- **Panneau contrats** : notice de désactivation, mercato ouvert/fermé, tiers de contrat (Superstar/Star/Solide/Role player), avertissements de retraite, boutons de prolongation (+1/+2 ans, négociation de carrière ×1.5, limites 33 ans), tooltips.
+- **Modal de prolongation** : titre, demande, prestige exigé / budget payé, bannière négociation de carrière, note prestige-seuil, boutons.
+- **Modal de signature** : choix du joueur à libérer, poste vacant, confirmation.
+- **Tous les toasts** transferts/contrats (signatures, libérations, prolongations, budgets/prestige insuffisants…).
+- Gestion correcte du **pluriel** (an/ans, yr/yrs) via `yearUnit()`. Nouveaux helpers `contractTierLabel()`, `yearUnit()`.
+
+> **Phase 2 terminée.** Restent en Phase 3 : entraînement (scrims + guide objectifs), draft (assistant coach), match (déroulé), scouting, sélection de région, et les divers textes narratifs générés.
+
+---
+
 ## [1.12.7] — 2026-06-27
 
 ### Ajouté — i18n FR/EN : journaux de résultats (« Derniers résultats »)

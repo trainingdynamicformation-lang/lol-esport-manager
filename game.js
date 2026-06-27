@@ -6879,25 +6879,25 @@ function renderTransferCard(c, budget) {
         <div class="mini-avatar">${getInitials(c.name)}</div>
         <div class="transfer-card__identity">
           <div class="transfer-card__name">${c.name}${c.scoutGrade ? ` <span class="transfer-grade">${c.scoutGrade}</span>` : ''}</div>
-          ${c.baseAge != null ? `<div style="font-size:11px;color:var(--color-text-muted);margin-top:1px;">${playerAge(c)} ans</div>` : ''}
-          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || 'Agent libre'}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}</div>
+          ${c.baseAge != null ? `<div style="font-size:11px;color:var(--color-text-muted);margin-top:1px;">${t('roster.age', { n: playerAge(c) })}</div>` : ''}
+          <div class="transfer-card__meta">${c.role} &mdash; ${c.fromTeam || t('tr.freeAgent')}${c.division ? ` <span class="transfer-div">${c.division}</span>` : ''}</div>
         </div>
         <div class="transfer-card__level">${avg}</div>
       </div>
       <div class="transfer-card__stats">
-        <span>Lane <strong>${c.laning}</strong></span>
-        <span>TF <strong>${c.teamfight}</strong></span>
-        <span>Meca <strong>${c.mechanics}</strong></span>
-        <span>Shotcall <strong>${c.shotcalling || '?'}</strong></span>
+        <span>${t('tr.cardLane')} <strong>${c.laning}</strong></span>
+        <span>${t('tr.cardTf')} <strong>${c.teamfight}</strong></span>
+        <span>${t('tr.cardMeca')} <strong>${c.mechanics}</strong></span>
+        <span>${t('tr.cardShotcall')} <strong>${c.shotcalling || '?'}</strong></span>
       </div>
       <div class="transfer-card__pool champion-chip-list">${poolHtml}</div>
       <div class="transfer-card__footer">
         ${diffHtml}
         <div class="transfer-card__cost">
-          <span class="resource-chip__icon">💰</span> ${cost} budget
+          <span class="resource-chip__icon">💰</span> ${cost} ${t('tr.budgetWord')}
         </div>
         <button class="btn-primary btn-small" data-sign-id="${escapeAttr(c.id)}" ${canAfford ? '' : 'disabled'}>
-          ${canAfford ? 'Signer' : 'Budget insuffisant'}
+          ${canAfford ? t('tr.sign') : t('tr.insufficientBudget')}
         </button>
       </div>
     </div>
@@ -6913,7 +6913,7 @@ const TRANSFER_KIND_META = {
 
 // Libellé de l'équipe du joueur dans le journal (remplace l'ancien "Vous").
 function playerTeamLabel() {
-  return state.teamShortName || state.teamName || 'Vous';
+  return state.teamShortName || state.teamName || t('common.you');
 }
 
 // Journal des transferts (v1.11.0) — groupé par saison décroissante.
@@ -6959,7 +6959,7 @@ function renderTransfers() {
   if (!el) return;
 
   if (state.roster.length === 0) {
-    el.innerHTML = '<div class="empty-state">Constituez votre roster avant de consulter le marche.</div>';
+    el.innerHTML = `<div class="empty-state">${t('tr.emptyRoster')}</div>`;
     return;
   }
 
@@ -6992,35 +6992,35 @@ function renderTransfers() {
 
   const cardsHtml = matches.length
     ? matches.map(c => renderTransferCard(c, budget)).join('')
-    : '<div class="empty-state">Aucun joueur ne correspond aux filtres.</div>';
+    : `<div class="empty-state">${t('tr.noMatch')}</div>`;
 
   el.innerHTML = `
     ${renderContractsPanel()}
     <div class="panel">
       <div class="transfer-header">
         <div>
-          <p class="card__count">Budget disponible : <strong>${budget}</strong></p>
-          <p class="card__count" style="font-size:12px;color:var(--color-text-muted);">${matches.length} joueur(s) affiché(s) sur ${all.length} — divisions ERL / EMEA Masters.</p>
+          <p class="card__count">${t('tr.budgetAvailable')} <strong>${budget}</strong></p>
+          <p class="card__count" style="font-size:12px;color:var(--color-text-muted);">${t('tr.shownCount', { n: matches.length, total: all.length })}</p>
         </div>
       </div>
       <div class="draft-role-filter">
-        <button class="comp-tag-option ${!roleFilter ? 'comp-tag-option--active' : ''}" data-transfer-role="">Tous</button>
+        <button class="comp-tag-option ${!roleFilter ? 'comp-tag-option--active' : ''}" data-transfer-role="">${t('common.all')}</button>
         ${roles.map(r => `<button class="comp-tag-option ${roleFilter === r ? 'comp-tag-option--active' : ''}" data-transfer-role="${r}">${r}</button>`).join('')}
       </div>
       <div class="transfer-filters">
         <select class="transfer-select" id="transfer-division">
-          <option value="">Toutes divisions</option>
+          <option value="">${t('tr.allDivisions')}</option>
           ${divisions.map(d => `<option value="${escapeAttr(d)}" ${divFilter === d ? 'selected' : ''}>${d}</option>`).join('')}
         </select>
         <select class="transfer-select" id="transfer-team">
-          <option value="">Toutes équipes</option>
-          ${teams.map(t => `<option value="${escapeAttr(t)}" ${teamFilter === t ? 'selected' : ''}>${t}</option>`).join('')}
+          <option value="">${t('tr.allTeams')}</option>
+          ${teams.map(tm => `<option value="${escapeAttr(tm)}" ${teamFilter === tm ? 'selected' : ''}>${tm}</option>`).join('')}
         </select>
         <select class="transfer-select" id="transfer-champ">
-          <option value="">Tous champions</option>
+          <option value="">${t('tr.allChampions')}</option>
           ${champs.map(ch => `<option value="${escapeAttr(ch)}" ${champFilter === ch ? 'selected' : ''}>${ch}</option>`).join('')}
         </select>
-        <input type="text" class="transfer-search" id="transfer-search" placeholder="Rechercher (joueur, équipe, champion)…" value="${escapeAttr(state._transferSearch || '')}" autocomplete="off">
+        <input type="text" class="transfer-search" id="transfer-search" placeholder="${escapeAttr(t('tr.searchPlaceholder'))}" value="${escapeAttr(state._transferSearch || '')}" autocomplete="off">
       </div>
     </div>
     <div class="transfer-grid">${cardsHtml}</div>
@@ -7063,7 +7063,7 @@ function renderContractsPanel() {
   if (!state.roster.length) return '';
   // v1.11.0 : gestion des contrats désactivée → on masque tout le panneau.
   if (state.settings && state.settings.playerContracts === false) {
-    return `<div class="panel"><p class="card__count">Gestion de l'âge et des contrats désactivée. Vos joueurs restent dans l'équipe indéfiniment. Vous pouvez réactiver cette option dans l'onglet <strong>Progression</strong>.</p></div>`;
+    return `<div class="panel"><p class="card__count">${t('tr.contractsDisabled')}</p></div>`;
   }
   const roleOrder = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
   const windowOpen = isContractWindowOpen();
@@ -7081,15 +7081,16 @@ function renderContractsPanel() {
     const retYear = playerRetirementYear(p);
     const age = playerAge(p);
     const yearsToRet = retYear - curYear;
-    const retTooltip = escapeAttr(`Choix personnel : ${p.name} a décidé de mettre fin à sa carrière à ${p.retirementAge} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5).`);
+    const retTooltip = escapeAttr(t('tr.retireTooltip', { name: p.name, age: p.retirementAge }));
     const retWarning = p.baseAge != null && yearsToRet <= 2
-      ? `<span style="font-size:11px;color:#e05;margin-left:6px;cursor:help;" title="${retTooltip}" data-lore-tooltip="${retTooltip}">⚠ retraite W${retYear}</span>`
+      ? `<span style="font-size:11px;color:#e05;margin-left:6px;cursor:help;" title="${retTooltip}" data-lore-tooltip="${retTooltip}">${t('tr.retireWarn', { y: retYear })}</span>`
       : '';
     const btn = (years, c) => {
       if (alreadyExtended) return '';
       const extType = getExtensionType(p, years);
       if (extType === 'blocked') {
-        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;cursor:help;" title="La réglementation ne permet pas de jouer après 33 ans." data-lore-tooltip="La réglementation ne permet pas de jouer après 33 ans.">+${years} an${years > 1 ? 's' : ''} impossible (limite 33 ans)</span>`;
+        const rule = escapeAttr(t('tr.rule33'));
+        return `<span style="font-size:11px;color:var(--color-text-muted);align-self:center;cursor:help;" title="${rule}" data-lore-tooltip="${rule}">${t('tr.extImpossible', { n: years, unit: yearUnit(years) })}</span>`;
       }
       const cost = extType === 'special'
         ? { prestige: Math.ceil(c.prestige * 1.5), budget: Math.ceil(c.budget * 1.5) }
@@ -7097,10 +7098,10 @@ function renderContractsPanel() {
       const affordable = prestige >= cost.prestige && budget >= cost.budget;
       const ready = windowOpen && affordable;
       const specialStyle = extType === 'special' ? 'border-color:#e0a020;color:#e0a020;' : '';
-      const label = extType === 'special' ? `+${years} an${years > 1 ? 's' : ''} ⭐` : `+${years} an${years > 1 ? 's' : ''}`;
-      const title = !windowOpen ? 'Disponible en inter-saison (après le MSI ou les Worlds)'
-        : extType === 'special' ? `Négociation de carrière — coût x1.5 (retraite dépassée)`
-        : (prestige < cost.prestige ? `Prestige requis : ${cost.prestige}` : (budget < cost.budget ? `Budget requis : ${cost.budget}` : 'Prolonger'));
+      const label = extType === 'special' ? `+${years} ${yearUnit(years)} ⭐` : `+${years} ${yearUnit(years)}`;
+      const title = !windowOpen ? t('tr.titleOffseason')
+        : extType === 'special' ? t('tr.titleCareerNego')
+        : (prestige < cost.prestige ? t('tr.titlePrestigeReq', { n: cost.prestige }) : (budget < cost.budget ? t('tr.titleBudgetReq', { n: cost.budget }) : t('tr.extend')));
       // Jamais `disabled` : un bouton désactivé n'émet aucun clic. On garde le
       // bouton cliquable et c'est showExtendModal qui explique le blocage.
       return `<button class="btn-small ${ready ? 'btn-primary' : 'btn-secondary'}" style="${ready ? '' : 'opacity:.6;'}${specialStyle}" data-extend-id="${escapeAttr(p.id)}" data-extend-years="${years}" title="${escapeAttr(title)}">
@@ -7108,20 +7109,20 @@ function renderContractsPanel() {
       </button>`;
     };
     const extendedBadge = alreadyExtended
-      ? `<span style="font-size:12px;color:var(--color-seafoam);font-weight:600;">✓ Prolongé cette saison</span>`
+      ? `<span style="font-size:12px;color:var(--color-seafoam);font-weight:600;">${t('tr.extendedThisSeason')}</span>`
       : `${btn(1, c1)}${btn(2, c2)}`;
     return `
       <div class="transfer-card" style="padding:10px;">
         <div class="transfer-card__header">
           <div class="mini-avatar">${getInitials(p.name)}</div>
           <div class="transfer-card__identity">
-            <div class="transfer-card__name">${p.name} <span class="transfer-grade">${CONTRACT_TIER_LABELS[tier]}</span></div>
-            <div class="transfer-card__meta">${p.role}${p.baseAge != null ? ` &mdash; ${age} ans` : ''} &mdash; Niveau ${computeLevel(p)}${retWarning}</div>
+            <div class="transfer-card__name">${p.name} <span class="transfer-grade">${contractTierLabel(tier)}</span></div>
+            <div class="transfer-card__meta">${p.role}${p.baseAge != null ? ` &mdash; ${t('roster.age', { n: age })}` : ''} &mdash; ${t('tr.level')} ${computeLevel(p)}${retWarning}</div>
           </div>
           <div class="transfer-card__level" style="color:${final ? '#e0a020' : 'inherit'};">W${p.contractUntil}</div>
         </div>
         <div style="font-size:12px;margin:6px 0;color:${final ? '#e0a020' : 'var(--color-text-muted)'};">
-          Contrat jusqu'à Worlds ${p.contractUntil}${final ? ' — ⚠ dernière année' : ''}
+          ${t('tr.contractUntil', { y: p.contractUntil })}${final ? t('tr.lastYearWarn') : ''}
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">${extendedBadge}</div>
       </div>`;
@@ -7129,17 +7130,17 @@ function renderContractsPanel() {
 
   const note = windowOpen
     ? `<div style="background:rgba(46,204,160,.12);border:1px solid var(--color-seafoam);border-radius:8px;padding:8px 12px;margin-bottom:4px;">
-         <span style="color:var(--color-seafoam);font-weight:600;">🟢 Mercato ouvert</span>
-         <span style="font-size:12px;color:var(--color-text-muted);"> — prolongations possibles jusqu'au 1er match du prochain split. Le prestige est une exigence (non dépensé) ; seul le budget est payé.</span>
+         <span style="color:var(--color-seafoam);font-weight:600;">${t('tr.mercatoOpen')}</span>
+         <span style="font-size:12px;color:var(--color-text-muted);">${t('tr.mercatoOpenDesc')}</span>
        </div>`
     : `<div style="background:rgba(255,255,255,.04);border:1px solid var(--color-border, #333);border-radius:8px;padding:8px 12px;margin-bottom:4px;">
-         <span style="color:#e0a020;font-weight:600;">🔒 Mercato fermé</span>
-         <span style="font-size:12px;color:var(--color-text-muted);"> — le split a commencé. La fenêtre rouvrira après le prochain MSI / Worlds. Prestige : <strong>${prestige}</strong> — Budget : <strong>${budget}</strong>.</span>
+         <span style="color:#e0a020;font-weight:600;">${t('tr.mercatoClosed')}</span>
+         <span style="font-size:12px;color:var(--color-text-muted);">${t('tr.mercatoClosedDesc', { prestige, budget })}</span>
        </div>`;
 
   return `
     <div class="panel">
-      <h3 class="panel-title">📜 Mon effectif — contrats</h3>
+      <h3 class="panel-title">${t('tr.contractsTitle')}</h3>
       ${note}
       <div class="transfer-grid" style="margin-top:10px;">${rows}</div>
     </div>`;
@@ -7149,16 +7150,16 @@ function showExtendModal(playerId, years) {
   const p = state.roster.find((x) => x.id === playerId);
   if (!p) return;
   if (!isContractWindowOpen()) {
-    showToast('Mercato fermé : le split a commencé. Les prolongations rouvriront après le prochain MSI / Worlds (toute la pré-saison).', 'info');
+    showToast(t('tr.toastMercatoClosed'), 'info');
     return;
   }
   if (p.contractExtendedYear === currentGameYear()) {
-    showToast(`${p.name} a déjà été prolongé cette saison. Une seule prolongation par joueur par saison.`, 'info');
+    showToast(t('tr.toastAlreadyExtended', { name: p.name }), 'info');
     return;
   }
   const extType = getExtensionType(p, years);
   if (extType === 'blocked') {
-    showToast(`Impossible : prolonger ${p.name} de ${years} an${years > 1 ? 's' : ''} dépasserait la limite absolue de 33 ans.`, 'info');
+    showToast(t('tr.toastExtBlocked', { name: p.name, years, unit: yearUnit(years) }), 'info');
     return;
   }
   const c = getExtensionCostFinal(p, years);
@@ -7166,26 +7167,26 @@ function showExtendModal(playerId, years) {
   const isSpecial = extType === 'special';
   const specialBanner = isSpecial
     ? `<div style="background:rgba(224,160,32,.12);border:1px solid #e0a020;border-radius:8px;padding:8px 12px;margin-bottom:10px;">
-        <span style="color:#e0a020;font-weight:600;">⭐ Négociation de carrière</span>
-        <span style="font-size:12px;color:var(--color-text-muted);"> — ${p.name} a dépassé son âge de retraite prévu. Il exige des conditions exceptionnelles : <strong>coût x1.5</strong>.</span>
+        <span style="color:#e0a020;font-weight:600;">${t('tr.careerNegoTitle')}</span>
+        <span style="font-size:12px;color:var(--color-text-muted);">${t('tr.careerNegoDesc', { name: p.name })}</span>
        </div>`
     : (p.baseAge != null && newEnd === playerRetirementYear(p)
-        ? `<p style="font-size:11px;color:#e0a020;margin-bottom:8px;">⚠ Ce contrat court jusqu'à sa retraite prévue (W${newEnd}).</p>`
+        ? `<p style="font-size:11px;color:#e0a020;margin-bottom:8px;">${t('tr.contractToRetirement', { y: newEnd })}</p>`
         : '');
   const okPrestige = state.resources.prestige >= c.prestige;
   const okBudget = state.resources.budget >= c.budget;
   showModal(`
-    <h3 class="panel-title">${isSpecial ? '⭐ ' : ''}Prolonger ${p.name}</h3>
-    <p style="margin-bottom:10px;">${p.name} (${CONTRACT_TIER_LABELS[getContractTier(p)]}) demande, pour <strong>${years} an${years > 1 ? 's' : ''}</strong> de plus (jusqu'à Worlds ${newEnd}) :</p>
+    <h3 class="panel-title">${isSpecial ? '⭐ ' : ''}${t('tr.extendTitle', { name: p.name })}</h3>
+    <p style="margin-bottom:10px;">${t('tr.extendAsk', { name: p.name, tier: contractTierLabel(getContractTier(p)), years, unit: yearUnit(years), y: newEnd })}</p>
     <div class="transfer-card__stats" style="margin-bottom:12px;">
-      <span>Prestige exigé : <strong style="color:${okPrestige ? 'var(--color-seafoam)' : '#e05'};">${c.prestige}</strong> <span style="opacity:.7;">(vous : ${state.resources.prestige})</span></span>
-      <span>Budget payé : <strong style="color:${okBudget ? 'inherit' : '#e05'};">💰 ${c.budget}</strong> <span style="opacity:.7;">(vous : ${state.resources.budget})</span></span>
+      <span>${t('tr.prestigeRequired')} <strong style="color:${okPrestige ? 'var(--color-seafoam)' : '#e05'};">${c.prestige}</strong> <span style="opacity:.7;">(${t('tr.you')} : ${state.resources.prestige})</span></span>
+      <span>${t('tr.budgetPaid')} <strong style="color:${okBudget ? 'inherit' : '#e05'};">💰 ${c.budget}</strong> <span style="opacity:.7;">(${t('tr.you')} : ${state.resources.budget})</span></span>
     </div>
     ${specialBanner}
-    <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;">Le prestige n'est pas décrémenté : c'est un seuil de standing. Seul le budget est dépensé.</p>
+    <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:14px;">${t('tr.prestigeNote')}</p>
     <div class="modal-content__actions">
-      <button class="btn-primary" id="btn-confirm-extend" ${okPrestige && okBudget ? '' : 'disabled'}>Signer la prolongation</button>
-      <button class="btn-secondary" id="btn-cancel-extend">Annuler</button>
+      <button class="btn-primary" id="btn-confirm-extend" ${okPrestige && okBudget ? '' : 'disabled'}>${t('tr.signExtension')}</button>
+      <button class="btn-secondary" id="btn-cancel-extend">${t('common.cancel')}</button>
     </div>
   `);
   document.getElementById('btn-cancel-extend').addEventListener('click', closeModal);
@@ -7198,16 +7199,16 @@ function showExtendModal(playerId, years) {
 function extendContract(playerId, years) {
   const p = state.roster.find((x) => x.id === playerId);
   if (!p) return;
-  if (!isContractWindowOpen()) { showToast('Mercato fermé : prolongations indisponibles pendant le split.', 'error'); return; }
+  if (!isContractWindowOpen()) { showToast(t('tr.toastMercatoClosedShort'), 'error'); return; }
   const extType = getExtensionType(p, years);
-  if (extType === 'blocked') { showToast(`${p.name} dépasserait la limite absolue de 33 ans.`, 'error'); return; }
+  if (extType === 'blocked') { showToast(t('tr.toastExt33', { name: p.name }), 'error'); return; }
   const c = getExtensionCostFinal(p, years);
   if (state.resources.prestige < c.prestige) {
-    showToast(`Prestige insuffisant : ${p.name} exige ${c.prestige} de prestige (vous : ${state.resources.prestige}).`, 'error');
+    showToast(t('tr.toastPrestigeInsuf', { name: p.name, n: c.prestige, have: state.resources.prestige }), 'error');
     return;
   }
   if (state.resources.budget < c.budget) {
-    showToast(`Budget insuffisant : ${c.budget} requis (vous : ${state.resources.budget}).`, 'error');
+    showToast(t('tr.toastBudgetInsuf', { n: c.budget, have: state.resources.budget }), 'error');
     return;
   }
   state.resources.budget -= c.budget; // prestige NON décrémenté (seuil de standing)
@@ -7215,8 +7216,8 @@ function extendContract(playerId, years) {
   p.contractExtendedYear = currentGameYear();
   saveGame();
   updateResourceBar();
-  const specialLabel = extType === 'special' ? ' (négociation de carrière)' : '';
-  showToast(`${p.name} prolongé jusqu'à Worlds ${p.contractUntil}${specialLabel}. -${c.budget} budget.`, 'success');
+  const specialLabel = extType === 'special' ? t('tr.careerNegoSuffix') : '';
+  showToast(t('tr.toastExtended', { name: p.name, y: p.contractUntil, special: specialLabel, cost: c.budget }), 'success');
   renderTransfers();
 }
 
@@ -7234,7 +7235,7 @@ function showSignModal(candidate) {
           <div class="mini-avatar">${getInitials(p.name)}</div>
           <div class="transfer-card__identity">
             <div class="transfer-card__name">${p.name}</div>
-            <div class="transfer-card__meta">${p.role} &mdash; Moy. ${avg}</div>
+            <div class="transfer-card__meta">${p.role} &mdash; ${t('tr.avg', { n: avg })}</div>
           </div>
           <div class="transfer-card__level">${avg}</div>
         </div>
@@ -7244,19 +7245,19 @@ function showSignModal(candidate) {
 
   const avg = getPlayerAvg(candidate);
   showModal(`
-    <h3 class="panel-title">Signer ${candidate.name}</h3>
+    <h3 class="panel-title">${t('tr.signTitle', { name: candidate.name })}</h3>
     <div class="transfer-card__stats" style="margin-bottom:12px;">
-      <span>Role : <strong>${candidate.role}</strong></span>
-      <span>Niveau moy. : <strong>${avg}</strong></span>
-      <span>Coût : <strong>💰 ${cost} budget</strong></span>
+      <span>${t('tr.roleLabel')} <strong>${candidate.role}</strong></span>
+      <span>${t('tr.avgLevel')} <strong>${avg}</strong></span>
+      <span>${t('tr.costLabel')} <strong>💰 ${cost} ${t('tr.budgetWord')}</strong></span>
     </div>
     ${hasReplacements
-      ? `<p style="margin-bottom:10px;">Choisissez le joueur a libérer :</p>
+      ? `<p style="margin-bottom:10px;">${t('tr.chooseRelease')}</p>
          <div class="transfer-release-list">${releaseOptions}</div>`
-      : `<p style="margin-bottom:10px;color:var(--color-seafoam);">Poste <strong>${candidate.role}</strong> vacant : signature directe, aucun joueur à libérer.</p>`}
+      : `<p style="margin-bottom:10px;color:var(--color-seafoam);">${t('tr.vacantPost', { role: candidate.role })}</p>`}
     <div class="modal-content__actions" style="margin-top:16px;">
-      <button class="btn-primary" id="btn-confirm-sign">Confirmer la signature</button>
-      <button class="btn-secondary" id="btn-cancel-sign">Annuler</button>
+      <button class="btn-primary" id="btn-confirm-sign">${t('tr.confirmSign')}</button>
+      <button class="btn-secondary" id="btn-cancel-sign">${t('common.cancel')}</button>
     </div>
   `);
 
@@ -7269,7 +7270,7 @@ function showSignModal(candidate) {
   document.getElementById('btn-confirm-sign').addEventListener('click', () => {
     if (hasReplacements) {
       const selected = document.querySelector('input[name="release-player"]:checked');
-      if (!selected) { showToast('Selectionnez un joueur a libérer.', 'error'); return; }
+      if (!selected) { showToast(t('tr.toastSelectRelease'), 'error'); return; }
       signPlayer(candidate, selected.value);
     } else {
       signPlayer(candidate, null); // poste vacant : aucune libération
@@ -7281,13 +7282,13 @@ function showSignModal(candidate) {
 function signPlayer(candidate, releasePlayerId) {
   const cost = getPlayerCost(candidate);
   if (state.resources.budget < cost) {
-    showToast('Budget insuffisant pour signer ce joueur.', 'error');
+    showToast(t('tr.toastSignBudget'), 'error');
     return;
   }
 
   // releasePlayerId peut être null : signature sur un poste vacant (fin de contrat).
   const idx = releasePlayerId ? state.roster.findIndex(p => p.id === releasePlayerId) : -1;
-  if (releasePlayerId && idx === -1) { showToast('Joueur introuvable.', 'error'); return; }
+  if (releasePlayerId && idx === -1) { showToast(t('tr.toastPlayerNotFound'), 'error'); return; }
 
   const released = idx !== -1 ? state.roster[idx] : null;
 
@@ -7360,7 +7361,7 @@ function signPlayer(candidate, releasePlayerId) {
 
   saveGame();
   updateResourceBar();
-  showToast(released ? `${candidate.name} signé ! ${released.name} libéré. -${cost} budget.` : `${candidate.name} signé (poste vacant comblé). -${cost} budget.`, 'success');
+  showToast(released ? t('tr.toastSigned', { name: candidate.name, released: released.name, cost }) : t('tr.toastSignedVacant', { name: candidate.name, cost }), 'success');
   renderTransfers();
 }
 

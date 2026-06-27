@@ -301,6 +301,95 @@ const I18N = {
     'log.seasonAiResult': 'J{d} : {winner} bat {loser} ({score}).',
     'log.poPlayerResult': 'Playoffs ({round}) : {result} {score} contre {team}.',
 
+    // -- Commun (suite) --
+    'common.cancel': 'Annuler',
+    'common.you': 'Vous',
+
+    // -- Tiers de contrat --
+    'contractTier.superstar': 'Superstar',
+    'contractTier.star': 'Star',
+    'contractTier.solid': 'Solide',
+    'contractTier.role': 'Role player',
+
+    // -- Marché des transferts --
+    'tr.emptyRoster': 'Constituez votre roster avant de consulter le marché.',
+    'tr.budgetAvailable': 'Budget disponible :',
+    'tr.shownCount': '{n} joueur(s) affiché(s) sur {total} — divisions ERL / EMEA Masters.',
+    'tr.allDivisions': 'Toutes divisions',
+    'tr.allTeams': 'Toutes équipes',
+    'tr.allChampions': 'Tous champions',
+    'tr.searchPlaceholder': 'Rechercher (joueur, équipe, champion)…',
+    'tr.noMatch': 'Aucun joueur ne correspond aux filtres.',
+    'tr.freeAgent': 'Agent libre',
+    'tr.cardLane': 'Lane',
+    'tr.cardTf': 'TF',
+    'tr.cardMeca': 'Meca',
+    'tr.cardShotcall': 'Shotcall',
+    'tr.budgetWord': 'budget',
+    'tr.sign': 'Signer',
+    'tr.insufficientBudget': 'Budget insuffisant',
+
+    // -- Contrats --
+    'tr.contractsTitle': '📜 Mon effectif — contrats',
+    'tr.contractsDisabled': "Gestion de l'âge et des contrats désactivée. Vos joueurs restent dans l'équipe indéfiniment. Vous pouvez réactiver cette option dans l'onglet <strong>Progression</strong>.",
+    'tr.level': 'Niveau',
+    'tr.year': 'an',
+    'tr.years': 'ans',
+    'tr.retireTooltip': 'Choix personnel : {name} a décidé de mettre fin à sa carrière à {age} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5).',
+    'tr.retireWarn': '⚠ retraite W{y}',
+    'tr.rule33': 'La réglementation ne permet pas de jouer après 33 ans.',
+    'tr.extImpossible': '+{n} {unit} impossible (limite 33 ans)',
+    'tr.titleOffseason': 'Disponible en inter-saison (après le MSI ou les Worlds)',
+    'tr.titleCareerNego': 'Négociation de carrière — coût x1.5 (retraite dépassée)',
+    'tr.titlePrestigeReq': 'Prestige requis : {n}',
+    'tr.titleBudgetReq': 'Budget requis : {n}',
+    'tr.extend': 'Prolonger',
+    'tr.extendedThisSeason': '✓ Prolongé cette saison',
+    'tr.contractUntil': "Contrat jusqu'à Worlds {y}",
+    'tr.lastYearWarn': ' — ⚠ dernière année',
+    'tr.mercatoOpen': '🟢 Mercato ouvert',
+    'tr.mercatoOpenDesc': " — prolongations possibles jusqu'au 1er match du prochain split. Le prestige est une exigence (non dépensé) ; seul le budget est payé.",
+    'tr.mercatoClosed': '🔒 Mercato fermé',
+    'tr.mercatoClosedDesc': ' — le split a commencé. La fenêtre rouvrira après le prochain MSI / Worlds. Prestige : <strong>{prestige}</strong> — Budget : <strong>{budget}</strong>.',
+
+    // -- Modal prolongation --
+    'tr.extendTitle': 'Prolonger {name}',
+    'tr.extendAsk': "{name} ({tier}) demande, pour <strong>{years} {unit}</strong> de plus (jusqu'à Worlds {y}) :",
+    'tr.prestigeRequired': 'Prestige exigé :',
+    'tr.budgetPaid': 'Budget payé :',
+    'tr.you': 'vous',
+    'tr.careerNegoTitle': '⭐ Négociation de carrière',
+    'tr.careerNegoDesc': ' — {name} a dépassé son âge de retraite prévu. Il exige des conditions exceptionnelles : <strong>coût x1.5</strong>.',
+    'tr.contractToRetirement': '⚠ Ce contrat court jusqu\'à sa retraite prévue (W{y}).',
+    'tr.prestigeNote': "Le prestige n'est pas décrémenté : c'est un seuil de standing. Seul le budget est dépensé.",
+    'tr.signExtension': 'Signer la prolongation',
+
+    // -- Modal signature --
+    'tr.signTitle': 'Signer {name}',
+    'tr.roleLabel': 'Rôle :',
+    'tr.avgLevel': 'Niveau moy. :',
+    'tr.costLabel': 'Coût :',
+    'tr.avg': 'Moy. {n}',
+    'tr.chooseRelease': 'Choisissez le joueur à libérer :',
+    'tr.vacantPost': 'Poste <strong>{role}</strong> vacant : signature directe, aucun joueur à libérer.',
+    'tr.confirmSign': 'Confirmer la signature',
+
+    // -- Toasts transferts --
+    'tr.toastMercatoClosed': 'Mercato fermé : le split a commencé. Les prolongations rouvriront après le prochain MSI / Worlds (toute la pré-saison).',
+    'tr.toastMercatoClosedShort': 'Mercato fermé : prolongations indisponibles pendant le split.',
+    'tr.toastAlreadyExtended': '{name} a déjà été prolongé cette saison. Une seule prolongation par joueur par saison.',
+    'tr.toastExtBlocked': 'Impossible : prolonger {name} de {years} {unit} dépasserait la limite absolue de 33 ans.',
+    'tr.toastExt33': '{name} dépasserait la limite absolue de 33 ans.',
+    'tr.toastPrestigeInsuf': 'Prestige insuffisant : {name} exige {n} de prestige (vous : {have}).',
+    'tr.toastBudgetInsuf': 'Budget insuffisant : {n} requis (vous : {have}).',
+    'tr.toastExtended': "{name} prolongé jusqu'à Worlds {y}{special}. -{cost} budget.",
+    'tr.careerNegoSuffix': ' (négociation de carrière)',
+    'tr.toastSelectRelease': 'Sélectionnez un joueur à libérer.',
+    'tr.toastSignBudget': 'Budget insuffisant pour signer ce joueur.',
+    'tr.toastPlayerNotFound': 'Joueur introuvable.',
+    'tr.toastSigned': '{name} signé ! {released} libéré. -{cost} budget.',
+    'tr.toastSignedVacant': '{name} signé (poste vacant comblé). -{cost} budget.',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -598,6 +687,95 @@ const I18N = {
     'log.seasonAiResult': 'MD{d}: {winner} beats {loser} ({score}).',
     'log.poPlayerResult': 'Playoffs ({round}): {result} {score} vs {team}.',
 
+    // -- Common (cont.) --
+    'common.cancel': 'Cancel',
+    'common.you': 'You',
+
+    // -- Contract tiers --
+    'contractTier.superstar': 'Superstar',
+    'contractTier.star': 'Star',
+    'contractTier.solid': 'Solid',
+    'contractTier.role': 'Role player',
+
+    // -- Transfer market --
+    'tr.emptyRoster': 'Build your roster before browsing the market.',
+    'tr.budgetAvailable': 'Available budget:',
+    'tr.shownCount': '{n} player(s) shown out of {total} — ERL / EMEA Masters divisions.',
+    'tr.allDivisions': 'All divisions',
+    'tr.allTeams': 'All teams',
+    'tr.allChampions': 'All champions',
+    'tr.searchPlaceholder': 'Search (player, team, champion)…',
+    'tr.noMatch': 'No player matches the filters.',
+    'tr.freeAgent': 'Free agent',
+    'tr.cardLane': 'Lane',
+    'tr.cardTf': 'TF',
+    'tr.cardMeca': 'Mech',
+    'tr.cardShotcall': 'Shotcall',
+    'tr.budgetWord': 'budget',
+    'tr.sign': 'Sign',
+    'tr.insufficientBudget': 'Insufficient budget',
+
+    // -- Contracts --
+    'tr.contractsTitle': '📜 My roster — contracts',
+    'tr.contractsDisabled': 'Age and contract management disabled. Your players stay on the team indefinitely. You can re-enable this option in the <strong>Progression</strong> tab.',
+    'tr.level': 'Level',
+    'tr.year': 'yr',
+    'tr.years': 'yrs',
+    'tr.retireTooltip': 'Personal choice: {name} has decided to end their career at {age}. An extension is still possible, but on exceptional terms (×1.5).',
+    'tr.retireWarn': '⚠ retires W{y}',
+    'tr.rule33': 'Regulations do not allow playing past age 33.',
+    'tr.extImpossible': '+{n} {unit} impossible (33-age limit)',
+    'tr.titleOffseason': 'Available in the off-season (after MSI or Worlds)',
+    'tr.titleCareerNego': 'Career negotiation — x1.5 cost (past retirement)',
+    'tr.titlePrestigeReq': 'Prestige required: {n}',
+    'tr.titleBudgetReq': 'Budget required: {n}',
+    'tr.extend': 'Extend',
+    'tr.extendedThisSeason': '✓ Extended this season',
+    'tr.contractUntil': 'Contract until Worlds {y}',
+    'tr.lastYearWarn': ' — ⚠ final year',
+    'tr.mercatoOpen': '🟢 Transfer window open',
+    'tr.mercatoOpenDesc': ' — extensions possible until the first match of the next split. Prestige is a requirement (not spent); only budget is paid.',
+    'tr.mercatoClosed': '🔒 Transfer window closed',
+    'tr.mercatoClosedDesc': ' — the split has started. The window will reopen after the next MSI / Worlds. Prestige: <strong>{prestige}</strong> — Budget: <strong>{budget}</strong>.',
+
+    // -- Extend modal --
+    'tr.extendTitle': 'Extend {name}',
+    'tr.extendAsk': '{name} ({tier}) asks, for <strong>{years} {unit}</strong> more (until Worlds {y}):',
+    'tr.prestigeRequired': 'Prestige required:',
+    'tr.budgetPaid': 'Budget paid:',
+    'tr.you': 'you',
+    'tr.careerNegoTitle': '⭐ Career negotiation',
+    'tr.careerNegoDesc': ' — {name} has passed their expected retirement age. They demand exceptional terms: <strong>x1.5 cost</strong>.',
+    'tr.contractToRetirement': '⚠ This contract runs until their expected retirement (W{y}).',
+    'tr.prestigeNote': 'Prestige is not decremented: it is a standing threshold. Only budget is spent.',
+    'tr.signExtension': 'Sign the extension',
+
+    // -- Sign modal --
+    'tr.signTitle': 'Sign {name}',
+    'tr.roleLabel': 'Role:',
+    'tr.avgLevel': 'Avg. level:',
+    'tr.costLabel': 'Cost:',
+    'tr.avg': 'Avg. {n}',
+    'tr.chooseRelease': 'Choose the player to release:',
+    'tr.vacantPost': 'Vacant <strong>{role}</strong> position: direct signing, no player to release.',
+    'tr.confirmSign': 'Confirm signing',
+
+    // -- Transfer toasts --
+    'tr.toastMercatoClosed': 'Transfer window closed: the split has started. Extensions will reopen after the next MSI / Worlds (the whole pre-season).',
+    'tr.toastMercatoClosedShort': 'Transfer window closed: extensions unavailable during the split.',
+    'tr.toastAlreadyExtended': '{name} has already been extended this season. Only one extension per player per season.',
+    'tr.toastExtBlocked': 'Impossible: extending {name} by {years} {unit} would exceed the absolute 33-age limit.',
+    'tr.toastExt33': '{name} would exceed the absolute 33-age limit.',
+    'tr.toastPrestigeInsuf': 'Insufficient prestige: {name} requires {n} prestige (you: {have}).',
+    'tr.toastBudgetInsuf': 'Insufficient budget: {n} required (you: {have}).',
+    'tr.toastExtended': '{name} extended until Worlds {y}{special}. -{cost} budget.',
+    'tr.careerNegoSuffix': ' (career negotiation)',
+    'tr.toastSelectRelease': 'Select a player to release.',
+    'tr.toastSignBudget': 'Insufficient budget to sign this player.',
+    'tr.toastPlayerNotFound': 'Player not found.',
+    'tr.toastSigned': '{name} signed! {released} released. -{cost} budget.',
+    'tr.toastSignedVacant': '{name} signed (vacant position filled). -{cost} budget.',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
@@ -613,6 +791,18 @@ function traitLabel(id) {
 // Libellé traduit d'une option de repos (REST_OPTIONS) par son id.
 function restLabel(id) {
   return t('rest.' + id);
+}
+
+// Libellé traduit d'un tier de contrat (superstar, star, solid, role).
+function contractTierLabel(tier) {
+  const key = 'contractTier.' + tier;
+  const val = t(key);
+  return val === key ? tier : val;
+}
+
+// Unité d'année accordée en nombre (an/ans, yr/yrs).
+function yearUnit(n) {
+  return t(n > 1 ? 'tr.years' : 'tr.year');
 }
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.
