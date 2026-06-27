@@ -4830,9 +4830,9 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
   const isUp = (k) => pendingMatch && pendingMatch.matchKey === k;
   const champ = b.champion || (m.gf.result ? m.gf.result.winner : null);
   const legend = `<div class="po-legend">
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>${t('bracket.legendQualified')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>${t('bracket.legendNext')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>${t('bracket.legendOut')}</div>
   </div>`;
   const pairCol = (H, lbl, c1, c2) => `<div style="height:${H}px;display:flex;flex-direction:column;">
     <div class="po-col__label">${lbl}</div>
@@ -4842,7 +4842,7 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
     <div class="po-col__label">${lbl}</div>
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">${card}</div>
   </div>`;
-  const sectionTitle = (t, sub) => `<div class="dbl-section-title">${t}${sub ? ` <span class="dbl-section-sub">${sub}</span>` : ''}</div>`;
+  const sectionTitle = (title, sub) => `<div class="dbl-section-title">${title}${sub ? ` <span class="dbl-section-sub">${sub}</span>` : ''}</div>`;
 
   // ---------- UPPER BRACKET ----------
   const Hub = 430;
@@ -4859,16 +4859,16 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
     </div>
   </div>`;
   const ubQfCol = `<div style="height:${Hub}px;display:flex;flex-direction:column;">
-    <div class="po-col__label">Quarts UB<br>BO5</div>
+    <div class="po-col__label">${t('dbl.ubQf')}<br>BO5</div>
     <div style="flex:1;display:flex;flex-direction:column;">
       <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
-        ${poBracketCard('po-ub-qf1', 'Quart 1', m.qf1, 1, 8, isUp('qf1'), false)}
-        ${poBracketCard('po-ub-qf2', 'Quart 2', m.qf2, 4, 5, isUp('qf2'), false)}
+        ${poBracketCard('po-ub-qf1', t('bracket.qf1'), m.qf1, 1, 8, isUp('qf1'), false)}
+        ${poBracketCard('po-ub-qf2', t('bracket.qf2'), m.qf2, 4, 5, isUp('qf2'), false)}
       </div>
       <div style="flex:1;"></div>
       <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
-        ${poBracketCard('po-ub-qf3', 'Quart 3', m.qf3, 3, 6, isUp('qf3'), false)}
-        ${poBracketCard('po-ub-qf4', 'Quart 4', m.qf4, 2, 7, isUp('qf4'), false)}
+        ${poBracketCard('po-ub-qf3', t('bracket.qf3'), m.qf3, 3, 6, isUp('qf3'), false)}
+        ${poBracketCard('po-ub-qf4', t('bracket.qf4'), m.qf4, 2, 7, isUp('qf4'), false)}
       </div>
     </div>
   </div>`;
@@ -4876,29 +4876,29 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
     <svg class="po-bracket__svg"></svg>
     ${ubQfCol}
     <div class="po-gap"></div>
-    ${halfSplitCol(Hub, 'Demis UB<br>BO5', poBracketCard('po-ub-df1', 'Demi UB 1', m.df1, null, null, isUp('df1'), false), poBracketCard('po-ub-df2', 'Demi UB 2', m.df2, null, null, isUp('df2'), false))}
+    ${halfSplitCol(Hub, t('dbl.ubSemis') + '<br>BO5', poBracketCard('po-ub-df1', t('dbl.ubSemi1'), m.df1, null, null, isUp('df1'), false), poBracketCard('po-ub-df2', t('dbl.ubSemi2'), m.df2, null, null, isUp('df2'), false))}
     <div class="po-gap"></div>
-    ${singleCol(Hub, 'Finale UB<br>BO5', poBracketCard('po-ub-f', 'Finale UB', m.f, null, null, isUp('f'), false))}
+    ${singleCol(Hub, t('dbl.ubFinal') + '<br>BO5', poBracketCard('po-ub-f', t('dbl.ubFinal'), m.f, null, null, isUp('f'), false))}
   </div>`;
 
   // ---------- LOWER BRACKET ----------
   const Hlb = 300;
   const lbHtml = `<div class="po-bracket" id="po-bracket-intl-lb">
     <svg class="po-bracket__svg"></svg>
-    ${pairCol(Hlb, 'LB Tour 1<br>BO5', poBracketCard('po-lb-1', 'Perd. Q1/Q2', m.lb1, null, null, isUp('lb1'), false), poBracketCard('po-lb-2', 'Perd. Q3/Q4', m.lb2, null, null, isUp('lb2'), false))}
+    ${pairCol(Hlb, t('dbl.lbRound1') + '<br>BO5', poBracketCard('po-lb-1', t('dbl.lbLoserQ12'), m.lb1, null, null, isUp('lb1'), false), poBracketCard('po-lb-2', t('dbl.lbLoserQ34'), m.lb2, null, null, isUp('lb2'), false))}
     <div class="po-gap"></div>
-    ${pairCol(Hlb, 'LB Tour 2<br>BO5', poBracketCard('po-lb-3', 'vs Perd. Demi UB 2', m.lb3, null, null, isUp('lb3'), false), poBracketCard('po-lb-4', 'vs Perd. Demi UB 1', m.lb4, null, null, isUp('lb4'), false))}
+    ${pairCol(Hlb, t('dbl.lbRound2') + '<br>BO5', poBracketCard('po-lb-3', t('dbl.lbVsLoserUbSemi2'), m.lb3, null, null, isUp('lb3'), false), poBracketCard('po-lb-4', t('dbl.lbVsLoserUbSemi1'), m.lb4, null, null, isUp('lb4'), false))}
     <div class="po-gap"></div>
-    ${singleCol(Hlb, 'LB Demi<br>BO5', poBracketCard('po-lb-5', 'LB Demi', m.lb5, null, null, isUp('lb5'), false))}
+    ${singleCol(Hlb, t('dbl.lbSemi') + '<br>BO5', poBracketCard('po-lb-5', t('dbl.lbSemi'), m.lb5, null, null, isUp('lb5'), false))}
     <div class="po-gap"></div>
-    ${singleCol(Hlb, 'LB Finale<br>BO5', poBracketCard('po-lb-6', 'vs Perd. Finale UB', m.lb6, null, null, isUp('lb6'), false))}
+    ${singleCol(Hlb, t('dbl.lbFinal') + '<br>BO5', poBracketCard('po-lb-6', t('dbl.lbVsLoserUbFinal'), m.lb6, null, null, isUp('lb6'), false))}
   </div>`;
 
   // ---------- GRANDE FINALE ----------
   const Hgf = 240;
   const gfHtml = `<div class="po-bracket" id="po-bracket-intl-gf">
     <svg class="po-bracket__svg"></svg>
-    ${singleCol(Hgf, 'Grande Finale<br>BO5', poBracketCard('po-gf', 'Vainq. UB vs Vainq. LB', m.gf, null, null, isUp('gf'), true))}
+    ${singleCol(Hgf, t('dbl.grandFinal') + '<br>BO5', poBracketCard('po-gf', t('dbl.gfCard'), m.gf, null, null, isUp('gf'), true))}
     <div class="po-gap"></div>
     <div style="height:${Hgf}px;display:flex;flex-direction:column;">
       <div class="po-col__label">&nbsp;<br>&nbsp;</div>
@@ -4907,11 +4907,11 @@ function buildDoubleBracketHtml(b, pendingMatch, seasonLabel) {
   </div>`;
 
   return `<div class="po-bracket-wrapper dbl-bracket">
-    ${sectionTitle('Upper Bracket', 'le perdant tombe en lower bracket')}
+    ${sectionTitle('Upper Bracket', t('dbl.upperSub'))}
     ${ubHtml}
-    ${sectionTitle('Lower Bracket', 'une défaite = élimination')}
+    ${sectionTitle('Lower Bracket', t('dbl.lowerSub'))}
     ${lbHtml}
-    ${sectionTitle('Grande Finale')}
+    ${sectionTitle(t('dbl.grandFinal'))}
     ${gfHtml}
     ${legend}
   </div>`;
@@ -4928,9 +4928,9 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
     <div style="flex:1;display:flex;align-items:center;justify-content:center;">${poChampionBlock(seasonLabel || '', champ)}</div>
   </div>`;
   const legend = `<div class="po-legend">
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>${t('bracket.legendQualified')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>${t('bracket.legendNext')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>${t('bracket.legendOut')}</div>
   </div>`;
 
   if (!has8) {
@@ -4947,9 +4947,9 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
     return `<div class="po-bracket-wrapper">
       <div class="po-bracket" id="po-bracket-intl">
         <svg class="po-bracket__svg"></svg>
-        ${pairCol('Demi-finales<br>BO5', poBracketCard('po-sf-top','Demi 1',m.sf1,1,4,isUp('sf1'),false), poBracketCard('po-sf-bot','Demi 2',m.sf2,2,3,isUp('sf2'),false))}
+        ${pairCol(t('bracket.semis') + '<br>BO5', poBracketCard('po-sf-top', t('bracket.sf1'), m.sf1,1,4,isUp('sf1'),false), poBracketCard('po-sf-bot', t('bracket.sf2'), m.sf2,2,3,isUp('sf2'),false))}
         <div class="po-gap"></div>
-        ${singleCol('Finale<br>BO5', poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true))}
+        ${singleCol(t('bracket.final') + '<br>BO5', poBracketCard('po-final', t('bracket.grandFinal'), m.final,null,null,isUp('final'),true))}
         <div class="po-gap"></div>
         ${championColMSI(H)}
       </div>
@@ -4969,16 +4969,16 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">${card}</div>
   </div>`;
   const qfColHtml = `<div style="height:${H}px;display:flex;flex-direction:column;">
-    <div class="po-col__label">Quarts de finale<br>BO5</div>
+    <div class="po-col__label">${t('bracket.quarterfinals')}<br>BO5</div>
     <div style="flex:1;display:flex;flex-direction:column;">
       <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
-        ${poBracketCard('po-qf1-top','Quart 1',m.qf1,1,8,isUp('qf1'),false)}
-        ${poBracketCard('po-qf1-bot','Quart 4',m.qf4,2,7,isUp('qf4'),false)}
+        ${poBracketCard('po-qf1-top', t('bracket.qf1'), m.qf1,1,8,isUp('qf1'),false)}
+        ${poBracketCard('po-qf1-bot', t('bracket.qf4'), m.qf4,2,7,isUp('qf4'),false)}
       </div>
       <div style="flex:1;"></div>
       <div style="height:${halfH}px;display:flex;flex-direction:column;justify-content:space-between;">
-        ${poBracketCard('po-qf2-top','Quart 2',m.qf2,4,5,isUp('qf2'),false)}
-        ${poBracketCard('po-qf2-bot','Quart 3',m.qf3,3,6,isUp('qf3'),false)}
+        ${poBracketCard('po-qf2-top', t('bracket.qf2'), m.qf2,4,5,isUp('qf2'),false)}
+        ${poBracketCard('po-qf2-bot', t('bracket.qf3'), m.qf3,3,6,isUp('qf3'),false)}
       </div>
     </div>
   </div>`;
@@ -4987,9 +4987,9 @@ function buildIntlBracketHtml(b, pendingMatch, seasonLabel) {
       <svg class="po-bracket__svg"></svg>
       ${qfColHtml}
       <div class="po-gap"></div>
-      ${pairCol('Demi-finales<br>BO5', poBracketCard('po-sf-top','Demi 1',m.sf1,null,null,isUp('sf1'),false), poBracketCard('po-sf-bot','Demi 2',m.sf2,null,null,isUp('sf2'),false))}
+      ${pairCol(t('bracket.semis') + '<br>BO5', poBracketCard('po-sf-top', t('bracket.sf1'), m.sf1,null,null,isUp('sf1'),false), poBracketCard('po-sf-bot', t('bracket.sf2'), m.sf2,null,null,isUp('sf2'),false))}
       <div class="po-gap"></div>
-      ${singleCol('Finale<br>BO5', poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true))}
+      ${singleCol(t('bracket.final') + '<br>BO5', poBracketCard('po-final', t('bracket.grandFinal'), m.final,null,null,isUp('final'),true))}
       <div class="po-gap"></div>
       ${championColMSI(H)}
     </div>
@@ -5094,9 +5094,9 @@ function renderInternationalGroups(el, intl) {
       `;
     }).join('');
     return `
-      <h3 class="panel-title">Groupe ${String.fromCharCode(65 + i)}</h3>
+      <h3 class="panel-title">${t('intl.group', { g: String.fromCharCode(65 + i) })}</h3>
       <table class="history-table">
-        <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th></tr></thead>
+        <thead><tr><th>#</th><th>${t('cal.colTeam')}</th><th>${t('cal.colW')}</th><th>${t('cal.colL')}</th><th title="${t('cal.nexusTip')}">${t('cal.colNexus')}</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     `;
@@ -5105,17 +5105,17 @@ function renderInternationalGroups(el, intl) {
   const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
   const pm = intl.pendingMatch;
   if (!pm) { processInternationalGroupMatchday(); renderCalendar(); return; }
-  const actionLabel = pm.started ? 'Continuer le match en cours' : 'Jouer le match';
+  const actionLabel = pm.started ? t('cal.resume') : t('intl.playMatch');
 
   el.innerHTML = `
-    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase de groupes (journée ${intl.groupMatchday}/${intl.totalGroupRounds})</h3>
-    <p class="card__count">Prochain match : ${getTeamName('player')} vs ${getTeamName(pm.opponentTeamId)} (BO3)</p>
+    <h3 class="panel-title">${t('intl.groupsTitle', { event: eventLabel(intl), year: intl.year, d: intl.groupMatchday, total: intl.totalGroupRounds })}</h3>
+    <p class="card__count">${t('intl.nextMatch', { home: getTeamName('player'), away: getTeamName(pm.opponentTeamId) })}</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-international-action">${actionLabel}</button>
     </div>
     ${groupsHtml}
-    <h3 class="panel-title">Derniers résultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">${t('cal.recentResults')}</h3>
+    <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
   `;
 
   const btn = document.getElementById('btn-international-action');
@@ -5124,7 +5124,7 @@ function renderInternationalGroups(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, 'BO3', 'on', `${eventLabel(intl)} ${intl.year} - Groupes`);
+        startMatchSeries(pm.opponentTeamId, 'BO3', 'on', t('intl.ctxGroups', { event: eventLabel(intl), year: intl.year }));
       } else {
         showView('match');
       }
@@ -5139,21 +5139,21 @@ function renderInternationalBracket(el, intl) {
   let actionHtml;
   if (intl.pendingMatch) {
     const pm = intl.pendingMatch;
-    const actionLabel = pm.started ? 'Continuer la serie en cours' : 'Jouer la serie';
+    const actionLabel = pm.started ? t('intl.resumeSeries') : t('cal.playSeries');
     actionHtml = `
-      <p class="card__count">Prochaine serie : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
+      <p class="card__count">${t('cal.nextSeries', { fmt: pm.format, team: getTeamName(pm.opponentTeamId) })}</p>
       <div class="training-form__actions"><button class="btn-primary" id="btn-international-action">${actionLabel}</button></div>
     `;
   } else {
-    actionHtml = '<p class="card__count">Phase finale en cours...</p>';
+    actionHtml = `<p class="card__count">${t('intl.finalsOngoing')}</p>`;
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Phase finale</h3>
+    <h3 class="panel-title">${t('intl.finalsTitle', { event: eventLabel(intl), year: intl.year })}</h3>
     ${buildIntlBracketHtml(b, intl.pendingMatch, `${eventLabel(intl)} ${intl.year}`)}
     ${actionHtml}
-    <h3 class="panel-title">Derniers résultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">${t('cal.recentResults')}</h3>
+    <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
   `;
 
   requestAnimationFrame(() => drawIntlBracketLines(b));
@@ -5165,7 +5165,7 @@ function renderInternationalBracket(el, intl) {
       if (!pm.started) {
         pm.started = true;
         saveGame();
-        startMatchSeries(pm.opponentTeamId, pm.format, 'on', `${eventLabel(intl)} ${intl.year} - Phase finale`);
+        startMatchSeries(pm.opponentTeamId, pm.format, 'on', t('intl.ctxFinals', { event: eventLabel(intl), year: intl.year }));
       } else {
         showView('match');
       }
@@ -5179,7 +5179,8 @@ function renderInternationalRecap(el, intl) {
 
   let placementHtml = '';
   if (placement !== null && intl.rewards) {
-    placementHtml = `<p class="card__count">Votre classement : ${placement === 1 ? 'Champion !' : placement + 'e'}. Récompenses : +${intl.rewards.coaching} coaching, +${intl.rewards.budget} budget, +${intl.rewards.prestige} prestige.</p>`;
+    const rank = placement === 1 ? t('intl.champion') : t('intl.nth', { n: placement });
+    placementHtml = `<p class="card__count">${t('intl.recapRewards', { rank, coaching: intl.rewards.coaching, budget: intl.rewards.budget, prestige: intl.rewards.prestige })}</p>`;
   }
 
   const bracketHtml = intl.bracket
@@ -5187,13 +5188,13 @@ function renderInternationalRecap(el, intl) {
     : '';
 
   el.innerHTML = `
-    <h3 class="panel-title">${eventLabel(intl)} ${intl.year} - Terminé</h3>
-    <p class="card__count">Champion : ${getTeamName(intl.bracket.champion)}</p>
+    <h3 class="panel-title">${t('intl.finishedTitle', { event: eventLabel(intl), year: intl.year })}</h3>
+    <p class="card__count">${t('intl.championIs', { team: getTeamName(intl.bracket.champion) })}</p>
     ${placementHtml}
     ${bracketHtml}
     <div class="recent-results">${logHtml}</div>
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-international-continue">Continuer</button>
+      <button class="btn-primary" id="btn-international-continue">${t('common.continue')}</button>
     </div>
   `;
 

@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.6] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 2 (lot 3/4 : Calendrier international MSI/Worlds)
+
+- **Phase de groupes** : titre, libellé groupe, prochain match, classement (colonnes), boutons jouer/continuer.
+- **Phase finale (bracket)** : titre, prochaine série, état en cours.
+- **Récap international** : titre, champion, classement + récompenses, bouton continuer.
+- **Brackets** : MSI (simple élim, 4 équipes), Worlds simple élim (8 équipes, quarts/demis/finale) et **Worlds double élimination** (Upper/Lower Bracket + Grande Finale) entièrement traduits — labels de colonnes et de cartes (Quarts UB, Demis UB, LB Tour 1/2, Perd. Q1/Q2, vs Perd. Finale UB, Vainq. UB vs Vainq. LB…).
+- Contextes de série (« {event} {year} — Groupes / Phase finale ») traduits.
+
+> Le journal de résultats des matchs internationaux reste en français (Phase 3). Reste en Phase 2 : lot 4 = transferts/contrats, puis entraînement, draft, match, scouting.
+
+---
+
 ## [1.12.5] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 2/4 : Journal + Calendrier domestique)

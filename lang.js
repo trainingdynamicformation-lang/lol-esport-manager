@@ -239,6 +239,48 @@ const I18N = {
     'bracket.seed': 'Seed #{n}',
     'bracket.tbd': 'À déterminer',
     'bracket.winner': 'Vainqueur',
+    'bracket.quarterfinals': 'Quarts de finale',
+    'bracket.qf3': 'Quart 3',
+    'bracket.qf4': 'Quart 4',
+
+    // -- Commun (suite) --
+    'common.continue': 'Continuer',
+
+    // -- International (MSI / Worlds) --
+    'intl.groupsTitle': '{event} {year} — Phase de groupes (journée {d}/{total})',
+    'intl.group': 'Groupe {g}',
+    'intl.nextMatch': 'Prochain match : {home} vs {away} (BO3)',
+    'intl.playMatch': 'Jouer le match',
+    'intl.finalsTitle': '{event} {year} — Phase finale',
+    'intl.finalsOngoing': 'Phase finale en cours...',
+    'intl.resumeSeries': 'Continuer la série en cours',
+    'intl.finishedTitle': '{event} {year} — Terminé',
+    'intl.championIs': 'Champion : {team}',
+    'intl.champion': 'Champion !',
+    'intl.nth': '{n}e',
+    'intl.recapRewards': 'Votre classement : {rank}. Récompenses : +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'intl.ctxGroups': '{event} {year} — Groupes',
+    'intl.ctxFinals': '{event} {year} — Phase finale',
+
+    // -- Double élimination (Worlds) --
+    'dbl.upperSub': 'le perdant tombe en lower bracket',
+    'dbl.lowerSub': 'une défaite = élimination',
+    'dbl.grandFinal': 'Grande Finale',
+    'dbl.ubQf': 'Quarts UB',
+    'dbl.ubSemis': 'Demis UB',
+    'dbl.ubSemi1': 'Demi UB 1',
+    'dbl.ubSemi2': 'Demi UB 2',
+    'dbl.ubFinal': 'Finale UB',
+    'dbl.lbRound1': 'LB Tour 1',
+    'dbl.lbLoserQ12': 'Perd. Q1/Q2',
+    'dbl.lbLoserQ34': 'Perd. Q3/Q4',
+    'dbl.lbRound2': 'LB Tour 2',
+    'dbl.lbVsLoserUbSemi2': 'vs Perd. Demi UB 2',
+    'dbl.lbVsLoserUbSemi1': 'vs Perd. Demi UB 1',
+    'dbl.lbSemi': 'LB Demi',
+    'dbl.lbFinal': 'LB Finale',
+    'dbl.lbVsLoserUbFinal': 'vs Perd. Finale UB',
+    'dbl.gfCard': 'Vainq. UB vs Vainq. LB',
 
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
@@ -475,6 +517,48 @@ const I18N = {
     'bracket.seed': 'Seed #{n}',
     'bracket.tbd': 'TBD',
     'bracket.winner': 'Winner',
+    'bracket.quarterfinals': 'Quarterfinals',
+    'bracket.qf3': 'QF 3',
+    'bracket.qf4': 'QF 4',
+
+    // -- Common (cont.) --
+    'common.continue': 'Continue',
+
+    // -- International (MSI / Worlds) --
+    'intl.groupsTitle': '{event} {year} — Group stage (matchday {d}/{total})',
+    'intl.group': 'Group {g}',
+    'intl.nextMatch': 'Next match: {home} vs {away} (BO3)',
+    'intl.playMatch': 'Play the match',
+    'intl.finalsTitle': '{event} {year} — Finals',
+    'intl.finalsOngoing': 'Finals in progress...',
+    'intl.resumeSeries': 'Resume current series',
+    'intl.finishedTitle': '{event} {year} — Finished',
+    'intl.championIs': 'Champion: {team}',
+    'intl.champion': 'Champion!',
+    'intl.nth': '{n}th',
+    'intl.recapRewards': 'Your ranking: {rank}. Rewards: +{coaching} coaching, +{budget} budget, +{prestige} prestige.',
+    'intl.ctxGroups': '{event} {year} — Groups',
+    'intl.ctxFinals': '{event} {year} — Finals',
+
+    // -- Double elimination (Worlds) --
+    'dbl.upperSub': 'the loser drops to the lower bracket',
+    'dbl.lowerSub': 'one loss = elimination',
+    'dbl.grandFinal': 'Grand Final',
+    'dbl.ubQf': 'UB Quarters',
+    'dbl.ubSemis': 'UB Semis',
+    'dbl.ubSemi1': 'UB Semi 1',
+    'dbl.ubSemi2': 'UB Semi 2',
+    'dbl.ubFinal': 'UB Final',
+    'dbl.lbRound1': 'LB Round 1',
+    'dbl.lbLoserQ12': 'Loser Q1/Q2',
+    'dbl.lbLoserQ34': 'Loser Q3/Q4',
+    'dbl.lbRound2': 'LB Round 2',
+    'dbl.lbVsLoserUbSemi2': 'vs Loser UB Semi 2',
+    'dbl.lbVsLoserUbSemi1': 'vs Loser UB Semi 1',
+    'dbl.lbSemi': 'LB Semi',
+    'dbl.lbFinal': 'LB Final',
+    'dbl.lbVsLoserUbFinal': 'vs Loser UB Final',
+    'dbl.gfCard': 'UB Winner vs LB Winner',
 
     // -- Language toast --
     'lang.changed': 'Language updated.'
