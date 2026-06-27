@@ -116,7 +116,7 @@ const I18N = {
     // -- Footer --
     'footer.tagline': "Jeu de gestion d'équipe esport League of Legends",
     'footer.changelog': 'Changelog',
-    'footer.copyright': '© 2026 Thierry Demorest — Tous droits réservés. Concept et design protégés par la propriété intellectuelle.',
+    'footer.copyright': '© 2026 redbaron1308 — Tous droits réservés. Concept et design protégés par la propriété intellectuelle.',
     'footer.localStorage': 'Les données de progression sont stockées localement dans votre navigateur (localStorage) et ne sont jamais transmises à des tiers.',
     'footer.disclaimer': "LOL Esport Manager est un projet indépendant non affilié à Riot Games. League of Legends est une marque déposée de Riot Games, Inc. Ce jeu est créé à titre de fan project à but non commercial.",
 
@@ -232,7 +232,7 @@ const I18N = {
     // -- Footer --
     'footer.tagline': 'League of Legends esport team management game',
     'footer.changelog': 'Changelog',
-    'footer.copyright': '© 2026 Thierry Demorest — All rights reserved. Concept and design protected by intellectual property.',
+    'footer.copyright': '© 2026 redbaron1308 — All rights reserved. Concept and design protected by intellectual property.',
     'footer.localStorage': 'Progression data is stored locally in your browser (localStorage) and is never transmitted to third parties.',
     'footer.disclaimer': 'LOL Esport Manager is an independent project not affiliated with Riot Games. League of Legends is a registered trademark of Riot Games, Inc. This game is created as a non-commercial fan project.',
 
