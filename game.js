@@ -1927,7 +1927,7 @@ function playerCardHtml(p) {
             const mastery = getChampionMastery(p.id, c);
             if (!mastery) return `<span class="champion-chip">${c}</span>`;
             const tier = getMasteryTier(mastery.mastery);
-            return `<span class="champion-chip champion-chip--${tier.id}" title="${tier.label} (${mastery.mastery})">${c} <span class="champion-chip__mastery">${mastery.mastery}</span></span>`;
+            return `<span class="champion-chip champion-chip--${tier.id}" title="${masteryTierLabel(tier.id)} (${mastery.mastery})">${c} <span class="champion-chip__mastery">${mastery.mastery}</span></span>`;
           }).join('')}
         </div>
       </div>
@@ -2519,18 +2519,18 @@ function resolveAiTurnsUntilPlayer() {
     const turn = currentTurn(draft);
     if (turn.side === draft.playerSide) break;
 
-    const sideLabel = turn.side === 'blue' ? 'Bleu' : 'Rouge';
+    const sideName = draftSideLabel(turn.side);
     if (turn.type === 'ban') {
       const champName = aiChooseBan(draft);
       if (champName) {
         draft[turn.side + 'Bans'].push(champName);
-        draft.log.push(`${sideLabel} (IA) bannit ${champName}.`);
+        draft.log.push(t('draft.logAiBan', { side: sideName, champ: champName }));
       }
     } else {
       const pick = aiChoosePick(draft);
       if (pick) {
         draft[turn.side + 'Picks'][pick.role] = pick.champName;
-        draft.log.push(`${sideLabel} (IA) sélectionné ${pick.champName} (${ROLE_NAMES[pick.role]}).`);
+        draft.log.push(t('draft.logAiPick', { side: sideName, champ: pick.champName, role: ROLE_NAMES[pick.role] }));
       }
     }
     draft.turnIndex++;
@@ -2549,7 +2549,7 @@ function playerBan(champName) {
   if (isChampionTaken(draft, champName)) return;
 
   draft[turn.side + 'Bans'].push(champName);
-  draft.log.push(`Vous bannissez ${champName}.`);
+  draft.log.push(t('draft.logPlayerBan', { champ: champName }));
   draft.turnIndex++;
   resolveAiTurnsUntilPlayer();
   saveGame();
@@ -2569,7 +2569,7 @@ function playerPick(role, champName) {
   if (!champion || (champion.role !== role && !champion.secondaryRoles.includes(role))) return;
 
   picks[role] = champName;
-  draft.log.push(`Vous selectionnez ${champName} (${ROLE_NAMES[role]}).`);
+  draft.log.push(t('draft.logPlayerPick', { champ: champName, role: ROLE_NAMES[role] }));
   draft.turnIndex++;
   resolveAiTurnsUntilPlayer();
   saveGame();
@@ -2580,7 +2580,7 @@ function finalizeDraft() {
   const draft = state.draft;
   draft.status = 'done';
   draft.result = computeDraftScore(draft);
-  draft.log.push('Draft terminée.');
+  draft.log.push(t('draft.logDone'));
 
   if (state.matchSeries && state.matchSeries.fearlessMode === 'on') {
     const series = state.matchSeries;
@@ -2609,7 +2609,7 @@ function computeDraftScore(draft) {
     teamComfortScore += Math.round(mastery / 5);
     if (mastery < 25) riskPenalty += 3;
     else if (mastery < 50) riskPenalty += 1;
-    comfortDetails.push(`${player.name} sur ${champName} (maîtrise ${mastery}).`);
+    comfortDetails.push(t('draft.detailComfort', { name: player.name, champ: champName, m: mastery }));
   });
 
   let matchupScore = 0;
@@ -2622,26 +2622,26 @@ function computeDraftScore(draft) {
     const iCounter = getCounterEntry(myChamp.id, enemyChamp.id);     // je contre l'ennemi
     const theyCounter = getCounterEntry(enemyChamp.id, myChamp.id);  // l'ennemi me contre
     if (iCounter || theyCounter) {
-      const fmtTags = (entry) => (entry.matchedTags || []).map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(', ');
+      const fmtTags = (entry) => (entry.matchedTags || []).map(tag => tag.charAt(0).toUpperCase() + tag.slice(1)).join(', ');
       if (iCounter) {
         const suffix = fmtTags(iCounter) ? ` (${fmtTags(iCounter)})` : '';
         matchupScore += 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable${suffix}.`);
+        matchupDetails.push(t('draft.detailFavorable', { role: ROLE_NAMES[role], my: myChamp.name, enemy: enemyChamp.name, suffix }));
       }
       if (theyCounter) {
         const suffix = fmtTags(theyCounter) ? ` (${fmtTags(theyCounter)})` : '';
         matchupScore -= 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable${suffix}.`);
+        matchupDetails.push(t('draft.detailUnfavorable', { role: ROLE_NAMES[role], my: myChamp.name, enemy: enemyChamp.name, suffix }));
       }
     } else {
       // Repli sur les tags (direction corrigée) : je contre l'ennemi si MES counterTags touchent SON profil
-      if (enemyChamp.tags.some((t) => myChamp.counterTags.includes(t))) {
+      if (enemyChamp.tags.some((tag) => myChamp.counterTags.includes(tag))) {
         matchupScore += 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup favorable.`);
+        matchupDetails.push(t('draft.detailFavorable', { role: ROLE_NAMES[role], my: myChamp.name, enemy: enemyChamp.name, suffix: '' }));
       }
-      if (myChamp.tags.some((t) => enemyChamp.counterTags.includes(t))) {
+      if (myChamp.tags.some((tag) => enemyChamp.counterTags.includes(tag))) {
         matchupScore -= 3;
-        matchupDetails.push(`${ROLE_NAMES[role]} : ${myChamp.name} contre ${enemyChamp.name}, matchup defavorable.`);
+        matchupDetails.push(t('draft.detailUnfavorable', { role: ROLE_NAMES[role], my: myChamp.name, enemy: enemyChamp.name, suffix: '' }));
       }
     }
   });
@@ -2689,7 +2689,7 @@ function getDraftCoachAdvice(draft) {
     const report = getScoutingReport(opponent.id);
     if (getScoutingTier(report.confidence) !== 'basic') {
       const target = ((opponent.draftProfile || {}).banPriorities || []).find((c) => !isChampionTaken(draft, c));
-      if (target) advice.push({ type: 'ban', icon: '🛡', label: 'Ban prioritaire', text: `${opponent.shortName} compte sur ${target} dans son plan — ciblez-le.` });
+      if (target) advice.push({ type: 'ban', icon: '🛡', label: t('coach.lbl.banPriority'), text: t('coach.banPriority', { opp: opponent.shortName, champ: target }) });
     }
     // Menace retour : notre meilleur champion pourrait être pris par l'adversaire
     let bestOurs = null;
@@ -2699,16 +2699,16 @@ function getDraftCoachAdvice(draft) {
       if (!bestOurs || m > bestOurs.mastery) bestOurs = { champName: n, mastery: m };
     }));
     if (bestOurs && bestOurs.mastery >= 60) {
-      advice.push({ type: 'threat', icon: '⚠️', label: 'Menace retour', text: `${bestOurs.champName} (maîtrise ${bestOurs.mastery}) vous serait dangereux côté adverse.` });
+      advice.push({ type: 'threat', icon: '⚠️', label: t('coach.lbl.threat'), text: t('coach.threat', { champ: bestOurs.champName, m: bestOurs.mastery }) });
     }
     // Flex pick adverse : alerte uniquement si le champion joue HORS de son rôle principal
     Object.entries(oppPicks).filter(([, v]) => v).forEach(([slot, champName]) => {
       const champ = getChampionByName(champName);
       if (champ && champ.role !== slot) {
-        advice.push({ type: 'flex', icon: '👁', label: 'Flex pick', text: `${champName} joué en ${ROLE_NAMES[slot]} (rôle habituel : ${ROLE_NAMES[champ.role]}) — adaptation tactique adverse.` });
+        advice.push({ type: 'flex', icon: '👁', label: t('coach.lbl.flex'), text: t('coach.flex', { champ: champName, slot: ROLE_NAMES[slot], role: ROLE_NAMES[champ.role] }) });
       }
     });
-    if (advice.length === 0) advice.push({ type: 'info', icon: '📋', label: 'Conseil', text: 'Bannissez un champion clé de leur composition ou un counter-pick dangereux pour votre roster.' });
+    if (advice.length === 0) advice.push({ type: 'info', icon: '📋', label: t('coach.lbl.advice'), text: t('coach.banInfo') });
 
   } else {
     // PICK TURN
@@ -2734,7 +2734,7 @@ function getDraftCoachAdvice(draft) {
         });
       }
       if (best) {
-        advice.push({ type: 'counter', icon: '⚡', label: 'Counter-pick', text: `${best.champName} (maîtrise ${best.mastery}) contrecarre leur ${oppChampName} en ${ROLE_NAMES[role]} — avantage de matchup (score ${best.score}).`, priority: best.score });
+        advice.push({ type: 'counter', icon: '⚡', label: t('coach.lbl.counter'), text: t('coach.counter', { champ: best.champName, m: best.mastery, opp: oppChampName, role: ROLE_NAMES[role], score: best.score }), priority: best.score });
       }
     });
 
@@ -2765,20 +2765,20 @@ function getDraftCoachAdvice(draft) {
     if (proactives.length > 0) {
       proactives.sort((a, b) => b.score - a.score);
       const p = proactives[0];
-      advice.push({ type: 'proactive', icon: '🔥', label: 'Pick proactif', text: `${p.champName} met en difficulté leur ${p.targets.join(' et ')} — pick agressif qui force leur plan.`, priority: p.score });
+      advice.push({ type: 'proactive', icon: '🔥', label: t('coach.lbl.proactive'), text: t('coach.proactive', { champ: p.champName, targets: p.targets.join(' ' + t('common.and') + ' ') }), priority: p.score });
     }
 
     // 3. Analyse composition
     const myTagCounts = {};
     Object.values(myPicks).filter(Boolean).forEach((champName) => {
       const champ = getChampionByName(champName);
-      (champ ? champ.tags : []).forEach((t) => { myTagCounts[t] = (myTagCounts[t] || 0) + 1; });
+      (champ ? champ.tags : []).forEach((tag) => { myTagCounts[tag] = (myTagCounts[tag] || 0) + 1; });
     });
     const pickedCount = Object.values(myPicks).filter(Boolean).length;
     if (pickedCount >= 2) {
-      const missing = ['engage', 'disengage', 'scaling', 'teamfight'].filter((t) => !myTagCounts[t]);
+      const missing = ['engage', 'disengage', 'scaling', 'teamfight'].filter((tag) => !myTagCounts[tag]);
       if (missing.length >= 1 && missing.length <= 2) {
-        advice.push({ type: 'comp', icon: '🧩', label: 'Composition', text: `Votre comp manque de ${missing.map((t) => SCOUT_TAG_LABELS[t] || t).join(' / ')} — anticipez vos prochains picks.` });
+        advice.push({ type: 'comp', icon: '🧩', label: t('coach.lbl.comp'), text: t('coach.comp', { missing: missing.map((tag) => SCOUT_TAG_LABELS[tag] || tag).join(' / ') }) });
       }
     }
 
@@ -2787,7 +2787,7 @@ function getDraftCoachAdvice(draft) {
     if (getScoutingTier(scoutReport.confidence) !== 'basic') {
       const weak = getTeamWeakestRole(opponent);
       if (weak && freeRoles.includes(weak.role)) {
-        advice.push({ type: 'scouting', icon: '📋', label: 'Scouting', text: `Leur ${ROLE_NAMES[weak.role]} (${weak.player.name}, niv. ${weak.score}) est leur point faible — priorisez un pick fort dans ce rôle.` });
+        advice.push({ type: 'scouting', icon: '📋', label: t('coach.lbl.scouting'), text: t('coach.scouting', { role: ROLE_NAMES[weak.role], name: weak.player.name, score: weak.score }) });
       }
     }
 
@@ -2795,7 +2795,7 @@ function getDraftCoachAdvice(draft) {
     Object.entries(oppPicks).filter(([, v]) => v).forEach(([slot, champName]) => {
       const champ = getChampionByName(champName);
       if (champ && champ.role !== slot) {
-        advice.push({ type: 'flex', icon: '👁', label: 'Flex pick', text: `${champName} joué en ${ROLE_NAMES[slot]} (rôle habituel : ${ROLE_NAMES[champ.role]}) — adaptation tactique adverse.` });
+        advice.push({ type: 'flex', icon: '👁', label: t('coach.lbl.flex'), text: t('coach.flex', { champ: champName, slot: ROLE_NAMES[slot], role: ROLE_NAMES[champ.role] }) });
       }
     });
 
@@ -2811,8 +2811,8 @@ function getDraftCoachAdvice(draft) {
           if (!best || m > best.mastery) best = { role, champName: n, mastery: m, playerName: player.name };
         });
       });
-      if (best) advice.push({ type: 'pick', icon: '🎯', label: 'Pick confort', text: `${best.playerName} sur ${best.champName} (${ROLE_NAMES[best.role]}, maîtrise ${best.mastery}).` });
-      else if (freeRoles.length > 0) advice.push({ type: 'info', icon: '📋', label: 'Conseil', text: `Complétez le rôle ${ROLE_NAMES[freeRoles[0]]}, même avec un champion peu maîtrisé pour l'instant.` });
+      if (best) advice.push({ type: 'pick', icon: '🎯', label: t('coach.lbl.pickComfort'), text: t('coach.pickComfort', { name: best.playerName, champ: best.champName, role: ROLE_NAMES[best.role], m: best.mastery }) });
+      else if (freeRoles.length > 0) advice.push({ type: 'info', icon: '📋', label: t('coach.lbl.advice'), text: t('coach.completeRole', { role: ROLE_NAMES[freeRoles[0]] }) });
     }
   }
 
@@ -2835,7 +2835,7 @@ function renderCoachPanel(advice) {
       </div>
     </div>`
   ).join('');
-  return `<div class="coach-panel"><div class="coach-panel__title">🧠 Assistant Coach</div><div class="coach-panel__cards">${cards}</div></div>`;
+  return `<div class="coach-panel"><div class="coach-panel__title">${t('coach.title')}</div><div class="coach-panel__cards">${cards}</div></div>`;
 }
 
 function renderBansRow(draft, side) {
@@ -2932,7 +2932,7 @@ function renderChampionGrid(draft, mode, role, roleFilter, search) {
         // Tooltip : tous les joueurs qui savent jouer ce champion (flex picks inclus).
         const comforts = getAllRosterComforts(c.name);
         const tooltipText = comforts.length
-          ? comforts.map((cf) => `${cf.role} — ${cf.playerName} : maîtrise ${cf.mastery}${cf.mastery < 25 ? ' ⚠ peu maîtrisé' : ` (${cf.tier.label})`}`).join('\n')
+          ? comforts.map((cf) => t('draft.tipComfort', { role: cf.role, name: cf.playerName, m: cf.mastery, extra: cf.mastery < 25 ? t('draft.tipLowMastery') : ` (${masteryTierLabel(cf.tier.id)})` })).join('\n')
           : '';
         // Pas de data-lore-tooltip ici : la carte est un bouton de pick, un clic ne
         // doit pas déclencher à la fois le pick ET un toast. title = hover desktop.
@@ -2956,30 +2956,30 @@ function renderDraft() {
   const draft = state.draft;
   if (!draft) {
     if (state.roster.length === 0) {
-      el.innerHTML = '<div class="empty-state">Constituez votre roster avant de lancer une draft.</div>';
+      el.innerHTML = `<div class="empty-state">${t('draft.empty')}</div>`;
       return;
     }
-    const opponents = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
+    const opponents = getAITeamsForRegion(state.region).filter((team) => team.id !== state.aiTeamId);
     el.innerHTML = `
       <div class="panel">
-        <h3 class="panel-title">Préparer une draft</h3>
+        <h3 class="panel-title">${t('draft.prepTitle')}</h3>
         <div class="training-form">
           <div class="training-form__group">
-            <label>ADVERSAIRE</label>
+            <label>${t('draft.opponentLabel')}</label>
             <select id="draft-opponent">
-              ${opponents.map((t) => `<option value="${t.id}">${t.name} (${t.shortName})</option>`).join('')}
+              ${opponents.map((team) => `<option value="${team.id}">${team.name} (${team.shortName})</option>`).join('')}
             </select>
           </div>
           <div class="training-form__group">
-            <label>VOTRE SIDE</label>
+            <label>${t('draft.sideSelectLabel')}</label>
             <select id="draft-side">
-              <option value="blue">Bleu (premier ban/pick)</option>
-              <option value="red">Rouge (dernier pick)</option>
+              <option value="blue">${t('draft.sideBlue')}</option>
+              <option value="red">${t('draft.sideRed')}</option>
             </select>
           </div>
         </div>
         <div class="training-form__actions">
-          <button class="btn-primary" id="btn-start-draft">Démarrer la draft</button>
+          <button class="btn-primary" id="btn-start-draft">${t('draft.startBtn')}</button>
         </div>
       </div>
     `;
@@ -2996,7 +2996,7 @@ function renderDraft() {
 
   const opponent = getOpponentTeam(draft);
   const turn = currentTurn(draft);
-  const sideLabel = (s) => (s === 'blue' ? 'Bleu' : 'Rouge');
+  const sideLabel = (s) => draftSideLabel(s);
   const isPlayerTurn = draft.status !== 'done' && turn && turn.side === draft.playerSide;
 
   let actionHtml = '';
@@ -3004,22 +3004,22 @@ function renderDraft() {
     const r = draft.result;
     actionHtml = `
       <div class="draft-score-panel">
-        <h3 class="panel-title">Bilan de draft</h3>
-        <div class="draft-score-row"><span>Confort champion</span><span>+${r.teamComfortScore}</span></div>
-        <div class="draft-score-row"><span>Matchups</span><span>${r.matchupScore >= 0 ? '+' : ''}${r.matchupScore}</span></div>
-        <div class="draft-score-row"><span>Composition (${r.synergyTags.length ? r.synergyTags.map((t) => COMP_TAG_LABELS[t] || t).join(', ') : 'aucune synergie forte'})</span><span>+${r.compositionScore}</span></div>
-        <div class="draft-score-row"><span>Side (${sideLabel(draft.mapSide || draft.playerSide)})</span><span>+${r.sideBonus}</span></div>
-        <div class="draft-score-row"><span>Scouting</span><span>+${r.scoutingBonus}</span></div>
-        <div class="draft-score-row"><span>Risque</span><span>-${r.riskPenalty}</span></div>
-        <div class="draft-score-row draft-score-row--total"><span>Score total</span><span>${r.total}</span></div>
+        <h3 class="panel-title">${t('draft.scoreTitle')}</h3>
+        <div class="draft-score-row"><span>${t('draft.scoreComfort')}</span><span>+${r.teamComfortScore}</span></div>
+        <div class="draft-score-row"><span>${t('draft.scoreMatchups')}</span><span>${r.matchupScore >= 0 ? '+' : ''}${r.matchupScore}</span></div>
+        <div class="draft-score-row"><span>${t('draft.scoreComposition')} (${r.synergyTags.length ? r.synergyTags.map((tag) => COMP_TAG_LABELS[tag] || tag).join(', ') : t('draft.noSynergy')})</span><span>+${r.compositionScore}</span></div>
+        <div class="draft-score-row"><span>${t('draft.scoreSide')} (${sideLabel(draft.mapSide || draft.playerSide)})</span><span>+${r.sideBonus}</span></div>
+        <div class="draft-score-row"><span>${t('draft.scoreScouting')}</span><span>+${r.scoutingBonus}</span></div>
+        <div class="draft-score-row"><span>${t('draft.scoreRisk')}</span><span>-${r.riskPenalty}</span></div>
+        <div class="draft-score-row draft-score-row--total"><span>${t('draft.scoreTotal')}</span><span>${r.total}</span></div>
         <div class="scrim-report">
           ${r.comfortDetails.map((d) => `<p>${d}</p>`).join('')}
           ${r.matchupDetails.map((d) => `<p>${d}</p>`).join('')}
         </div>
         <div class="training-form__actions">
           ${state.matchSeries
-            ? '<button class="btn-primary" id="btn-launch-match">Lancer le match</button>'
-            : '<button class="btn-secondary" id="btn-new-draft">Nouvelle draft</button>'}
+            ? `<button class="btn-primary" id="btn-launch-match">${t('draft.launchMatch')}</button>`
+            : `<button class="btn-secondary" id="btn-new-draft">${t('draft.newDraft')}</button>`}
         </div>
       </div>
     `;
@@ -3027,7 +3027,7 @@ function renderDraft() {
     const coachAdvice = getDraftCoachAdvice(draft);
     const coachHtml = renderCoachPanel(coachAdvice);
     const ROLE_FILTERS = [
-      { id: 'ALL', label: 'Tous' },
+      { id: 'ALL', label: t('common.all') },
       { id: 'TOP', label: 'Top' },
       { id: 'JUNGLE', label: 'Jungle' },
       { id: 'MID', label: 'Mid' },
@@ -3035,11 +3035,11 @@ function renderDraft() {
       { id: 'SUPPORT', label: 'Support' }
     ];
     const searchVal = draft._champSearch || '';
-    const searchHtml = `<input type="text" id="draft-search" class="draft-search-input" placeholder="Rechercher…" value="${searchVal.replace(/"/g, '&quot;')}" autocomplete="off">`;
+    const searchHtml = `<input type="text" id="draft-search" class="draft-search-input" placeholder="${escapeAttr(t('draft.searchPlaceholder'))}" value="${searchVal.replace(/"/g, '&quot;')}" autocomplete="off">`;
     if (turn.type === 'ban') {
       const banFilter = draft._banRoleFilter || 'ALL';
       actionHtml = `
-        <div class="draft-turn-banner">A vous : choisissez un ban (${sideLabel(turn.side)}).</div>
+        <div class="draft-turn-banner">${t('draft.turnBan', { side: sideLabel(turn.side) })}</div>
         ${coachHtml}
         <div class="draft-filter-row">
           <div class="draft-role-filter">
@@ -3056,7 +3056,7 @@ function renderDraft() {
         ? pickFilter
         : (draft._pendingRole && roles.includes(draft._pendingRole) ? draft._pendingRole : roles[0]);
       actionHtml = `
-        <div class="draft-turn-banner">A vous : choisissez un pick pour ${ROLE_NAMES[activeRole]} (${sideLabel(turn.side)}).</div>
+        <div class="draft-turn-banner">${t('draft.turnPick', { role: ROLE_NAMES[activeRole], side: sideLabel(turn.side) })}</div>
         ${coachHtml}
         <div class="draft-filter-row">
           <div class="draft-role-filter">
@@ -3068,16 +3068,19 @@ function renderDraft() {
       `;
     }
   } else {
-    actionHtml = `<div class="draft-turn-banner">Tour de ${sideLabel(turn ? turn.side : '')} (IA)...</div>`;
+    actionHtml = `<div class="draft-turn-banner">${t('draft.turnAi', { side: sideLabel(turn ? turn.side : '') })}</div>`;
   }
 
   const seriesLabel = state.matchSeries
-    ? ` &mdash; ${state.matchSeries.format} Game ${state.matchSeries.gameNumber} (score ${state.matchSeries.scoreFor}-${state.matchSeries.scoreAgainst})`
+    ? t('draft.seriesLabel', { fmt: state.matchSeries.format, n: state.matchSeries.gameNumber, a: state.matchSeries.scoreFor, b: state.matchSeries.scoreAgainst })
     : '';
+  const pickOrder = draft.playerSide === 'blue' ? 'First Pick' : 'Last Pick';
+  const whoFirst = draft.playerSide === 'blue' ? `(${t('common.you')})` : `(${opponent.shortName})`;
+  const whoLast = draft.playerSide === 'red' ? `(${t('common.you')})` : `(${opponent.shortName})`;
 
   el.innerHTML = `
     <div class="panel">
-      <h3 class="panel-title">Draft vs ${opponent.name} &mdash; ${sideLabel(draft.mapSide || draft.playerSide)} / ${draft.playerSide === 'blue' ? 'First Pick' : 'Last Pick'}${seriesLabel}</h3>
+      <h3 class="panel-title">${t('draft.vsTitle', { opp: opponent.name, side: sideLabel(draft.mapSide || draft.playerSide), pickOrder })}${seriesLabel}</h3>
       <div class="draft-bans">
         <div class="draft-bans__team">
           <span class="draft-bans__label">Bans First Pick</span>
@@ -3090,24 +3093,24 @@ function renderDraft() {
       </div>
       <div class="draft-board">
         <div class="draft-team-column">
-          <h4>First Pick ${draft.playerSide === 'blue' ? '(Vous)' : `(${opponent.shortName})`}</h4>
+          <h4>${t('draft.colFirst', { who: whoFirst })}</h4>
           ${renderPicksColumn(draft, 'blue')}
         </div>
         <div class="draft-team-column">
-          <h4>Last Pick ${draft.playerSide === 'red' ? '(Vous)' : `(${opponent.shortName})`}</h4>
+          <h4>${t('draft.colLast', { who: whoLast })}</h4>
           ${renderPicksColumn(draft, 'red')}
         </div>
       </div>
       ${actionHtml}
     </div>
     <div class="panel">
-      <h3 class="panel-title">Scouting ${opponent.shortName}</h3>
+      <h3 class="panel-title">${t('draft.scoutingTitle', { team: opponent.shortName })}</h3>
       ${buildScoutingReportBody(opponent)}
     </div>
     <div class="panel">
-      <h3 class="panel-title">Journal de draft</h3>
+      <h3 class="panel-title">${t('draft.journalTitle')}</h3>
       <div class="scrim-report">
-        ${draft.log.length ? draft.log.slice().reverse().map((l) => `<p>${l}</p>`).join('') : '<p>Aucun événement.</p>'}
+        ${draft.log.length ? draft.log.slice().reverse().map((l) => `<p>${l}</p>`).join('') : `<p>${t('draft.noEvent')}</p>`}
       </div>
     </div>
   `;
@@ -6861,7 +6864,7 @@ function renderTransferCard(c, budget) {
     : (c.championPool || []).map(ch => ({ champion: ch, score: 0 }));
   const poolHtml = comforts.slice(0, 5).map(cf => {
     const tier = getMasteryTier(cf.score || 0);
-    return `<span class="champion-chip champion-chip--${tier.id}" title="${escapeAttr(tier.label)}">${cf.champion}${cf.score ? ` <span class="champion-chip__mastery">${cf.score}</span>` : ''}</span>`;
+    return `<span class="champion-chip champion-chip--${tier.id}" title="${escapeAttr(masteryTierLabel(tier.id))}">${cf.champion}${cf.score ? ` <span class="champion-chip__mastery">${cf.score}</span>` : ''}</span>`;
   }).join('');
 
   return `

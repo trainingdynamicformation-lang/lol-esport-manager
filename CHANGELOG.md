@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.10] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 3 (lot 6 : Draft + Assistant Coach)
+
+- **Écran de draft** : formulaire de préparation (adversaire, side), bannières de tour (ban/pick/IA), filtres de rôle, recherche, colonnes First/Last Pick, bilan de draft (confort, matchups, composition, side, scouting, risque, total), journal de draft.
+- **Assistant Coach** : tous les conseils traduits (counter-pick, pick proactif, ban prioritaire, menace retour, composition, scouting, flex pick, pick confort) — régénérés dans la langue active à chaque tour.
+- **Journal de draft** et **détails de matchup** traduits à la génération.
+- **Tiers de maîtrise** (`MASTERY_TIERS` : Découverte/Praticable/Confort/Signature/Élite) traduits — bénéficie aussi aux tooltips du roster et du marché des transferts. Nouveaux helpers `draftSideLabel()`, `masteryTierLabel()`.
+
+---
+
 ## [1.12.9] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 5 : Entraînement)

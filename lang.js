@@ -514,6 +514,83 @@ const I18N = {
     'train.gainMacro': "Travail macro/objectifs : +{total} shotcalling cumulé sur l'équipe.",
     'train.gainFree': "Scrim libre {result} : forme d'équipe {delta}.",
 
+    // -- Commun (suite 3) --
+    'common.and': 'et',
+    'side.blue': 'Bleu',
+    'side.red': 'Rouge',
+
+    // -- Écran Draft --
+    'draft.empty': 'Constituez votre roster avant de lancer une draft.',
+    'draft.prepTitle': 'Préparer une draft',
+    'draft.opponentLabel': 'ADVERSAIRE',
+    'draft.sideSelectLabel': 'VOTRE SIDE',
+    'draft.sideBlue': 'Bleu (premier ban/pick)',
+    'draft.sideRed': 'Rouge (dernier pick)',
+    'draft.startBtn': 'Démarrer la draft',
+    'draft.scoreTitle': 'Bilan de draft',
+    'draft.scoreComfort': 'Confort champion',
+    'draft.scoreMatchups': 'Matchups',
+    'draft.scoreComposition': 'Composition',
+    'draft.noSynergy': 'aucune synergie forte',
+    'draft.scoreSide': 'Side',
+    'draft.scoreScouting': 'Scouting',
+    'draft.scoreRisk': 'Risque',
+    'draft.scoreTotal': 'Score total',
+    'draft.launchMatch': 'Lancer le match',
+    'draft.newDraft': 'Nouvelle draft',
+    'draft.turnBan': 'À vous : choisissez un ban ({side}).',
+    'draft.turnPick': 'À vous : choisissez un pick pour {role} ({side}).',
+    'draft.turnAi': 'Tour de {side} (IA)...',
+    'draft.searchPlaceholder': 'Rechercher…',
+    'draft.vsTitle': 'Draft vs {opp} — {side} / {pickOrder}',
+    'draft.seriesLabel': ' — {fmt} Game {n} (score {a}-{b})',
+    'draft.colFirst': 'First Pick {who}',
+    'draft.colLast': 'Last Pick {who}',
+    'draft.journalTitle': 'Journal de draft',
+    'draft.noEvent': 'Aucun événement.',
+    'draft.scoutingTitle': 'Scouting {team}',
+
+    // -- Journal de draft (généré) --
+    'draft.logAiBan': '{side} (IA) bannit {champ}.',
+    'draft.logAiPick': '{side} (IA) a sélectionné {champ} ({role}).',
+    'draft.logPlayerBan': 'Vous bannissez {champ}.',
+    'draft.logPlayerPick': 'Vous sélectionnez {champ} ({role}).',
+    'draft.logDone': 'Draft terminée.',
+    'draft.detailComfort': '{name} sur {champ} (maîtrise {m}).',
+    'draft.detailFavorable': '{role} : {my} contre {enemy}, matchup favorable{suffix}.',
+    'draft.detailUnfavorable': '{role} : {my} contre {enemy}, matchup défavorable{suffix}.',
+
+    // -- Assistant Coach --
+    'coach.title': '🧠 Assistant Coach',
+    'coach.lbl.banPriority': 'Ban prioritaire',
+    'coach.lbl.threat': 'Menace retour',
+    'coach.lbl.flex': 'Flex pick',
+    'coach.lbl.advice': 'Conseil',
+    'coach.lbl.counter': 'Counter-pick',
+    'coach.lbl.proactive': 'Pick proactif',
+    'coach.lbl.comp': 'Composition',
+    'coach.lbl.scouting': 'Scouting',
+    'coach.lbl.pickComfort': 'Pick confort',
+    'coach.banPriority': '{opp} compte sur {champ} dans son plan — ciblez-le.',
+    'coach.threat': '{champ} (maîtrise {m}) vous serait dangereux côté adverse.',
+    'coach.flex': '{champ} joué en {slot} (rôle habituel : {role}) — adaptation tactique adverse.',
+    'coach.banInfo': 'Bannissez un champion clé de leur composition ou un counter-pick dangereux pour votre roster.',
+    'coach.counter': '{champ} (maîtrise {m}) contrecarre leur {opp} en {role} — avantage de matchup (score {score}).',
+    'coach.proactive': '{champ} met en difficulté leur {targets} — pick agressif qui force leur plan.',
+    'coach.comp': 'Votre comp manque de {missing} — anticipez vos prochains picks.',
+    'coach.scouting': 'Leur {role} ({name}, niv. {score}) est leur point faible — priorisez un pick fort dans ce rôle.',
+    'coach.pickComfort': '{name} sur {champ} ({role}, maîtrise {m}).',
+    'coach.completeRole': "Complétez le rôle {role}, même avec un champion peu maîtrisé pour l'instant.",
+    'draft.tipComfort': '{role} — {name} : maîtrise {m}{extra}',
+    'draft.tipLowMastery': ' ⚠ peu maîtrisé',
+
+    // -- Tiers de maîtrise --
+    'masteryTier.decouverte': 'Découverte',
+    'masteryTier.praticable': 'Praticable',
+    'masteryTier.confort': 'Confort',
+    'masteryTier.signature': 'Signature',
+    'masteryTier.elite': 'Élite',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -1024,6 +1101,83 @@ const I18N = {
     'train.gainMacro': 'Macro/objectives work: +{total} shotcalling accumulated across the team.',
     'train.gainFree': 'Free scrim {result}: team form {delta}.',
 
+    // -- Common (cont.) --
+    'common.and': 'and',
+    'side.blue': 'Blue',
+    'side.red': 'Red',
+
+    // -- Draft screen --
+    'draft.empty': 'Build your roster before starting a draft.',
+    'draft.prepTitle': 'Prepare a draft',
+    'draft.opponentLabel': 'OPPONENT',
+    'draft.sideSelectLabel': 'YOUR SIDE',
+    'draft.sideBlue': 'Blue (first ban/pick)',
+    'draft.sideRed': 'Red (last pick)',
+    'draft.startBtn': 'Start the draft',
+    'draft.scoreTitle': 'Draft summary',
+    'draft.scoreComfort': 'Champion comfort',
+    'draft.scoreMatchups': 'Matchups',
+    'draft.scoreComposition': 'Composition',
+    'draft.noSynergy': 'no strong synergy',
+    'draft.scoreSide': 'Side',
+    'draft.scoreScouting': 'Scouting',
+    'draft.scoreRisk': 'Risk',
+    'draft.scoreTotal': 'Total score',
+    'draft.launchMatch': 'Launch the match',
+    'draft.newDraft': 'New draft',
+    'draft.turnBan': 'Your turn: choose a ban ({side}).',
+    'draft.turnPick': 'Your turn: choose a pick for {role} ({side}).',
+    'draft.turnAi': '{side} turn (AI)...',
+    'draft.searchPlaceholder': 'Search…',
+    'draft.vsTitle': 'Draft vs {opp} — {side} / {pickOrder}',
+    'draft.seriesLabel': ' — {fmt} Game {n} (score {a}-{b})',
+    'draft.colFirst': 'First Pick {who}',
+    'draft.colLast': 'Last Pick {who}',
+    'draft.journalTitle': 'Draft log',
+    'draft.noEvent': 'No event.',
+    'draft.scoutingTitle': 'Scouting {team}',
+
+    // -- Draft log (generated) --
+    'draft.logAiBan': '{side} (AI) bans {champ}.',
+    'draft.logAiPick': '{side} (AI) picked {champ} ({role}).',
+    'draft.logPlayerBan': 'You ban {champ}.',
+    'draft.logPlayerPick': 'You pick {champ} ({role}).',
+    'draft.logDone': 'Draft complete.',
+    'draft.detailComfort': '{name} on {champ} (mastery {m}).',
+    'draft.detailFavorable': '{role}: {my} vs {enemy}, favorable matchup{suffix}.',
+    'draft.detailUnfavorable': '{role}: {my} vs {enemy}, unfavorable matchup{suffix}.',
+
+    // -- Coaching Assistant --
+    'coach.title': '🧠 Coaching Assistant',
+    'coach.lbl.banPriority': 'Priority ban',
+    'coach.lbl.threat': 'Return threat',
+    'coach.lbl.flex': 'Flex pick',
+    'coach.lbl.advice': 'Advice',
+    'coach.lbl.counter': 'Counter-pick',
+    'coach.lbl.proactive': 'Proactive pick',
+    'coach.lbl.comp': 'Composition',
+    'coach.lbl.scouting': 'Scouting',
+    'coach.lbl.pickComfort': 'Comfort pick',
+    'coach.banPriority': '{opp} is counting on {champ} in their plan — target it.',
+    'coach.threat': '{champ} (mastery {m}) would be dangerous for you on the enemy side.',
+    'coach.flex': '{champ} played in {slot} (usual role: {role}) — enemy tactical adaptation.',
+    'coach.banInfo': 'Ban a key champion from their composition or a dangerous counter-pick for your roster.',
+    'coach.counter': '{champ} (mastery {m}) counters their {opp} in {role} — matchup advantage (score {score}).',
+    'coach.proactive': '{champ} troubles their {targets} — an aggressive pick that forces their plan.',
+    'coach.comp': 'Your comp lacks {missing} — anticipate your next picks.',
+    'coach.scouting': 'Their {role} ({name}, lvl {score}) is their weak point — prioritize a strong pick in this role.',
+    'coach.pickComfort': '{name} on {champ} ({role}, mastery {m}).',
+    'coach.completeRole': 'Fill the {role} role, even with a low-mastery champion for now.',
+    'draft.tipComfort': '{role} — {name}: mastery {m}{extra}',
+    'draft.tipLowMastery': ' ⚠ low mastery',
+
+    // -- Mastery tiers --
+    'masteryTier.decouverte': 'Discovery',
+    'masteryTier.praticable': 'Workable',
+    'masteryTier.confort': 'Comfort',
+    'masteryTier.signature': 'Signature',
+    'masteryTier.elite': 'Elite',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
@@ -1072,6 +1226,18 @@ function statLabel(key) {
   const k = 'statLabel.' + key;
   const val = t(k);
   return val === k ? key : val;
+}
+
+// Libellé traduit d'un side de draft ('blue' / 'red').
+function draftSideLabel(s) {
+  return t(s === 'blue' ? 'side.blue' : 'side.red');
+}
+
+// Libellé traduit d'un tier de maîtrise (decouverte, ...).
+function masteryTierLabel(id) {
+  const key = 'masteryTier.' + id;
+  const val = t(key);
+  return val === key ? id : val;
 }
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.
