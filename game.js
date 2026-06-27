@@ -1056,19 +1056,19 @@ function buildObjectiveCardHtml(objectiveId, def) {
       `<span class="obj-dot ${i <= n ? 'obj-dot--on' : 'obj-dot--off'}">●</span>`
     ).join('');
   };
-  const gainsHtml = (guide.gains || []).map((g) =>
-    `<span class="obj-card__gain">${g.label} <span class="obj-dots">${dotsHtml(g.dots)}</span></span>`
+  const gainsHtml = (guide.gains || []).map((g, i) =>
+    `<span class="obj-card__gain">${t('scrim.guide.' + objectiveId + '.gain' + (i + 1))} <span class="obj-dots">${dotsHtml(g.dots)}</span></span>`
   ).join('');
 
   return `<div class="obj-card">
     <div class="obj-card__header">
       <span class="obj-card__icon">${guide.icon || ''}</span>
-      <span class="obj-card__name">${def.label}</span>
+      <span class="obj-card__name">${scrimObjLabel(objectiveId)}</span>
     </div>
-    <p class="obj-card__desc">${def.description}</p>
-    ${guide.gains ? `<div class="obj-card__row"><span class="obj-card__row-label">Développe</span><div class="obj-card__gain-list">${gainsHtml}</div></div>` : ''}
-    ${guide.best ? `<div class="obj-card__row obj-card__row--best"><span class="obj-card__row-icon">⚡</span><span>${guide.best}</span></div>` : ''}
-    ${guide.warning ? `<div class="obj-card__row obj-card__row--warn"><span class="obj-card__row-icon">⚠</span><span>${guide.warning}</span></div>` : ''}
+    <p class="obj-card__desc">${t('scrim.obj.' + objectiveId + '.desc')}</p>
+    ${guide.gains ? `<div class="obj-card__row"><span class="obj-card__row-label">${t('train.develops')}</span><div class="obj-card__gain-list">${gainsHtml}</div></div>` : ''}
+    ${guide.gains ? `<div class="obj-card__row obj-card__row--best"><span class="obj-card__row-icon">⚡</span><span>${t('scrim.guide.' + objectiveId + '.best')}</span></div>` : ''}
+    ${guide.gains ? `<div class="obj-card__row obj-card__row--warn"><span class="obj-card__row-icon">⚠</span><span>${t('scrim.guide.' + objectiveId + '.warn')}</span></div>` : ''}
   </div>`;
 }
 
@@ -1077,11 +1077,11 @@ function showObjectiveGuideModal() {
     `<div class="obj-guide-entry">${buildObjectiveCardHtml(o.id, o)}</div>`
   ).join('');
   showModal(`
-    <h3 class="panel-title">Guide des objectifs d'entraînement</h3>
-    <p style="color:var(--color-text-muted);font-size:13px;margin:0 0 16px;">Chaque objectif de scrim cible des aspects différents du jeu. Variez-les pour un développement équilibré.</p>
+    <h3 class="panel-title">${t('train.guideTitle')}</h3>
+    <p style="color:var(--color-text-muted);font-size:13px;margin:0 0 16px;">${t('train.guideIntro')}</p>
     <div class="obj-guide-grid">${cards}</div>
     <div class="modal-content__actions" style="margin-top:20px;">
-      <button class="btn-primary" onclick="closeModal();">Fermer</button>
+      <button class="btn-primary" onclick="closeModal();">${t('common.close')}</button>
     </div>
   `);
 }
@@ -1345,20 +1345,20 @@ function pickStrongLink(statKeys) {
 
 function buildScrimReport(plan, opponent, win, before, after) {
   const lines = [];
-  const objLabel = (SCRIM_OBJECTIVES.find((o) => o.id === plan.objective) || {}).label || plan.objective;
-  lines.push(`Scrim ${win ? 'remporte' : 'perdu'} contre ${opponent.name} (${objLabel}).`);
+  const objLabel = scrimObjLabel(plan.objective);
+  lines.push(t('train.reportResult', { result: win ? t('train.won') : t('train.lost'), opp: opponent.name, obj: objLabel }));
 
   const focusStats = OBJECTIVE_STAT_FOCUS[plan.objective] || OBJECTIVE_STAT_FOCUS.free_scrim;
 
   if (!win) {
     const weak = pickWeakLink(focusStats);
     if (weak) {
-      lines.push(`Analyse : ${weak.player.name} a montre des difficultés en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la défaite.`);
+      lines.push(t('train.reportAnalysisLoss', { name: weak.player.name, stat: statLabel(weak.statKey), val: weak.value }));
     }
   } else {
     const strong = pickStrongLink(focusStats);
     if (strong) {
-      lines.push(`Analyse : ${strong.player.name} a porte l'équipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
+      lines.push(t('train.reportAnalysisWin', { name: strong.player.name, stat: statLabel(strong.statKey), val: strong.value }));
     }
   }
 
@@ -1369,9 +1369,9 @@ function buildScrimReport(plan, opponent, win, before, after) {
       const currentVal = after[player.id][lastWeak.statKey];
       const delta = currentVal - lastWeak.value;
       if (delta > 0) {
-        lines.push(`Suivi : depuis le dernier debrief, ${player.name} a progresse en ${STAT_LABELS[lastWeak.statKey]} (${lastWeak.value} -> ${currentVal}, +${delta}). L'entraînement ciblé porte ses fruits.`);
+        lines.push(t('train.reportFollowUp', { name: player.name, stat: statLabel(lastWeak.statKey), old: lastWeak.value, cur: currentVal, delta }));
       } else {
-        lines.push(`Suivi : ${player.name} reste a ${currentVal}/100 en ${STAT_LABELS[lastWeak.statKey]}, aucune amélioration nette depuis le dernier debrief malgre cet entraînement ciblé.`);
+        lines.push(t('train.reportFollowUpNone', { name: player.name, cur: currentVal, stat: statLabel(lastWeak.statKey) }));
       }
     }
   }
@@ -1379,15 +1379,15 @@ function buildScrimReport(plan, opponent, win, before, after) {
   const deltaLines = [];
   state.roster.forEach((p) => {
     const b = before[p.id], a = after[p.id];
-    Object.keys(STAT_LABELS).forEach((key) => {
+    ['shotcalling', 'laning', 'teamfight', 'mechanics', 'mental', 'form'].forEach((key) => {
       if (a[key] !== b[key]) {
         const diff = a[key] - b[key];
-        deltaLines.push(`${p.name} : ${STAT_LABELS[key]} ${diff > 0 ? '+' : ''}${diff} (${b[key]} -> ${a[key]})`);
+        deltaLines.push(t('train.reportDeltaLine', { name: p.name, stat: statLabel(key), sign: diff > 0 ? '+' : '', diff, old: b[key], new: a[key] }));
       }
     });
   });
   if (deltaLines.length) {
-    lines.push('Evolution des stats :');
+    lines.push(t('train.reportEvolution'));
     lines.push(...deltaLines);
   }
 
@@ -1408,43 +1408,34 @@ function buildScrimReport(plan, opponent, win, before, after) {
 
 function showScrimRefusalModal(opponent, required, costSpent, currentPrestige) {
   showModal(`
-    <h3 class="panel-title" style="color:var(--color-danger, #e05);">&#10007; Demande de scrim refusée</h3>
+    <h3 class="panel-title" style="color:var(--color-danger, #e05);">${t('train.refusalTitle')}</h3>
     <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
-      <p style="color:var(--color-text);">
-        <strong>${opponent.name}</strong> a refusé votre demande de scrim.
-      </p>
+      <p style="color:var(--color-text);">${t('train.refusalDesc', { name: opponent.name })}</p>
       <div style="background:var(--color-surface-alt);border:1px solid var(--color-border);border-radius:6px;padding:12px 14px;">
         <p style="color:var(--color-text-muted);margin:0 0 6px;">
-          &#127942; Prestige requis : <strong style="color:var(--color-gold);">${required}</strong>
-          &nbsp;|&nbsp; Votre prestige : <strong style="color:${currentPrestige >= required ? 'var(--color-seafoam)' : '#e05'};">${currentPrestige}</strong>
+          &#127942; ${t('train.refusalReqLabel')} <strong style="color:var(--color-gold);">${required}</strong>
+          &nbsp;|&nbsp; ${t('train.refusalYourLabel')} <strong style="color:${currentPrestige >= required ? 'var(--color-seafoam)' : '#e05'};">${currentPrestige}</strong>
         </p>
-        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">
-          L'organisation <em>${opponent.name}</em> estime que votre réputation n'est pas encore suffisante pour justifier un scrim.
-          Terminez des splits et des tournois internationaux pour gagner en prestige.
-        </p>
+        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">${t('train.refusalReason', { name: opponent.name })}</p>
       </div>
       <div style="background:var(--color-surface-alt);border:1px solid var(--color-border);border-radius:6px;padding:12px 14px;">
-        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">
-          &#128464; <strong style="color:var(--color-text);">−${costSpent} pts de coaching consommés.</strong>
-          Votre staff avait mobilisé les ressources nécessaires pour préparer cette demande.
-          La sollicitation d'une organisation de ce standing sans le prestige requis est considérée comme un manque de préparation.
-        </p>
+        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">&#128464; ${t('train.refusalCost', { cost: costSpent })}</p>
       </div>
     </div>
     <div class="modal-content__actions" style="margin-top:20px;">
-      <button class="btn-primary" onclick="closeModal();renderTraining();">Compris</button>
+      <button class="btn-primary" onclick="closeModal();renderTraining();">${t('common.understood')}</button>
     </div>
   `);
 }
 
 function showScrimReportModal(report) {
   showModal(`
-    <h3 class="panel-title">Compte-rendu du scrim</h3>
+    <h3 class="panel-title">${t('train.reportTitle')}</h3>
     <div class="scrim-report">
-      ${report.map((line) => `<p>${line}</p>`).join('')}
+      ${report.map((line) => `<p>${typeof line === 'object' ? logChip(line) : line}</p>`).join('')}
     </div>
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-close-scrim-report">Fermer</button>
+      <button class="btn-primary" id="btn-close-scrim-report">${t('common.close')}</button>
     </div>
   `);
   const btn = document.getElementById('btn-close-scrim-report');
@@ -1954,57 +1945,57 @@ function renderTraining() {
   if (!el) return;
 
   if (state.roster.length === 0) {
-    el.innerHTML = '<div class="empty-state">Constituez votre roster avant de planifier un entraînement.</div>';
+    el.innerHTML = `<div class="empty-state">${t('train.empty')}</div>`;
     return;
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">Planifier un scrim</h3>
+    <h3 class="panel-title">${t('train.planTitle')}</h3>
     <div class="training-form">
       <div class="training-form__group">
         <div class="training-form__label-row">
-          <label for="scrim-objective">Objectif</label>
-          <button type="button" class="btn-obj-guide" id="btn-obj-guide">&#x3F; Guide</button>
+          <label for="scrim-objective">${t('train.objective')}</label>
+          <button type="button" class="btn-obj-guide" id="btn-obj-guide">${t('train.guideBtn')}</button>
         </div>
         <select id="scrim-objective">
-          ${SCRIM_OBJECTIVES.map((o) => `<option value="${o.id}">${o.label}</option>`).join('')}
+          ${SCRIM_OBJECTIVES.map((o) => `<option value="${o.id}">${scrimObjLabel(o.id)}</option>`).join('')}
         </select>
         <div id="scrim-objective-description"></div>
       </div>
 
       <div class="training-form__group">
-        <label for="scrim-region">Region adverse</label>
+        <label for="scrim-region">${t('train.regionLabel')}</label>
         <select id="scrim-region">
           ${REGIONS.map((r) => `<option value="${r.id}" ${r.id === state.region ? 'selected' : ''}>${r.name}</option>`).join('')}
         </select>
       </div>
 
       <div class="training-form__group">
-        <label for="scrim-opponent">Adversaire</label>
+        <label for="scrim-opponent">${t('train.opponent')}</label>
         <select id="scrim-opponent"></select>
       </div>
 
       <div class="training-form__group">
-        <label for="scrim-intensity">Intensite</label>
+        <label for="scrim-intensity">${t('train.intensity')}</label>
         <select id="scrim-intensity">
-          ${SCRIM_INTENSITIES.map((i) => `<option value="${i.id}">${i.label} (cout ${i.cost} pts)</option>`).join('')}
+          ${SCRIM_INTENSITIES.map((i) => `<option value="${i.id}">${t('train.intensityOpt', { label: scrimIntensityLabel(i.id), cost: i.cost })}</option>`).join('')}
         </select>
       </div>
 
       <div class="training-form__group" id="scrim-focus-player-group">
-        <label for="scrim-focus-player">Joueur ciblé</label>
+        <label for="scrim-focus-player">${t('train.focusPlayer')}</label>
         <select id="scrim-focus-player">
           ${state.roster.map((p) => `<option value="${p.id}">${p.name} (${p.role})</option>`).join('')}
         </select>
       </div>
 
       <div class="training-form__group" id="scrim-focus-champion-group">
-        <label for="scrim-focus-champion">Champion ciblé</label>
+        <label for="scrim-focus-champion">${t('train.focusChampion')}</label>
         <select id="scrim-focus-champion"></select>
       </div>
 
       <div class="training-form__group training-form__group--full" id="scrim-comp-tags-group">
-        <label>Style de composition</label>
+        <label>${t('train.compStyle')}</label>
         <div class="comp-tag-list">
           ${COMP_TAGS.map((tag) => `
             <label class="comp-tag-option">
@@ -2016,11 +2007,11 @@ function renderTraining() {
       </div>
     </div>
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-run-scrim">Lancer le scrim</button>
+      <button class="btn-primary" id="btn-run-scrim">${t('train.runScrim')}</button>
       <span class="card__count" id="scrim-cost-label"></span>
     </div>
 
-    <h3 class="panel-title" style="margin-top:24px;">Historique des scrims</h3>
+    <h3 class="panel-title" style="margin-top:24px;">${t('train.historyTitle')}</h3>
     <div id="scrim-history-wrapper"></div>
   `;
 
@@ -2038,19 +2029,19 @@ function setupTrainingFormHandlers() {
 
   function updateOpponentOptions() {
     const playerAiRegion = (REGIONS.find(r => r.id === state.region) || {}).aiRegion;
-    const opponents = getAITeamsForRegion(regionSelect.value).filter((t) => t.id !== state.aiTeamId);
-    opponentSelect.innerHTML = opponents.map((t) => {
-      const isSameRegion = t.region === playerAiRegion;
-      const req = getScrimPrestigeReq(t.tier);
+    const opponents = getAITeamsForRegion(regionSelect.value).filter((team) => team.id !== state.aiTeamId);
+    opponentSelect.innerHTML = opponents.map((team) => {
+      const isSameRegion = team.region === playerAiRegion;
+      const req = getScrimPrestigeReq(team.tier);
       const hasPrestige = state.resources.prestige >= req;
-      const exemption = getScrimExemptionReason(t);
+      const exemption = getScrimExemptionReason(team);
       let suffix = '';
       if (!isSameRegion && req > 0 && !exemption) {
-        suffix = hasPrestige ? ` ✓ Prestige OK (${req})` : ` ⚠ Prestige requis : ${req}`;
+        suffix = hasPrestige ? t('train.prestigeOk', { req }) : t('train.prestigeReq', { req });
       } else if (!isSameRegion && exemption) {
-        suffix = ' ★ Même compétition';
+        suffix = t('train.sameComp');
       }
-      return `<option value="${t.id}">${t.name} (${t.shortName})${suffix}</option>`;
+      return `<option value="${team.id}">${team.name} (${team.shortName})${suffix}</option>`;
     }).join('');
   }
 
@@ -2074,7 +2065,7 @@ function setupTrainingFormHandlers() {
     const candidates = getChampionsForRole(player.role);
     champSelect.innerHTML = candidates.map((c) => {
       const mastery = getChampionMastery(player.id, c.name);
-      const label = mastery ? `${c.name} (maîtrise ${mastery.mastery})` : `${c.name} (nouveau)`;
+      const label = mastery ? t('train.champMastery', { name: c.name, m: mastery.mastery }) : t('train.champNew', { name: c.name });
       return `<option value="${c.id}">${label}</option>`;
     }).join('');
   }
@@ -2082,7 +2073,7 @@ function setupTrainingFormHandlers() {
   function updateCostLabel() {
     const intensity = SCRIM_INTENSITIES.find((i) => i.id === intensitySelect.value);
     document.getElementById('scrim-cost-label').textContent =
-      `Coût : ${intensity.cost} points de coaching (disponible : ${state.resources.coachingPoints})`;
+      t('train.cost', { cost: intensity.cost, avail: state.resources.coachingPoints });
   }
 
   objectiveSelect.addEventListener('change', updateObjectiveVisibility);
@@ -2117,27 +2108,27 @@ function renderScrimHistory() {
   if (!wrapper) return;
 
   if (state.scrims.history.length === 0) {
-    wrapper.innerHTML = '<div class="empty-state">Aucun scrim joue pour le moment.</div>';
+    wrapper.innerHTML = `<div class="empty-state">${t('train.emptyHistory')}</div>`;
     return;
   }
 
   wrapper.innerHTML = `
     <table class="history-table">
       <thead>
-        <tr><th>Adversaire</th><th>Objectif</th><th>Intensite</th><th>Résultat</th><th>Gains</th><th>CR</th></tr>
+        <tr><th>${t('train.colOpponent')}</th><th>${t('train.colObjective')}</th><th>${t('train.colIntensity')}</th><th>${t('train.colResult')}</th><th>${t('train.colGains')}</th><th>${t('train.colReport')}</th></tr>
       </thead>
       <tbody>
         ${state.scrims.history.map((s, index) => {
-          const objLabel = (SCRIM_OBJECTIVES.find((o) => o.id === s.objective) || {}).label || s.objective;
-          const intLabel = (SCRIM_INTENSITIES.find((i) => i.id === s.intensity) || {}).label || s.intensity;
+          const objLabel = scrimObjLabel(s.objective);
+          const intLabel = scrimIntensityLabel(s.intensity);
           return `
             <tr>
               <td>${s.opponentName}</td>
               <td>${objLabel}</td>
               <td>${intLabel}</td>
-              <td><span class="result-tag ${s.win ? 'result-tag--win' : 'result-tag--loss'}">${s.win ? 'Victoire' : 'Défaite'}</span></td>
-              <td>${s.summary}</td>
-              <td>${s.report ? `<button class="btn-secondary btn-view-report" data-history-index="${index}">Voir CR</button>` : ''}</td>
+              <td><span class="result-tag ${s.win ? 'result-tag--win' : 'result-tag--loss'}">${s.win ? t('log.win') : t('log.loss')}</span></td>
+              <td>${typeof s.summary === 'object' ? logChip(s.summary) : (s.summary || '')}</td>
+              <td>${s.report ? `<button class="btn-secondary btn-view-report" data-history-index="${index}">${t('train.viewReport')}</button>` : ''}</td>
             </tr>
           `;
         }).join('')}
@@ -2160,12 +2151,12 @@ function runScrim(plan) {
   const intensity = SCRIM_INTENSITIES.find((i) => i.id === plan.intensity);
   const opponent = getTeamRef(plan.opponentTeamId);
   if (!intensity || !opponent) {
-    showToast('Configuration de scrim invalide.', 'error');
+    showToast(t('train.toastInvalid'), 'error');
     return;
   }
 
   if (state.resources.coachingPoints < intensity.cost) {
-    showToast('Pas assez de points de coaching pour ce scrim.', 'error');
+    showToast(t('train.toastNoCoaching'), 'error');
     return;
   }
 
@@ -2185,7 +2176,7 @@ function runScrim(plan) {
   }
 
   if (exemptionReason) {
-    showToast(`${opponent.name} a accepté votre demande : ${exemptionReason}.`, 'info');
+    showToast(t('train.toastAccepted', { name: opponent.name, reason: exemptionReason }), 'info');
   }
   // --- Fin vérification prestige ---
 
@@ -2220,7 +2211,7 @@ function runScrim(plan) {
   saveGame();
   updateResourceBar();
   renderTraining();
-  showToast(win ? `Scrim gagne contre ${opponent.name} !` : `Scrim perdu contre ${opponent.name}.`, win ? 'success' : 'info');
+  showToast(win ? t('train.toastWin', { name: opponent.name }) : t('train.toastLoss', { name: opponent.name }), win ? 'success' : 'info');
   showScrimReportModal(report);
 }
 
@@ -2245,7 +2236,7 @@ function applyScrimObjective(plan, opponent, intensity, win) {
 function applyChampionMasteryGain(plan, intensity, resultFactor) {
   const player = state.roster.find((p) => p.id === plan.focusPlayerId);
   const champion = getChampionById(plan.focusChampionId);
-  if (!player || !champion) return 'Ciblé d\'entraînement invalide.';
+  if (!player || !champion) return t('train.gainInvalidTarget');
 
   if (!player.championPool.includes(champion.name)) {
     player.championPool.push(champion.name);
@@ -2268,18 +2259,18 @@ function applyChampionMasteryGain(plan, intensity, resultFactor) {
     player.mechanics = clamp(player.mechanics + 1, 0, 100);
   }
 
-  return `${player.name} : maîtrise ${champion.name} +${gain} (-> ${entry.mastery})`;
+  return t('train.gainMastery', { name: player.name, champ: champion.name, gain, m: entry.mastery });
 }
 
 function applyCompositionGain(plan, intensity, resultFactor) {
   const tags = plan.targetCompTags || [];
-  if (tags.length === 0) return 'Aucun style de composition sélectionné.';
+  if (tags.length === 0) return t('train.gainNoComp');
 
   let affected = 0;
   state.roster.forEach((player) => {
     player.championPool.forEach((champName) => {
       const champion = getChampionByName(champName);
-      if (!champion || !champion.tags.some((t) => tags.includes(t))) return;
+      if (!champion || !champion.tags.some((tag) => tags.includes(tag))) return;
 
       const entry = ensureChampionMasteryEntry(player.id, champion);
       const gain = Math.round(
@@ -2298,7 +2289,7 @@ function applyCompositionGain(plan, intensity, resultFactor) {
     }
   });
 
-  return `Composition ${tags.map((t) => COMP_TAG_LABELS[t]).join('/')} entrainee : ${affected} champion(s) progressent.`;
+  return t('train.gainComp', { tags: tags.map((tag) => COMP_TAG_LABELS[tag]).join('/'), n: affected });
 }
 
 function applyMatchupPrepGain(plan, opponent, intensity, resultFactor) {
@@ -2321,14 +2312,14 @@ function applyMatchupPrepGain(plan, opponent, intensity, resultFactor) {
       );
       entry.mastery = clamp(entry.mastery + gain, 0, 100);
       entry.stageReady = entry.mastery >= 50;
-      extra = ` ${player.name} consolide ${champion.name} (+${gain}).`;
+      extra = t('train.gainScoutingExtra', { name: player.name, champ: champion.name, gain });
     }
     if (resultFactor > 1) {
       player.laning = clamp(player.laning + 1, 0, 100);
     }
   }
 
-  return `Scouting ${opponent.name} : confiance ${report.confidence}/100.${extra}`;
+  return t('train.gainScouting', { opp: opponent.name, conf: report.confidence, extra });
 }
 
 function applyMacroGain(plan, intensity, resultFactor) {
@@ -2342,7 +2333,7 @@ function applyMacroGain(plan, intensity, resultFactor) {
     }
     player.mental = clamp(player.mental + (resultFactor > 1 ? 1 : 0), 0, 100);
   });
-  return `Travail macro/objectifs : +${total} shotcalling cumule sur l'équipe.`;
+  return t('train.gainMacro', { total });
 }
 
 function applyFreeScrimGain(intensity, win, tierMult) {
@@ -2351,7 +2342,7 @@ function applyFreeScrimGain(intensity, win, tierMult) {
     player.form = clamp(player.form + formDelta, 0, 100);
     player.mental = clamp(player.mental + (win ? 1 : 0), 0, 100);
   });
-  return `Scrim libre ${win ? 'gagne' : 'perdu'} : forme d'équipe ${formDelta >= 0 ? '+' : ''}${formDelta}.`;
+  return t('train.gainFree', { result: win ? t('train.won') : t('train.lost'), delta: `${formDelta >= 0 ? '+' : ''}${formDelta}` });
 }
 
 /* ------------------------------------------------------------

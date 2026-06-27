@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.9] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 3 (lot 5 : Entraînement)
+
+- **Formulaire de scrim** : objectifs (libellés + descriptions), guide des objectifs (cartes : gains, cas d'usage, mise en garde), intensités, région/adversaire (suffixes prestige), joueur/champion ciblé, style de composition, coût, bouton.
+- **Historique des scrims** : en-têtes de colonnes, résultats, libellés objectif/intensité (traduits au rendu, basculent avec la langue).
+- **Compte-rendu de scrim** : analyse de victoire/défaite, suivi des progrès, évolution des stats — généré dans la langue active.
+- **Modal de refus** de scrim (prestige insuffisant) et **tous les toasts** d'entraînement.
+- Labels de stats (`STAT_LABELS`) traduits. Nouveaux helpers `scrimObjLabel()`, `scrimIntensityLabel()`, `statLabel()`.
+
+> Comptes-rendus/résumés de scrim : traduits à la génération (un nouveau scrim s'affiche dans la langue active ; les entrées d'historique déjà enregistrées gardent leur langue d'origine).
+
+---
+
 ## [1.12.8] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 4/4 : Transferts + contrats)

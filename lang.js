@@ -390,6 +390,130 @@ const I18N = {
     'tr.toastSigned': '{name} signé ! {released} libéré. -{cost} budget.',
     'tr.toastSignedVacant': '{name} signé (poste vacant comblé). -{cost} budget.',
 
+    // -- Commun (suite 2) --
+    'common.close': 'Fermer',
+    'common.understood': 'Compris',
+
+    // -- Labels de stats --
+    'statLabel.shotcalling': 'Macro / Objectifs',
+    'statLabel.laning': 'Phase de lane',
+    'statLabel.teamfight': 'Teamfight',
+    'statLabel.mechanics': 'Mécanique',
+    'statLabel.mental': 'Mental',
+    'statLabel.form': 'Forme',
+
+    // -- Objectifs de scrim --
+    'scrim.obj.champion_mastery.label': 'Champion ciblé',
+    'scrim.obj.champion_mastery.desc': 'Entraîner un joueur sur un nouveau champion ou approfondir sa maîtrise.',
+    'scrim.obj.composition_test.label': 'Composition',
+    'scrim.obj.composition_test.desc': 'Tester un style de jeu (engage, poke, scaling, dive, protect ADC...).',
+    'scrim.obj.matchup_prep.label': 'Préparation matchup',
+    'scrim.obj.matchup_prep.desc': 'Préparer un adversaire spécifique et améliorer le scouting.',
+    'scrim.obj.macro_objectives.label': 'Macro / objectifs',
+    'scrim.obj.macro_objectives.desc': 'Travailler dragons, Baron, vision et rotations.',
+    'scrim.obj.free_scrim.label': 'Scrim libre',
+    'scrim.obj.free_scrim.desc': "Match d'entraînement général, bon pour la forme et la cohésion.",
+
+    // -- Guide des objectifs --
+    'scrim.guide.champion_mastery.gain1': 'Maîtrise champion',
+    'scrim.guide.champion_mastery.gain2': 'Mécanique',
+    'scrim.guide.champion_mastery.best': 'Développer le pool · Débloquer un pick pour la draft',
+    'scrim.guide.champion_mastery.warn': 'Aucune stat générale améliorée. Rendement faible si maîtrise déjà > 80.',
+    'scrim.guide.composition_test.gain1': 'Maîtrise (multi-champions)',
+    'scrim.guide.composition_test.gain2': 'Teamfight / Shotcalling',
+    'scrim.guide.composition_test.best': 'Préparer un style de jeu · Polir plusieurs picks en parallèle',
+    'scrim.guide.composition_test.warn': 'Gain réduit vs Champion ciblé. Inefficace si le pool ne contient pas le tag visé.',
+    'scrim.guide.matchup_prep.gain1': 'Scouting (confiance adversaire)',
+    'scrim.guide.matchup_prep.gain2': 'Laning (si victoire)',
+    'scrim.guide.matchup_prep.best': 'Avant un match clé · Débloquer les rapports scouting avancés',
+    'scrim.guide.matchup_prep.warn': "Très peu de progression en stats joueurs. Peu utile hors contexte d'un prochain adversaire.",
+    'scrim.guide.macro_objectives.gain1': "Shotcalling (toute l'équipe)",
+    'scrim.guide.macro_objectives.gain2': 'Mental (+1 si victoire)',
+    'scrim.guide.macro_objectives.best': 'Améliorer la coordination collective · Jungle & Support progressent 1,5× plus vite',
+    'scrim.guide.macro_objectives.warn': 'Aucun effet sur la maîtrise des champions ni la mécanique individuelle.',
+    'scrim.guide.free_scrim.gain1': "Forme (toute l'équipe)",
+    'scrim.guide.free_scrim.gain2': 'Mental (+1 si victoire)',
+    'scrim.guide.free_scrim.best': 'Maintenir la Forme · Gain amplifié contre un adversaire Tier 1 (×1.2)',
+    'scrim.guide.free_scrim.warn': "N'améliore aucune stat permanente. Défaite en haute intensité peut faire baisser la forme.",
+
+    // -- Intensités --
+    'scrim.intensity.low': 'Faible',
+    'scrim.intensity.normal': 'Normale',
+    'scrim.intensity.high': 'Intense',
+
+    // -- Écran entraînement --
+    'train.empty': 'Constituez votre roster avant de planifier un entraînement.',
+    'train.planTitle': 'Planifier un scrim',
+    'train.objective': 'Objectif',
+    'train.guideBtn': '? Guide',
+    'train.regionLabel': 'Région adverse',
+    'train.opponent': 'Adversaire',
+    'train.intensity': 'Intensité',
+    'train.intensityOpt': '{label} (coût {cost} pts)',
+    'train.focusPlayer': 'Joueur ciblé',
+    'train.focusChampion': 'Champion ciblé',
+    'train.compStyle': 'Style de composition',
+    'train.runScrim': 'Lancer le scrim',
+    'train.historyTitle': 'Historique des scrims',
+    'train.champMastery': '{name} (maîtrise {m})',
+    'train.champNew': '{name} (nouveau)',
+    'train.cost': 'Coût : {cost} points de coaching (disponible : {avail})',
+    'train.prestigeOk': ' ✓ Prestige OK ({req})',
+    'train.prestigeReq': ' ⚠ Prestige requis : {req}',
+    'train.sameComp': ' ★ Même compétition',
+    'train.develops': 'Développe',
+    'train.guideTitle': "Guide des objectifs d'entraînement",
+    'train.guideIntro': 'Chaque objectif de scrim cible des aspects différents du jeu. Variez-les pour un développement équilibré.',
+
+    // -- Historique des scrims --
+    'train.colOpponent': 'Adversaire',
+    'train.colObjective': 'Objectif',
+    'train.colIntensity': 'Intensité',
+    'train.colResult': 'Résultat',
+    'train.colGains': 'Gains',
+    'train.colReport': 'CR',
+    'train.emptyHistory': 'Aucun scrim joué pour le moment.',
+    'train.viewReport': 'Voir CR',
+
+    // -- Toasts entraînement --
+    'train.toastInvalid': 'Configuration de scrim invalide.',
+    'train.toastNoCoaching': 'Pas assez de points de coaching pour ce scrim.',
+    'train.toastAccepted': '{name} a accepté votre demande : {reason}.',
+    'train.toastWin': 'Scrim gagné contre {name} !',
+    'train.toastLoss': 'Scrim perdu contre {name}.',
+
+    // -- Modal de refus --
+    'train.refusalTitle': '✗ Demande de scrim refusée',
+    'train.refusalDesc': '<strong>{name}</strong> a refusé votre demande de scrim.',
+    'train.refusalReqLabel': 'Prestige requis :',
+    'train.refusalYourLabel': 'Votre prestige :',
+    'train.refusalReason': "L'organisation {name} estime que votre réputation n'est pas encore suffisante pour justifier un scrim. Terminez des splits et des tournois internationaux pour gagner en prestige.",
+    'train.refusalCost': "−{cost} pts de coaching consommés. Votre staff avait mobilisé les ressources nécessaires pour préparer cette demande. La sollicitation d'une organisation de ce standing sans le prestige requis est considérée comme un manque de préparation.",
+
+    // -- Modal compte-rendu --
+    'train.reportTitle': 'Compte-rendu du scrim',
+
+    // -- Compte-rendu (généré) --
+    'train.reportResult': 'Scrim {result} contre {opp} ({obj}).',
+    'train.won': 'remporté',
+    'train.lost': 'perdu',
+    'train.reportAnalysisLoss': 'Analyse : {name} a montré des difficultés en {stat} ({val}/100), un facteur clé de la défaite.',
+    'train.reportAnalysisWin': "Analyse : {name} a porté l'équipe grâce à son niveau en {stat} ({val}/100).",
+    'train.reportFollowUp': "Suivi : depuis le dernier débrief, {name} a progressé en {stat} ({old} → {cur}, +{delta}). L'entraînement ciblé porte ses fruits.",
+    'train.reportFollowUpNone': 'Suivi : {name} reste à {cur}/100 en {stat}, aucune amélioration nette depuis le dernier débrief malgré cet entraînement ciblé.',
+    'train.reportEvolution': 'Évolution des stats :',
+    'train.reportDeltaLine': '{name} : {stat} {sign}{diff} ({old} → {new})',
+
+    // -- Résumés de gains (générés) --
+    'train.gainInvalidTarget': "Cible d'entraînement invalide.",
+    'train.gainMastery': '{name} : maîtrise {champ} +{gain} (→ {m})',
+    'train.gainNoComp': 'Aucun style de composition sélectionné.',
+    'train.gainComp': 'Composition {tags} entraînée : {n} champion(s) progressent.',
+    'train.gainScouting': 'Scouting {opp} : confiance {conf}/100.{extra}',
+    'train.gainScoutingExtra': ' {name} consolide {champ} (+{gain}).',
+    'train.gainMacro': "Travail macro/objectifs : +{total} shotcalling cumulé sur l'équipe.",
+    'train.gainFree': "Scrim libre {result} : forme d'équipe {delta}.",
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -776,6 +900,130 @@ const I18N = {
     'tr.toastSigned': '{name} signed! {released} released. -{cost} budget.',
     'tr.toastSignedVacant': '{name} signed (vacant position filled). -{cost} budget.',
 
+    // -- Common (cont.) --
+    'common.close': 'Close',
+    'common.understood': 'Got it',
+
+    // -- Stat labels --
+    'statLabel.shotcalling': 'Macro / Objectives',
+    'statLabel.laning': 'Laning phase',
+    'statLabel.teamfight': 'Teamfight',
+    'statLabel.mechanics': 'Mechanics',
+    'statLabel.mental': 'Mental',
+    'statLabel.form': 'Form',
+
+    // -- Scrim objectives --
+    'scrim.obj.champion_mastery.label': 'Targeted champion',
+    'scrim.obj.champion_mastery.desc': 'Train a player on a new champion or deepen their mastery.',
+    'scrim.obj.composition_test.label': 'Composition',
+    'scrim.obj.composition_test.desc': 'Test a playstyle (engage, poke, scaling, dive, protect ADC...).',
+    'scrim.obj.matchup_prep.label': 'Matchup prep',
+    'scrim.obj.matchup_prep.desc': 'Prepare for a specific opponent and improve scouting.',
+    'scrim.obj.macro_objectives.label': 'Macro / objectives',
+    'scrim.obj.macro_objectives.desc': 'Work on dragons, Baron, vision and rotations.',
+    'scrim.obj.free_scrim.label': 'Free scrim',
+    'scrim.obj.free_scrim.desc': 'General practice match, good for form and cohesion.',
+
+    // -- Objective guide --
+    'scrim.guide.champion_mastery.gain1': 'Champion mastery',
+    'scrim.guide.champion_mastery.gain2': 'Mechanics',
+    'scrim.guide.champion_mastery.best': 'Develop the pool · Unlock a pick for the draft',
+    'scrim.guide.champion_mastery.warn': 'No general stat improved. Low returns if mastery already > 80.',
+    'scrim.guide.composition_test.gain1': 'Mastery (multi-champion)',
+    'scrim.guide.composition_test.gain2': 'Teamfight / Shotcalling',
+    'scrim.guide.composition_test.best': 'Prepare a playstyle · Polish several picks in parallel',
+    'scrim.guide.composition_test.warn': 'Lower gain vs Targeted champion. Ineffective if the pool lacks the targeted tag.',
+    'scrim.guide.matchup_prep.gain1': 'Scouting (opponent confidence)',
+    'scrim.guide.matchup_prep.gain2': 'Laning (on win)',
+    'scrim.guide.matchup_prep.best': 'Before a key match · Unlock advanced scouting reports',
+    'scrim.guide.matchup_prep.warn': 'Very little player-stat progress. Of limited use outside an upcoming opponent.',
+    'scrim.guide.macro_objectives.gain1': 'Shotcalling (whole team)',
+    'scrim.guide.macro_objectives.gain2': 'Mental (+1 on win)',
+    'scrim.guide.macro_objectives.best': 'Improve team coordination · Jungle & Support progress 1.5× faster',
+    'scrim.guide.macro_objectives.warn': 'No effect on champion mastery or individual mechanics.',
+    'scrim.guide.free_scrim.gain1': 'Form (whole team)',
+    'scrim.guide.free_scrim.gain2': 'Mental (+1 on win)',
+    'scrim.guide.free_scrim.best': 'Maintain Form · Gain boosted vs a Tier 1 opponent (×1.2)',
+    'scrim.guide.free_scrim.warn': 'Improves no permanent stat. A high-intensity loss can lower form.',
+
+    // -- Intensities --
+    'scrim.intensity.low': 'Low',
+    'scrim.intensity.normal': 'Normal',
+    'scrim.intensity.high': 'Intense',
+
+    // -- Training screen --
+    'train.empty': 'Build your roster before planning training.',
+    'train.planTitle': 'Plan a scrim',
+    'train.objective': 'Objective',
+    'train.guideBtn': '? Guide',
+    'train.regionLabel': 'Opponent region',
+    'train.opponent': 'Opponent',
+    'train.intensity': 'Intensity',
+    'train.intensityOpt': '{label} (cost {cost} pts)',
+    'train.focusPlayer': 'Targeted player',
+    'train.focusChampion': 'Targeted champion',
+    'train.compStyle': 'Composition style',
+    'train.runScrim': 'Run the scrim',
+    'train.historyTitle': 'Scrim history',
+    'train.champMastery': '{name} (mastery {m})',
+    'train.champNew': '{name} (new)',
+    'train.cost': 'Cost: {cost} coaching points (available: {avail})',
+    'train.prestigeOk': ' ✓ Prestige OK ({req})',
+    'train.prestigeReq': ' ⚠ Prestige required: {req}',
+    'train.sameComp': ' ★ Same competition',
+    'train.develops': 'Develops',
+    'train.guideTitle': 'Training objectives guide',
+    'train.guideIntro': 'Each scrim objective targets different aspects of the game. Vary them for balanced development.',
+
+    // -- Scrim history --
+    'train.colOpponent': 'Opponent',
+    'train.colObjective': 'Objective',
+    'train.colIntensity': 'Intensity',
+    'train.colResult': 'Result',
+    'train.colGains': 'Gains',
+    'train.colReport': 'Report',
+    'train.emptyHistory': 'No scrim played yet.',
+    'train.viewReport': 'View report',
+
+    // -- Training toasts --
+    'train.toastInvalid': 'Invalid scrim configuration.',
+    'train.toastNoCoaching': 'Not enough coaching points for this scrim.',
+    'train.toastAccepted': '{name} accepted your request: {reason}.',
+    'train.toastWin': 'Scrim won against {name}!',
+    'train.toastLoss': 'Scrim lost against {name}.',
+
+    // -- Refusal modal --
+    'train.refusalTitle': '✗ Scrim request declined',
+    'train.refusalDesc': '<strong>{name}</strong> declined your scrim request.',
+    'train.refusalReqLabel': 'Prestige required:',
+    'train.refusalYourLabel': 'Your prestige:',
+    'train.refusalReason': '{name} feels your reputation is not yet enough to justify a scrim. Finish splits and international tournaments to gain prestige.',
+    'train.refusalCost': '−{cost} coaching pts consumed. Your staff had mobilized the resources needed to prepare this request. Approaching an organization of this standing without the required prestige is considered a lack of preparation.',
+
+    // -- Report modal --
+    'train.reportTitle': 'Scrim report',
+
+    // -- Report (generated) --
+    'train.reportResult': 'Scrim {result} against {opp} ({obj}).',
+    'train.won': 'won',
+    'train.lost': 'lost',
+    'train.reportAnalysisLoss': 'Analysis: {name} struggled in {stat} ({val}/100), a key factor in the defeat.',
+    'train.reportAnalysisWin': 'Analysis: {name} carried the team thanks to their {stat} ({val}/100).',
+    'train.reportFollowUp': 'Follow-up: since the last debrief, {name} improved in {stat} ({old} → {cur}, +{delta}). The targeted training is paying off.',
+    'train.reportFollowUpNone': 'Follow-up: {name} remains at {cur}/100 in {stat}, no clear improvement since the last debrief despite this targeted training.',
+    'train.reportEvolution': 'Stat evolution:',
+    'train.reportDeltaLine': '{name}: {stat} {sign}{diff} ({old} → {new})',
+
+    // -- Gain summaries (generated) --
+    'train.gainInvalidTarget': 'Invalid training target.',
+    'train.gainMastery': '{name}: {champ} mastery +{gain} (→ {m})',
+    'train.gainNoComp': 'No composition style selected.',
+    'train.gainComp': '{tags} composition trained: {n} champion(s) progress.',
+    'train.gainScouting': 'Scouting {opp}: confidence {conf}/100.{extra}',
+    'train.gainScoutingExtra': ' {name} consolidates {champ} (+{gain}).',
+    'train.gainMacro': 'Macro/objectives work: +{total} shotcalling accumulated across the team.',
+    'train.gainFree': 'Free scrim {result}: team form {delta}.',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
@@ -803,6 +1051,27 @@ function contractTierLabel(tier) {
 // Unité d'année accordée en nombre (an/ans, yr/yrs).
 function yearUnit(n) {
   return t(n > 1 ? 'tr.years' : 'tr.year');
+}
+
+// Libellé traduit d'un objectif de scrim (champion_mastery, ...).
+function scrimObjLabel(id) {
+  const key = 'scrim.obj.' + id + '.label';
+  const val = t(key);
+  return val === key ? id : val;
+}
+
+// Libellé traduit d'une intensité de scrim (low, normal, high).
+function scrimIntensityLabel(id) {
+  const key = 'scrim.intensity.' + id;
+  const val = t(key);
+  return val === key ? id : val;
+}
+
+// Libellé traduit d'une stat (shotcalling, laning, ...).
+function statLabel(key) {
+  const k = 'statLabel.' + key;
+  const val = t(k);
+  return val === k ? key : val;
 }
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.
