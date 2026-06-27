@@ -2705,12 +2705,11 @@ function getDraftCoachAdvice(draft) {
     if (bestOurs && bestOurs.mastery >= 60) {
       advice.push({ type: 'threat', icon: '⚠️', label: 'Menace retour', text: `${bestOurs.champName} (maîtrise ${bestOurs.mastery}) vous serait dangereux côté adverse.` });
     }
-    // Flex pick adverse déjà pickés
-    Object.values(oppPicks).filter(Boolean).forEach((champName) => {
+    // Flex pick adverse : alerte uniquement si le champion joue HORS de son rôle principal
+    Object.entries(oppPicks).filter(([, v]) => v).forEach(([slot, champName]) => {
       const champ = getChampionByName(champName);
-      if (champ && champ.secondaryRoles && champ.secondaryRoles.length > 0) {
-        const roles = [champ.role, ...champ.secondaryRoles].map((r) => ROLE_NAMES[r]).join(' ou ');
-        advice.push({ type: 'flex', icon: '👁', label: 'Flex adverse', text: `${champName} peut aller ${roles} — leur répartition de rôles est incertaine.` });
+      if (champ && champ.role !== slot) {
+        advice.push({ type: 'flex', icon: '👁', label: 'Flex pick', text: `${champName} joué en ${ROLE_NAMES[slot]} (rôle habituel : ${ROLE_NAMES[champ.role]}) — adaptation tactique adverse.` });
       }
     });
     if (advice.length === 0) advice.push({ type: 'info', icon: '📋', label: 'Conseil', text: 'Bannissez un champion clé de leur composition ou un counter-pick dangereux pour votre roster.' });
@@ -2796,12 +2795,11 @@ function getDraftCoachAdvice(draft) {
       }
     }
 
-    // 5. Flex pick alerte
-    Object.values(oppPicks).filter(Boolean).forEach((champName) => {
+    // 5. Flex pick alerte : uniquement si le champion joue hors de son rôle principal
+    Object.entries(oppPicks).filter(([, v]) => v).forEach(([slot, champName]) => {
       const champ = getChampionByName(champName);
-      if (champ && champ.secondaryRoles && champ.secondaryRoles.length > 0) {
-        const roles = [champ.role, ...champ.secondaryRoles].map((r) => ROLE_NAMES[r]).join(' ou ');
-        advice.push({ type: 'flex', icon: '👁', label: 'Flex adverse', text: `${champName} peut aller ${roles} — rôle incertain.` });
+      if (champ && champ.role !== slot) {
+        advice.push({ type: 'flex', icon: '👁', label: 'Flex pick', text: `${champName} joué en ${ROLE_NAMES[slot]} (rôle habituel : ${ROLE_NAMES[champ.role]}) — adaptation tactique adverse.` });
       }
     });
 
