@@ -142,7 +142,9 @@ function createDefaultState() {
       mapAnimations: true,
       aiRotation: true,        // v1.11.0 : rotation des effectifs IA (retraites + remplaçants)
       playerContracts: true,   // v1.11.0 : âge + gestion des contrats de l'équipe du joueur
-      seenOnboarding1110: false // v1.11.0 : popup d'explication vue au moins une fois
+      seenOnboarding1110: false, // v1.11.0 : popup d'explication vue au moins une fois
+      lang: 'fr',              // v1.13.0 : langue de l'interface ('fr' | 'en')
+      langChosen: false        // v1.13.0 : popup de bienvenue + choix de langue déjà affichée
     },
     progress: {
       matchesPlayed: 0,
@@ -458,7 +460,10 @@ function importSave(file) {
 /* ------------------------------------------------------------
    Navigation SPA (CDC 2.3)
    ------------------------------------------------------------ */
+let currentView = 'home';
+
 function showView(viewName) {
+  currentView = viewName;
   const views = document.querySelectorAll('.view');
   views.forEach((v) => v.classList.remove('view--active'));
 
@@ -7352,14 +7357,25 @@ function worldToggleRow(key, title, desc, on) {
   </label>`;
 }
 
+function languageSettingRow() {
+  const cur = getLang();
+  return `<div class="world-setting">
+    <span class="world-setting__text">
+      <span class="world-setting__title">${t('settings.language')}</span>
+      <span class="world-setting__desc">${t('settings.languageDesc')}</span>
+    </span>
+    <span class="lang-switch">
+      <button class="lang-switch__btn ${cur === 'fr' ? 'lang-switch__btn--active' : ''}" data-lang-set="fr">🇫🇷 ${t('settings.langFr')}</button>
+      <button class="lang-switch__btn ${cur === 'en' ? 'lang-switch__btn--active' : ''}" data-lang-set="en">🇬🇧 ${t('settings.langEn')}</button>
+    </span>
+  </div>`;
+}
+
 function worldSettingsHtml() {
   const s = state.settings;
-  return worldToggleRow('aiRotation', 'Rotation des effectifs IA',
-    'Les joueurs IA partent à la retraite et sont remplacés par de jeunes talents du niveau de leur équipe. Désactivé : les rosters adverses restent figés.',
-    s.aiRotation !== false)
-  + worldToggleRow('playerContracts', 'Âge &amp; contrats de mon équipe',
-    'Vos joueurs vieillissent et leurs contrats expirent (prolongations à gérer). Désactivé : ils restent dans l\'équipe indéfiniment, sans gestion de contrat.',
-    s.playerContracts !== false);
+  return languageSettingRow()
+  + worldToggleRow('aiRotation', t('settings.aiRotation.title'), t('settings.aiRotation.desc'), s.aiRotation !== false)
+  + worldToggleRow('playerContracts', t('settings.playerContracts.title'), t('settings.playerContracts.desc'), s.playerContracts !== false);
 }
 
 // Branche les toggles ; onChange optionnel rafraîchit la vue appelante.
@@ -7369,6 +7385,14 @@ function wireWorldSettings(container, onChange) {
       state.settings[cb.dataset.setting] = cb.checked;
       saveGame();
       if (typeof onChange === 'function') onChange();
+    });
+  });
+  container.querySelectorAll('[data-lang-set]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.langSet;
+      if (lang === getLang()) return;
+      setLang(lang);
+      if (typeof showToast === 'function') showToast(t('lang.changed'), 'success');
     });
   });
 }
@@ -7396,6 +7420,49 @@ function maybeShowOnboarding1110() {
     saveGame();
     closeModal();
     showToast('Réglages enregistrés. Modifiables dans Progression.', 'success');
+  });
+}
+
+// Popup de bienvenue + choix de langue au tout premier lancement (v1.13.0).
+// Bilingue par nature : affichée avant que le joueur ait choisi sa langue.
+function showWelcomeLanguageModal(onDone) {
+  showModal(`
+    <div class="welcome-modal">
+      <img src="img/logo.png" alt="LOL Esport Manager" class="welcome-modal__logo" />
+      <h2 class="welcome-modal__title">Bienvenue ! · Welcome!</h2>
+      <p class="welcome-modal__text">
+        <strong>FR —</strong> Prenez les rênes d'une équipe d'esport League of Legends : recrutez, entraînez,
+        draftez et menez vos joueurs des splits régionaux jusqu'aux Worlds.
+      </p>
+      <p class="welcome-modal__text">
+        <strong>EN —</strong> Take charge of a League of Legends esports team: recruit, train, draft and lead
+        your players from regional splits all the way to Worlds.
+      </p>
+      <p class="welcome-modal__choose">Choisissez votre langue · Choose your language</p>
+      <div class="welcome-modal__flags">
+        <button class="welcome-flag" data-lang="fr">
+          <span class="welcome-flag__emoji">🇫🇷</span>
+          <span class="welcome-flag__label">Français</span>
+        </button>
+        <button class="welcome-flag" data-lang="en">
+          <span class="welcome-flag__emoji">🇬🇧</span>
+          <span class="welcome-flag__label">English</span>
+        </button>
+      </div>
+      <p class="welcome-modal__note">Modifiable à tout moment dans Progression · Changeable anytime in Progression</p>
+    </div>
+  `);
+  document.querySelectorAll('.welcome-flag').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      state.settings.lang = lang;
+      state.settings.langChosen = true;
+      document.documentElement.lang = lang;
+      applyStaticI18n();
+      saveGame();
+      closeModal();
+      if (typeof onDone === 'function') onDone();
+    });
   });
 }
 
@@ -7469,8 +7536,17 @@ function renderProgression() {
    ------------------------------------------------------------ */
 function initGame() {
   state = loadGame();
+  applyStaticI18n();
   updateResourceBar();
   setupNavigation();
+  if (!state.settings.langChosen) {
+    showWelcomeLanguageModal(continueInit);
+  } else {
+    continueInit();
+  }
+}
+
+function continueInit() {
   if (!state.region) {
     showRegionSelection();
   } else {

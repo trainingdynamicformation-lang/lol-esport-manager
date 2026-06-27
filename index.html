@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#080C14" />
-  <link rel="stylesheet" href="style.css?v=1.12.1" />
+  <link rel="stylesheet" href="style.css?v=1.12.2" />
 </head>
 <body>
 
@@ -21,15 +21,15 @@
     <div class="resource-bar">
       <div class="resource-chip resource-chip--coaching" id="chip-coaching">
         <span class="resource-chip__icon">&#128218;</span>
-        <span id="resource-coaching">0</span> Points coaching
+        <span id="resource-coaching">0</span> <span data-i18n="res.coaching">Points coaching</span>
       </div>
       <div class="resource-chip resource-chip--budget" id="chip-budget">
         <span class="resource-chip__icon">&#128176;</span>
-        <span id="resource-budget">0</span> Budget
+        <span id="resource-budget">0</span> <span data-i18n="res.budget">Budget</span>
       </div>
       <div class="resource-chip resource-chip--prestige" id="chip-prestige">
         <span class="resource-chip__icon">&#11088;</span>
-        <span id="resource-prestige">0</span> Prestige
+        <span id="resource-prestige">0</span> <span data-i18n="res.prestige">Prestige</span>
       </div>
     </div>
   </header>
@@ -44,18 +44,18 @@
 
     <!-- ===================== NAVIGATION SIDEBAR ===================== -->
     <nav class="main-nav">
-      <button class="nav-btn" data-view="home">Accueil</button>
-      <button class="nav-btn" data-view="roster">Roster</button>
-      <button class="nav-btn" data-view="training">Entraînement</button>
-      <button class="nav-btn" data-view="calendar">Calendrier</button>
-      <button class="nav-btn" data-view="draft">Draft</button>
-      <button class="nav-btn" data-view="champions">Champions</button>
-      <button class="nav-btn" data-view="counters">Counters</button>
-      <button class="nav-btn" data-view="match">Match</button>
-      <button class="nav-btn" data-view="scouting">Scouting</button>
-      <button class="nav-btn" data-view="transfers">Transferts</button>
-      <button class="nav-btn" data-view="journal">Journal</button>
-      <button class="nav-btn" data-view="progression">Progression</button>
+      <button class="nav-btn" data-view="home" data-i18n="nav.home">Accueil</button>
+      <button class="nav-btn" data-view="roster" data-i18n="nav.roster">Roster</button>
+      <button class="nav-btn" data-view="training" data-i18n="nav.training">Entraînement</button>
+      <button class="nav-btn" data-view="calendar" data-i18n="nav.calendar">Calendrier</button>
+      <button class="nav-btn" data-view="draft" data-i18n="nav.draft">Draft</button>
+      <button class="nav-btn" data-view="champions" data-i18n="nav.champions">Champions</button>
+      <button class="nav-btn" data-view="counters" data-i18n="nav.counters">Counters</button>
+      <button class="nav-btn" data-view="match" data-i18n="nav.match">Match</button>
+      <button class="nav-btn" data-view="scouting" data-i18n="nav.scouting">Scouting</button>
+      <button class="nav-btn" data-view="transfers" data-i18n="nav.transfers">Transferts</button>
+      <button class="nav-btn" data-view="journal" data-i18n="nav.journal">Journal</button>
+      <button class="nav-btn" data-view="progression" data-i18n="nav.progression">Progression</button>
     </nav>
 
     <!-- ===================== CONTENU DES VUES ===================== -->
@@ -65,11 +65,11 @@
     <section id="view-home" class="view">
       <div class="home-hero">
         <img src="img/logo.png" alt="LOL Esport Manager" class="home-hero__logo" />
-        <p>Preparez vos joueurs, drafrez vos compositions et menez votre équipe vers les Worlds.</p>
+        <p data-i18n="home.hero">Preparez vos joueurs, drafrez vos compositions et menez votre équipe vers les Worlds.</p>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Équipe</h3>
+        <h3 class="panel-title" data-i18n="home.team">Équipe</h3>
         <div class="team-widget">
           <div class="team-widget__avatars" id="home-team-avatars"></div>
           <div>
@@ -77,77 +77,77 @@
             <div id="home-team-region"></div>
           </div>
           <div class="match-card--next" id="home-next-match">
-            <div class="match-card--next__label">Prochain match</div>
-            <div class="match-card--next__teams">A definir</div>
+            <div class="match-card--next__label" data-i18n="home.nextMatch">Prochain match</div>
+            <div class="match-card--next__teams" data-i18n="home.tbd">A definir</div>
           </div>
         </div>
         <div class="quick-actions">
-          <button class="btn-secondary" data-view-link="roster">Roster</button>
-          <button class="btn-secondary" data-view-link="training">Entraînement</button>
-          <button class="btn-secondary" data-view-link="calendar">Calendrier</button>
+          <button class="btn-secondary" data-view-link="roster" data-i18n="nav.roster">Roster</button>
+          <button class="btn-secondary" data-view-link="training" data-i18n="nav.training">Entraînement</button>
+          <button class="btn-secondary" data-view-link="calendar" data-i18n="nav.calendar">Calendrier</button>
         </div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Derniers résultats</h3>
+        <h3 class="panel-title" data-i18n="home.recentResults">Derniers résultats</h3>
         <div class="recent-results" id="home-recent-results">
-          <p class="card__count">Aucun match joue pour le moment.</p>
+          <p class="card__count" data-i18n="home.noMatches">Aucun match joue pour le moment.</p>
         </div>
       </div>
     </section>
 
     <!-- ----------- ROSTER ----------- -->
     <section id="view-roster" class="view">
-      <h2 class="panel-title">Roster</h2>
+      <h2 class="panel-title" data-i18n="view.roster">Roster</h2>
       <div class="panel" id="roster-content">
-        <div class="empty-state">Aucun joueur dans le roster pour le moment.</div>
+        <div class="empty-state" data-i18n="empty.roster">Aucun joueur dans le roster pour le moment.</div>
       </div>
     </section>
 
     <!-- ----------- TRAINING / SCRIMS ----------- -->
     <section id="view-training" class="view">
-      <h2 class="panel-title">Entraînement &amp; scrims</h2>
+      <h2 class="panel-title" data-i18n="view.training">Entraînement &amp; scrims</h2>
       <div class="panel" id="training-content">
-        <div class="empty-state">Aucune session d'entraînement disponible pour le moment.</div>
+        <div class="empty-state" data-i18n="empty.training">Aucune session d'entraînement disponible pour le moment.</div>
       </div>
     </section>
 
     <!-- ----------- CALENDAR / SAISON ----------- -->
     <section id="view-calendar" class="view">
-      <h2 class="panel-title">Calendrier de la saison</h2>
+      <h2 class="panel-title" data-i18n="view.calendar">Calendrier de la saison</h2>
       <div class="panel" id="calendar-content">
-        <div class="empty-state">La saison n'a pas encore commencé.</div>
+        <div class="empty-state" data-i18n="empty.calendar">La saison n'a pas encore commencé.</div>
       </div>
     </section>
 
     <!-- ----------- DRAFT ----------- -->
     <section id="view-draft" class="view">
-      <h2 class="panel-title">Draft</h2>
+      <h2 class="panel-title" data-i18n="view.draft">Draft</h2>
       <div class="panel" id="draft-content">
-        <div class="empty-state">Aucune draft en cours.</div>
+        <div class="empty-state" data-i18n="empty.draft">Aucune draft en cours.</div>
       </div>
     </section>
 
     <!-- ----------- COUNTERS ----------- -->
     <!-- ----------- CHAMPIONS ----------- -->
     <section id="view-champions" class="view">
-      <h2 class="panel-title">Champions</h2>
+      <h2 class="panel-title" data-i18n="view.champions">Champions</h2>
       <div class="panel">
-        <input type="text" id="champions-search" class="counters-search" placeholder="Rechercher un champion..." />
+        <input type="text" id="champions-search" class="counters-search" data-i18n-placeholder="ph.searchChampion" placeholder="Rechercher un champion..." />
       </div>
       <div class="panel" id="champions-content">
-        <div class="empty-state">Chargement des champions...</div>
+        <div class="empty-state" data-i18n="empty.champions">Chargement des champions...</div>
       </div>
     </section>
 
     <!-- ----------- COUNTERS ----------- -->
     <section id="view-counters" class="view">
-      <h2 class="panel-title">Counters</h2>
+      <h2 class="panel-title" data-i18n="view.counters">Counters</h2>
       <div class="panel">
         <div class="counters-filters">
-          <input type="text" id="counters-search" class="counters-search" placeholder="Rechercher un champion (counter ou cible)..." />
+          <input type="text" id="counters-search" class="counters-search" data-i18n-placeholder="ph.searchCounter" placeholder="Rechercher un champion (counter ou cible)..." />
           <select id="counters-role-filter">
-            <option value="">Tous les roles</option>
+            <option value="" data-i18n="counters.allRoles">Tous les roles</option>
             <option value="TOP">TOP</option>
             <option value="JUNGLE">JUNGLE</option>
             <option value="MID">MID</option>
@@ -155,7 +155,7 @@
             <option value="SUPPORT">SUPPORT</option>
           </select>
           <select id="counters-confidence-filter">
-            <option value="">Toute confiance</option>
+            <option value="" data-i18n="counters.allConfidence">Toute confiance</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
@@ -163,15 +163,15 @@
         </div>
       </div>
       <div class="panel" id="counters-content">
-        <div class="empty-state">Recherchez un champion pour voir ses matchups.</div>
+        <div class="empty-state" data-i18n="empty.counters">Recherchez un champion pour voir ses matchups.</div>
       </div>
     </section>
 
     <!-- ----------- MATCH ----------- -->
     <section id="view-match" class="view">
       <div id="match-setup" class="panel">
-        <h2 class="panel-title">Préparer un match</h2>
-        <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">Aucun match disponible pour le moment.</p>
+        <h2 class="panel-title" data-i18n="match.setupTitle">Préparer un match</h2>
+        <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;" data-i18n="empty.match">Aucun match disponible pour le moment.</p>
       </div>
 
       <div id="match-arena" class="panel" style="display:none;">
@@ -203,27 +203,27 @@
 
         <div class="match-objectives" id="match-objectives">
           <div class="match-objectives__row">
-            <span class="match-objectives__label">Dragons</span>
+            <span class="match-objectives__label" data-i18n="match.dragons">Dragons</span>
             <span class="match-objectives__value side-blue" id="match-obj-dragons-blue">0</span>
             <span class="match-objectives__sep">/</span>
             <span class="match-objectives__value side-red" id="match-obj-dragons-red">0</span>
           </div>
           <div class="match-objectives__row">
-            <span class="match-objectives__label">Void Grubs</span>
+            <span class="match-objectives__label" data-i18n="match.grubs">Void Grubs</span>
             <span class="match-objectives__value side-blue" id="match-obj-grubs-blue">0</span>
             <span class="match-objectives__sep">/</span>
             <span class="match-objectives__value side-red" id="match-obj-grubs-red">0</span>
           </div>
           <div class="match-objectives__row">
-            <span class="match-objectives__label">Ame du Dragon</span>
+            <span class="match-objectives__label" data-i18n="match.dragonSoul">Ame du Dragon</span>
             <span class="match-objectives__value" id="match-obj-soul">-</span>
           </div>
           <div class="match-objectives__row">
-            <span class="match-objectives__label">Buff Baron actif</span>
+            <span class="match-objectives__label" data-i18n="match.baronBuff">Buff Baron actif</span>
             <span class="match-objectives__value" id="match-obj-baron-buff">-</span>
           </div>
           <div class="match-objectives__row">
-            <span class="match-objectives__label">Buff Elder actif</span>
+            <span class="match-objectives__label" data-i18n="match.elderBuff">Buff Elder actif</span>
             <span class="match-objectives__value" id="match-obj-elder-buff">-</span>
           </div>
         </div>
@@ -240,66 +240,66 @@
         <div class="match-log" id="match-log"></div>
 
         <div class="match-controls">
-          <button class="btn-secondary" id="btn-pause-match">Pause</button>
+          <button class="btn-secondary" id="btn-pause-match" data-i18n="match.pause">Pause</button>
         </div>
       </div>
     </section>
 
     <!-- ----------- TRANSFERTS ----------- -->
     <section id="view-transfers" class="view">
-      <h2 class="panel-title">Marche des transferts</h2>
+      <h2 class="panel-title" data-i18n="view.transfers">Marche des transferts</h2>
       <div id="transfers-content">
-        <div class="empty-state">Chargement du marche...</div>
+        <div class="empty-state" data-i18n="empty.transfers">Chargement du marche...</div>
       </div>
     </section>
 
     <!-- ----------- JOURNAL DES TRANSFERTS ----------- -->
     <section id="view-journal" class="view">
-      <h2 class="panel-title">Journal des transferts</h2>
+      <h2 class="panel-title" data-i18n="view.journal">Journal des transferts</h2>
       <div id="journal-content">
-        <div class="empty-state">Aucun mouvement enregistré pour le moment.</div>
+        <div class="empty-state" data-i18n="empty.journal">Aucun mouvement enregistré pour le moment.</div>
       </div>
     </section>
 
     <!-- ----------- SCOUTING ----------- -->
     <section id="view-scouting" class="view">
-      <h2 class="panel-title">Scouting</h2>
+      <h2 class="panel-title" data-i18n="view.scouting">Scouting</h2>
       <div class="panel" id="scouting-content">
-        <div class="empty-state">Aucun rapport de scouting disponible pour le moment.</div>
+        <div class="empty-state" data-i18n="empty.scouting">Aucun rapport de scouting disponible pour le moment.</div>
       </div>
     </section>
 
     <!-- ----------- PROGRESSION ----------- -->
     <section id="view-progression" class="view">
-      <h2 class="panel-title">Progression</h2>
+      <h2 class="panel-title" data-i18n="view.progression">Progression</h2>
 
       <div class="panel">
-        <h3 class="panel-title">Statistiques globales</h3>
+        <h3 class="panel-title" data-i18n="prog.globalStats">Statistiques globales</h3>
         <div class="stats-grid" id="progression-stats"></div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Palmarès</h3>
+        <h3 class="panel-title" data-i18n="prog.palmares">Palmarès</h3>
         <div class="stats-grid" id="progression-palmares"></div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Evolution des joueurs</h3>
+        <h3 class="panel-title" data-i18n="prog.playerEvolution">Evolution des joueurs</h3>
         <div id="progression-career" class="career-progression-list">
-          <p class="card__count">Aucune evolution pour le moment.</p>
+          <p class="card__count" data-i18n="prog.noEvolution">Aucune evolution pour le moment.</p>
         </div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Historique des matchs</h3>
+        <h3 class="panel-title" data-i18n="prog.matchHistory">Historique des matchs</h3>
         <table class="history-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Compétition</th>
-              <th>Adversaire</th>
-              <th>Score</th>
-              <th>Résultat</th>
+              <th data-i18n="prog.date">Date</th>
+              <th data-i18n="prog.competition">Compétition</th>
+              <th data-i18n="prog.opponent">Adversaire</th>
+              <th data-i18n="prog.score">Score</th>
+              <th data-i18n="prog.result">Résultat</th>
             </tr>
           </thead>
           <tbody id="progression-history"></tbody>
@@ -307,44 +307,44 @@
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Réglages du monde</h3>
+        <h3 class="panel-title" data-i18n="prog.worldSettings">Réglages du monde</h3>
         <div id="progression-settings"></div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">Sauvegarde locale</h3>
+        <h3 class="panel-title" data-i18n="prog.localSave">Sauvegarde locale</h3>
         <div class="quick-actions">
-          <button class="btn-secondary" id="btn-export-save">Exporter ma sauvegarde</button>
+          <button class="btn-secondary" id="btn-export-save" data-i18n="prog.exportSave">Exporter ma sauvegarde</button>
           <label class="btn-secondary" style="display:inline-block;">
-            Importer une sauvegarde
+            <span data-i18n="prog.importSave">Importer une sauvegarde</span>
             <input type="file" id="input-import-save" accept="application/json" style="display:none;" />
           </label>
-          <button class="btn-danger" id="btn-reset-game">Réinitialiser la partie</button>
+          <button class="btn-danger" id="btn-reset-game" data-i18n="prog.resetGame">Réinitialiser la partie</button>
         </div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">&#9729;&#65039; Sauvegarde cloud <span style="font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:8px;">(optionnel)</span></h3>
-        <p style="color:var(--color-text-muted);font-size:13px;margin-bottom:16px;line-height:1.6;">
+        <h3 class="panel-title">&#9729;&#65039; <span data-i18n="prog.cloudSave">Sauvegarde cloud</span> <span style="font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:8px;" data-i18n="prog.optional">(optionnel)</span></h3>
+        <p style="color:var(--color-text-muted);font-size:13px;margin-bottom:16px;line-height:1.6;" data-i18n="prog.cloudIntro">
           Synchronisez votre progression sur tous vos appareils via GitHub Gist.
           Si non configuré, le jeu fonctionne normalement en local.
         </p>
 
         <div class="cloud-save-fields">
           <div class="cloud-save-field">
-            <label class="cloud-save-label" for="gist-id-input">ID du Gist</label>
+            <label class="cloud-save-label" for="gist-id-input" data-i18n="prog.gistId">ID du Gist</label>
             <input type="text" id="gist-id-input" class="cloud-save-input" placeholder="ex: 29b42f7478f58cb55af4f76f6614c641" />
           </div>
           <div class="cloud-save-field">
-            <label class="cloud-save-label" for="gist-token-input">Token GitHub</label>
+            <label class="cloud-save-label" for="gist-token-input" data-i18n="prog.gistToken">Token GitHub</label>
             <input type="password" id="gist-token-input" class="cloud-save-input" placeholder="ghp_..." />
           </div>
         </div>
 
         <div class="quick-actions" style="margin-top:12px;">
-          <button class="btn-secondary" id="btn-save-gist-config">Enregistrer la configuration</button>
-          <button class="btn-primary" id="btn-cloud-export">&#8593; Envoyer vers le cloud</button>
-          <button class="btn-secondary" id="btn-cloud-import">&#8595; Charger depuis le cloud</button>
+          <button class="btn-secondary" id="btn-save-gist-config" data-i18n="prog.saveConfig">Enregistrer la configuration</button>
+          <button class="btn-primary" id="btn-cloud-export">&#8593; <span data-i18n="prog.cloudExport">Envoyer vers le cloud</span></button>
+          <button class="btn-secondary" id="btn-cloud-import">&#8595; <span data-i18n="prog.cloudImport">Charger depuis le cloud</span></button>
         </div>
 
         <div id="cloud-save-status" style="margin-top:10px;font-size:13px;"></div>
@@ -382,11 +382,11 @@
   <!-- ===================== FOOTER ===================== -->
   <footer class="app-footer">
     <span class="footer-beta">BETA</span>
-    LOL Esport Manager v1.12.1 &mdash; Jeu de gestion d'&eacute;quipe esport League of Legends &mdash;
-    <button onclick="showChangelogModal()" class="footer-link footer-link--btn">Changelog</button>
-    <span class="footer-copy">&copy; 2026 Thierry Demorest &mdash; Tous droits r&eacute;serv&eacute;s. Concept et design prot&eacute;g&eacute;s par la propri&eacute;t&eacute; intellectuelle.</span>
-    <span class="footer-copy">Les donn&eacute;es de progression sont stock&eacute;es localement dans votre navigateur (localStorage) et ne sont jamais transmises &agrave; des tiers.</span>
-    <span class="footer-copy footer-disclaimer">LOL Esport Manager est un projet ind&eacute;pendant non affili&eacute; &agrave; Riot Games. League of Legends est une marque d&eacute;pos&eacute;e de Riot Games, Inc. Ce jeu est cr&eacute;&eacute; &agrave; titre de fan project &agrave; but non commercial.</span>
+    LOL Esport Manager v1.12.2 &mdash; <span data-i18n="footer.tagline">Jeu de gestion d'&eacute;quipe esport League of Legends</span> &mdash;
+    <button onclick="showChangelogModal()" class="footer-link footer-link--btn" data-i18n="footer.changelog">Changelog</button>
+    <span class="footer-copy" data-i18n="footer.copyright">&copy; 2026 Thierry Demorest &mdash; Tous droits r&eacute;serv&eacute;s. Concept et design prot&eacute;g&eacute;s par la propri&eacute;t&eacute; intellectuelle.</span>
+    <span class="footer-copy" data-i18n="footer.localStorage">Les donn&eacute;es de progression sont stock&eacute;es localement dans votre navigateur (localStorage) et ne sont jamais transmises &agrave; des tiers.</span>
+    <span class="footer-copy footer-disclaimer" data-i18n="footer.disclaimer">LOL Esport Manager est un projet ind&eacute;pendant non affili&eacute; &agrave; Riot Games. League of Legends est une marque d&eacute;pos&eacute;e de Riot Games, Inc. Ce jeu est cr&eacute;&eacute; &agrave; titre de fan project &agrave; but non commercial.</span>
   </footer>
 
   <!-- ===================== TOOLTIP RÉCOMPENSES ===================== -->
@@ -398,11 +398,12 @@
       navigator.serviceWorker.register('/sw.js');
     }
   </script>
-  <script src="data_teams.js?v=1.12.1"></script>
-  <script src="data_champions.js?v=1.12.1"></script>
-  <script src="data_counters.js?v=1.12.1"></script>
-  <script src="data_transfers.js?v=1.12.1"></script>
-  <script src="map.js?v=1.12.1"></script>
-  <script src="game.js?v=1.12.1"></script>
+  <script src="lang.js?v=1.12.2"></script>
+  <script src="data_teams.js?v=1.12.2"></script>
+  <script src="data_champions.js?v=1.12.2"></script>
+  <script src="data_counters.js?v=1.12.2"></script>
+  <script src="data_transfers.js?v=1.12.2"></script>
+  <script src="map.js?v=1.12.2"></script>
+  <script src="game.js?v=1.12.2"></script>
 </body>
 </html>

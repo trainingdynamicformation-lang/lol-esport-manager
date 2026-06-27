@@ -5,6 +5,22 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.2] — 2026-06-27
+
+### Ajouté — Internationalisation FR/EN (Phase 1/3 du chantier v1.13.0)
+
+Premier socle du système bilingue. Le jeu pourra être joué intégralement en **français** et en **anglais** une fois le chantier terminé (versions 1.12.x intermédiaires, release complète en 1.13.0).
+
+- **Nouveau module `lang.js`** — dictionnaire `I18N = { fr, en }`, fonction `t(clé, vars)` avec interpolation, `setLang()` et `applyStaticI18n()`. Chargé avant `game.js`.
+- **Popup de bienvenue au premier lancement** — présente le but du jeu en FR et EN, avec deux drapeaux 🇫🇷 / 🇬🇧 pour choisir la langue. Affichée une seule fois (`state.settings.langChosen`).
+- **Sélecteur de langue dans Progression** — deux boutons drapeaux dans les Réglages du monde, changement instantané sans rechargement.
+- **Shell statique entièrement traduit** — navigation, titres d'écrans, états vides, barre de ressources, écran de match, tableau de progression, sauvegarde locale/cloud, pied de page.
+- Langue par défaut : français. Les sauvegardes existantes restent en français sans interruption.
+
+> Phases suivantes : 2/3 = texte des écrans dynamiques (roster, draft, calendrier, transferts), 3/3 = texte narratif (rapports de scouting, comptes-rendus de matchs, journal, contrats, notifications).
+
+---
+
 ## [1.12.1] — 2026-06-26
 
 ### Ajouté — Assistant Coach de draft
