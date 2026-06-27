@@ -3539,11 +3539,11 @@ function getPlacementRewards(placement) {
 }
 
 function placementLabel(placement) {
-  if (placement === 1) return '1er - Champion !';
-  if (placement === 2) return '2e - Finaliste';
-  if (placement === 3) return '3e-4e - Demi-finaliste';
-  if (placement === 5) return '5e-6e - Quart de finaliste';
-  return `${placement}e de la saison reguliere`;
+  if (placement === 1) return t('placement.champion');
+  if (placement === 2) return t('placement.finalist');
+  if (placement === 3) return t('placement.semifinalist');
+  if (placement === 5) return t('placement.quarterfinalist');
+  return t('placement.regular', { n: placement });
 }
 
 function finishSeason() {
@@ -3803,8 +3803,8 @@ function careerProgressionHtml(entries) {
   if (!entries || entries.length === 0) {
     return `
       <div class="panel-subsection">
-        <h4 class="panel-title">Evolution des joueurs</h4>
-        <p class="card__count">Aucune evolution de niveau ce split.</p>
+        <h4 class="panel-title">${t('prog.playerEvolution')}</h4>
+        <p class="card__count">${t('career.noEvolSplit')}</p>
       </div>
     `;
   }
@@ -3824,7 +3824,7 @@ function careerProgressionHtml(entries) {
 
   return `
     <div class="panel-subsection">
-      <h4 class="panel-title">Evolution des joueurs</h4>
+      <h4 class="panel-title">${t('prog.playerEvolution')}</h4>
       <div class="career-progression-list">${rows}</div>
     </div>
   `;
@@ -4531,9 +4531,9 @@ function renderCalendar() {
 
   if (!state.season) {
     el.innerHTML = `
-      <div class="empty-state">La saison n'a pas encore commencé.</div>
+      <div class="empty-state">${t('empty.calendar')}</div>
       <div class="training-form__actions">
-        <button class="btn-primary" id="btn-start-season">Démarrer la saison</button>
+        <button class="btn-primary" id="btn-start-season">${t('cal.startSeason')}</button>
       </div>
     `;
     const startBtn = document.getElementById('btn-start-season');
@@ -4583,39 +4583,39 @@ function renderRegularSeasonCalendar(el, season) {
   let fixtureLabel;
   if (fixture) {
     const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
-    fixtureLabel = `Journée ${season.matchday}/${totalMatchdays} : ${getTeamName('player')} vs ${getTeamName(opponentId)} (BO3)`;
+    fixtureLabel = t('cal.matchday', { d: season.matchday, total: totalMatchdays, home: getTeamName('player'), away: getTeamName(opponentId) });
   } else {
-    fixtureLabel = `Journée ${season.matchday}/${totalMatchdays} : pas de match pour votre équipe (journée de repos)`;
+    fixtureLabel = t('cal.restDay', { d: season.matchday, total: totalMatchdays });
   }
 
   let actionLabel;
   let actionType;
   if (season.pendingMatch) {
-    actionLabel = 'Continuer le match en cours';
+    actionLabel = t('cal.resume');
     actionType = 'resume';
   } else if (fixture) {
-    actionLabel = 'Jouer la journée';
+    actionLabel = t('cal.playDay');
     actionType = 'play';
   } else {
-    actionLabel = 'Simuler la journée';
+    actionLabel = t('cal.simDay');
     actionType = 'simulate';
   }
 
   const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${l}</div>`).join('');
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Saison reguliere</h3>
+    <h3 class="panel-title">${t('cal.regularTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
     <p class="card__count">${fixtureLabel}</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-calendar-action">${actionLabel}</button>
     </div>
-    <h3 class="panel-title">Classement</h3>
+    <h3 class="panel-title">${t('cal.standings')}</h3>
     <table class="history-table">
-      <thead><tr><th>#</th><th>Équipe</th><th>V</th><th>D</th><th title="Nexus gagnés - Nexus perdus">Nexus</th></tr></thead>
+      <thead><tr><th>#</th><th>${t('cal.colTeam')}</th><th>${t('cal.colW')}</th><th>${t('cal.colL')}</th><th title="${t('cal.nexusTip')}">${t('cal.colNexus')}</th></tr></thead>
       <tbody>${standingsRows}</tbody>
     </table>
-    <h3 class="panel-title">Derniers résultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">${t('cal.recentResults')}</h3>
+    <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
   `;
 
   const actionBtn = document.getElementById('btn-calendar-action');
@@ -4681,15 +4681,15 @@ function poBracketCard(poId, label, m, seedA, seedB, isUpcoming, isFinal) {
     <div class="po-card__label">${label}</div>
     <div class="po-card__team po-card__team--${aSt}">${sA}<span class="po-card__name">${aName}</span><span class="po-card__score po-card__score--${aScCl}">${aScore}</span></div>
     <div class="po-card__team po-card__team--${bSt}">${sB}<span class="po-card__name">${bName}</span><span class="po-card__score po-card__score--${bScCl}">${bScore}</span></div>
-    ${isUpcoming ? '<div class="po-card__cta">À venir · Jouer la série</div>' : ''}
+    ${isUpcoming ? `<div class="po-card__cta">${t('bracket.upcoming')}</div>` : ''}
   </div>`;
 }
 
 function poByeCard(poId, teamId, seed) {
   return `<div class="po-bye" data-po="${poId}">
-    <div class="po-bye__label">Qualifié directement</div>
+    <div class="po-bye__label">${t('bracket.byeLabel')}</div>
     <div class="po-bye__name">${getTeamShortName(teamId)}</div>
-    <div class="po-bye__seed">Seed #${seed}</div>
+    <div class="po-bye__seed">${t('bracket.seed', { n: seed })}</div>
   </div>`;
 }
 
@@ -4697,10 +4697,10 @@ function poChampionBlock(seasonLabel, championId) {
   const pending = !championId;
   const name = championId
     ? `<span class="tname-full">${getTeamName(championId)}</span><span class="tname-short">${getTeamShortName(championId)}</span>`
-    : 'À déterminer';
+    : t('bracket.tbd');
   return `<div class="po-champion${pending ? ' po-champion--pending' : ''}" data-po="po-champion">
     <div class="po-champion__crown">👑</div>
-    <div class="po-champion__title">Vainqueur</div>
+    <div class="po-champion__title">${t('bracket.winner')}</div>
     <div class="po-champion__season">${seasonLabel}</div>
     <div class="po-champion__team">${name}</div>
   </div>`;
@@ -4798,24 +4798,24 @@ function buildSeasonBracketHtml(po, pendingMatch, seasonLabel) {
     <div style="flex:1;display:flex;flex-direction:column;">${inner}</div>
   </div>`;
   const legend = `<div class="po-legend">
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>Qualifié</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>Prochain match</div>
-    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>Éliminé</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--win"></div>${t('bracket.legendQualified')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--gold"></div>${t('bracket.legendNext')}</div>
+    <div class="po-legend__item"><div class="po-legend__dot po-legend__dot--out"></div>${t('bracket.legendOut')}</div>
   </div>`;
   return `<div class="po-bracket-wrapper">
     <div class="po-bracket" id="po-bracket-season">
       <svg class="po-bracket__svg"></svg>
-      ${col('Quarts de finale & Byes<br>BO5',
-        half(poByeCard('po-bye-top', seeds[0], 1), poBracketCard('po-qf2','Quart 2',m.qf2,4,5,isUp('qf2'),false)) +
-        half(poBracketCard('po-qf1','Quart 1',m.qf1,3,6,isUp('qf1'),false), poByeCard('po-bye-bot', seeds[1], 2))
+      ${col(t('bracket.qfByes') + '<br>BO5',
+        half(poByeCard('po-bye-top', seeds[0], 1), poBracketCard('po-qf2', t('bracket.qf2'), m.qf2,4,5,isUp('qf2'),false)) +
+        half(poBracketCard('po-qf1', t('bracket.qf1'), m.qf1,3,6,isUp('qf1'),false), poByeCard('po-bye-bot', seeds[1], 2))
       )}
       <div class="po-gap"></div>
-      ${col('Demi-finales<br>BO5',
-        centered(poBracketCard('po-sf-top','Demi 1',m.sf1,null,null,isUp('sf1'),false)) +
-        centered(poBracketCard('po-sf-bot','Demi 2',m.sf2,null,null,isUp('sf2'),false))
+      ${col(t('bracket.semis') + '<br>BO5',
+        centered(poBracketCard('po-sf-top', t('bracket.sf1'), m.sf1,null,null,isUp('sf1'),false)) +
+        centered(poBracketCard('po-sf-bot', t('bracket.sf2'), m.sf2,null,null,isUp('sf2'),false))
       )}
       <div class="po-gap"></div>
-      ${col('Finale<br>BO5', centered(poBracketCard('po-final','Grand Final',m.final,null,null,isUp('final'),true)))}
+      ${col(t('bracket.final') + '<br>BO5', centered(poBracketCard('po-final', t('bracket.grandFinal'), m.final,null,null,isUp('final'),true)))}
       <div class="po-gap"></div>
       ${col('&nbsp;<br>&nbsp;', centered(poChampionBlock(seasonLabel || '', champ)))}
     </div>
@@ -5005,19 +5005,19 @@ function renderPlayoffsCalendar(el, season) {
   if (season.pendingMatch) {
     const pm = season.pendingMatch;
     actionHtml = `
-      <p class="card__count">Prochaine serie : ${pm.format} contre ${getTeamName(pm.opponentTeamId)} (Fearless Draft active).</p>
-      <div class="training-form__actions"><button class="btn-primary" id="btn-play-playoff">Jouer la serie</button></div>
+      <p class="card__count">${t('cal.nextSeries', { fmt: pm.format, team: getTeamName(pm.opponentTeamId) })}</p>
+      <div class="training-form__actions"><button class="btn-primary" id="btn-play-playoff">${t('cal.playSeries')}</button></div>
     `;
   } else {
-    actionHtml = '<p class="card__count">Playoffs en cours...</p>';
+    actionHtml = `<p class="card__count">${t('cal.playoffsOngoing')}</p>`;
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Playoffs</h3>
+    <h3 class="panel-title">${t('cal.playoffsTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
     ${buildSeasonBracketHtml(po, season.pendingMatch, `${splitLabel(season.split)} ${season.year} - ${season.region}`)}
     ${actionHtml}
-    <h3 class="panel-title">Derniers résultats</h3>
-    <div class="recent-results">${logHtml || '<p class="card__count">Aucun résultat pour le moment.</p>'}</div>
+    <h3 class="panel-title">${t('cal.recentResults')}</h3>
+    <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
   `;
 
   requestAnimationFrame(() => drawPoBracketLines('po-bracket-season'));
@@ -5035,16 +5035,16 @@ function renderSeasonRecap(el, season) {
   const placement = getFinalPlacement();
   const rewards = getPlacementRewards(placement);
   const logHtml = season.log.slice(0, 10).map((l) => `<div class="result-chip">${l}</div>`).join('');
-  const nextLabel = season.split === 'spring' ? 'Continuer vers le MSI' : 'Continuer vers les Worlds';
+  const nextLabel = season.split === 'spring' ? t('cal.toMsi') : t('cal.toWorlds');
   const progressionHtml = careerProgressionHtml(state.lastCareerProgression);
   const bracketHtml = season.playoffs
     ? buildSeasonBracketHtml(season.playoffs, null, `${splitLabel(season.split)} ${season.year} - ${season.region}`)
     : '';
 
   el.innerHTML = `
-    <h3 class="panel-title">${splitLabel(season.split)} ${season.year} - ${season.region} - Terminee</h3>
-    <p class="card__count">Classement final : ${placementLabel(placement)}</p>
-    <p class="card__count">Récompenses obtenues : +${rewards.coaching} points coaching, +${rewards.budget} budget, +${rewards.prestige} prestige.</p>
+    <h3 class="panel-title">${t('cal.finishedTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
+    <p class="card__count">${t('cal.finalRank', { label: placementLabel(placement) })}</p>
+    <p class="card__count">${t('cal.rewardsGot', { coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige })}</p>
     ${bracketHtml}
     <div class="recent-results">${logHtml}</div>
     ${progressionHtml}
@@ -6899,7 +6899,7 @@ function playerTeamLabel() {
 function renderTransferJournal() {
   const log = Array.isArray(state.transferLog) ? state.transferLog : [];
   if (!log.length) {
-    return `<div class="panel"><p class="card__count">Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.</p></div>`;
+    return `<div class="panel"><p class="card__count">${t('journal.empty')}</p></div>`;
   }
   const mine = playerTeamLabel();
   const byYear = {};
@@ -6908,19 +6908,20 @@ function renderTransferJournal() {
   const sections = years.map((y) => {
     const rows = byYear[y].map((e) => {
       const meta = TRANSFER_KIND_META[e.k] || { label: e.k, icon: '•', cls: '' };
+      const kindLabel = t('transferKind.' + e.k) === 'transferKind.' + e.k ? meta.label : t('transferKind.' + e.k);
       const isMine = (e.t === 'Vous' || e.t === mine);
       const team = isMine ? mine : e.t;
       return `<div class="tj-row ${meta.cls}${isMine ? ' tj-row--mine' : ''}">
         <span class="tj-row__icon">${meta.icon}</span>
         <span class="tj-row__team">${team}</span>
         <span class="tj-row__player">${e.p} <span class="tj-row__role">${e.r}</span></span>
-        <span class="tj-row__kind">${meta.label}</span>
+        <span class="tj-row__kind">${kindLabel}</span>
       </div>`;
     }).join('');
-    return `<div class="tj-season"><div class="tj-season__title">Saison ${y}</div>${rows}</div>`;
+    return `<div class="tj-season"><div class="tj-season__title">${t('journal.season', { y })}</div>${rows}</div>`;
   }).join('');
   return `<div class="panel">
-    <p class="card__count" style="margin-bottom:12px;">Tous les mouvements de la scène, saison par saison (10 dernières années).</p>
+    <p class="card__count" style="margin-bottom:12px;">${t('journal.intro')}</p>
     ${sections}
   </div>`;
 }

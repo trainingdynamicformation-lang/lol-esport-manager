@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.5] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 2 (lot 2/4 : Journal + Calendrier domestique)
+
+- **Journal des transferts** : intro, libellés saison, types de mouvement (Retraite, Arrivée, Fin de contrat, Signature).
+- **Calendrier domestique** : saison régulière (titre, journée vs adversaire, jour de repos, boutons jouer/simuler/continuer), classement (colonnes Équipe/V/D/Nexus), playoffs (prochaine série, jouer la série), récap de fin de split (classement final, récompenses, suite vers MSI/Worlds).
+- **Bracket de playoffs** (partagé avec l'international) : libellés colonnes (Quarts/Demis/Finale), légende (Qualifié/Prochain match/Éliminé), cartes (byes, seeds, vainqueur, à venir).
+- **Placements** et **évolution des joueurs** traduits.
+
+> Le contenu du journal de résultats (`season.log`, ex. « J3 : Victoire 2-1 contre G2 ») reste en français — il sera traduit en Phase 3 (texte narratif généré). Reste en Phase 2 : lot 3 = calendrier international, lot 4 = transferts/contrats, lot 5 = entraînement, lot 6 = draft/match/scouting.
+
+---
+
 ## [1.12.4] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 1/4 : Roster, Champions, Counters)

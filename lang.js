@@ -177,6 +177,69 @@ const I18N = {
     'counters.counteredTitle': 'Champions contrés par « {q} »',
     'counters.counterTitle': 'Champions qui contrent « {q} »',
 
+    // -- Journal des transferts --
+    'journal.empty': 'Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.',
+    'journal.season': 'Saison {y}',
+    'journal.intro': 'Tous les mouvements de la scène, saison par saison (10 dernières années).',
+    'transferKind.retraite': 'Retraite',
+    'transferKind.arrivee': 'Arrivée',
+    'transferKind.depart': 'Fin de contrat',
+    'transferKind.signature': 'Signature',
+
+    // -- Calendrier --
+    'cal.startSeason': 'Démarrer la saison',
+    'cal.regularTitle': '{split} {year} — {region} — Saison régulière',
+    'cal.matchday': 'Journée {d}/{total} : {home} vs {away} (BO3)',
+    'cal.restDay': 'Journée {d}/{total} : pas de match pour votre équipe (journée de repos)',
+    'cal.resume': 'Continuer le match en cours',
+    'cal.playDay': 'Jouer la journée',
+    'cal.simDay': 'Simuler la journée',
+    'cal.standings': 'Classement',
+    'cal.colTeam': 'Équipe',
+    'cal.colW': 'V',
+    'cal.colL': 'D',
+    'cal.colNexus': 'Nexus',
+    'cal.nexusTip': 'Nexus gagnés - Nexus perdus',
+    'cal.recentResults': 'Derniers résultats',
+    'cal.noResults': 'Aucun résultat pour le moment.',
+    'cal.playoffsTitle': '{split} {year} — {region} — Playoffs',
+    'cal.nextSeries': 'Prochaine série : {fmt} contre {team} (Fearless Draft active).',
+    'cal.playSeries': 'Jouer la série',
+    'cal.playoffsOngoing': 'Playoffs en cours...',
+    'cal.finishedTitle': '{split} {year} — {region} — Terminée',
+    'cal.finalRank': 'Classement final : {label}',
+    'cal.rewardsGot': 'Récompenses obtenues : +{coaching} points coaching, +{budget} budget, +{prestige} prestige.',
+    'cal.toMsi': 'Continuer vers le MSI',
+    'cal.toWorlds': 'Continuer vers les Worlds',
+
+    // -- Placements saison --
+    'placement.champion': '1er - Champion !',
+    'placement.finalist': '2e - Finaliste',
+    'placement.semifinalist': '3e-4e - Demi-finaliste',
+    'placement.quarterfinalist': '5e-6e - Quart de finaliste',
+    'placement.regular': '{n}e de la saison régulière',
+
+    // -- Évolution joueurs --
+    'career.noEvolSplit': 'Aucune évolution de niveau ce split.',
+
+    // -- Bracket --
+    'bracket.qfByes': 'Quarts de finale & Byes',
+    'bracket.semis': 'Demi-finales',
+    'bracket.final': 'Finale',
+    'bracket.legendQualified': 'Qualifié',
+    'bracket.legendNext': 'Prochain match',
+    'bracket.legendOut': 'Éliminé',
+    'bracket.qf1': 'Quart 1',
+    'bracket.qf2': 'Quart 2',
+    'bracket.sf1': 'Demi 1',
+    'bracket.sf2': 'Demi 2',
+    'bracket.grandFinal': 'Grand Final',
+    'bracket.upcoming': 'À venir · Jouer la série',
+    'bracket.byeLabel': 'Qualifié directement',
+    'bracket.seed': 'Seed #{n}',
+    'bracket.tbd': 'À déterminer',
+    'bracket.winner': 'Vainqueur',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -349,6 +412,69 @@ const I18N = {
     'counters.tags': 'Tags: ',
     'counters.counteredTitle': 'Champions countered by "{q}"',
     'counters.counterTitle': 'Champions that counter "{q}"',
+
+    // -- Transfer journal --
+    'journal.empty': 'No movement recorded yet. Retirements and signings will appear here season after season.',
+    'journal.season': 'Season {y}',
+    'journal.intro': "All of the scene's movements, season by season (last 10 years).",
+    'transferKind.retraite': 'Retirement',
+    'transferKind.arrivee': 'Arrival',
+    'transferKind.depart': 'Contract end',
+    'transferKind.signature': 'Signing',
+
+    // -- Calendar --
+    'cal.startSeason': 'Start the season',
+    'cal.regularTitle': '{split} {year} — {region} — Regular season',
+    'cal.matchday': 'Matchday {d}/{total}: {home} vs {away} (BO3)',
+    'cal.restDay': 'Matchday {d}/{total}: no match for your team (rest day)',
+    'cal.resume': 'Resume current match',
+    'cal.playDay': 'Play the matchday',
+    'cal.simDay': 'Simulate the matchday',
+    'cal.standings': 'Standings',
+    'cal.colTeam': 'Team',
+    'cal.colW': 'W',
+    'cal.colL': 'L',
+    'cal.colNexus': 'Nexus',
+    'cal.nexusTip': 'Nexus won - Nexus lost',
+    'cal.recentResults': 'Recent results',
+    'cal.noResults': 'No results yet.',
+    'cal.playoffsTitle': '{split} {year} — {region} — Playoffs',
+    'cal.nextSeries': 'Next series: {fmt} vs {team} (Fearless Draft active).',
+    'cal.playSeries': 'Play the series',
+    'cal.playoffsOngoing': 'Playoffs in progress...',
+    'cal.finishedTitle': '{split} {year} — {region} — Finished',
+    'cal.finalRank': 'Final ranking: {label}',
+    'cal.rewardsGot': 'Rewards earned: +{coaching} coaching points, +{budget} budget, +{prestige} prestige.',
+    'cal.toMsi': 'Continue to MSI',
+    'cal.toWorlds': 'Continue to Worlds',
+
+    // -- Season placements --
+    'placement.champion': '1st - Champion!',
+    'placement.finalist': '2nd - Finalist',
+    'placement.semifinalist': '3rd-4th - Semifinalist',
+    'placement.quarterfinalist': '5th-6th - Quarterfinalist',
+    'placement.regular': '{n}th in the regular season',
+
+    // -- Player evolution --
+    'career.noEvolSplit': 'No level evolution this split.',
+
+    // -- Bracket --
+    'bracket.qfByes': 'Quarterfinals & Byes',
+    'bracket.semis': 'Semifinals',
+    'bracket.final': 'Final',
+    'bracket.legendQualified': 'Qualified',
+    'bracket.legendNext': 'Next match',
+    'bracket.legendOut': 'Eliminated',
+    'bracket.qf1': 'QF 1',
+    'bracket.qf2': 'QF 2',
+    'bracket.sf1': 'SF 1',
+    'bracket.sf2': 'SF 2',
+    'bracket.grandFinal': 'Grand Final',
+    'bracket.upcoming': 'Upcoming · Play the series',
+    'bracket.byeLabel': 'Directly qualified',
+    'bracket.seed': 'Seed #{n}',
+    'bracket.tbd': 'TBD',
+    'bracket.winner': 'Winner',
 
     // -- Language toast --
     'lang.changed': 'Language updated.'
