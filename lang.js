@@ -746,6 +746,13 @@ const I18N = {
     'common.loading': 'Chargement…',
 
     // -- Sélection de région / équipe --
+    'region.LEC.name': 'Europe',       'region.LEC.style': 'Équipes polyvalentes, draft créative',
+    'region.LCK.name': 'Corée',        'region.LCK.style': 'Rigueur, macro et discipline',
+    'region.LPL.name': 'Chine',        'region.LPL.style': 'Agressivité et teamfights précoces',
+    'region.LTA.name': 'Amériques',    'region.LTA.style': 'Individualisme et carry early',
+    'region.LCP.name': 'Asie-Pacifique', 'region.LCP.style': 'Styles émergents et picks surprises',
+    'region.CBLOL.name': 'Brésil',     'region.CBLOL.style': 'Intensité et soutien du public',
+    'region.LJL.name': 'Japon',        'region.LJL.style': 'Précision et compositions techniques',
     'region.chooseRegion': 'Choisissez votre région',
     'region.regionWarning': 'Ce choix définit la ligue régionale dans laquelle votre équipe évoluera.',
     'region.chooseTeam': 'Choisissez votre équipe ({region})',
@@ -1598,6 +1605,13 @@ const I18N = {
     'common.loading': 'Loading…',
 
     // -- Region / team selection --
+    'region.LEC.name': 'Europe',       'region.LEC.style': 'Versatile teams, creative drafting',
+    'region.LCK.name': 'Korea',        'region.LCK.style': 'Discipline, macro and precision',
+    'region.LPL.name': 'China',        'region.LPL.style': 'Aggression and early teamfights',
+    'region.LTA.name': 'Americas',     'region.LTA.style': 'Individualism and early-game carry',
+    'region.LCP.name': 'Asia-Pacific', 'region.LCP.style': 'Emerging styles and surprise picks',
+    'region.CBLOL.name': 'Brazil',     'region.CBLOL.style': 'Intensity and crowd support',
+    'region.LJL.name': 'Japan',        'region.LJL.style': 'Precision and technical compositions',
     'region.chooseRegion': 'Choose your region',
     'region.regionWarning': 'This choice sets the regional league your team will compete in.',
     'region.chooseTeam': 'Choose your team ({region})',

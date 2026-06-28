@@ -1652,8 +1652,8 @@ function renderRegionStep() {
       ${REGIONS.map((r) => `
         <div class="region-card" data-region="${r.id}">
           <div class="region-badge region-badge--${r.id}">${r.name}</div>
-          <div class="region-card__name">${r.inspiration}</div>
-          <div class="region-card__inspiration">${r.style}</div>
+          <div class="region-card__name">${t('region.' + r.id + '.name')}</div>
+          <div class="region-card__inspiration">${t('region.' + r.id + '.style')}</div>
         </div>
       `).join('')}
     </div>
