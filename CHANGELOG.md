@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.14.0] — 2026-06-28
+
+### Ajouté — Programme des journées (calendrier de saison régulière)
+
+Sous le classement, une nouvelle section **« Programme des journées »** liste toutes les journées de la saison, repliables :
+- **Journées passées** (✓) : tous les matchs avec leur score, le vainqueur mis en évidence.
+- **Journée en cours** (badge « EN COURS ») : dépliée par défaut, affiche les affrontements à jouer.
+- **Journées à venir** : affrontements programmés (« vs »).
+- Ton match est surligné en doré. Un clic sur une journée la déplie/replie (accordéon).
+
+**Technique** : nouveau champ `state.season.matchResults[]` (scores structurés par journée, index = journée − 1), alimenté à la fois quand tu joues ton match et quand les matchs IA sont simulés. Helper `recordMatchdayMatch()`. Compatible avec les sauvegardes existantes (les journées déjà jouées d'une partie en cours n'ont pas de détail, mais tout fonctionne pour les nouvelles).
+
+---
+
 ## [1.13.0] — 2026-06-27 — 🌍 Jeu entièrement bilingue FR / EN
 
 ### Version majeure — Internationalisation complète

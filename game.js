@@ -3348,9 +3348,11 @@ function startSeason(split, year) {
     phase: 'regular',
     pendingMatch: null,
     playoffs: null,
-    log: []
+    log: [],
+    matchResults: [] // v1.14.0 : scores structurés par journée (index = journée - 1)
   };
   state.international = null;
+  delete state._calExpandedMd; // v1.14.0 : repli par défaut sur la journée en cours
   saveGame();
   showSeasonIntroModal(split, year, teamIds);
 }
@@ -3409,6 +3411,16 @@ function simulateAISeries(teamAId, teamBId, format) {
     scoreB,
     goldDiffForA
   };
+}
+
+// v1.14.0 : enregistre le score structuré d'un match dans la journée (mdIndex = journée - 1).
+// hs/as = manches gagnées par l'équipe à domicile / extérieur. Permet d'afficher le
+// programme des journées (passées avec scores, à venir en « vs »).
+function recordMatchdayMatch(season, mdIndex, home, away, winner, hs, as) {
+  if (!Array.isArray(season.matchResults)) season.matchResults = [];
+  while (season.matchResults.length <= mdIndex) season.matchResults.push(null);
+  if (!season.matchResults[mdIndex]) season.matchResults[mdIndex] = [];
+  season.matchResults[mdIndex].push({ home, away, winner, hs, as });
 }
 
 function recordMatchResult(homeId, awayId, winnerId, goldDiffForHome, nexusForHome, nexusAgainstHome) {
@@ -4508,12 +4520,21 @@ function resolveSeasonSeries(rt) {
     recordMatchResult('player', opponentId, won ? 'player' : opponentId, goldDiff, scoreFor, scoreAgainst);
     season.log.unshift({ k: 'log.seasonPlayerResult', p: { d: season.matchday, resultWon: won, score: `${scoreFor}-${scoreAgainst}`, teamId: opponentId } });
 
+    // v1.14.0 : score structuré du match du joueur (respecte l'ordre home/away du calendrier)
+    const pf = getPlayerFixture(season.matchday);
+    if (pf) {
+      const playerHome = pf.home === 'player';
+      recordMatchdayMatch(season, season.matchday - 1, pf.home, pf.away, won ? 'player' : opponentId,
+        playerHome ? scoreFor : scoreAgainst, playerHome ? scoreAgainst : scoreFor);
+    }
+
     const pairings = season.schedule[season.matchday - 1] || [];
     pairings.forEach((p) => {
       if (p.home === 'player' || p.away === 'player') return;
       const res = simulateAISeries(p.home, p.away, 'BO3');
       recordAIMatchResult(p.home, p.away, res.winner);
       recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
+      recordMatchdayMatch(season, season.matchday - 1, p.home, p.away, res.winner, res.scoreA, res.scoreB);
       season.log.unshift({ k: 'log.seasonAiResult', p: { d: season.matchday, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
     });
 
@@ -4576,6 +4597,58 @@ function renderCalendar() {
   }
 }
 
+// v1.14.0 : programme des journées repliable (passées avec scores, à venir en « vs »).
+function buildMatchdayScheduleHtml(season) {
+  const total = season.schedule.length;
+  const current = season.matchday;
+  const expandedMd = (state._calExpandedMd !== undefined) ? state._calExpandedMd : current;
+  const results = Array.isArray(season.matchResults) ? season.matchResults : [];
+
+  const blocks = [];
+  for (let md = 1; md <= total; md++) {
+    const pairings = season.schedule[md - 1] || [];
+    const mdResults = results[md - 1] || [];
+    const isPast = md < current;
+    const isCurrent = md === current;
+    const expanded = md === expandedMd;
+    const badge = isCurrent
+      ? `<span class="md-badge md-badge--current">${t('cal.mdCurrent')}</span>`
+      : (isPast ? `<span class="md-badge md-badge--done">✓</span>` : '');
+
+    const rows = pairings.map((p) => {
+      const isMine = p.home === 'player' || p.away === 'player';
+      const homeShort = getTeamShortName(p.home);
+      const awayShort = getTeamShortName(p.away);
+      const res = mdResults.find((r) => r.home === p.home && r.away === p.away);
+      const mineCls = isMine ? ' md-match--mine' : '';
+      if (res) {
+        const homeWin = res.winner === p.home ? ' md-match__team--win' : '';
+        const awayWin = res.winner === p.away ? ' md-match__team--win' : '';
+        return `<div class="md-match${mineCls}">
+          <span class="md-match__team${homeWin}">${homeShort}</span>
+          <span class="md-match__score">${res.hs} - ${res.as}</span>
+          <span class="md-match__team md-match__team--right${awayWin}">${awayShort}</span>
+        </div>`;
+      }
+      return `<div class="md-match${mineCls}">
+        <span class="md-match__team">${homeShort}</span>
+        <span class="md-match__score md-match__score--vs">vs</span>
+        <span class="md-match__team md-match__team--right">${awayShort}</span>
+      </div>`;
+    }).join('');
+
+    blocks.push(`<div class="md-block${isCurrent ? ' md-block--current' : ''}">
+      <button class="md-header" data-md-toggle="${md}">
+        <span class="md-header__chevron">${expanded ? '&#9662;' : '&#9656;'}</span>
+        <span class="md-header__title">${t('cal.mdLabel', { n: md })}</span>
+        ${badge}
+      </button>
+      <div class="md-body"${expanded ? '' : ' style="display:none;"'}>${rows || ''}</div>
+    </div>`);
+  }
+  return `<h3 class="panel-title">${t('cal.scheduleTitle')}</h3><div class="md-schedule">${blocks.join('')}</div>`;
+}
+
 function renderRegularSeasonCalendar(el, season) {
   const totalMatchdays = season.schedule.length;
   const ranked = getSortedStandings();
@@ -4631,7 +4704,17 @@ function renderRegularSeasonCalendar(el, season) {
     </table>
     <h3 class="panel-title">${t('cal.recentResults')}</h3>
     <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
+    ${buildMatchdayScheduleHtml(season)}
   `;
+
+  el.querySelectorAll('[data-md-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const md = Number(btn.dataset.mdToggle);
+      const cur = (state._calExpandedMd !== undefined) ? state._calExpandedMd : season.matchday;
+      state._calExpandedMd = (cur === md) ? -1 : md;
+      renderCalendar();
+    });
+  });
 
   const actionBtn = document.getElementById('btn-calendar-action');
   if (actionBtn) {
@@ -4652,6 +4735,7 @@ function renderRegularSeasonCalendar(el, season) {
           const res = simulateAISeries(p.home, p.away, 'BO3');
           recordAIMatchResult(p.home, p.away, res.winner);
           recordMatchResult(p.home, p.away, res.winner, res.goldDiffForA, res.scoreA, res.scoreB);
+          recordMatchdayMatch(season, season.matchday - 1, p.home, p.away, res.winner, res.scoreA, res.scoreB);
           season.log.unshift({ k: 'log.seasonAiResult', p: { d: season.matchday, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
         });
         season.matchday++;
