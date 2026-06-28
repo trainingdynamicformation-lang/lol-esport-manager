@@ -5,6 +5,26 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.13.0] — 2026-06-27 — 🌍 Jeu entièrement bilingue FR / EN
+
+### Version majeure — Internationalisation complète
+
+LOL Esport Manager est désormais **intégralement jouable en français et en anglais**. Une popup de bienvenue au premier lancement permet de choisir sa langue (🇫🇷 / 🇬🇧) ; le choix est modifiable à tout moment dans **Progression → Réglages du monde**, avec bascule instantanée.
+
+**Couverture complète** (721 clés de traduction, FR = EN, vérifiées) :
+- Interface : navigation, écrans, boutons, formulaires, états vides, barre de ressources, pied de page.
+- Roster, Champions, Counters, Calendrier (domestique + international MSI/Worlds), brackets (simple + double élimination), Transferts, Contrats, Journal.
+- Entraînement (scrims, guide des objectifs, comptes-rendus), Draft (assistant coach), Match (déroulé en direct, événements, structures), Scouting (rapports basique/avancé/premium), pile ou face.
+- Sélection de région, onboarding, sauvegarde locale/cloud, modals d'intro de saison/internationale, qualifications, départs de contrat, tous les toasts et journaux de résultats.
+
+### Dernier lot (sélection de région, progression, modals, sauvegarde)
+- Sélection de région/équipe, cartes de Progression et palmarès, modals d'introduction de saison et de tournoi international, statut de qualification, fins de contrat, sauvegarde locale/cloud (statuts + confirmations) et tous les toasts globaux traduits.
+- Audit final : zéro chaîne d'affichage française résiduelle hors termes LoL universels (Blue/Red Side, First/Last Pick, BO3/BO5, Early/Mid/Late game).
+
+> Phases intermédiaires livrées en 1.12.2 → 1.12.13.
+
+---
+
 ## [1.12.13] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 8 : Scouting)

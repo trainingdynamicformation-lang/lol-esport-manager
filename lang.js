@@ -742,6 +742,120 @@ const I18N = {
     'scout.priorityBan': '{champ} (ban prioritaire)',
     'scout.priorityComfort': '{role} : {champ} (pick confort)',
 
+    // -- Commun (suite 4) --
+    'common.loading': 'Chargement…',
+
+    // -- Sélection de région / équipe --
+    'region.chooseRegion': 'Choisissez votre région',
+    'region.regionWarning': 'Ce choix définit la ligue régionale dans laquelle votre équipe évoluera.',
+    'region.chooseTeam': 'Choisissez votre équipe ({region})',
+    'region.teamWarning': 'Vous prendrez les commandes de cette équipe pour la saison.',
+    'region.tierStyle': 'Tier {n} — {style}',
+    'region.tierStyleLabel': 'Tier {n} — Style : {style}',
+    'region.backToRegions': 'Retour aux régions',
+    'region.colRole': 'Rôle',
+    'region.colPlayer': 'Joueur',
+    'region.colNationality': 'Nationalité',
+    'region.colLevel': 'Niveau',
+    'region.goBack': 'Revenir en arrière',
+    'region.confirm': 'Valider cette équipe',
+
+    // -- Onboarding 1.11.0 --
+    'onboarding.title': '🎉 Nouveautés 1.11.0 — un monde vivant',
+    'onboarding.intro': "Deux nouvelles mécaniques rythment désormais ta carrière sur le long terme. Choisis ce que tu veux activer — tu pourras tout changer à tout moment dans l'onglet <strong>Progression</strong>.",
+    'onboarding.validate': 'Valider mes choix',
+
+    // -- Réinitialisation --
+    'reset.confirm': 'Cliquer à nouveau pour confirmer',
+
+    // -- Sauvegarde cloud (modals + statut) --
+    'cloud.missingConfig': "⚠ Configuration manquante. Renseignez l'ID Gist et le token.",
+    'cloud.sending': 'Envoi en cours...',
+    'cloud.savedOn': '✓ Sauvegarde envoyée le {date} à {time}',
+    'cloud.failed': '✗ Échec : {err}',
+    'cloud.loading': 'Chargement depuis le cloud...',
+    'cloud.loadedOk': '✓ Sauvegarde chargée depuis le cloud',
+    'cloud.bothRequired': '⚠ Les deux champs sont requis.',
+    'cloud.configSaved': '✓ Configuration enregistrée',
+    'cloud.exportConfirm': 'Cette action va <strong>écraser la sauvegarde cloud existante</strong> avec votre partie actuelle. Continuer ?',
+    'cloud.confirmExport': "Confirmer l'envoi",
+    'cloud.importConfirm': 'Cette action va <strong>écraser votre partie actuelle</strong> avec la sauvegarde cloud. Toute progression non sauvegardée sera perdue. Continuer ?',
+    'cloud.confirmImport': 'Confirmer le chargement',
+
+    // -- Toasts divers --
+    'toast.reset': 'Partie réinitialisée',
+    'toast.cloudSent': 'Sauvegarde envoyée vers le cloud',
+    'toast.cloudSendFail': "Échec de l'envoi cloud",
+    'toast.cloudLoaded': 'Sauvegarde cloud chargée avec succès',
+    'toast.cloudLoadFail': 'Échec du chargement cloud',
+    'toast.cloudConfigSaved': 'Configuration cloud sauvegardée',
+    'toast.saveExported': 'Sauvegarde exportée',
+    'toast.saveImported': 'Sauvegarde importée avec succès',
+    'toast.saveInvalid': 'Fichier de sauvegarde invalide',
+    'toast.welcome': 'Bienvenue chez {team} !',
+    'toast.onboardingSaved': 'Réglages enregistrés. Modifiables dans Progression.',
+
+    // -- Cartes Progression --
+    'prog.matchesPlayed': 'Matchs joués',
+    'prog.wins': 'Victoires',
+    'prog.winRate': 'Taux de victoire',
+    'prog.bestStreak': 'Meilleure série de victoires',
+    'prog.regionalTitles': 'Titres régionaux',
+    'prog.msiQualifs': 'Qualifications MSI',
+    'prog.msiTitles': 'Titres MSI',
+    'prog.msiBest': 'Meilleur résultat MSI',
+    'prog.worldsQualifs': 'Qualifications Worlds',
+    'prog.worldsTitles': 'Titres Worlds',
+    'prog.worldsBest': 'Meilleur résultat Worlds',
+
+    // -- Meilleur résultat international --
+    'intlBest.champion': 'Champion',
+    'intlBest.finalist': 'Finaliste',
+    'intlBest.semifinalist': 'Demi-finaliste',
+    'intlBest.quarterfinalist': 'Quart de finaliste',
+    'intlBest.groups': 'Phase de groupes',
+
+    // -- Scrim : exemption --
+    'scrim.exemptionShared': 'votre organisation partage la même compétition internationale ({event} {year})',
+
+    // -- Modal intro de saison --
+    'season.welcome': '🏆 {split} {year} — Bienvenue !',
+    'season.regularTitle': '📅 Saison régulière',
+    'season.regularDesc': "Vous affrontez <strong>{teams} équipes</strong> en round-robin complet : chaque équipe joue contre toutes les autres une fois. Cela représente <strong>{days} journées</strong>. Chaque match se joue en <strong>BO3</strong>. Le classement est déterminé par le nombre de victoires, puis par le head-to-head, puis par la différence de nexus (gagnés - perdus), puis par la différence d'or.",
+    'season.playoffsTitle': '⚔️ Playoffs',
+    'season.playoffsDesc': "Les <strong>6 meilleures équipes</strong> se qualifient pour les playoffs. Les seeds 3-6 s'affrontent en quarts de finale (BO5), les vainqueurs rejoignent les seeds 1 et 2 en demi-finales (BO5). La grande finale se joue en <strong>BO5</strong>.",
+    'season.qualifTitle': '🌍 Qualification {event}',
+    'season.qualifDesc': "Les <strong>{slots} meilleures équipes</strong> de votre région se qualifient pour le <strong>{event}</strong>. Pour représenter votre région sur la scène internationale, votre équipe doit faire partie de ces {slots} qualifiés à l'issue des playoffs :",
+    'season.qualifTier1': 'Le <strong>champion des playoffs</strong>.',
+    'season.qualifTier2': 'Le <strong>finaliste</strong> (perdant de la grande finale).',
+    'season.qualifTier3': 'Le <strong>meilleur demi-finaliste éliminé</strong>, départagé selon le classement de la saison régulière (meilleur seed).',
+    'season.linkMsi': '🔗 La <strong>2ᵉ place MSI</strong> revient à la région vainqueure des derniers Worlds : <strong>{region}</strong>{suffix}.',
+    'season.linkMsiYours': ' (votre région — vous avez donc 2 places)',
+    'season.linkMsiOther': " — votre région n'a qu'1 place, seul votre champion ira au MSI",
+    'season.linkMsiNone': "🔗 Aucun Worlds n'a encore eu lieu : par défaut, votre région bénéficie de la <strong>2ᵉ place MSI</strong> cette année.",
+    'season.linkWorlds': '🔗 Le vainqueur du MSI ouvre une <strong>3ᵉ place Worlds</strong> pour sa région : <strong>{region}</strong>. Une place structurelle majeure (LCK/LPL) complète les 16 qualifiés.',
+    'season.linkWorldsNone': "🔗 Aucun MSI enregistré : par défaut, votre région bénéficie d'une <strong>3ᵉ place Worlds</strong> cette année.",
+    'season.participatingTeams': '🏆 Équipes participantes',
+    'season.you': ' (vous)',
+    'season.startSeason': 'Lancer la saison !',
+
+    // -- Modal intro internationale --
+    'intlIntro.qualifiedYes': '✓ Vous êtes qualifié pour le {event} !',
+    'intlIntro.qualifiedNo': "✗ Votre équipe n'est pas qualifiée pour cette édition.",
+    'intlIntro.formatTitle': '🏆 Format de la compétition',
+    'intlIntro.formatDesc': "<strong>{count} équipes</strong> issues de toutes les régions du monde s'affrontent. La compétition se déroule en deux phases :",
+    'intlIntro.phaseGroups': '<strong>Phase de groupes</strong> — {groups} groupes de {size} équipes, round-robin en BO3. Les {qual} premiers de chaque groupe passent en bracket.',
+    'intlIntro.bracketSingle': '<strong>Bracket à élimination directe</strong> — demi-finales et finale en BO5.',
+    'intlIntro.bracketDouble': "<strong>Bracket à double élimination</strong> (BO5) — un <strong>upper bracket</strong> où une défaite vous fait basculer en <strong>lower bracket</strong>, et une seconde défaite vous élimine. Le vainqueur de l'upper et celui qui survit au lower s'affrontent en grande finale.",
+    'intlIntro.qualifiedByGroup': '🏁 Équipes qualifiées par groupe',
+    'intlIntro.start': "C'est parti !",
+
+    // -- Modal départs (fins de contrat) --
+    'depart.meta': 'fin de contrat',
+    'depart.title': '📋 Fins de contrat',
+    'depart.desc1': "Faute de prolongation, ce joueur quitte l'équipe. Recrutez un remplaçant au marché des transferts.",
+    'depart.descN': "Faute de prolongation, ces joueurs quittent l'équipe. Recrutez des remplaçants au marché des transferts.",
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -1479,6 +1593,120 @@ const I18N = {
     'scout.lockedPremium': 'Keep scouting to unlock the premium report: full per-player stats, individual form, suggested counter-picks and player to watch.',
     'scout.priorityBan': '{champ} (priority ban)',
     'scout.priorityComfort': '{role}: {champ} (comfort pick)',
+
+    // -- Common (cont.) --
+    'common.loading': 'Loading…',
+
+    // -- Region / team selection --
+    'region.chooseRegion': 'Choose your region',
+    'region.regionWarning': 'This choice sets the regional league your team will compete in.',
+    'region.chooseTeam': 'Choose your team ({region})',
+    'region.teamWarning': 'You will take charge of this team for the season.',
+    'region.tierStyle': 'Tier {n} — {style}',
+    'region.tierStyleLabel': 'Tier {n} — Style: {style}',
+    'region.backToRegions': 'Back to regions',
+    'region.colRole': 'Role',
+    'region.colPlayer': 'Player',
+    'region.colNationality': 'Nationality',
+    'region.colLevel': 'Level',
+    'region.goBack': 'Go back',
+    'region.confirm': 'Confirm this team',
+
+    // -- Onboarding 1.11.0 --
+    'onboarding.title': '🎉 What\'s new in 1.11.0 — a living world',
+    'onboarding.intro': 'Two new mechanics now shape your long-term career. Choose what you want to enable — you can change everything anytime in the <strong>Progression</strong> tab.',
+    'onboarding.validate': 'Confirm my choices',
+
+    // -- Reset --
+    'reset.confirm': 'Click again to confirm',
+
+    // -- Cloud save (modals + status) --
+    'cloud.missingConfig': '⚠ Missing configuration. Enter the Gist ID and token.',
+    'cloud.sending': 'Sending...',
+    'cloud.savedOn': '✓ Save uploaded on {date} at {time}',
+    'cloud.failed': '✗ Failed: {err}',
+    'cloud.loading': 'Loading from the cloud...',
+    'cloud.loadedOk': '✓ Save loaded from the cloud',
+    'cloud.bothRequired': '⚠ Both fields are required.',
+    'cloud.configSaved': '✓ Configuration saved',
+    'cloud.exportConfirm': 'This will <strong>overwrite the existing cloud save</strong> with your current game. Continue?',
+    'cloud.confirmExport': 'Confirm upload',
+    'cloud.importConfirm': 'This will <strong>overwrite your current game</strong> with the cloud save. Any unsaved progress will be lost. Continue?',
+    'cloud.confirmImport': 'Confirm load',
+
+    // -- Misc toasts --
+    'toast.reset': 'Game reset',
+    'toast.cloudSent': 'Save uploaded to the cloud',
+    'toast.cloudSendFail': 'Cloud upload failed',
+    'toast.cloudLoaded': 'Cloud save loaded successfully',
+    'toast.cloudLoadFail': 'Cloud load failed',
+    'toast.cloudConfigSaved': 'Cloud configuration saved',
+    'toast.saveExported': 'Save exported',
+    'toast.saveImported': 'Save imported successfully',
+    'toast.saveInvalid': 'Invalid save file',
+    'toast.welcome': 'Welcome to {team}!',
+    'toast.onboardingSaved': 'Settings saved. Editable in Progression.',
+
+    // -- Progression cards --
+    'prog.matchesPlayed': 'Matches played',
+    'prog.wins': 'Wins',
+    'prog.winRate': 'Win rate',
+    'prog.bestStreak': 'Best win streak',
+    'prog.regionalTitles': 'Regional titles',
+    'prog.msiQualifs': 'MSI qualifications',
+    'prog.msiTitles': 'MSI titles',
+    'prog.msiBest': 'Best MSI result',
+    'prog.worldsQualifs': 'Worlds qualifications',
+    'prog.worldsTitles': 'Worlds titles',
+    'prog.worldsBest': 'Best Worlds result',
+
+    // -- Best international result --
+    'intlBest.champion': 'Champion',
+    'intlBest.finalist': 'Finalist',
+    'intlBest.semifinalist': 'Semifinalist',
+    'intlBest.quarterfinalist': 'Quarterfinalist',
+    'intlBest.groups': 'Group stage',
+
+    // -- Scrim: exemption --
+    'scrim.exemptionShared': 'your organization shares the same international competition ({event} {year})',
+
+    // -- Season intro modal --
+    'season.welcome': '🏆 {split} {year} — Welcome!',
+    'season.regularTitle': '📅 Regular season',
+    'season.regularDesc': 'You face <strong>{teams} teams</strong> in a full round-robin: each team plays every other once. That makes <strong>{days} matchdays</strong>. Every match is a <strong>BO3</strong>. Standings are decided by number of wins, then head-to-head, then nexus differential (won - lost), then gold differential.',
+    'season.playoffsTitle': '⚔️ Playoffs',
+    'season.playoffsDesc': 'The <strong>top 6 teams</strong> qualify for the playoffs. Seeds 3-6 face off in the quarterfinals (BO5), the winners join seeds 1 and 2 in the semifinals (BO5). The grand final is a <strong>BO5</strong>.',
+    'season.qualifTitle': '🌍 {event} qualification',
+    'season.qualifDesc': 'The <strong>top {slots} teams</strong> of your region qualify for the <strong>{event}</strong>. To represent your region on the international stage, your team must be among those {slots} qualifiers after the playoffs:',
+    'season.qualifTier1': 'The <strong>playoff champion</strong>.',
+    'season.qualifTier2': 'The <strong>finalist</strong> (grand final loser).',
+    'season.qualifTier3': 'The <strong>best eliminated semifinalist</strong>, decided by regular-season standing (best seed).',
+    'season.linkMsi': '🔗 The <strong>2nd MSI slot</strong> goes to the region that won the last Worlds: <strong>{region}</strong>{suffix}.',
+    'season.linkMsiYours': ' (your region — so you have 2 slots)',
+    'season.linkMsiOther': ' — your region only has 1 slot, only your champion will go to MSI',
+    'season.linkMsiNone': '🔗 No Worlds has happened yet: by default, your region gets the <strong>2nd MSI slot</strong> this year.',
+    'season.linkWorlds': '🔗 The MSI winner opens a <strong>3rd Worlds slot</strong> for their region: <strong>{region}</strong>. A structural major slot (LCK/LPL) completes the 16 qualifiers.',
+    'season.linkWorldsNone': '🔗 No MSI recorded: by default, your region gets a <strong>3rd Worlds slot</strong> this year.',
+    'season.participatingTeams': '🏆 Participating teams',
+    'season.you': ' (you)',
+    'season.startSeason': 'Start the season!',
+
+    // -- International intro modal --
+    'intlIntro.qualifiedYes': '✓ You are qualified for {event}!',
+    'intlIntro.qualifiedNo': '✗ Your team is not qualified for this edition.',
+    'intlIntro.formatTitle': '🏆 Competition format',
+    'intlIntro.formatDesc': '<strong>{count} teams</strong> from every region in the world compete. The competition runs in two phases:',
+    'intlIntro.phaseGroups': '<strong>Group stage</strong> — {groups} groups of {size} teams, round-robin in BO3. The top {qual} of each group advance to the bracket.',
+    'intlIntro.bracketSingle': '<strong>Single-elimination bracket</strong> — semifinals and final in BO5.',
+    'intlIntro.bracketDouble': '<strong>Double-elimination bracket</strong> (BO5) — an <strong>upper bracket</strong> where a loss drops you to the <strong>lower bracket</strong>, and a second loss eliminates you. The upper winner and the lower survivor face off in the grand final.',
+    'intlIntro.qualifiedByGroup': '🏁 Teams qualified by group',
+    'intlIntro.start': "Let's go!",
+
+    // -- Departures modal (contract ends) --
+    'depart.meta': 'contract end',
+    'depart.title': '📋 Contract ends',
+    'depart.desc1': 'Without an extension, this player leaves the team. Recruit a replacement on the transfer market.',
+    'depart.descN': 'Without an extension, these players leave the team. Recruit replacements on the transfer market.',
 
     // -- Language toast --
     'lang.changed': 'Language updated.'

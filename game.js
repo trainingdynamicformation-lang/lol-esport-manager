@@ -206,11 +206,11 @@ function ensurePalmares() {
 
 function intlBestResultLabel(placement) {
   if (placement === null || placement === undefined) return '—';
-  if (placement === 1) return 'Champion';
-  if (placement === 2) return 'Finaliste';
-  if (placement === 3) return 'Demi-finaliste';
-  if (placement <= 5) return 'Quart de finaliste';
-  return 'Phase de groupes';
+  if (placement === 1) return t('intlBest.champion');
+  if (placement === 2) return t('intlBest.finalist');
+  if (placement === 3) return t('intlBest.semifinalist');
+  if (placement <= 5) return t('intlBest.quarterfinalist');
+  return t('intlBest.groups');
 }
 
 function loadGame() {
@@ -296,7 +296,7 @@ function resetGame() {
   } else {
     showView('home');
   }
-  showToast('Partie reinitialisee', 'info');
+  showToast(t('toast.reset'), 'info');
 }
 
 /* ------------------------------------------------------------
@@ -321,8 +321,8 @@ function setCloudStatus(msg, type) {
 
 async function cloudExport() {
   const { gistId, token } = loadGistConfig();
-  if (!gistId || !token) { setCloudStatus('⚠ Configuration manquante. Renseignez l\'ID Gist et le token.', 'error'); return; }
-  setCloudStatus('Envoi en cours...', 'info');
+  if (!gistId || !token) { setCloudStatus(t('cloud.missingConfig'), 'error'); return; }
+  setCloudStatus(t('cloud.sending'), 'info');
   try {
     const res = await fetch(`https://api.github.com/gists/${gistId}`, {
       method: 'PATCH',
@@ -330,19 +330,20 @@ async function cloudExport() {
       body: JSON.stringify({ files: { 'save.json': { content: JSON.stringify(state, null, 2) } } })
     });
     if (!res.ok) throw new Error(`Erreur ${res.status}`);
-    const now = new Date().toLocaleTimeString('fr-FR');
-    setCloudStatus(`✓ Sauvegarde envoyee le ${new Date().toLocaleDateString('fr-FR')} a ${now}`, 'success');
-    showToast('Sauvegarde envoyee vers le cloud', 'success');
+    const locale = getLang() === 'en' ? 'en-US' : 'fr-FR';
+    const now = new Date().toLocaleTimeString(locale);
+    setCloudStatus(t('cloud.savedOn', { date: new Date().toLocaleDateString(locale), time: now }), 'success');
+    showToast(t('toast.cloudSent'), 'success');
   } catch (err) {
-    setCloudStatus(`✗ Échec : ${err.message}`, 'error');
-    showToast('Échec de l\'envoi cloud', 'error');
+    setCloudStatus(t('cloud.failed', { err: err.message }), 'error');
+    showToast(t('toast.cloudSendFail'), 'error');
   }
 }
 
 async function cloudImport() {
   const { gistId, token } = loadGistConfig();
-  if (!gistId || !token) { setCloudStatus('⚠ Configuration manquante. Renseignez l\'ID Gist et le token.', 'error'); return; }
-  setCloudStatus('Chargement depuis le cloud...', 'info');
+  if (!gistId || !token) { setCloudStatus(t('cloud.missingConfig'), 'error'); return; }
+  setCloudStatus(t('cloud.loading'), 'info');
   try {
     const res = await fetch(`https://api.github.com/gists/${gistId}`, {
       headers: { Authorization: `token ${token}` }
@@ -363,11 +364,11 @@ async function cloudImport() {
     updateResourceBar();
     showView('home');
     if (typeof renderHome === 'function') renderHome();
-    setCloudStatus('✓ Sauvegarde chargée depuis le cloud', 'success');
-    showToast('Sauvegarde cloud chargée avec succès', 'success');
+    setCloudStatus(t('cloud.loadedOk'), 'success');
+    showToast(t('toast.cloudLoaded'), 'success');
   } catch (err) {
-    setCloudStatus(`✗ Échec : ${err.message}`, 'error');
-    showToast('Échec du chargement cloud', 'error');
+    setCloudStatus(t('cloud.failed', { err: err.message }), 'error');
+    showToast(t('toast.cloudLoadFail'), 'error');
   }
 }
 
@@ -382,21 +383,21 @@ function initCloudSaveUI() {
   if (saveConfigBtn) saveConfigBtn.addEventListener('click', () => {
     const gistId = gistInput?.value.trim();
     const token = tokenInput?.value.trim();
-    if (!gistId || !token) { setCloudStatus('⚠ Les deux champs sont requis.', 'error'); return; }
+    if (!gistId || !token) { setCloudStatus(t('cloud.bothRequired'), 'error'); return; }
     saveGistConfig(gistId, token);
-    setCloudStatus('✓ Configuration enregistree', 'success');
-    showToast('Configuration cloud sauvegardee', 'success');
+    setCloudStatus(t('cloud.configSaved'), 'success');
+    showToast(t('toast.cloudConfigSaved'), 'success');
   });
 
   const exportBtn = document.getElementById('btn-cloud-export');
   if (exportBtn) exportBtn.addEventListener('click', () => {
     showModal(`
       <div class="modal-confirm">
-        <h3 class="panel-title">Envoyer vers le cloud</h3>
-        <p>Cette action va <strong>écraser la sauvegarde cloud existante</strong> avec votre partie actuelle. Continuer ?</p>
+        <h3 class="panel-title">${t('prog.cloudExport')}</h3>
+        <p>${t('cloud.exportConfirm')}</p>
         <div class="training-form__actions">
-          <button class="btn-secondary" onclick="closeModal()">Annuler</button>
-          <button class="btn-primary" id="btn-confirm-cloud-export">Confirmer l'envoi</button>
+          <button class="btn-secondary" onclick="closeModal()">${t('common.cancel')}</button>
+          <button class="btn-primary" id="btn-confirm-cloud-export">${t('cloud.confirmExport')}</button>
         </div>
       </div>
     `);
@@ -407,11 +408,11 @@ function initCloudSaveUI() {
   if (importBtn) importBtn.addEventListener('click', () => {
     showModal(`
       <div class="modal-confirm">
-        <h3 class="panel-title">Charger depuis le cloud</h3>
-        <p>Cette action va <strong>écraser votre partie actuelle</strong> avec la sauvegarde cloud. Toute progression non sauvegardée sera perdue. Continuer ?</p>
+        <h3 class="panel-title">${t('prog.cloudImport')}</h3>
+        <p>${t('cloud.importConfirm')}</p>
         <div class="training-form__actions">
-          <button class="btn-secondary" onclick="closeModal()">Annuler</button>
-          <button class="btn-primary" id="btn-confirm-cloud-import">Confirmer le chargement</button>
+          <button class="btn-secondary" onclick="closeModal()">${t('common.cancel')}</button>
+          <button class="btn-primary" id="btn-confirm-cloud-import">${t('cloud.confirmImport')}</button>
         </div>
       </div>
     `);
@@ -431,7 +432,7 @@ function exportSave() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('Sauvegarde exportee', 'success');
+  showToast(t('toast.saveExported'), 'success');
 }
 
 function importSave(file) {
@@ -449,9 +450,9 @@ function importSave(file) {
       updateResourceBar();
       showView('home');
       if (typeof renderHome === 'function') renderHome();
-      showToast('Sauvegarde importee avec succès', 'success');
+      showToast(t('toast.saveImported'), 'success');
     } catch (err) {
-      showToast('Fichier de sauvegarde invalide', 'error');
+      showToast(t('toast.saveInvalid'), 'error');
     }
   };
   reader.readAsText(file);
@@ -572,7 +573,7 @@ function closeModal() {
 }
 
 function showChangelogModal() {
-  showModal(`<div class="changelog-modal"><p class="changelog-loading">Chargement…</p></div>`);
+  showModal(`<div class="changelog-modal"><p class="changelog-loading">${t('common.loading')}</p></div>`);
   fetch('CHANGELOG.md')
     .then(r => r.text())
     .then(md => {
@@ -1287,7 +1288,7 @@ function processContractExpirations(completedYear) {
 function getScrimExemptionReason(opponent) {
   if (!state.international) return null;
   if (!state.international.teams.includes(opponent.id)) return null;
-  return `votre organisation partage la même compétition internationale (${eventLabel(state.international)} ${state.international.year})`;
+  return t('scrim.exemptionShared', { event: eventLabel(state.international), year: state.international.year });
 }
 
 /* ------------------------------------------------------------
@@ -1641,8 +1642,8 @@ function renderRegionStep() {
   if (!overlay || !content) return;
 
   content.innerHTML = `
-    <h2 class="region-select-title">Choisissez votre region</h2>
-    <p class="region-select-warning">Ce choix definit la ligue regionale dans laquelle votre équipe evoluera.</p>
+    <h2 class="region-select-title">${t('region.chooseRegion')}</h2>
+    <p class="region-select-warning">${t('region.regionWarning')}</p>
     <div class="region-grid" id="region-grid">
       ${REGIONS.map((r) => `
         <div class="region-card" data-region="${r.id}">
@@ -1671,25 +1672,25 @@ function renderTeamStep(regionId) {
   const teams = getAITeamsForRegion(regionId);
 
   content.innerHTML = `
-    <h2 class="region-select-title">Choisissez votre équipe (${region.name})</h2>
-    <p class="region-select-warning">Vous prendrez les commandes de cette équipe pour la saison.</p>
+    <h2 class="region-select-title">${t('region.chooseTeam', { region: region.name })}</h2>
+    <p class="region-select-warning">${t('region.teamWarning')}</p>
     <div class="team-select-grid" id="team-select-grid">
-      ${teams.map((t) => `
-        <div class="team-select-card" data-team="${t.id}">
-          <div class="region-badge region-badge--${regionId}">${t.shortName}</div>
-          <div class="team-select-card__name">${t.name}</div>
-          <div class="team-select-card__meta">Tier ${t.tier} &mdash; ${formatStyle(t.style)}</div>
+      ${teams.map((team) => `
+        <div class="team-select-card" data-team="${team.id}">
+          <div class="region-badge region-badge--${regionId}">${team.shortName}</div>
+          <div class="team-select-card__name">${team.name}</div>
+          <div class="team-select-card__meta">${t('region.tierStyle', { n: team.tier, style: formatStyle(team.style) })}</div>
         </div>
       `).join('')}
     </div>
     <div class="quick-actions" style="justify-content:center;">
-      <button class="btn-secondary" id="btn-back-to-regions">Retour aux regions</button>
+      <button class="btn-secondary" id="btn-back-to-regions">${t('region.backToRegions')}</button>
     </div>
   `;
 
   content.querySelectorAll('.team-select-card').forEach((card) => {
     card.addEventListener('click', () => {
-      const team = teams.find((t) => t.id === card.dataset.team);
+      const team = teams.find((tm) => tm.id === card.dataset.team);
       showTeamConfirmModal(team, regionId);
     });
   });
@@ -1712,16 +1713,16 @@ function showTeamConfirmModal(team, regionId) {
 
   showModal(`
     <h2 class="region-select-title">${team.name} (${team.shortName})</h2>
-    <p class="region-select-warning">Tier ${team.tier} &mdash; Style : ${formatStyle(team.style)}</p>
+    <p class="region-select-warning">${t('region.tierStyleLabel', { n: team.tier, style: formatStyle(team.style) })}</p>
     <table class="history-table">
       <thead>
-        <tr><th>Role</th><th>Joueur</th><th>Nationalite</th><th>Niveau</th></tr>
+        <tr><th>${t('region.colRole')}</th><th>${t('region.colPlayer')}</th><th>${t('region.colNationality')}</th><th>${t('region.colLevel')}</th></tr>
       </thead>
       <tbody>${rosterRows}</tbody>
     </table>
     <div class="modal-content__actions">
-      <button class="btn-secondary" id="btn-cancel-team">Revenir en arriere</button>
-      <button class="btn-primary" id="btn-confirm-team">Valider cette équipe</button>
+      <button class="btn-secondary" id="btn-cancel-team">${t('region.goBack')}</button>
+      <button class="btn-primary" id="btn-confirm-team">${t('region.confirm')}</button>
     </div>
   `);
 
@@ -1748,7 +1749,7 @@ function confirmTeamSelection(team, regionId) {
   saveGame();
   updateAllTeamNameDisplays();
   showView('home');
-  showToast(`Bienvenue chez ${team.name} !`, 'success');
+  showToast(t('toast.welcome', { team: team.name }), 'success');
   maybeShowOnboarding1110();
 }
 
@@ -1813,14 +1814,14 @@ function renderHome() {
   const nextEl = document.getElementById('home-next-match');
   if (nextEl) {
     const info = getNextMatchInfo();
-    nextEl.querySelector('.match-card--next__label').textContent = info ? info.competition : 'Prochain match';
-    nextEl.querySelector('.match-card--next__teams').textContent = info ? `vs ${info.opponent}` : 'À définir';
+    nextEl.querySelector('.match-card--next__label').textContent = info ? info.competition : t('home.nextMatch');
+    nextEl.querySelector('.match-card--next__teams').textContent = info ? `vs ${info.opponent}` : t('home.tbd');
   }
 
   const resultsEl = document.getElementById('home-recent-results');
   if (resultsEl) {
     if (state.matchHistory.length === 0) {
-      resultsEl.innerHTML = '<p class="card__count">Aucun match joue pour le moment.</p>';
+      resultsEl.innerHTML = `<p class="card__count">${t('home.noMatches')}</p>`;
     } else {
       resultsEl.innerHTML = state.matchHistory.slice(0, 3).map((m) => {
         const cls = m.result === 'win' ? 'result-chip--win' : 'result-chip--loss';
@@ -3203,7 +3204,7 @@ function getSeasonTeamIds() {
 
 function getTeamRef(teamId) {
   if (teamId === 'player') {
-    return { id: 'player', name: state.teamName || 'Votre équipe', shortName: state.teamShortName || 'YOU', roster: state.roster, region: state.region };
+    return { id: 'player', name: state.teamName || t('match.yourTeam'), shortName: state.teamShortName || 'YOU', roster: state.roster, region: state.region };
   }
   const base = AI_TEAMS.find((t) => t.id === teamId);
   if (!base) return null;
@@ -3262,53 +3263,48 @@ function showSeasonIntroModal(split, year, teamIds) {
   const playerAiRegion = playerRegion ? playerRegion.aiRegion : 'LEC';
   const regionSlots = getRegionRepCounts(eventType, playerAiRegion)[playerAiRegion] || 2;
   const qualifTiersHtml = `
-    <li>Le <strong>champion des playoffs</strong>.</li>
-    ${regionSlots >= 2 ? `<li>Le <strong>finaliste</strong> (perdant de la grande finale).</li>` : ''}
-    ${regionSlots >= 3 ? `<li>Le <strong>meilleur demi-finaliste éliminé</strong>, départagé selon le classement de la saison reguliere (meilleur seed).</li>` : ''}`;
+    <li>${t('season.qualifTier1')}</li>
+    ${regionSlots >= 2 ? `<li>${t('season.qualifTier2')}</li>` : ''}
+    ${regionSlots >= 3 ? `<li>${t('season.qualifTier3')}</li>` : ''}`;
   // Note explicative sur la place bonus liée à l'autre tournoi (boucle MSI <-> Worlds).
   let linkNoteHtml = '';
   if (eventType === 'msi') {
     const w = state.lastWorldsWinnerRegion;
     linkNoteHtml = w
-      ? `&#128279; La <strong>2ᵉ place MSI</strong> revient à la région vainqueure des derniers Worlds : <strong>${w}</strong>${w === playerAiRegion ? ' (votre région — vous avez donc 2 places)' : ' — votre région n\'a qu\'1 place, seul votre champion ira au MSI'}.`
-      : `&#128279; Aucun Worlds n'a encore eu lieu : par défaut, votre région bénéficie de la <strong>2ᵉ place MSI</strong> cette année.`;
+      ? t('season.linkMsi', { region: w, suffix: w === playerAiRegion ? t('season.linkMsiYours') : t('season.linkMsiOther') })
+      : t('season.linkMsiNone');
   } else {
     const m = state.lastMsiWinnerRegion;
     linkNoteHtml = m
-      ? `&#128279; Le vainqueur du MSI ouvre une <strong>3ᵉ place Worlds</strong> pour sa région : <strong>${m}</strong>. Une place structurelle majeure (LCK/LPL) complète les 16 qualifiés.`
-      : `&#128279; Aucun MSI enregistré : par défaut, votre région bénéficie d'une <strong>3ᵉ place Worlds</strong> cette année.`;
+      ? t('season.linkWorlds', { region: m })
+      : t('season.linkWorldsNone');
   }
   const teamListHtml = teamIds.map((id, i) => {
-    const t = getTeamRef(id);
-    const name = t ? t.name : id;
+    const tm = getTeamRef(id);
+    const name = tm ? tm.name : id;
     const isPlayer = id === 'player';
-    return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : ''}">${i + 1}. ${name}${isPlayer ? ' (vous)' : ''}</li>`;
+    return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : ''}">${i + 1}. ${name}${isPlayer ? t('season.you') : ''}</li>`;
   }).join('');
 
   showModal(`
-    <h2 class="panel-title" style="margin-bottom:16px;">&#127942; ${splitName} ${year} — Bienvenue !</h2>
+    <h2 class="panel-title" style="margin-bottom:16px;">${t('season.welcome', { split: splitName, year })}</h2>
     <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#128197; Saison reguliere</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">${t('season.regularTitle')}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Vous affrontez <strong>${teamIds.length - 1} équipes</strong> en round-robin complet : chaque équipe joue contre toutes les autres une fois.
-          Cela represente <strong>${totalMatchdays} journées</strong>. Chaque match se joue en <strong>BO3</strong>.
-          Le classement est determine par le nombre de victoires, puis par le head-to-head, puis par la différence de nexus (gagnés - perdus), puis par la différence d'or.
+          ${t('season.regularDesc', { teams: teamIds.length - 1, days: totalMatchdays })}
         </p>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#9876;&#65039; Playoffs</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">${t('season.playoffsTitle')}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Les <strong>6 meilleures équipes</strong> se qualifient pour les playoffs.
-          Les seeds 3-6 s'affrontent en quarts de finale (BO5), les vainqueurs rejoignent les seeds 1 et 2 en demi-finales (BO5).
-          La grande finale se joue en <strong>BO5</strong>.
+          ${t('season.playoffsDesc')}
         </p>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127758; Qualification ${intlEvent}</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">${t('season.qualifTitle', { event: intlEvent })}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          Les <strong>${regionSlots} meilleures équipes</strong> de votre region se qualifient pour le <strong>${intlEvent}</strong>.
-          Pour representer votre region sur la scene internationale, votre équipe doit faire partie de ces ${regionSlots} qualifiés à l'issue des playoffs :
+          ${t('season.qualifDesc', { slots: regionSlots, event: intlEvent })}
         </p>
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
           ${qualifTiersHtml}
@@ -3318,14 +3314,14 @@ function showSeasonIntroModal(split, year, teamIds) {
         </p>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:8px;">&#127942; Équipes participantes</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:8px;">${t('season.participatingTeams')}</h3>
         <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px;">
           ${teamListHtml}
         </ul>
       </div>
     </div>
     <div class="modal-content__actions" style="margin-top:20px;">
-      <button class="btn-primary" onclick="closeModal();showView('calendar');">Lancer la saison !</button>
+      <button class="btn-primary" onclick="closeModal();showView('calendar');">${t('season.startSeason')}</button>
     </div>
   `);
 }
@@ -3998,15 +3994,15 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
 
   const groupsHtml = groups.map((g, gi) => {
     const rows = g.map((id) => {
-      const t = getTeamRef(id);
-      const name = t ? t.name : id;
-      const region = t ? (t.region || t.aiRegion || '') : '';
+      const tm = getTeamRef(id);
+      const name = tm ? tm.name : id;
+      const region = tm ? (tm.region || tm.aiRegion || '') : '';
       const isPlayer = id === 'player';
       return `<li style="${isPlayer ? 'color:var(--color-gold);font-weight:700;' : 'color:var(--color-text-muted);'};font-size:13px;">${name}${region ? ` <span style="opacity:0.5;">(${region})</span>` : ''}${isPlayer ? ' &#9733;' : ''}</li>`;
     }).join('');
     return `
       <div>
-        <div style="font-weight:700;color:var(--color-seafoam);margin-bottom:4px;">Groupe ${String.fromCharCode(65 + gi)}</div>
+        <div style="font-weight:700;color:var(--color-seafoam);margin-bottom:4px;">${t('intl.group', { g: String.fromCharCode(65 + gi) })}</div>
         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;">${rows}</ul>
       </div>`;
   }).join('');
@@ -4014,35 +4010,34 @@ function showInternationalIntroModal(eventType, year, teams, groups) {
   const teamCount = teams.length;
   const playerQualified = teams.includes('player');
   const qualifMsg = playerQualified
-    ? `<p style="color:var(--color-gold);font-weight:700;margin-top:4px;">&#10003; Vous etes qualifié pour le ${eventName} !</p>`
-    : `<p style="color:#e05;margin-top:4px;">&#10007; Votre équipe n'est pas qualifiée pour cette edition.</p>`;
+    ? `<p style="color:var(--color-gold);font-weight:700;margin-top:4px;">${t('intlIntro.qualifiedYes', { event: eventName })}</p>`
+    : `<p style="color:#e05;margin-top:4px;">${t('intlIntro.qualifiedNo')}</p>`;
 
   showModal(`
     <h2 class="panel-title" style="margin-bottom:16px;">${emoji} ${eventName} ${year}</h2>
     <div style="display:flex;flex-direction:column;gap:18px;max-height:65vh;overflow-y:auto;padding-right:6px;">
       ${qualifMsg}
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:6px;">&#127942; Format de la compétition</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:6px;">${t('intlIntro.formatTitle')}</h3>
         <p style="color:var(--color-text-muted);line-height:1.6;">
-          <strong>${teamCount} équipes</strong> issues de toutes les regions du monde s'affrontent.
-          La compétition se déroule en deux phases :
+          ${t('intlIntro.formatDesc', { count: teamCount })}
         </p>
         <ul style="color:var(--color-text-muted);line-height:1.8;padding-left:18px;margin-top:6px;">
-          <li><strong>Phase de groupes</strong> — ${numGroups} groupes de ${teamsPerGroup} équipes, round-robin en BO3. Les ${qualifiersPerGroup} premiers de chaque groupe passent en bracket.</li>
+          <li>${t('intlIntro.phaseGroups', { groups: numGroups, size: teamsPerGroup, qual: qualifiersPerGroup })}</li>
           ${isMSI
-            ? `<li><strong>Bracket a élimination directe</strong> — demi-finales et finale en BO5.</li>`
-            : `<li><strong>Bracket a double élimination</strong> (BO5) — un <strong>upper bracket</strong> où une défaite vous fait basculer en <strong>lower bracket</strong>, et une seconde défaite vous élimine. Le vainqueur de l'upper et celui qui survit au lower s'affrontent en grande finale.</li>`}
+            ? `<li>${t('intlIntro.bracketSingle')}</li>`
+            : `<li>${t('intlIntro.bracketDouble')}</li>`}
         </ul>
       </div>
       <div>
-        <h3 style="color:var(--color-gold);margin-bottom:10px;">&#127937; Équipes qualifiées par groupe</h3>
+        <h3 style="color:var(--color-gold);margin-bottom:10px;">${t('intlIntro.qualifiedByGroup')}</h3>
         <div style="display:grid;grid-template-columns:repeat(${Math.min(numGroups, 2)}, 1fr);gap:14px;">
           ${groupsHtml}
         </div>
       </div>
     </div>
     <div class="modal-content__actions" style="margin-top:20px;">
-      <button class="btn-primary" onclick="closeModal();processInternationalGroupMatchday();showView('calendar');">C'est parti !</button>
+      <button class="btn-primary" onclick="closeModal();processInternationalGroupMatchday();showView('calendar');">${t('intlIntro.start')}</button>
     </div>
   `);
 }
@@ -4440,16 +4435,16 @@ function showContractDeparturesModal(leaving, onContinue) {
       <div class="mini-avatar">${getInitials(p.name)}</div>
       <div class="transfer-card__identity">
         <div class="transfer-card__name">${p.name}</div>
-        <div class="transfer-card__meta">${p.role} &mdash; fin de contrat</div>
+        <div class="transfer-card__meta">${p.role} &mdash; ${t('depart.meta')}</div>
       </div>
     </div>
   `).join('');
   showModal(`
-    <h3 class="panel-title">&#128203; Fins de contrat</h3>
-    <p style="margin-bottom:12px;">Faute de prolongation, ${leaving.length === 1 ? 'ce joueur quitte' : 'ces joueurs quittent'} l'équipe. Recrutez ${leaving.length === 1 ? 'un remplaçant' : 'des remplaçants'} au marché des transferts.</p>
+    <h3 class="panel-title">${t('depart.title')}</h3>
+    <p style="margin-bottom:12px;">${leaving.length === 1 ? t('depart.desc1') : t('depart.descN')}</p>
     <div class="transfer-release-list">${rows}</div>
     <div class="modal-content__actions" style="margin-top:16px;">
-      <button class="btn-primary" id="btn-departures-continue">Continuer</button>
+      <button class="btn-primary" id="btn-departures-continue">${t('common.continue')}</button>
     </div>
   `);
   document.getElementById('btn-departures-continue').addEventListener('click', () => {
@@ -7432,14 +7427,13 @@ function maybeShowOnboarding1110() {
   if (!state.settings || state.settings.seenOnboarding1110) return;
   if (!Array.isArray(state.roster) || !state.roster.length) return;
   showModal(`
-    <h2 class="panel-title" style="margin-bottom:6px;">&#127881; Nouveautés 1.11.0 — un monde vivant</h2>
+    <h2 class="panel-title" style="margin-bottom:6px;">${t('onboarding.title')}</h2>
     <p style="color:var(--color-text-muted);line-height:1.6;margin-bottom:14px;">
-      Deux nouvelles mécaniques rythment désormais ta carrière sur le long terme. Choisis ce que tu veux activer —
-      tu pourras tout changer à tout moment dans l'onglet <strong>Progression</strong>.
+      ${t('onboarding.intro')}
     </p>
     <div id="onboarding-settings" class="world-settings-list">${worldSettingsHtml(false)}</div>
     <div class="modal-content__actions" style="margin-top:18px;">
-      <button class="btn-primary" id="btn-onboarding-validate">Valider mes choix</button>
+      <button class="btn-primary" id="btn-onboarding-validate">${t('onboarding.validate')}</button>
     </div>
   `);
   const cont = document.getElementById('onboarding-settings');
@@ -7449,7 +7443,7 @@ function maybeShowOnboarding1110() {
     state.settings.seenOnboarding1110 = true;
     saveGame();
     closeModal();
-    showToast('Réglages enregistrés. Modifiables dans Progression.', 'success');
+    showToast(t('toast.onboardingSaved'), 'success');
   });
 }
 
@@ -7501,31 +7495,31 @@ function renderProgression() {
   const winRate = p.matchesPlayed > 0 ? Math.round((p.wins / p.matchesPlayed) * 100) : 0;
 
   document.getElementById('progression-stats').innerHTML = `
-    <div class="stat-card"><div class="stat-card__value">${p.matchesPlayed}</div><div class="stat-card__label">Matchs joues</div></div>
-    <div class="stat-card"><div class="stat-card__value">${p.wins}</div><div class="stat-card__label">Victoires</div></div>
-    <div class="stat-card"><div class="stat-card__value">${winRate}%</div><div class="stat-card__label">Taux de victoire</div></div>
-    <div class="stat-card"><div class="stat-card__value">${p.bestWinStreak}</div><div class="stat-card__label">Meilleure serie de victoires</div></div>
+    <div class="stat-card"><div class="stat-card__value">${p.matchesPlayed}</div><div class="stat-card__label">${t('prog.matchesPlayed')}</div></div>
+    <div class="stat-card"><div class="stat-card__value">${p.wins}</div><div class="stat-card__label">${t('prog.wins')}</div></div>
+    <div class="stat-card"><div class="stat-card__value">${winRate}%</div><div class="stat-card__label">${t('prog.winRate')}</div></div>
+    <div class="stat-card"><div class="stat-card__value">${p.bestWinStreak}</div><div class="stat-card__label">${t('prog.bestStreak')}</div></div>
   `;
 
   const pal = ensurePalmares();
   const palmaresEl = document.getElementById('progression-palmares');
   if (palmaresEl) {
     palmaresEl.innerHTML = `
-      <div class="stat-card"><div class="stat-card__value">${pal.regionalTitles}</div><div class="stat-card__label">Titres régionaux</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.msi.qualified}</div><div class="stat-card__label">Qualifications MSI</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.msi.titles}</div><div class="stat-card__label">Titres MSI</div></div>
-      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.msi.bestPlacement)}</div><div class="stat-card__label">Meilleur résultat MSI</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.worlds.qualified}</div><div class="stat-card__label">Qualifications Worlds</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.worlds.titles}</div><div class="stat-card__label">Titres Worlds</div></div>
-      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.worlds.bestPlacement)}</div><div class="stat-card__label">Meilleur résultat Worlds</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.regionalTitles}</div><div class="stat-card__label">${t('prog.regionalTitles')}</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.msi.qualified}</div><div class="stat-card__label">${t('prog.msiQualifs')}</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.msi.titles}</div><div class="stat-card__label">${t('prog.msiTitles')}</div></div>
+      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.msi.bestPlacement)}</div><div class="stat-card__label">${t('prog.msiBest')}</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.worlds.qualified}</div><div class="stat-card__label">${t('prog.worldsQualifs')}</div></div>
+      <div class="stat-card"><div class="stat-card__value">${pal.worlds.titles}</div><div class="stat-card__label">${t('prog.worldsTitles')}</div></div>
+      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.worlds.bestPlacement)}</div><div class="stat-card__label">${t('prog.worldsBest')}</div></div>
     `;
   }
 
   const historyEl = document.getElementById('progression-history');
   historyEl.innerHTML = state.matchHistory.slice(0, 10).map((m) => {
     const cls = m.result === 'win' ? 'result-tag--win' : 'result-tag--loss';
-    const label = m.result === 'win' ? 'Victoire' : 'Défaite';
-    const date = new Date(m.date).toLocaleDateString('fr-FR');
+    const label = m.result === 'win' ? t('log.win') : t('log.loss');
+    const date = new Date(m.date).toLocaleDateString(getLang() === 'en' ? 'en-US' : 'fr-FR');
     return `
       <tr>
         <td>${date}</td>
@@ -7535,7 +7529,7 @@ function renderProgression() {
         <td><span class="result-tag ${cls}">${label}</span></td>
       </tr>
     `;
-  }).join('') || '<tr><td colspan="5" class="card__count">Aucun match joue</td></tr>';
+  }).join('') || `<tr><td colspan="5" class="card__count">${t('prog.noMatch')}</td></tr>`;
 
   const settingsEl = document.getElementById('progression-settings');
   if (settingsEl) {
@@ -7557,7 +7551,7 @@ function renderProgression() {
           <span class="level-delta ${cls}">${arrow} ${sign}${e.delta}</span>
         </div>
       `;
-    }).join('') || '<p class="card__count">Aucune evolution pour le moment.</p>';
+    }).join('') || `<p class="card__count">${t('prog.noEvolution')}</p>`;
   }
 }
 
@@ -7627,13 +7621,13 @@ function setupNavigation() {
       if (confirmReset) {
         resetGame();
         confirmReset = false;
-        resetBtn.textContent = 'Réinitialiser la partie';
+        resetBtn.textContent = t('prog.resetGame');
       } else {
         confirmReset = true;
-        resetBtn.textContent = 'Cliquer a nouveau pour confirmer';
+        resetBtn.textContent = t('reset.confirm');
         setTimeout(() => {
           confirmReset = false;
-          resetBtn.textContent = 'Réinitialiser la partie';
+          resetBtn.textContent = t('prog.resetGame');
         }, 3000);
       }
     });
