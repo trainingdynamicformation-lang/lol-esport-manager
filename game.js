@@ -828,11 +828,11 @@ function getTeamDraftPriorityList(team) {
   if (!team.draftProfile) return [];
   const lines = [];
   (team.draftProfile.banPriorities || []).slice(0, 3).forEach((champ) => {
-    lines.push(`${champ} (ban prioritaire)`);
+    lines.push(t('scout.priorityBan', { champ }));
   });
   DRAFT_ROLES.forEach((role) => {
     const picks = (team.draftProfile.comfortPicks || {})[role];
-    if (picks && picks.length) lines.push(`${ROLE_NAMES[role]} : ${picks[0]} (pick confort)`);
+    if (picks && picks.length) lines.push(t('scout.priorityComfort', { role: ROLE_NAMES[role], champ: picks[0] }));
   });
   return lines;
 }
@@ -853,14 +853,14 @@ function buildScoutingReportBody(team) {
   const form = getTeamRecentForm(team.id);
   const formHtml = form ? (() => {
     const streakLabel = form.streakWin
-      ? `<span class="level-delta level-delta--up">&#9650; ${form.streakLen}V</span>`
-      : `<span class="level-delta level-delta--down">&#9660; ${form.streakLen}D</span>`;
-    return `<p>Forme récente (${form.total} matchs) : ${form.wins}V/${form.total - form.wins}D &mdash; ${form.winRate}% victoires &mdash; série : ${streakLabel}</p>`;
+      ? `<span class="level-delta level-delta--up">${t('scout.streakWin', { n: form.streakLen })}</span>`
+      : `<span class="level-delta level-delta--down">${t('scout.streakLoss', { n: form.streakLen })}</span>`;
+    return `<p>${t('scout.recentForm', { total: form.total, wins: form.wins, losses: form.total - form.wins, wr: form.winRate, streak: streakLabel })}</p>`;
   })() : '';
 
   // --- Tags de composition ---
   const tagsHtml = compTags.length
-    ? `<p>Style de composition : ${compTags.map((t) => `<span class="scout-comp-tag">${SCOUT_TAG_LABELS[t] || t}</span>`).join(' ')}</p>`
+    ? `<p>${t('scout.compStyle', { tags: compTags.map((tag) => `<span class="scout-comp-tag">${scoutTagLabel(tag)}</span>`).join(' ') })}</p>`
     : '';
 
   // --- Force par phase ---
@@ -868,22 +868,24 @@ function buildScoutingReportBody(team) {
   if (phase) {
     const vals = [['Early', phase.early], ['Mid', phase.mid], ['Late', phase.late]];
     const maxPhase = vals.reduce((a, b) => (b[1] > a[1] ? b : a));
-    phaseHtml = `<p>Force par phase : ${vals.map(([label, val]) => {
+    phaseHtml = `<p>${t('scout.phaseForce', { phases: vals.map(([label, val]) => {
       const strong = label === maxPhase[0];
       return `<span class="${strong ? 'scout-phase--strong' : 'scout-phase--normal'}">${label} ${val}/10</span>`;
-    }).join(' &bull; ')}</p>`;
+    }).join(' &bull; ') })}</p>`;
   }
+
+  const tierSuffix = team.tier === 1 ? t('scout.tierMajor') : team.tier === 2 ? t('scout.tierCompetitive') : t('scout.tierEmerging');
 
   // ===================== BASIQUE =====================
   let html = `
     <div class="progress-bar"><div class="progress-bar__fill" style="width:${report.confidence}%"></div></div>
-    <p class="card__count">Confiance scouting : ${report.confidence}/100 &mdash; ${report.scrimsPlayed || 0} scrim(s) de préparation, matchs déjà affrontés inclus.</p>
+    <p class="card__count">${t('scout.confidence', { conf: report.confidence, scrims: report.scrimsPlayed || 0 })}</p>
 
-    <h4>Rapport basique</h4>
-    <p>Tier : <strong>Tier ${team.tier}</strong>${team.tier === 1 ? ' — équipe majeure' : team.tier === 2 ? ' — équipe compétitive' : ' — équipe émergente'}.</p>
-    <p>Style général : ${formatStyle(team.style)}.</p>
-    <p>Niveau moyen de l'effectif : ${avgLevel}/100.</p>
-    <p>Champions les plus joués (pool) : ${topChamps.join(', ')}.</p>
+    <h4>${t('scout.reportBasic')}</h4>
+    <p>${t('scout.tierLine', { n: team.tier, suffix: tierSuffix })}</p>
+    <p>${t('scout.generalStyle', { style: formatStyle(team.style) })}</p>
+    <p>${t('scout.avgLevel', { n: avgLevel })}</p>
+    <p>${t('scout.topChamps', { champs: topChamps.join(', ') })}</p>
     ${tagsHtml}
     ${phaseHtml}
     ${formHtml}
@@ -908,37 +910,37 @@ function buildScoutingReportBody(team) {
     const traitRows = DRAFT_ROLES.map((role) => {
       const p = team.roster.find((r) => r.role === role);
       if (!p || !p.traits || p.traits.length === 0) return '';
-      const traitLabels = p.traits.map((t) => {
-        const meta = TRAIT_SCOUT_LABELS[t];
-        return meta ? `<span class="scout-trait">${meta.label}</span>` : null;
+      const traitLabels = p.traits.map((tr) => {
+        const lbl = scoutTraitLabel(tr);
+        return lbl ? `<span class="scout-trait">${lbl}</span>` : null;
       }).filter(Boolean).join(' ');
-      const firstTrait = p.traits[0] && TRAIT_SCOUT_LABELS[p.traits[0]];
-      const note = firstTrait ? ` — ${firstTrait.note}` : '';
+      const firstNote = p.traits[0] ? scoutTraitNote(p.traits[0]) : '';
+      const note = firstNote ? ` — ${firstNote}` : '';
       return traitLabels ? `<div class="scout-trait-row"><span class="scout-pool-name">${p.name} <span class="scout-pool-role">${ROLE_NAMES[role]}</span></span><span>${traitLabels}${note}</span></div>` : '';
     }).filter(Boolean).join('');
 
     const recentChampsHtml = recentChamps
-      ? `<p>Champions joués récemment : ${recentChamps.map((c) => `${c.name} (${c.games}x)`).join(', ')}.</p>`
+      ? `<p>${t('scout.recentChamps', { champs: recentChamps.map((c) => `${c.name} (${c.games}x)`).join(', ') })}</p>`
       : '';
 
     const h2hHtml = h2h
-      ? `<p>Bilan H2H contre cette équipe : <strong>${h2h.wins}V / ${h2h.losses}D</strong> en ${h2h.total} confrontation${h2h.total > 1 ? 's' : ''} officielle${h2h.total > 1 ? 's' : ''}.</p>`
+      ? `<p>${t('scout.h2h', { w: h2h.wins, l: h2h.losses, total: h2h.total, s: h2h.total > 1 ? 's' : '' })}</p>`
       : '';
 
     html += `
-      <h4>Rapport avancé</h4>
-      <p><strong>Pool de champions par rôle</strong></p>
+      <h4>${t('scout.reportAdvanced')}</h4>
+      <p><strong>${t('scout.poolByRole')}</strong></p>
       <div class="scout-pool-list">${poolRows}</div>
-      <p style="margin-top:10px;"><strong>Profils joueurs</strong></p>
-      ${traitRows || '<p class="card__count">Aucun trait notable identifié.</p>'}
-      <p style="margin-top:10px;"><strong>Priorités de draft</strong></p>
+      <p style="margin-top:10px;"><strong>${t('scout.playerProfiles')}</strong></p>
+      ${traitRows || `<p class="card__count">${t('scout.noTraits')}</p>`}
+      <p style="margin-top:10px;"><strong>${t('scout.draftPriorities')}</strong></p>
       <div class="scrim-report">${priorities.map((l) => `<p>${l}</p>`).join('')}</div>
-      <p>Faiblesse de matchup : leur ${ROLE_NAMES[weak.role]} (${weak.player.name}) est leur point le plus exploitable (niveau ${weak.score}/100).</p>
+      <p>${t('scout.matchupWeak', { role: ROLE_NAMES[weak.role], name: weak.player.name, score: weak.score })}</p>
       ${recentChampsHtml}
       ${h2hHtml}
     `;
   } else {
-    html += `<div class="objective-description">Réalisez des scrims de préparation (ou affrontez cette équipe) pour débloquer le rapport avancé : pool par rôle, traits des joueurs, priorités de draft et faiblesses de matchup.</div>`;
+    html += `<div class="objective-description">${t('scout.lockedAdvanced')}</div>`;
   }
 
   // ===================== PREMIUM =====================
@@ -958,48 +960,48 @@ function buildScoutingReportBody(team) {
       const myAvg = myP ? Math.round((myP.laning + myP.teamfight + myP.mechanics + myP.shotcalling + myP.mental) / 5) : null;
       const advantage = myAvg !== null
         ? (myAvg >= avg
-          ? `<span class="level-delta level-delta--up">&#9650; avantage</span>`
-          : `<span class="level-delta level-delta--down">&#9660; désavantage</span>`)
+          ? `<span class="level-delta level-delta--up">${t('scout.advantage')}</span>`
+          : `<span class="level-delta level-delta--down">${t('scout.disadvantage')}</span>`)
         : '';
       const formIcon = p.form >= 70 ? '🔥' : p.form >= 45 ? '➡️' : '📉';
       return `
         <div class="career-progression-row">
           <span class="career-progression-row__name">${p.name} <span class="career-progression-row__role">${role}</span> ${formIcon}</span>
-          <span class="career-progression-row__levels">Lane ${p.laning} &bull; TF ${p.teamfight} &bull; Méca ${p.mechanics} &bull; SC ${p.shotcalling} &bull; Mental ${p.mental}</span>
-          <span class="career-progression-row__period">Moy. ${avg}</span>
+          <span class="career-progression-row__levels">${t('scout.statLine', { lane: p.laning, tf: p.teamfight, meca: p.mechanics, sc: p.shotcalling, mental: p.mental })}</span>
+          <span class="career-progression-row__period">${t('tr.avg', { n: avg })}</span>
           ${advantage}
         </div>`;
     }).join('');
 
     // Counter-picks suggérés
     const counterHtml = counterSuggestions.length
-      ? counterSuggestions.map((s) => `<div class="scout-counter-row"><span class="scout-pool-role">${ROLE_NAMES[s.role]}</span><span class="card__count">Si ${s.theirChamp}</span><span class="scout-counter-pick">→ ${s.counterName} <span class="card__count">(score ${s.score})</span></span></div>`).join('')
-      : '<p class="card__count">Aucun counter-pick évident identifié.</p>';
+      ? counterSuggestions.map((s) => `<div class="scout-counter-row"><span class="scout-pool-role">${ROLE_NAMES[s.role]}</span><span class="card__count">${t('scout.counterIf', { champ: s.theirChamp })}</span><span class="scout-counter-pick">→ ${s.counterName} <span class="card__count">${t('scout.counterScore', { score: s.score })}</span></span></div>`).join('')
+      : `<p class="card__count">${t('scout.noCounter')}</p>`;
 
     // Flex picks
     const flexHtml = flexPicks.length
-      ? `<p>Picks flexibles (multi-rôles) : ${flexPicks.slice(0, 4).join(', ')} — attention aux surprises en draft.</p>`
+      ? `<p>${t('scout.flexPicks', { picks: flexPicks.slice(0, 4).join(', ') })}</p>`
       : '';
 
     // Joueur à surveiller (potentiel le plus élevé)
     const watchPlayer = team.roster.reduce((best, p) =>
       (!best || (p.potential || 0) > (best.potential || 0)) ? p : best, null);
     const watchHtml = watchPlayer && (watchPlayer.potential || 0) > avgLevel
-      ? `<p>👁 Joueur à surveiller : <strong>${watchPlayer.name}</strong> (${ROLE_NAMES[watchPlayer.role]}) — potentiel ${watchPlayer.potential}/100, peut encore progresser.</p>`
+      ? `<p>${t('scout.watchPlayer', { name: watchPlayer.name, role: ROLE_NAMES[watchPlayer.role], pot: watchPlayer.potential })}</p>`
       : '';
 
     html += `
-      <h4>Rapport premium</h4>
+      <h4>${t('scout.reportPremium')}</h4>
       <div class="career-progression-list" style="margin-bottom:10px;">${playerRows}</div>
-      <p style="margin-top:10px;"><strong>Counter-picks suggérés</strong></p>
+      <p style="margin-top:10px;"><strong>${t('scout.counterSuggested')}</strong></p>
       <div class="scout-pool-list">${counterHtml}</div>
       ${flexHtml}
       ${watchHtml}
-      <p style="margin-top:10px;">Plan de draft : misez sur un pick fort en ${ROLE_NAMES[weak.role]}${myPlayer ? ` pour ${myPlayer.name}` : ''} et bannissez <strong>${topBan || 'leur pick signature'}</strong> en priorité.</p>
-      <p>Scrim recommandé : "Préparation matchup" ciblé sur le ${ROLE_NAMES[weak.role]} adverse.</p>
+      <p style="margin-top:10px;">${t('scout.draftPlan', { role: ROLE_NAMES[weak.role], forPlayer: myPlayer ? t('scout.forPlayer', { name: myPlayer.name }) : '', ban: topBan || t('scout.signaturePick') })}</p>
+      <p>${t('scout.recommendedScrim', { role: ROLE_NAMES[weak.role] })}</p>
     `;
   } else if (tier === 'advanced') {
-    html += `<div class="objective-description">Continuez le scouting pour débloquer le rapport premium : stats complètes par joueur, forme individuelle, counter-picks suggérés et joueur à surveiller.</div>`;
+    html += `<div class="objective-description">${t('scout.lockedPremium')}</div>`;
   }
 
   return html;
@@ -6710,16 +6712,16 @@ function renderScouting() {
   if (!el) return;
 
   if (state.roster.length === 0) {
-    el.innerHTML = '<div class="empty-state">Constituez votre roster avant de consulter le scouting.</div>';
+    el.innerHTML = `<div class="empty-state">${t('scout.emptyRoster')}</div>`;
     return;
   }
 
   const selectedRegion = state._scoutingRegion || state.region;
   state._scoutingRegion = selectedRegion;
 
-  const opponents = getAITeamsForRegion(selectedRegion).filter((t) => t.id !== state.aiTeamId);
+  const opponents = getAITeamsForRegion(selectedRegion).filter((team) => team.id !== state.aiTeamId);
   if (opponents.length === 0) {
-    el.innerHTML = '<div class="empty-state">Aucune équipe adverse disponible dans cette region.</div>';
+    el.innerHTML = `<div class="empty-state">${t('match.noOpponents')}</div>`;
     return;
   }
 
@@ -6731,16 +6733,16 @@ function renderScouting() {
 
   const regionSelectHtml = REGIONS.map((r) => `<option value="${r.id}" ${r.id === selectedRegion ? 'selected' : ''}>${r.name}</option>`).join('');
 
-  const listHtml = opponents.map((t) => {
-    const r = getScoutingReport(t.id);
-    return `<button class="comp-tag-option ${t.id === selectedId ? 'comp-tag-option--active' : ''}" data-scout-team="${t.id}">${t.name} (${r.confidence}/100)</button>`;
+  const listHtml = opponents.map((team) => {
+    const r = getScoutingReport(team.id);
+    return `<button class="comp-tag-option ${team.id === selectedId ? 'comp-tag-option--active' : ''}" data-scout-team="${team.id}">${team.name} (${r.confidence}/100)</button>`;
   }).join('');
 
   el.innerHTML = `
     <div class="panel">
-      <h3 class="panel-title">Équipes adverses</h3>
+      <h3 class="panel-title">${t('scout.opposingTeams')}</h3>
       <div class="scouting-region-filter">
-        <label for="scouting-region">Region</label>
+        <label for="scouting-region">${t('scout.regionLabel')}</label>
         <select id="scouting-region">${regionSelectHtml}</select>
       </div>
       <div class="draft-role-filter">${listHtml}</div>

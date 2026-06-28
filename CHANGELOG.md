@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.13] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 3 (lot 8 : Scouting)
+
+L'écran Scouting complet est traduit (sélecteur d'équipes/région + rapports basique/avancé/premium).
+
+- **Rapport basique** : confiance, tier (majeure/compétitive/émergente), style, niveau moyen, pool, tags de composition, force par phase, forme récente (série V/D ↔ W/L).
+- **Rapport avancé** : pool par rôle, profils joueurs (traits + notes traduits), priorités de draft, faiblesse de matchup, champions récents, bilan H2H (pluriel géré).
+- **Rapport premium** : tableau joueurs (Lane/TF/Méca/SC/Mental, avantage/désavantage), counter-picks suggérés, flex picks, joueur à surveiller, plan de draft, scrim recommandé.
+- Messages de déblocage des paliers, traits de scouting (`TRAIT_SCOUT_LABELS`) et tags (`SCOUT_TAG_LABELS`) traduits. Nouveaux helpers `scoutTagLabel()`, `scoutTraitLabel()`, `scoutTraitNote()`.
+
+---
+
 ## [1.12.12] — 2026-06-27
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 7 : Match)

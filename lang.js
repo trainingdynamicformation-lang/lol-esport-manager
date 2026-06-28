@@ -681,6 +681,67 @@ const I18N = {
     'match.aiLoserFirst': '<strong>{name}</strong> (perdant) choisit en premier sa catégorie.',
     'match.youLoserFirst': 'Vous (perdant) choisissez en premier votre catégorie.',
 
+    // -- Tags de composition (scouting) --
+    'scoutTag.engage': 'Engage', 'scoutTag.poke': 'Poke', 'scoutTag.scaling': 'Scaling',
+    'scoutTag.splitpush': 'Split-push', 'scoutTag.pick': 'Pick', 'scoutTag.protect': 'Protect',
+    'scoutTag.dive': 'Dive', 'scoutTag.disengage': 'Disengage', 'scoutTag.teamfight': 'Teamfight',
+    'scoutTag.siege': 'Siège', 'scoutTag.execute': 'Execute',
+
+    // -- Traits joueurs (scouting) --
+    'scoutTrait.igl.label': 'IGL', 'scoutTrait.igl.note': 'orchestre la stratégie collective',
+    'scoutTrait.mechanical.label': 'Mécaniquement fort', 'scoutTrait.mechanical.note': "excelle dans les duels et l'exécution",
+    'scoutTrait.leader.label': 'Leader', 'scoutTrait.leader.note': "renforce le mental de l'équipe sous pression",
+    'scoutTrait.veteran.label': 'Vétéran', 'scoutTrait.veteran.note': 'constant sur la durée, résistant à la fatigue',
+    'scoutTrait.rookie.label': 'Rookie', 'scoutTrait.rookie.note': 'inconstant — peut surprendre ou décevoir',
+    'scoutTrait.tiltable.label': 'Tiltable', 'scoutTrait.tiltable.note': "performances chutent si l'équipe prend du retard",
+    'scoutTrait.clutch.label': 'Clutch', 'scoutTrait.clutch.note': 'monte en régime en situation critique (playoffs)',
+    'scoutTrait.consistant.label': 'Consistant', 'scoutTrait.consistant.note': 'fiable, peu de variations de performance',
+
+    // -- Écran Scouting --
+    'scout.emptyRoster': 'Constituez votre roster avant de consulter le scouting.',
+    'scout.opposingTeams': 'Équipes adverses',
+    'scout.regionLabel': 'Région',
+    'scout.confidence': 'Confiance scouting : {conf}/100 — {scrims} scrim(s) de préparation, matchs déjà affrontés inclus.',
+    'scout.reportBasic': 'Rapport basique',
+    'scout.tierLine': 'Tier : <strong>Tier {n}</strong>{suffix}.',
+    'scout.tierMajor': ' — équipe majeure',
+    'scout.tierCompetitive': ' — équipe compétitive',
+    'scout.tierEmerging': ' — équipe émergente',
+    'scout.generalStyle': 'Style général : {style}.',
+    'scout.avgLevel': "Niveau moyen de l'effectif : {n}/100.",
+    'scout.topChamps': 'Champions les plus joués (pool) : {champs}.',
+    'scout.compStyle': 'Style de composition : {tags}',
+    'scout.phaseForce': 'Force par phase : {phases}',
+    'scout.streakWin': '&#9650; {n}V',
+    'scout.streakLoss': '&#9660; {n}D',
+    'scout.recentForm': 'Forme récente ({total} matchs) : {wins}V/{losses}D — {wr}% victoires — série : {streak}',
+    'scout.reportAdvanced': 'Rapport avancé',
+    'scout.poolByRole': 'Pool de champions par rôle',
+    'scout.playerProfiles': 'Profils joueurs',
+    'scout.noTraits': 'Aucun trait notable identifié.',
+    'scout.draftPriorities': 'Priorités de draft',
+    'scout.matchupWeak': 'Faiblesse de matchup : leur {role} ({name}) est leur point le plus exploitable (niveau {score}/100).',
+    'scout.recentChamps': 'Champions joués récemment : {champs}.',
+    'scout.h2h': 'Bilan H2H contre cette équipe : <strong>{w}V / {l}D</strong> en {total} confrontation{s} officielle{s}.',
+    'scout.lockedAdvanced': 'Réalisez des scrims de préparation (ou affrontez cette équipe) pour débloquer le rapport avancé : pool par rôle, traits des joueurs, priorités de draft et faiblesses de matchup.',
+    'scout.reportPremium': 'Rapport premium',
+    'scout.statLine': 'Lane {lane} • TF {tf} • Méca {meca} • SC {sc} • Mental {mental}',
+    'scout.advantage': '&#9650; avantage',
+    'scout.disadvantage': '&#9660; désavantage',
+    'scout.counterSuggested': 'Counter-picks suggérés',
+    'scout.counterIf': 'Si {champ}',
+    'scout.counterScore': '(score {score})',
+    'scout.noCounter': 'Aucun counter-pick évident identifié.',
+    'scout.flexPicks': 'Picks flexibles (multi-rôles) : {picks} — attention aux surprises en draft.',
+    'scout.watchPlayer': '👁 Joueur à surveiller : <strong>{name}</strong> ({role}) — potentiel {pot}/100, peut encore progresser.',
+    'scout.draftPlan': 'Plan de draft : misez sur un pick fort en {role}{forPlayer} et bannissez <strong>{ban}</strong> en priorité.',
+    'scout.forPlayer': ' pour {name}',
+    'scout.signaturePick': 'leur pick signature',
+    'scout.recommendedScrim': 'Scrim recommandé : « Préparation matchup » ciblé sur le {role} adverse.',
+    'scout.lockedPremium': 'Continuez le scouting pour débloquer le rapport premium : stats complètes par joueur, forme individuelle, counter-picks suggérés et joueur à surveiller.',
+    'scout.priorityBan': '{champ} (ban prioritaire)',
+    'scout.priorityComfort': '{role} : {champ} (pick confort)',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -1358,6 +1419,67 @@ const I18N = {
     'match.aiLoserFirst': '<strong>{name}</strong> (loser) chooses their category first.',
     'match.youLoserFirst': 'You (loser) choose your category first.',
 
+    // -- Composition tags (scouting) --
+    'scoutTag.engage': 'Engage', 'scoutTag.poke': 'Poke', 'scoutTag.scaling': 'Scaling',
+    'scoutTag.splitpush': 'Split-push', 'scoutTag.pick': 'Pick', 'scoutTag.protect': 'Protect',
+    'scoutTag.dive': 'Dive', 'scoutTag.disengage': 'Disengage', 'scoutTag.teamfight': 'Teamfight',
+    'scoutTag.siege': 'Siege', 'scoutTag.execute': 'Execute',
+
+    // -- Player traits (scouting) --
+    'scoutTrait.igl.label': 'IGL', 'scoutTrait.igl.note': 'orchestrates the team strategy',
+    'scoutTrait.mechanical.label': 'Mechanically strong', 'scoutTrait.mechanical.note': 'excels in duels and execution',
+    'scoutTrait.leader.label': 'Leader', 'scoutTrait.leader.note': 'boosts the team morale under pressure',
+    'scoutTrait.veteran.label': 'Veteran', 'scoutTrait.veteran.note': 'consistent over time, fatigue-resistant',
+    'scoutTrait.rookie.label': 'Rookie', 'scoutTrait.rookie.note': 'inconsistent — can surprise or disappoint',
+    'scoutTrait.tiltable.label': 'Tiltable', 'scoutTrait.tiltable.note': 'performance drops when the team falls behind',
+    'scoutTrait.clutch.label': 'Clutch', 'scoutTrait.clutch.note': 'steps up in critical situations (playoffs)',
+    'scoutTrait.consistant.label': 'Consistent', 'scoutTrait.consistant.note': 'reliable, little performance variation',
+
+    // -- Scouting screen --
+    'scout.emptyRoster': 'Build your roster before checking scouting.',
+    'scout.opposingTeams': 'Opposing teams',
+    'scout.regionLabel': 'Region',
+    'scout.confidence': 'Scouting confidence: {conf}/100 — {scrims} preparation scrim(s), matches already played included.',
+    'scout.reportBasic': 'Basic report',
+    'scout.tierLine': 'Tier: <strong>Tier {n}</strong>{suffix}.',
+    'scout.tierMajor': ' — major team',
+    'scout.tierCompetitive': ' — competitive team',
+    'scout.tierEmerging': ' — emerging team',
+    'scout.generalStyle': 'General style: {style}.',
+    'scout.avgLevel': 'Average roster level: {n}/100.',
+    'scout.topChamps': 'Most played champions (pool): {champs}.',
+    'scout.compStyle': 'Composition style: {tags}',
+    'scout.phaseForce': 'Strength by phase: {phases}',
+    'scout.streakWin': '&#9650; {n}W',
+    'scout.streakLoss': '&#9660; {n}L',
+    'scout.recentForm': 'Recent form ({total} matches): {wins}W/{losses}L — {wr}% wins — streak: {streak}',
+    'scout.reportAdvanced': 'Advanced report',
+    'scout.poolByRole': 'Champion pool by role',
+    'scout.playerProfiles': 'Player profiles',
+    'scout.noTraits': 'No notable trait identified.',
+    'scout.draftPriorities': 'Draft priorities',
+    'scout.matchupWeak': 'Matchup weakness: their {role} ({name}) is their most exploitable point (level {score}/100).',
+    'scout.recentChamps': 'Recently played champions: {champs}.',
+    'scout.h2h': 'Head-to-head vs this team: <strong>{w}W / {l}L</strong> in {total} official match{s}.',
+    'scout.lockedAdvanced': 'Run preparation scrims (or face this team) to unlock the advanced report: pool by role, player traits, draft priorities and matchup weaknesses.',
+    'scout.reportPremium': 'Premium report',
+    'scout.statLine': 'Lane {lane} • TF {tf} • Mech {meca} • SC {sc} • Mental {mental}',
+    'scout.advantage': '&#9650; advantage',
+    'scout.disadvantage': '&#9660; disadvantage',
+    'scout.counterSuggested': 'Suggested counter-picks',
+    'scout.counterIf': 'If {champ}',
+    'scout.counterScore': '(score {score})',
+    'scout.noCounter': 'No obvious counter-pick identified.',
+    'scout.flexPicks': 'Flex picks (multi-role): {picks} — beware of surprises in draft.',
+    'scout.watchPlayer': '👁 Player to watch: <strong>{name}</strong> ({role}) — potential {pot}/100, still room to grow.',
+    'scout.draftPlan': 'Draft plan: aim for a strong pick in {role}{forPlayer} and ban <strong>{ban}</strong> as a priority.',
+    'scout.forPlayer': ' for {name}',
+    'scout.signaturePick': 'their signature pick',
+    'scout.recommendedScrim': 'Recommended scrim: "Matchup prep" focused on the enemy {role}.',
+    'scout.lockedPremium': 'Keep scouting to unlock the premium report: full per-player stats, individual form, suggested counter-picks and player to watch.',
+    'scout.priorityBan': '{champ} (priority ban)',
+    'scout.priorityComfort': '{role}: {champ} (comfort pick)',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
@@ -1425,6 +1547,25 @@ function scoutTierLabel(tier) {
   const key = 'scoutTier.' + tier;
   const val = t(key);
   return val === key ? tier : val;
+}
+
+// Libellé traduit d'un tag de composition (engage, poke, ...).
+function scoutTagLabel(tag) {
+  const key = 'scoutTag.' + tag;
+  const val = t(key);
+  return val === key ? tag : val;
+}
+
+// Libellé / note traduits d'un trait joueur en scouting (igl, ...).
+function scoutTraitLabel(id) {
+  const key = 'scoutTrait.' + id + '.label';
+  const val = t(key);
+  return val === key ? null : val;
+}
+function scoutTraitNote(id) {
+  const key = 'scoutTrait.' + id + '.note';
+  const val = t(key);
+  return val === key ? '' : val;
 }
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.
