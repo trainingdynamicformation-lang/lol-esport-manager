@@ -288,7 +288,11 @@ function loadGame() {
 }
 
 function resetGame() {
+  const savedLang = (state.settings && state.settings.lang) || 'fr';
   state = createDefaultState();
+  state.settings.lang = savedLang;
+  state.settings.langChosen = true;
+  applyStaticI18n();
   saveGame();
   updateResourceBar();
   if (!state.region && typeof showRegionSelection === 'function') {
