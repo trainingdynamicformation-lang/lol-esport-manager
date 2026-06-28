@@ -611,6 +611,76 @@ const I18N = {
     'coinflip.desc.first': 'Contrôle le meta — impose le tempo',
     'coinflip.desc.last': 'Contre-pick assuré en position 5',
 
+    // -- Tiers de scouting --
+    'scoutTier.basic': 'Basique',
+    'scoutTier.advanced': 'Avancé',
+    'scoutTier.premium': 'Premium',
+
+    // -- Structures (carte) --
+    'struct.tower': 'Tour {n} ({lane})',
+    'struct.inhibitor': 'Inhibiteur ({lane})',
+    'struct.nexusTurret': 'Tour du Nexus {n}',
+    'struct.nexus': 'Nexus',
+
+    // -- Setup de match --
+    'match.emptyRoster': 'Constituez votre roster avant de lancer un match.',
+    'match.seriesInProgress': 'Série en cours',
+    'match.seriesScore': '{fmt} contre {opp} — score {a}-{b}, Game {n}.',
+    'match.resumeSeries': 'Continuer la série',
+    'match.intro': 'Chaque match commence par une draft. Les picks influencent directement le déroulement de la partie.',
+    'match.opponentLabel': 'ADVERSAIRE',
+    'match.formatLabel': 'FORMAT',
+    'match.fearlessLabel': 'FEARLESS DRAFT',
+    'match.fearlessOff': 'Désactivé',
+    'match.fearlessOn': 'Activé (champions verrouillés entre les games)',
+    'match.startSeries': 'Commencer la série (Draft)',
+    'match.noOpponents': 'Aucune équipe adverse disponible dans cette région.',
+
+    // -- Aperçu scouting --
+    'match.scoutTitle': 'Scouting — {team}',
+    'match.scoutStyle': 'Style : {style} • Niveau moyen : {lvl}/100 • Champions clés : {champs}',
+    'match.scoutWeak': 'Faiblesse : {role} ({name}, moy. {score}/100) • Ban prioritaire : {ban}',
+    'match.scoutLocked': 'Atteignez 40+ de confiance scouting pour débloquer les priorités de draft et faiblesses.',
+
+    // -- Arène de match --
+    'match.win': 'Victoire ! GG.',
+    'match.loss': 'Défaite. GG.',
+    'match.resume': 'Reprendre',
+    'match.return': 'Retour',
+    'match.draftGame': 'Draft Game {n}',
+    'match.seriesWon': 'Série remportée ({a}-{b})',
+    'match.seriesLost': 'Série perdue ({a}-{b})',
+
+    // -- Compte-rendu de match --
+    'match.reportResult': 'Match {result} contre {opp}.',
+    'match.reportKeyMoment': 'Moment clé : {text}',
+
+    // -- Événements de match (généré) --
+    'event.laneKill': "{winner} remporte un duel en lane ({role}) et prend l'avantage.",
+    'event.gank': '{winner} réussit un gank et obtient un kill.',
+    'event.dragon': '{winner} prend le Dragon.',
+    'event.herald': "{winner} prend l'Herald de la Faille.",
+    'event.grubs': '{winner} prend le contrôle des Void Grubs.',
+    'event.nexusDestroyed': '{winner} détruit le NEXUS et remporte la partie !',
+    'event.inhibitor': '{winner} détruit {struct} !',
+    'event.structure': '{winner} détruit {struct}.',
+    'event.towerGeneric': '{winner} fait tomber une tour.',
+    'event.teamfight': '{winner} gagne un teamfight ({kills} kills) !',
+    'event.baron': '{winner} prend le Baron Nashor !',
+    'event.elder': '{winner} terrasse le Dragon Ancien (Elder) !',
+    'event.dramatic': '{winner} réalise une action décisive en fin de partie !',
+    'event.default': "{winner} prend l'avantage.",
+
+    // -- Modal de side (série) --
+    'match.gameSummary': 'Game {n} — Résumé',
+    'match.loserChoice': 'Game {n} — Choix du perdant',
+    'match.youLostFirst': 'Vous avez perdu la game précédente — vous choisissez en premier.',
+    'match.winnerChoice': 'Game {n} — Choix du gagnant',
+    'match.youWonAiFirst': 'Vous avez gagné — {name} (perdant) choisit en premier.',
+    'match.sidesChoice': 'Game {n} — Choix des sides',
+    'match.aiLoserFirst': '<strong>{name}</strong> (perdant) choisit en premier sa catégorie.',
+    'match.youLoserFirst': 'Vous (perdant) choisissez en premier votre catégorie.',
+
     // -- Toast langue --
     'lang.changed': 'Langue mise à jour.'
   },
@@ -1218,6 +1288,76 @@ const I18N = {
     'coinflip.desc.first': 'Controls the meta — sets the tempo',
     'coinflip.desc.last': 'Guaranteed counter-pick in position 5',
 
+    // -- Scouting tiers --
+    'scoutTier.basic': 'Basic',
+    'scoutTier.advanced': 'Advanced',
+    'scoutTier.premium': 'Premium',
+
+    // -- Structures (map) --
+    'struct.tower': 'Turret {n} ({lane})',
+    'struct.inhibitor': 'Inhibitor ({lane})',
+    'struct.nexusTurret': 'Nexus Turret {n}',
+    'struct.nexus': 'Nexus',
+
+    // -- Match setup --
+    'match.emptyRoster': 'Build your roster before starting a match.',
+    'match.seriesInProgress': 'Series in progress',
+    'match.seriesScore': '{fmt} vs {opp} — score {a}-{b}, Game {n}.',
+    'match.resumeSeries': 'Resume the series',
+    'match.intro': 'Every match starts with a draft. Picks directly influence how the game plays out.',
+    'match.opponentLabel': 'OPPONENT',
+    'match.formatLabel': 'FORMAT',
+    'match.fearlessLabel': 'FEARLESS DRAFT',
+    'match.fearlessOff': 'Disabled',
+    'match.fearlessOn': 'Enabled (champions locked between games)',
+    'match.startSeries': 'Start the series (Draft)',
+    'match.noOpponents': 'No opposing team available in this region.',
+
+    // -- Scouting preview --
+    'match.scoutTitle': 'Scouting — {team}',
+    'match.scoutStyle': 'Style: {style} • Average level: {lvl}/100 • Key champions: {champs}',
+    'match.scoutWeak': 'Weakness: {role} ({name}, avg. {score}/100) • Priority ban: {ban}',
+    'match.scoutLocked': 'Reach 40+ scouting confidence to unlock draft priorities and weaknesses.',
+
+    // -- Match arena --
+    'match.win': 'Victory! GG.',
+    'match.loss': 'Defeat. GG.',
+    'match.resume': 'Resume',
+    'match.return': 'Back',
+    'match.draftGame': 'Draft Game {n}',
+    'match.seriesWon': 'Series won ({a}-{b})',
+    'match.seriesLost': 'Series lost ({a}-{b})',
+
+    // -- Match report --
+    'match.reportResult': 'Match {result} against {opp}.',
+    'match.reportKeyMoment': 'Key moment: {text}',
+
+    // -- Match events (generated) --
+    'event.laneKill': '{winner} wins a lane duel ({role}) and takes the advantage.',
+    'event.gank': '{winner} lands a gank and gets a kill.',
+    'event.dragon': '{winner} takes the Dragon.',
+    'event.herald': '{winner} takes the Rift Herald.',
+    'event.grubs': '{winner} takes control of the Void Grubs.',
+    'event.nexusDestroyed': '{winner} destroys the NEXUS and wins the game!',
+    'event.inhibitor': '{winner} destroys {struct}!',
+    'event.structure': '{winner} destroys {struct}.',
+    'event.towerGeneric': '{winner} brings down a turret.',
+    'event.teamfight': '{winner} wins a teamfight ({kills} kills)!',
+    'event.baron': '{winner} takes Baron Nashor!',
+    'event.elder': '{winner} slays the Elder Dragon!',
+    'event.dramatic': '{winner} makes a decisive play in the late game!',
+    'event.default': '{winner} takes the advantage.',
+
+    // -- Series side modal --
+    'match.gameSummary': 'Game {n} — Summary',
+    'match.loserChoice': 'Game {n} — Loser chooses',
+    'match.youLostFirst': 'You lost the previous game — you choose first.',
+    'match.winnerChoice': 'Game {n} — Winner chooses',
+    'match.youWonAiFirst': 'You won — {name} (loser) chooses first.',
+    'match.sidesChoice': 'Game {n} — Side selection',
+    'match.aiLoserFirst': '<strong>{name}</strong> (loser) chooses their category first.',
+    'match.youLoserFirst': 'You (loser) choose your category first.',
+
     // -- Language toast --
     'lang.changed': 'Language updated.'
   }
@@ -1278,6 +1418,13 @@ function masteryTierLabel(id) {
   const key = 'masteryTier.' + id;
   const val = t(key);
   return val === key ? id : val;
+}
+
+// Libellé traduit d'un tier de scouting (basic, advanced, premium).
+function scoutTierLabel(tier) {
+  const key = 'scoutTier.' + tier;
+  const val = t(key);
+  return val === key ? tier : val;
 }
 
 // Langue courante : lit state.settings.lang si dispo, sinon 'fr'.

@@ -5409,7 +5409,7 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
 
   function optionBtns(opts, prefix) {
     return opts.map(o =>
-      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}<span>${o.desc}</span></button>`
+      `<button class="btn-secondary coin-flip__option" data-opt="${o.id}" data-prefix="${prefix}">${o.label}<span>${t('coinflip.desc.' + o.id)}</span></button>`
     ).join('');
   }
 
@@ -5420,12 +5420,12 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <h3 class="coin-flip__title">Game ${gameNum} — Résumé</h3>
+        <h3 class="coin-flip__title">${t('match.gameSummary', { n: gameNum })}</h3>
         <div class="coin-flip__summary">
-          Côté : <strong>${sLabel}</strong> &nbsp;|&nbsp; Draft : <strong>${pLabel}</strong>
+          ${t('coinflip.sideLabel')} <strong>${sLabel}</strong> &nbsp;|&nbsp; ${t('coinflip.draftLabel')} <strong>${pLabel}</strong>
         </div>
         <div class="modal-content__actions">
-          <button class="btn-primary" id="series-game-go">Lancer la draft !</button>
+          <button class="btn-primary" id="series-game-go">${t('coinflip.startDraft')}</button>
         </div>
       </div>`;
     document.getElementById('series-game-go').addEventListener('click', () => {
@@ -5439,11 +5439,11 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <h3 class="coin-flip__title">Game ${gameNum} — Choix du perdant</h3>
-        <div class="coin-flip__result coin-flip__result--loss">Vous avez perdu la game précédente — vous choisissez en premier.</div>
-        <p class="coin-flip__sub coin-flip__category-label">— Côté —</p>
+        <h3 class="coin-flip__title">${t('match.loserChoice', { n: gameNum })}</h3>
+        <div class="coin-flip__result coin-flip__result--loss">${t('match.youLostFirst')}</div>
+        <p class="coin-flip__sub coin-flip__category-label">${t('coinflip.catSide')}</p>
         <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.side, 'sg-loser')}</div>
-        <p class="coin-flip__sub coin-flip__category-label">— Ordre de pick —</p>
+        <p class="coin-flip__sub coin-flip__category-label">${t('coinflip.catPick')}</p>
         <div class="coin-flip__options">${optionBtns(COIN_FLIP_CATEGORIES.pick, 'sg-loser')}</div>
       </div>`;
     overlay.querySelectorAll('[data-prefix="sg-loser"]').forEach(btn => {
@@ -5461,10 +5461,10 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
     const overlay = document.getElementById('modal-overlay');
     overlay.querySelector('.modal-content').innerHTML = `
       <div class="coin-flip">
-        <h3 class="coin-flip__title">Game ${gameNum} — Choix du gagnant</h3>
-        <div class="coin-flip__result coin-flip__result--win">Vous avez gagné — ${opName} (perdant) choisit en premier.</div>
-        <p class="coin-flip__sub"><strong>${opName}</strong> a choisi : <em>${getCoinFlipOpt(aiOpt.id).label}</em></p>
-        <p class="coin-flip__sub coin-flip__category-label">— ${playerCat === COIN_FLIP_CATEGORIES.side ? 'Côté' : 'Ordre de pick'} —</p>
+        <h3 class="coin-flip__title">${t('match.winnerChoice', { n: gameNum })}</h3>
+        <div class="coin-flip__result coin-flip__result--win">${t('match.youWonAiFirst', { name: opName })}</div>
+        <p class="coin-flip__sub">${t('coinflip.aiChose', { name: opName, opt: getCoinFlipOpt(aiOpt.id).label })}</p>
+        <p class="coin-flip__sub coin-flip__category-label">${playerCat === COIN_FLIP_CATEGORIES.side ? t('coinflip.catSide') : t('coinflip.catPick')}</p>
         <div class="coin-flip__options">${optionBtns(playerCat, 'sg-winner')}</div>
       </div>`;
     overlay.querySelectorAll('[data-prefix="sg-winner"]').forEach(btn => {
@@ -5474,14 +5474,14 @@ function showSeriesGameModal(opponentTeamId, playerWonLastGame) {
 
   showModal(`
     <div class="coin-flip">
-      <h3 class="coin-flip__title">Game ${gameNum} — Choix des sides</h3>
+      <h3 class="coin-flip__title">${t('match.sidesChoice', { n: gameNum })}</h3>
       <p class="coin-flip__sub">
         ${playerWonLastGame
-          ? `<strong>${opName}</strong> (perdant) choisit en premier sa catégorie.`
-          : `Vous (perdant) choisissez en premier votre catégorie.`}
+          ? t('match.aiLoserFirst', { name: opName })
+          : t('match.youLoserFirst')}
       </p>
       <div class="modal-content__actions">
-        <button class="btn-primary" id="series-game-next">Continuer</button>
+        <button class="btn-primary" id="series-game-next">${t('common.continue')}</button>
       </div>
     </div>`);
 
@@ -5766,7 +5766,16 @@ const STRUCTURE_LABELS = {
   NEXUS: 'Nexus'
 };
 
-function getStructureLabel(id) { return STRUCTURE_LABELS[id] || id; }
+function getStructureLabel(id) {
+  if (id === 'NEXUS') return t('struct.nexus');
+  if (id.startsWith('NEX_T')) return t('struct.nexusTurret', { n: id.slice(5) });
+  const parts = id.split('_');
+  const lane = { BOT: 'Bot', MID: 'Mid', TOP: 'Top' }[parts[0]] || parts[0];
+  const tier = parts[1] || '';
+  if (tier === 'INH') return t('struct.inhibitor', { lane });
+  if (tier.startsWith('T')) return t('struct.tower', { n: tier.slice(1), lane });
+  return STRUCTURE_LABELS[id] || id;
+}
 
 function getNextDestroyableStructure(side, rt) {
   const down = new Set(rt.structuresDown[side]);
@@ -5798,23 +5807,23 @@ function structureTowerCount(side, rt) {
 
 function buildEventText(template, winnerLabel, role, kills) {
   switch (template.id) {
-    case 'lane_kill': return `${winnerLabel} remporte un duel en lane (${ROLE_NAMES[role]}) et prend l'avantage.`;
-    case 'gank': return `${winnerLabel} reussit un gank et obtient un kill.`;
-    case 'dragon': return `${winnerLabel} prend le Dragon.`;
-    case 'herald': return `${winnerLabel} prend l'Herald de la Faille.`;
-    case 'grubs': return `${winnerLabel} prend le controle des Void Grubs.`;
+    case 'lane_kill': return t('event.laneKill', { winner: winnerLabel, role: ROLE_NAMES[role] });
+    case 'gank': return t('event.gank', { winner: winnerLabel });
+    case 'dragon': return t('event.dragon', { winner: winnerLabel });
+    case 'herald': return t('event.herald', { winner: winnerLabel });
+    case 'grubs': return t('event.grubs', { winner: winnerLabel });
     case 'tower': {
       const rt = matchRuntime;
       const struct = rt ? rt._lastStructure : null;
-      if (struct === 'NEXUS') return `${winnerLabel} détruit le NEXUS et remporte la partie !`;
-      if (struct && struct.endsWith('_INH')) return `${winnerLabel} détruit ${getStructureLabel(struct)} !`;
-      return struct ? `${winnerLabel} détruit ${getStructureLabel(struct)}.` : `${winnerLabel} fait tomber une tour.`;
+      if (struct === 'NEXUS') return t('event.nexusDestroyed', { winner: winnerLabel });
+      if (struct && struct.endsWith('_INH')) return t('event.inhibitor', { winner: winnerLabel, struct: getStructureLabel(struct) });
+      return struct ? t('event.structure', { winner: winnerLabel, struct: getStructureLabel(struct) }) : t('event.towerGeneric', { winner: winnerLabel });
     }
-    case 'teamfight': return `${winnerLabel} gagne un teamfight (${kills} kills) !`;
-    case 'baron': return `${winnerLabel} prend le Baron Nashor !`;
-    case 'elder': return `${winnerLabel} terrasse le Dragon Ancien (Elder) !`;
-    case 'dramatic': return `${winnerLabel} réalisé une action decisive en fin de partie !`;
-    default: return `${winnerLabel} prend l'avantage.`;
+    case 'teamfight': return t('event.teamfight', { winner: winnerLabel, kills });
+    case 'baron': return t('event.baron', { winner: winnerLabel });
+    case 'elder': return t('event.elder', { winner: winnerLabel });
+    case 'dramatic': return t('event.dramatic', { winner: winnerLabel });
+    default: return t('event.default', { winner: winnerLabel });
   }
 }
 
@@ -6111,7 +6120,7 @@ function togglePauseMatch() {
   if (!rt || rt.finished) return;
   rt.paused = !rt.paused;
   const btn = document.getElementById('btn-pause-match');
-  if (btn) btn.textContent = rt.paused ? 'Reprendre' : 'Pause';
+  if (btn) btn.textContent = rt.paused ? t('match.resume') : t('match.pause');
   restartMatchTimer();
 }
 
@@ -6146,38 +6155,38 @@ function applyMatchOutcome(win) {
 
 function buildMatchReport(opponent, win, before, after, eventHistory) {
   const lines = [];
-  lines.push(`Match ${win ? 'remporte' : 'perdu'} contre ${opponent.name}.`);
+  lines.push(t('match.reportResult', { result: win ? t('train.won') : t('train.lost'), opp: opponent.name }));
 
   const dramaticEvents = eventHistory.filter((e) => e.dramatic);
   if (dramaticEvents.length) {
-    lines.push(`Moment cle : ${dramaticEvents[dramaticEvents.length - 1].text}`);
+    lines.push(t('match.reportKeyMoment', { text: dramaticEvents[dramaticEvents.length - 1].text }));
   }
 
   const focusStats = OBJECTIVE_STAT_FOCUS.free_scrim;
   if (!win) {
     const weak = pickWeakLink(focusStats);
     if (weak) {
-      lines.push(`Analyse : ${weak.player.name} a montre des difficultés en ${STAT_LABELS[weak.statKey]} (${weak.value}/100), un facteur cle de la défaite.`);
+      lines.push(t('train.reportAnalysisLoss', { name: weak.player.name, stat: statLabel(weak.statKey), val: weak.value }));
     }
   } else {
     const strong = pickStrongLink(focusStats);
     if (strong) {
-      lines.push(`Analyse : ${strong.player.name} a porte l'équipe grace a son niveau en ${STAT_LABELS[strong.statKey]} (${strong.value}/100).`);
+      lines.push(t('train.reportAnalysisWin', { name: strong.player.name, stat: statLabel(strong.statKey), val: strong.value }));
     }
   }
 
   const deltaLines = [];
   state.roster.forEach((p) => {
     const b = before[p.id], a = after[p.id];
-    Object.keys(STAT_LABELS).forEach((key) => {
+    ['shotcalling', 'laning', 'teamfight', 'mechanics', 'mental', 'form'].forEach((key) => {
       if (a[key] !== b[key]) {
         const diff = a[key] - b[key];
-        deltaLines.push(`${p.name} : ${STAT_LABELS[key]} ${diff > 0 ? '+' : ''}${diff} (${b[key]} -> ${a[key]})`);
+        deltaLines.push(t('train.reportDeltaLine', { name: p.name, stat: statLabel(key), sign: diff > 0 ? '+' : '', diff, old: b[key], new: a[key] }));
       }
     });
   });
   if (deltaLines.length) {
-    lines.push('Evolution des stats :');
+    lines.push(t('train.reportEvolution'));
     lines.push(...deltaLines);
   }
 
@@ -6271,18 +6280,18 @@ function finishMatch() {
 
   saveGame();
   updateResourceBar();
-  renderMatchEvent(win ? 'Victoire ! GG.' : 'Défaite. GG.', 'dramatic');
+  renderMatchEvent(win ? t('match.win') : t('match.loss'), 'dramatic');
 
   const pauseBtn = document.getElementById('btn-pause-match');
   if (pauseBtn) {
     if (rt.seriesEvent && rt.seriesEvent.type === 'next') {
-      pauseBtn.textContent = `Draft Game ${rt.seriesEvent.gameNumber}`;
+      pauseBtn.textContent = t('match.draftGame', { n: rt.seriesEvent.gameNumber });
     } else if (rt.seriesEvent && rt.seriesEvent.type === 'done') {
       pauseBtn.textContent = rt.seriesEvent.won
-        ? `Serie remportee (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`
-        : `Serie perdue (${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst})`;
+        ? t('match.seriesWon', { a: rt.seriesEvent.scoreFor, b: rt.seriesEvent.scoreAgainst })
+        : t('match.seriesLost', { a: rt.seriesEvent.scoreFor, b: rt.seriesEvent.scoreAgainst });
     } else {
-      pauseBtn.textContent = 'Retour';
+      pauseBtn.textContent = t('match.return');
     }
   }
   showScrimReportModal(rt.report);
@@ -6297,8 +6306,8 @@ function renderMatchArena() {
 
   const rt = matchRuntime;
   const playerMapSide = rt.picks.playerSide; // rt.picks est clé par côté de carte
-  const blueLabel = playerMapSide === 'blue' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
-  const redLabel = playerMapSide === 'red' ? (state.teamName || 'Votre équipe') : rt.opponent.name;
+  const blueLabel = playerMapSide === 'blue' ? (state.teamName || t('match.yourTeam')) : rt.opponent.name;
+  const redLabel = playerMapSide === 'red' ? (state.teamName || t('match.yourTeam')) : rt.opponent.name;
 
   document.getElementById('match-team-home-name').textContent = blueLabel;
   document.getElementById('match-team-home-league').textContent = playerMapSide === 'blue' ? (state.region || '') : rt.opponent.region;
@@ -6327,7 +6336,7 @@ function renderMatchArena() {
   updateMatchObjectivesPanel();
 
   const pauseBtn = document.getElementById('btn-pause-match');
-  pauseBtn.textContent = 'Pause';
+  pauseBtn.textContent = t('match.pause');
   pauseBtn.onclick = () => {
     const finishedRt = matchRuntime;
     if (finishedRt.finished) {
@@ -6366,8 +6375,8 @@ function renderMatchSetup() {
 
   if (state.roster.length === 0) {
     setupEl.innerHTML = `
-      <h2 class="panel-title">Préparer un match</h2>
-      <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">Constituez votre roster avant de lancer un match.</p>
+      <h2 class="panel-title">${t('match.setupTitle')}</h2>
+      <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">${t('match.emptyRoster')}</p>
     `;
     return;
   }
@@ -6376,13 +6385,13 @@ function renderMatchSetup() {
     const series = state.matchSeries;
     const opponent = getTeamRef(series.opponentTeamId);
     setupEl.innerHTML = `
-      <h2 class="panel-title">Serie en cours</h2>
+      <h2 class="panel-title">${t('match.seriesInProgress')}</h2>
       <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">
-        ${series.format} contre ${opponent.name} &mdash; score ${series.scoreFor}-${series.scoreAgainst}, Game ${series.gameNumber}.
+        ${t('match.seriesScore', { fmt: series.format, opp: opponent.name, a: series.scoreFor, b: series.scoreAgainst, n: series.gameNumber })}
       </p>
       ${scoutingPreviewHtml(series.opponentTeamId)}
       <div class="training-form__actions">
-        <button class="btn-primary" id="btn-resume-series">Continuer la serie</button>
+        <button class="btn-primary" id="btn-resume-series">${t('match.resumeSeries')}</button>
       </div>
     `;
     const resumeBtn = document.getElementById('btn-resume-series');
@@ -6398,22 +6407,22 @@ function renderMatchSetup() {
     return;
   }
 
-  const opponents = getAITeamsForRegion(state.region).filter((t) => t.id !== state.aiTeamId);
+  const opponents = getAITeamsForRegion(state.region).filter((team) => team.id !== state.aiTeamId);
 
   setupEl.innerHTML = `
-    <h2 class="panel-title">Préparer un match</h2>
+    <h2 class="panel-title">${t('match.setupTitle')}</h2>
     <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">
-      Chaque match commencé par une draft. Les picks influencent directement le deroulement de la partie.
+      ${t('match.intro')}
     </p>
     <div class="training-form">
       <div class="training-form__group">
-        <label>ADVERSAIRE</label>
+        <label>${t('match.opponentLabel')}</label>
         <select id="match-opponent">
-          ${opponents.map((t) => `<option value="${t.id}">${t.name} (${t.shortName})</option>`).join('')}
+          ${opponents.map((team) => `<option value="${team.id}">${team.name} (${team.shortName})</option>`).join('')}
         </select>
       </div>
       <div class="training-form__group">
-        <label>FORMAT</label>
+        <label>${t('match.formatLabel')}</label>
         <select id="match-format">
           <option value="BO1">BO1</option>
           <option value="BO3">BO3</option>
@@ -6421,15 +6430,15 @@ function renderMatchSetup() {
         </select>
       </div>
       <div class="training-form__group">
-        <label>FEARLESS DRAFT</label>
+        <label>${t('match.fearlessLabel')}</label>
         <select id="match-fearless">
-          <option value="off">Désactivé</option>
-          <option value="on">Active (champions verrouilles entre les games)</option>
+          <option value="off">${t('match.fearlessOff')}</option>
+          <option value="on">${t('match.fearlessOn')}</option>
         </select>
       </div>
     </div>
     <div class="training-form__actions">
-      <button class="btn-primary" id="btn-start-match">Commencer la serie (Draft)</button>
+      <button class="btn-primary" id="btn-start-match">${t('match.startSeries')}</button>
     </div>
     <div id="match-scouting-preview"></div>
   `;
@@ -6465,20 +6474,20 @@ function scoutingPreviewHtml(opponentId) {
   const report = getScoutingReport(opponentId);
   const tier = getScoutingTier(report.confidence);
   const topChamps = getTeamTopChampions(team);
-  const tierLabel = { basic: 'Basique', advanced: 'Avance', premium: 'Premium' }[tier];
+  const tierLabel = scoutTierLabel(tier);
 
   let html = `
     <div class="scouting-preview-panel">
-      <h4 class="panel-title">Scouting — ${team.name} <span class="result-tag" style="font-size:11px;padding:2px 6px;">${tierLabel} ${report.confidence}/100</span></h4>
-      <p>Style : ${formatStyle(team.style)} &bull; Niveau moyen : ${getTeamAverageLevel(team)}/100 &bull; Champions cles : ${topChamps.join(', ')}</p>
+      <h4 class="panel-title">${t('match.scoutTitle', { team: team.name })} <span class="result-tag" style="font-size:11px;padding:2px 6px;">${tierLabel} ${report.confidence}/100</span></h4>
+      <p>${t('match.scoutStyle', { style: formatStyle(team.style), lvl: getTeamAverageLevel(team), champs: topChamps.join(', ') })}</p>
   `;
 
   if (tier === 'advanced' || tier === 'premium') {
     const weak = getTeamWeakestRole(team);
     const topBan = (team.draftProfile && team.draftProfile.banPriorities || [])[0];
-    html += `<p>Faiblesse : ${ROLE_NAMES[weak.role]} (${weak.player.name}, moy. ${weak.score}/100) &bull; Ban prioritaire : ${topBan || '?'}</p>`;
+    html += `<p>${t('match.scoutWeak', { role: ROLE_NAMES[weak.role], name: weak.player.name, score: weak.score, ban: topBan || '?' })}</p>`;
   } else {
-    html += `<p class="card__count" style="font-size:12px;">Atteignez 40+ de confiance scouting pour débloquer les priorites de draft et faiblesses.</p>`;
+    html += `<p class="card__count" style="font-size:12px;">${t('match.scoutLocked')}</p>`;
   }
 
   html += `</div>`;

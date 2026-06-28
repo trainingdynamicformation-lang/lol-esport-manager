@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.12.12] — 2026-06-27
+
+### Ajouté — i18n FR/EN Phase 3 (lot 7 : Match)
+
+- **Préparation de match** : titre, message roster vide, série en cours, intro, libellés (adversaire, format, fearless draft), bouton démarrer.
+- **Aperçu scouting** (avant match) : tier (Basique/Avancé/Premium), style, niveau, faiblesse, ban prioritaire, message de déblocage.
+- **Déroulé en direct** : tous les événements du commentaire (duels de lane, ganks, Dragon, Herald, Void Grubs, tours/inhibiteurs/Nexus, teamfights, Baron, Elder, actions décisives) — générés dans la langue active.
+- **Structures de la carte** (`STRUCTURE_LABELS`) traduites : Tour/Inhibiteur/Tour du Nexus/Nexus.
+- **Compte-rendu de match**, **boutons de fin** (série remportée/perdue, Draft Game N, Retour), bouton Pause/Reprendre.
+- **Modal de choix de side entre games** (pile ou face de série).
+- Nouveaux helpers `scoutTierLabel()` et `getStructureLabel()` traduit.
+
+---
+
 ## [1.12.11] — 2026-06-27
 
 ### Ajouté — i18n FR/EN : Pile ou Face (coin flip)
