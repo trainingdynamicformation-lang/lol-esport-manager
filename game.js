@@ -8157,11 +8157,17 @@ function hideSponsorBanner() {
 function sponsorTierLabel(tier) { return t('sponsor.tier.' + tier); }
 function sponsorTypeLabel(type) { return t('sponsor.type.' + type); }
 
-function sponsorWeightLabel(w) {
-  if (w >= 0.9) return t('sponsor.weight.veryStrong');
-  if (w >= 0.5) return t('sponsor.weight.strong');
-  if (w >= 0.3) return t('sponsor.weight.moderate');
-  return t('sponsor.weight.light');
+// Affiche le poids d'un sponsor résultat en pourcentage concret (plus lisible qu'un
+// libellé qualitatif type "Modéré"), avec une info-bulle expliquant le mécanisme.
+function sponsorPayoutStatHtml(label, weight) {
+  const pct = Math.round(weight * 100);
+  const info = t('sponsor.detail.payoutInfo', { pct });
+  return `
+    <div class="sponsor-detail__stat">
+      <p class="sponsor-detail__stat-label">${label} <span class="sponsor-info-icon" title="${escapeAttr(info)}">ⓘ</span></p>
+      <p class="sponsor-detail__stat-value">+${pct}%</p>
+    </div>
+  `;
 }
 
 function objectiveLabel(code) { return t('sponsor.obj.' + code); }
@@ -8308,14 +8314,8 @@ function showSponsorDetail(contractId, isRenewal) {
     body += `
       <p class="sponsor-detail__section-title">${t('sponsor.detail.payout')}</p>
       <div class="sponsor-detail__stats">
-        <div class="sponsor-detail__stat">
-          <p class="sponsor-detail__stat-label">${t('sponsor.detail.domesticWeight')}</p>
-          <p class="sponsor-detail__stat-value">${sponsorWeightLabel(contract.domesticWeight)}</p>
-        </div>
-        <div class="sponsor-detail__stat">
-          <p class="sponsor-detail__stat-label">${t('sponsor.detail.intlWeight')}</p>
-          <p class="sponsor-detail__stat-value">${sponsorWeightLabel(contract.intlWeight)}</p>
-        </div>
+        ${sponsorPayoutStatHtml(t('sponsor.detail.domesticWeight'), contract.domesticWeight)}
+        ${sponsorPayoutStatHtml(t('sponsor.detail.intlWeight'), contract.intlWeight)}
       </div>
       ${contract.breach ? `<p class="sponsor-detail__warning">${t('sponsor.detail.breach.' + (contract.breach === 'MISSED_PLAYOFFS' ? 'missedPlayoffs' : 'noIntlQual'))}</p>` : ''}
     `;

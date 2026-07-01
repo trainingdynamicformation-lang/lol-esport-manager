@@ -2495,6 +2495,7 @@ table.history-table th {
 .sponsor-detail__stats { display: flex; gap: 10px; margin-bottom: 14px; }
 .sponsor-detail__stat { background: var(--color-surface-alt); border-radius: var(--radius); padding: 10px 14px; flex: 1; }
 .sponsor-detail__stat-label { font-size: var(--fs-label); color: var(--color-text-muted); margin-bottom: 2px; }
+.sponsor-info-icon { cursor: help; color: var(--color-seafoam); font-size: 12px; }
 .sponsor-detail__stat-value { font-family: var(--font-title); font-size: var(--fs-h3); font-weight: 700; color: var(--color-gold); }
 .sponsor-detail__warning { font-size: var(--fs-body); color: var(--color-warning); background: rgba(200,155,60,.08); border-radius: var(--radius); padding: 8px 12px; margin-bottom: 14px; }
 .sponsor-detail__section-title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
