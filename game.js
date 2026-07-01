@@ -16,11 +16,19 @@ const REGIONS = [
   { id: 'LEC', name: 'LEC', inspiration: 'Europe', style: 'Équipes polyvalentes, draft creative', aiRegion: 'LEC' },
   { id: 'LCK', name: 'LCK', inspiration: 'Coree', style: 'Rigueur, macro et discipline', aiRegion: 'LCK' },
   { id: 'LPL', name: 'LPL', inspiration: 'Chine', style: 'Agressivité et teamfights précoces', aiRegion: 'LPL' },
-  { id: 'LTA', name: 'LTA', inspiration: 'Ameriques', style: 'Individualisme et carry early', aiRegion: 'LTAN' },
+  { id: 'LTA', name: 'LCS', inspiration: 'Ameriques', style: 'Individualisme et carry early', aiRegion: 'LTAN' },
   { id: 'LCP', name: 'LCP', inspiration: 'Asie-Pacifique', style: 'Styles emergents et picks surprises', aiRegion: 'LCP' },
   { id: 'CBLOL', name: 'CBLOL', inspiration: 'Bresil', style: 'Intensite et soutien du public', aiRegion: 'LTAS' },
   { id: 'LJL', name: 'LJL', inspiration: 'Japon', style: 'Precision et compositions techniques', aiRegion: 'LJL' }
 ];
+
+// v1.14.1 : nom d'affichage d'une région à partir de son id interne (id conservé
+// pour la compatibilité des sauvegardes ; seul le libellé visible change — ex.
+// LTA (id) s'affiche « LCS »).
+function regionDisplayName(id) {
+  const r = REGIONS.find((reg) => reg.id === id);
+  return r ? r.name : id;
+}
 
 /* ------------------------------------------------------------
    Accès aux équipes IA (data_teams.js, CDC 11.1)
@@ -1802,7 +1810,7 @@ function renderHome() {
   const regionEl = document.getElementById('home-team-region');
   if (regionEl) {
     regionEl.innerHTML = state.region
-      ? `<span class="region-badge region-badge--${state.region}">${state.region}</span>`
+      ? `<span class="region-badge region-badge--${state.region}">${regionDisplayName(state.region)}</span>`
       : '';
   }
 
@@ -2680,6 +2688,41 @@ function computeDraftScore(draft) {
 
 // ---- Assistant Coach de draft (v1.12.1) ----
 
+// v1.14.1 : cherche, pour un rôle et une liste de champions cibles (ids) donnés,
+// le meilleur counter DANS le pool du joueur concerné (confort) et le meilleur
+// counter TOUTES POSSIBILITÉS CONFONDUES (idéal), en excluant systématiquement
+// les champions bannis/déjà pris. Si le meilleur counter idéal se trouve aussi
+// être dans le pool, comfort === ideal (même champion) : pas de carte "risquée"
+// à afficher, un seul conseil suffit.
+function getRoleCounterOptions(draft, myPlayer, role, targetChampIds) {
+  let comfort = null;
+  if (myPlayer) {
+    myPlayer.championPool.forEach((champName) => {
+      if (isChampionTaken(draft, champName)) return;
+      const champ = getChampionByName(champName);
+      if (!champ) return;
+      targetChampIds.forEach((targetId) => {
+        const entry = CHAMPION_COUNTERS.find((e) => e.counter === champ.id && e.target === targetId && e.score >= 65);
+        if (entry && (!comfort || entry.score > comfort.score)) {
+          const mastery = (getChampionMastery(myPlayer.id, champName) || {}).mastery || 0;
+          comfort = { champName, score: entry.score, mastery, targetId };
+        }
+      });
+    });
+  }
+  let ideal = null;
+  targetChampIds.forEach((targetId) => {
+    CHAMPION_COUNTERS.filter((e) => e.target === targetId && e.score >= 65).forEach((e) => {
+      const champ = getChampionById(e.counter);
+      if (!champ) return;
+      if (champ.role !== role && !(champ.secondaryRoles || []).includes(role)) return;
+      if (isChampionTaken(draft, champ.name)) return;
+      if (!ideal || e.score > ideal.score) ideal = { champName: champ.name, score: e.score, targetId };
+    });
+  });
+  return { comfort, ideal };
+}
+
 function getDraftCoachAdvice(draft) {
   const turn = currentTurn(draft);
   if (!turn || turn.side !== draft.playerSide) return [];
@@ -2720,59 +2763,78 @@ function getDraftCoachAdvice(draft) {
   } else {
     // PICK TURN
 
-    // 1. Counter-picks : adversaire a déjà pick dans notre rôle
+    // Mastery du joueur du rôle `ideal.__role` sur le champion idéal (0 la plupart
+    // du temps, puisque idéal ≠ confort implique qu'il n'est pas dans le pool).
+    const idealMasteryFor = (ideal) => {
+      const player = state.roster.find((p) => p.role === ideal.__role);
+      return player ? ((getChampionMastery(player.id, ideal.champName) || {}).mastery || 0) : 0;
+    };
+
+    // Helper d'ajout d'une carte "confort" + éventuelle carte "idéal" (si le
+    // meilleur counter réel n'est pas dans le pool). Les deux partagent le même
+    // `type` pour rester adjacentes après le tri (tri stable par type).
+    const pushCounterPair = (baseType, icon, label, comfort, ideal, textComfort, warnKeyNone, warnKeyLow) => {
+      const pushIdealWarn = () => {
+        const warnKey = idealMasteryFor(ideal) > 0 ? warnKeyLow : warnKeyNone;
+        advice.push({ type: baseType, variant: 'ideal', icon: '🎯', label: t('coach.lbl.counterIdeal'), text: t(warnKey, { champ: ideal.champName, opp: ideal.__oppName, role: ROLE_NAMES[ideal.__role], score: ideal.score }) });
+      };
+      if (comfort) {
+        advice.push({ type: baseType, icon, label, text: textComfort(comfort) });
+        if (ideal && ideal.champName !== comfort.champName && ideal.score > comfort.score) pushIdealWarn();
+      } else if (ideal) {
+        pushIdealWarn();
+      }
+    };
+
+    // 1. Counter-pick : le MEILLEUR rôle où l'adversaire a DÉJÀ locké un pick
+    // (parmi les rôles encore libres pour vous). Une seule opportunité retenue
+    // pour rester focus ; jamais de champion banni/déjà pris.
+    let bestLocked = null;
     freeRoles.forEach((role) => {
       const oppChampName = oppPicks[role];
       if (!oppChampName) return;
       const oppChamp = getChampionByName(oppChampName);
       if (!oppChamp) return;
       const myPlayer = state.roster.find((p) => p.role === role);
-      let best = null;
-      if (myPlayer) {
-        myPlayer.championPool.forEach((champName) => {
-          if (isChampionTaken(draft, champName)) return;
-          const champ = getChampionByName(champName);
-          if (!champ) return;
-          const entry = CHAMPION_COUNTERS.find((e) => e.counter === champ.id && e.target === oppChamp.id && e.score >= 65);
-          if (entry && (!best || entry.score > best.score)) {
-            const mastery = (getChampionMastery(myPlayer.id, champName) || {}).mastery || 0;
-            best = { champName, score: entry.score, mastery, playerName: myPlayer.name };
-          }
-        });
-      }
-      if (best) {
-        advice.push({ type: 'counter', icon: '⚡', label: t('coach.lbl.counter'), text: t('coach.counter', { champ: best.champName, m: best.mastery, opp: oppChampName, role: ROLE_NAMES[role], score: best.score }), priority: best.score });
-      }
+      const { comfort, ideal } = getRoleCounterOptions(draft, myPlayer, role, [oppChamp.id]);
+      if (!comfort && !ideal) return;
+      const bestScore = Math.max(comfort ? comfort.score : 0, ideal ? ideal.score : 0);
+      if (ideal) { ideal.__role = role; ideal.__oppName = oppChampName; }
+      if (!bestLocked || bestScore > bestLocked.bestScore) bestLocked = { role, comfort, ideal, bestScore, oppChampName };
     });
+    if (bestLocked) {
+      pushCounterPair('counter', '⚡', t('coach.lbl.counter'), bestLocked.comfort, bestLocked.ideal,
+        (c) => t('coach.counter', { champ: c.champName, m: c.mastery, opp: bestLocked.oppChampName, role: ROLE_NAMES[bestLocked.role], score: c.score }),
+        'coach.idealWarnNone', 'coach.idealWarnLow');
+    }
 
-    // 2. Pick proactif : champion de notre pool qui met en difficulté leur pool probable
-    const proactives = [];
+    // 2. Anticipation : le MEILLEUR rôle où l'adversaire n'a PAS encore locké,
+    // basé sur ses picks probables (draftProfile.comfortPicks, à défaut son
+    // propre pool). Une seule opportunité retenue, jamais de champion banni.
+    let bestAnticipated = null;
     freeRoles.forEach((role) => {
+      if (oppPicks[role]) return; // déjà géré par le bloc "locked" ci-dessus
+      const oppPlayer = opponent.roster.find((p) => p.role === role);
+      if (!oppPlayer) return;
+      const profileComfort = ((opponent.draftProfile || {}).comfortPicks || {})[role] || [];
+      const candidateNames = (profileComfort.length ? profileComfort : (oppPlayer.championPool || []))
+        .filter((name) => !isChampionTaken(draft, name));
+      const targetIds = candidateNames.map((name) => (getChampionByName(name) || {}).id).filter(Boolean).slice(0, 3);
+      if (targetIds.length === 0) return;
       const myPlayer = state.roster.find((p) => p.role === role);
-      if (!myPlayer) return;
-      const oppPool = opponent.roster.flatMap((p) => p.championPool.slice(0, 3));
-      myPlayer.championPool.slice(0, 6).forEach((champName) => {
-        if (isChampionTaken(draft, champName)) return;
-        const champ = getChampionByName(champName);
-        if (!champ) return;
-        let score = 0;
-        const targets = [];
-        oppPool.forEach((oppName) => {
-          const oC = getChampionByName(oppName);
-          if (!oC) return;
-          const e = CHAMPION_COUNTERS.find((e) => e.counter === champ.id && e.target === oC.id && e.score >= 72);
-          if (e) { score += e.score; targets.push(oppName); }
-        });
-        if (score >= 72 && targets.length >= 1) {
-          const mastery = (getChampionMastery(myPlayer.id, champName) || {}).mastery || 0;
-          proactives.push({ champName, role, score, targets: [...new Set(targets)].slice(0, 2), mastery });
-        }
-      });
+      const { comfort, ideal } = getRoleCounterOptions(draft, myPlayer, role, targetIds);
+      if (!comfort && !ideal) return;
+      const bestScore = Math.max(comfort ? comfort.score : 0, ideal ? ideal.score : 0);
+      const matchedTargetId = comfort ? comfort.targetId : (ideal ? ideal.targetId : null);
+      const targetChamp = matchedTargetId ? getChampionById(matchedTargetId) : null;
+      const targetName = targetChamp ? targetChamp.name : candidateNames[0];
+      if (ideal) { ideal.__role = role; ideal.__oppName = targetName; }
+      if (!bestAnticipated || bestScore > bestAnticipated.bestScore) bestAnticipated = { role, comfort, ideal, bestScore, targetName };
     });
-    if (proactives.length > 0) {
-      proactives.sort((a, b) => b.score - a.score);
-      const p = proactives[0];
-      advice.push({ type: 'proactive', icon: '🔥', label: t('coach.lbl.proactive'), text: t('coach.proactive', { champ: p.champName, targets: p.targets.join(' ' + t('common.and') + ' ') }), priority: p.score });
+    if (bestAnticipated) {
+      pushCounterPair('anticipate', '🔮', t('coach.lbl.anticipate'), bestAnticipated.comfort, bestAnticipated.ideal,
+        (c) => t('coach.anticipate', { champ: c.champName, m: c.mastery, opp: bestAnticipated.targetName, role: ROLE_NAMES[bestAnticipated.role], score: c.score }),
+        'coach.anticipateIdealWarnNone', 'coach.anticipateIdealWarnLow');
     }
 
     // 3. Analyse composition
@@ -2823,18 +2885,19 @@ function getDraftCoachAdvice(draft) {
     }
   }
 
-  // Trier par type prioritaire et limiter à 3 cartes
-  const prio = { counter: 0, proactive: 1, ban: 2, scouting: 3, comp: 4, threat: 5, flex: 6, pick: 7, info: 8 };
+  // Trier par type prioritaire (tri stable : une paire confort+idéal du même
+  // type reste toujours adjacente) et limiter à 3 cartes affichées.
+  const prio = { counter: 0, anticipate: 1, ban: 2, scouting: 3, comp: 4, threat: 5, flex: 6, pick: 7, info: 8 };
   return advice.sort((a, b) => (prio[a.type] ?? 9) - (prio[b.type] ?? 9)).slice(0, 3);
 }
 
 function renderCoachPanel(advice) {
   if (!advice || advice.length === 0) return '';
-  const colorClass = { counter: 'coach-card--counter', proactive: 'coach-card--proactive', ban: 'coach-card--ban',
+  const colorClass = { counter: 'coach-card--counter', anticipate: 'coach-card--anticipate', ban: 'coach-card--ban',
     scouting: 'coach-card--scouting', comp: 'coach-card--comp', flex: 'coach-card--flex',
     threat: 'coach-card--threat', pick: 'coach-card--pick', info: 'coach-card--info' };
   const cards = advice.map((a) =>
-    `<div class="coach-card ${colorClass[a.type] || ''}">
+    `<div class="coach-card ${colorClass[a.type] || ''}${a.variant === 'ideal' ? ' coach-card--ideal' : ''}">
       <span class="coach-card__icon">${a.icon}</span>
       <div class="coach-card__body">
         <span class="coach-card__label">${a.label}</span>
@@ -4692,7 +4755,7 @@ function renderRegularSeasonCalendar(el, season) {
   const logHtml = season.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
 
   el.innerHTML = `
-    <h3 class="panel-title">${t('cal.regularTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
+    <h3 class="panel-title">${t('cal.regularTitle', { split: splitLabel(season.split), year: season.year, region: regionDisplayName(season.region) })}</h3>
     <p class="card__count">${fixtureLabel}</p>
     <div class="training-form__actions">
       <button class="btn-primary" id="btn-calendar-action">${actionLabel}</button>
@@ -4726,7 +4789,7 @@ function renderRegularSeasonCalendar(el, season) {
         season.pendingMatch = { type: 'regular', opponentTeamId: opponentId };
         state.mercatoOpen = false; // le split démarre : fermeture du mercato
         saveGame();
-        startMatchSeries(opponentId, 'BO3', 'on', `${splitLabel(season.split)} ${season.year} - ${season.region}`);
+        startMatchSeries(opponentId, 'BO3', 'on', `${splitLabel(season.split)} ${season.year} - ${regionDisplayName(season.region)}`);
       } else {
         state.mercatoOpen = false; // le split démarre : fermeture du mercato
         const pairings = season.schedule[season.matchday - 1] || [];
@@ -5112,8 +5175,8 @@ function renderPlayoffsCalendar(el, season) {
   }
 
   el.innerHTML = `
-    <h3 class="panel-title">${t('cal.playoffsTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
-    ${buildSeasonBracketHtml(po, season.pendingMatch, `${splitLabel(season.split)} ${season.year} - ${season.region}`)}
+    <h3 class="panel-title">${t('cal.playoffsTitle', { split: splitLabel(season.split), year: season.year, region: regionDisplayName(season.region) })}</h3>
+    ${buildSeasonBracketHtml(po, season.pendingMatch, `${splitLabel(season.split)} ${season.year} - ${regionDisplayName(season.region)}`)}
     ${actionHtml}
     <h3 class="panel-title">${t('cal.recentResults')}</h3>
     <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
@@ -5125,7 +5188,7 @@ function renderPlayoffsCalendar(el, season) {
   if (playBtn) {
     playBtn.addEventListener('click', () => {
       const pm = season.pendingMatch;
-      startMatchSeries(pm.opponentTeamId, pm.format, 'on', `Playoffs - ${splitLabel(season.split)} ${season.year} - ${season.region}`);
+      startMatchSeries(pm.opponentTeamId, pm.format, 'on', `Playoffs - ${splitLabel(season.split)} ${season.year} - ${regionDisplayName(season.region)}`);
     });
   }
 }
@@ -5137,11 +5200,11 @@ function renderSeasonRecap(el, season) {
   const nextLabel = season.split === 'spring' ? t('cal.toMsi') : t('cal.toWorlds');
   const progressionHtml = careerProgressionHtml(state.lastCareerProgression);
   const bracketHtml = season.playoffs
-    ? buildSeasonBracketHtml(season.playoffs, null, `${splitLabel(season.split)} ${season.year} - ${season.region}`)
+    ? buildSeasonBracketHtml(season.playoffs, null, `${splitLabel(season.split)} ${season.year} - ${regionDisplayName(season.region)}`)
     : '';
 
   el.innerHTML = `
-    <h3 class="panel-title">${t('cal.finishedTitle', { split: splitLabel(season.split), year: season.year, region: season.region })}</h3>
+    <h3 class="panel-title">${t('cal.finishedTitle', { split: splitLabel(season.split), year: season.year, region: regionDisplayName(season.region) })}</h3>
     <p class="card__count">${t('cal.finalRank', { label: placementLabel(placement) })}</p>
     <p class="card__count">${t('cal.rewardsGot', { coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige })}</p>
     ${bracketHtml}
@@ -5341,7 +5404,7 @@ const SCENARIO_WEIGHTS_BY_REGION = {
   LCK:           { control: 35, standard: 35, snowball: 18, stomp:  7, fiesta:  5 },
   LPL:           { control: 15, standard: 32, snowball: 28, stomp: 10, fiesta: 15 },
   LEC:           { control: 20, standard: 35, snowball: 22, stomp:  8, fiesta: 15 },
-  LCS:           { control: 25, standard: 40, snowball: 22, stomp:  8, fiesta:  5 },
+  LTA:           { control: 25, standard: 40, snowball: 22, stomp:  8, fiesta:  5 }, // v1.14.1 : clé alignée sur l'id région (season.region='LTA', affiché « LCS »)
   International: { control: 25, standard: 30, snowball: 25, stomp: 12, fiesta:  8 },
 };
 // killWeightMult : multiplie le poids des events lane/gank
@@ -5890,10 +5953,23 @@ function structureTowerCount(side, rt) {
   return rt.structuresDown[side].filter(id => id.endsWith('_T1') || id.endsWith('_T2') || id.endsWith('_T3') || id === 'NEX_T1' || id === 'NEX_T2').length;
 }
 
-function buildEventText(template, winnerLabel, role, kills) {
+// v1.14.1 : pioche une variante de texte au hasard parmi les clés numérotées
+// `${prefix}1`, `${prefix}2`, ... (jusqu'à `count`).
+function pickEventVariant(prefix, count, vars) {
+  const idx = 1 + Math.floor(Math.random() * count);
+  return t(`${prefix}${idx}`, vars);
+}
+
+function buildEventText(template, winnerLabel, loserLabel, role, kills) {
   switch (template.id) {
-    case 'lane_kill': return t('event.laneKill', { winner: winnerLabel, role: ROLE_NAMES[role] });
-    case 'gank': return t('event.gank', { winner: winnerLabel });
+    case 'lane_kill':
+      return kills > 0
+        ? pickEventVariant('event.laneKill', 2, { winner: winnerLabel, role: ROLE_NAMES[role] })
+        : pickEventVariant('event.laneKillMiss', 2, { winner: winnerLabel, loser: loserLabel, role: ROLE_NAMES[role] });
+    case 'gank':
+      return kills > 0
+        ? pickEventVariant('event.gank', 3, { winner: winnerLabel, loser: loserLabel })
+        : pickEventVariant('event.gankMiss', 3, { winner: winnerLabel, loser: loserLabel });
     case 'dragon': return t('event.dragon', { winner: winnerLabel });
     case 'herald': return t('event.herald', { winner: winnerLabel });
     case 'grubs': return t('event.grubs', { winner: winnerLabel });
@@ -6049,6 +6125,7 @@ function simulateTick() {
   }
   rt.gold[winner] += Math.round(eventGold);
 
+  let soulJustSecured = false;
   if (template.objective && template.objective !== 'towers') {
     const grubsExhausted = template.objective === 'grubs' && (rt.objectives.grubs.blue + rt.objectives.grubs.red) >= MATCH_GRUBS_TOTAL;
     if (!grubsExhausted) {
@@ -6056,9 +6133,10 @@ function simulateTick() {
       if (template.objective === 'dragons') {
         rt.dragonBuff = { side: winner, expiresAt: rt.gameClock + DRAGON_BUFF_DURATION };
         rt.nextDragonTime = rt.gameClock + DRAGON_RESPAWN;
-        if (rt.objectives.dragons[winner] >= DRAGON_SOUL_COUNT) {
+        if (rt.objectives.dragons[winner] >= DRAGON_SOUL_COUNT && !rt.soulOwner) {
           rt.soulOwner = winner;
           rt.nextElderTime = rt.gameClock + ELDER_RESPAWN;
+          soulJustSecured = true;
         }
       }
       if (template.objective === 'barons') {
@@ -6074,7 +6152,7 @@ function simulateTick() {
 
   rt.winProbability = clamp(rt.winProbability + (winner === 'blue' ? diff : -diff) * 0.01, 0.05, 0.95);
 
-  const text = buildEventText(template, sideTeamLabel(winner), role, kills);
+  const text = buildEventText(template, sideTeamLabel(winner), sideTeamLabel(winner === 'blue' ? 'red' : 'blue'), role, kills);
   rt.eventHistory.push({ category: template.category, text, dramatic: template.category === 'dramatic', side: winner });
 
   const mapEvent = buildMapEvent(template, role, winner, text, diff, rt);
@@ -6082,6 +6160,14 @@ function simulateTick() {
   updateMapObjectives(rt);
 
   renderMatchEvent(text, template.category);
+
+  // v1.14.1 : ligne de log dédiée à l'Âme du Dragon, en plus de la prise du 4e dragon.
+  if (soulJustSecured) {
+    const soulText = t('event.dragonSoul', { winner: sideTeamLabel(winner) });
+    rt.eventHistory.push({ category: 'dramatic', text: soulText, dramatic: true, side: winner });
+    renderMatchEvent(soulText, 'dramatic');
+  }
+
   updateMatchScoreboard();
 
   if (!rt.finished && rt.gameClock >= MATCH_SOFT_TIME_LIMIT) {
@@ -6395,9 +6481,9 @@ function renderMatchArena() {
   const redLabel = playerMapSide === 'red' ? (state.teamName || t('match.yourTeam')) : rt.opponent.name;
 
   document.getElementById('match-team-home-name').textContent = blueLabel;
-  document.getElementById('match-team-home-league').textContent = playerMapSide === 'blue' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-home-league').textContent = playerMapSide === 'blue' ? (state.region ? regionDisplayName(state.region) : '') : rt.opponent.region;
   document.getElementById('match-team-away-name').textContent = redLabel;
-  document.getElementById('match-team-away-league').textContent = playerMapSide === 'red' ? (state.region || '') : rt.opponent.region;
+  document.getElementById('match-team-away-league').textContent = playerMapSide === 'red' ? (state.region ? regionDisplayName(state.region) : '') : rt.opponent.region;
 
   const seriesLabelEl = document.getElementById('match-series-label');
   if (seriesLabelEl) {

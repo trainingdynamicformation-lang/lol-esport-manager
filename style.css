@@ -681,8 +681,12 @@ img { max-width: 100%; height: auto; }
 
 .coach-card--counter  { border-left-color: var(--color-seafoam); }
 .coach-card--counter  .coach-card__label { color: var(--color-seafoam); }
-.coach-card--proactive { border-left-color: #f97316; }
-.coach-card--proactive .coach-card__label { color: #f97316; }
+.coach-card--anticipate { border-left-color: #f97316; }
+.coach-card--anticipate .coach-card__label { color: #f97316; }
+/* v1.14.1 : carte "idéal hors pool" — même famille de couleur que sa carte
+   confort (border-left-color hérité du type), mais bordure pointillée + icône
+   d'avertissement pour signaler visuellement le risque (maîtrise faible/nulle). */
+.coach-card--ideal { border-left-style: dashed; }
 .coach-card--ban      { border-left-color: var(--color-danger); }
 .coach-card--ban      .coach-card__label { color: var(--color-danger); }
 .coach-card--scouting { border-left-color: #a78bfa; }

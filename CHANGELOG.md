@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.14.1] — 2026-06-28
+
+### Modifié — Retours joueurs (Reddit)
+
+- **Région Amériques renommée LCS** (au lieu de LTA) — affichage uniquement, l'identifiant interne reste `LTA` pour ne pas casser les sauvegardes existantes. Nouveau helper `regionDisplayName()`. Effectif immédiatement sur une partie en cours, y compris déjà commencée.
+- **Bug corrigé (découvert au passage)** : la clé `SCENARIO_WEIGHTS_BY_REGION.LCS` n'était jamais atteinte car la région stockait l'id `LTA` — la région Amériques utilisait silencieusement les pondérations de scénarios de match de la LEC par défaut. La clé est renommée `LTA` pour être enfin utilisée.
+- **Assistant Coach de draft — refonte du counter-pick** : ne propose plus de counter contre un champion banni ou déjà pické par un rôle adverse différent du vôtre (bug remonté : suggérer Ryze pour contrer un Gnar top déjà locké). La logique est désormais **par rôle** :
+  - **Counter-pick** : meilleure opportunité parmi les rôles où l'adversaire a déjà locké un pick.
+  - **Anticipation** (nouveau) : meilleure opportunité parmi les rôles pas encore lockés, basée sur les picks probables de l'adversaire (comfort picks ou pool).
+  - Pour chacune, si le meilleur counter réel n'est **pas** dans votre pool, une **carte « Contre idéal »** distincte apparaît à côté de la carte confort (ou seule s'il n'y a aucun counter exploitable dans le pool), avec un avertissement explicite sur le niveau de maîtrise (aucune / très faible).
+- **Gank et duels de lane** : le texte du log reflète désormais le résultat réel de l'action. Si le plafond de kills du moment est atteint (kill non comptabilisé), le texte ne prétend plus un kill — plusieurs variantes narratives (réussite / tentative repoussée) pour plus de crédibilité et de variété.
+- **Âme du Dragon** ajoutée au journal de match : une ligne dédiée apparaît dès qu'une équipe sécurise sa 4ᵉ prise de dragon, en plus de la ligne de capture du dragon lui-même. Le Baron Nashor était déjà correctement loggé (aucun changement nécessaire).
+
+---
+
 ## [1.14.0] — 2026-06-28
 
 ### Ajouté — Programme des journées (calendrier de saison régulière)
