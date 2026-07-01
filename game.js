@@ -144,6 +144,16 @@ function createDefaultState() {
     matchHistory: [],
     scouting: {},
     transferLog: [], // journal des transferts (v1.11.0), plafonné à 10 ans
+    sponsor: {           // v1.15.0 : contrat de sponsoring
+      current: null,       // { contractId, type, tier, signedYear, amount, streakYears }
+      offers: null,        // 6 ids tirés au hasard (1 par palier x type) pendant la fenêtre de renouvellement
+      decisionPending: false,
+      pendingRenewalAmount: null,
+      pendingRenewalOutcome: null, // 'success' | 'partial' (résultat de l'évaluation du contrat en cours)
+      pendingNextSeason: null      // { split, year } — saison à démarrer une fois la décision prise
+    },
+    sponsorLog: [],       // journal des sponsors (v1.15.0), plafonné à 10 ans
+    sponsorYearRecap: null, // v1.15.0 : accumulateur des résultats de l'année en cours (remis à zéro au printemps)
     settings: {
       speed: 2,
       soundEnabled: true,
@@ -262,6 +272,9 @@ function loadGame() {
       matchHistory: parsed.matchHistory || defaults.matchHistory,
       scouting: Object.assign({}, defaults.scouting, parsed.scouting),
       transferLog: parsed.transferLog || defaults.transferLog,
+      sponsor: Object.assign({}, defaults.sponsor, parsed.sponsor),
+      sponsorLog: parsed.sponsorLog || defaults.sponsorLog,
+      sponsorYearRecap: parsed.sponsorYearRecap !== undefined ? parsed.sponsorYearRecap : defaults.sponsorYearRecap,
       settings: Object.assign({}, defaults.settings, parsed.settings),
       progress: Object.assign({}, defaults.progress, parsed.progress)
     };
@@ -530,6 +543,9 @@ function showView(viewName) {
       break;
     case 'journal':
       if (typeof renderJournal === 'function') renderJournal();
+      break;
+    case 'sponsor':
+      if (typeof renderSponsorView === 'function') renderSponsorView();
       break;
     case 'progression':
       if (typeof renderProgression === 'function') renderProgression();
@@ -1156,6 +1172,335 @@ const CONTRACT_EXTENSION_COSTS = {
 const CONTRACT_TIER_LABELS = { superstar: 'Superstar', star: 'Star', solid: 'Solide', role: 'Role player' };
 // Probabilite qu'un joueur recoive un contrat long (annee de base +1) selon son tier.
 const CONTRACT_LONG_PROB = { superstar: 0.80, star: 0.65, solid: 0.45, role: 0.25 };
+
+/* ------------------------------------------------------------
+   Sponsors (v1.15.0)
+   ------------------------------------------------------------
+   Deux types de contrats :
+   - 'signature' : bonus fixe à la signature, objectifs à tenir sur l'année,
+     renouvellement +successPct si 100% des objectifs atteints, -failurePct
+     (avertissement) si atteints partiellement, résiliation + remboursement
+     au prorata (plafonné au budget dispo, le manque se convertit en malus
+     de prestige) si aucun objectif atteint.
+   - 'result' : aucun bonus à la signature, payé en continu à chaque
+     compétition (domesticWeight × récompense de saison, intlWeight ×
+     récompense internationale). Seuls les paliers premium ont une clause
+     de rupture (breach), vérifiée aux jalons existants du jeu.
+   Chaque objectif est soit un code seul (obligatoire), soit un tableau de
+   codes (groupe OU, un seul suffit).
+   ------------------------------------------------------------ */
+const SPONSOR_TIER_ORDER = ['premium', 'standard', 'secure'];
+const SPONSOR_TIERS = {
+  premium:  { prestigeReq: 75 },
+  standard: { prestigeReq: 50 },
+  secure:   { prestigeReq: 10 }
+};
+
+const SPONSOR_CONTRACTS = [
+  // --- Signature / Premium ---
+  { id: 'sig_premium_auroratech', type: 'signature', tier: 'premium', brand: 'AuroraTech',
+    signingBonus: 500, objectives: [['REG1', 'POTITLE'], 'INTLQUAL2', 'INTLSF'], successPct: 0.05, failurePct: 0.05 },
+  { id: 'sig_premium_wardstone', type: 'signature', tier: 'premium', brand: 'Wardstone Bank',
+    signingBonus: 550, objectives: ['POTITLE', 'INTLF'], successPct: 0.08, failurePct: 0.03 },
+  { id: 'sig_premium_helios', type: 'signature', tier: 'premium', brand: 'Helios Energy',
+    signingBonus: 480, objectives: ['REGTOP2', 'POSF', 'INTLQUAL'], successPct: 0.04, failurePct: 0.06 },
+  { id: 'sig_premium_zenith', type: 'signature', tier: 'premium', brand: 'Zenith Airlines',
+    signingBonus: 420, objectives: ['INTLWIN', 'REGTOP4'], successPct: 0.10, failurePct: 0.10 },
+
+  // --- Signature / Standard ---
+  { id: 'sig_standard_pulsecola', type: 'signature', tier: 'standard', brand: 'PulseCola',
+    signingBonus: 320, objectives: ['REGTOP4', 'POSF'], successPct: 0.06, failurePct: 0.05 },
+  { id: 'sig_standard_byteforge', type: 'signature', tier: 'standard', brand: 'ByteForge',
+    signingBonus: 280, objectives: ['REGFLOOR6', 'POF'], successPct: 0.05, failurePct: 0.07 },
+  { id: 'sig_standard_ironpeak', type: 'signature', tier: 'standard', brand: 'IronPeak Insurance',
+    signingBonus: 250, objectives: ['REGTOP4'], successPct: 0.04, failurePct: 0.04 },
+  { id: 'sig_standard_voltra', type: 'signature', tier: 'standard', brand: 'Voltra Mobile',
+    signingBonus: 220, objectives: ['INTLQUAL', 'POSF'], successPct: 0.07, failurePct: 0.06 },
+
+  // --- Signature / Secure ---
+  { id: 'sig_secure_cornerstore', type: 'signature', tier: 'secure', brand: 'CornerStore Gaming',
+    signingBonus: 150, objectives: ['REGFLOOR6'], successPct: 0.05, failurePct: 0.03 },
+  { id: 'sig_secure_riftsnack', type: 'signature', tier: 'secure', brand: 'RiftSnack',
+    signingBonus: 120, objectives: ['POSF'], successPct: 0.06, failurePct: 0.04 },
+  { id: 'sig_secure_localhost', type: 'signature', tier: 'secure', brand: 'LocalHost ISP',
+    signingBonus: 100, objectives: ['REGTOP4'], successPct: 0.04, failurePct: 0.03 },
+  { id: 'sig_secure_greenleaf', type: 'signature', tier: 'secure', brand: 'GreenLeaf Cafe',
+    signingBonus: 80, objectives: ['REGFLOOR6'], successPct: 0.08, failurePct: 0.02 },
+
+  // --- Résultat / Premium (clause de rupture) ---
+  { id: 'res_premium_novastream', type: 'result', tier: 'premium', brand: 'NovaStream',
+    domesticWeight: 0.6, intlWeight: 0.6, breach: 'MISSED_PLAYOFFS' },
+  { id: 'res_premium_primevolt', type: 'result', tier: 'premium', brand: 'PrimeVolt',
+    domesticWeight: 0.3, intlWeight: 1.0, breach: 'NO_INTL_QUAL' },
+  { id: 'res_premium_eagleeye', type: 'result', tier: 'premium', brand: 'EagleEye Analytics',
+    domesticWeight: 1.0, intlWeight: 0.2, breach: 'MISSED_PLAYOFFS' },
+  { id: 'res_premium_titanium', type: 'result', tier: 'premium', brand: 'Titanium Sports Co.',
+    domesticWeight: 0.4, intlWeight: 0.4, flatBonus: { onPoTitle: 100, onIntlFinal: 150 }, breach: 'MISSED_PLAYOFFS' },
+
+  // --- Résultat / Standard ---
+  { id: 'res_standard_sparkfuel', type: 'result', tier: 'standard', brand: 'SparkFuel',
+    domesticWeight: 0.35, intlWeight: 0.35 },
+  { id: 'res_standard_rapidnet', type: 'result', tier: 'standard', brand: 'RapidNet',
+    domesticWeight: 0.2, intlWeight: 0.5 },
+  { id: 'res_standard_bluehive', type: 'result', tier: 'standard', brand: 'BlueHive Media',
+    domesticWeight: 0.5, intlWeight: 0.15 },
+  { id: 'res_standard_ferrotech', type: 'result', tier: 'standard', brand: 'Ferrotech',
+    domesticWeight: 0.25, intlWeight: 0.25, flatBonus: { onPoTitle: 60 } },
+
+  // --- Résultat / Secure ---
+  { id: 'res_secure_quickbite', type: 'result', tier: 'secure', brand: 'QuickBite',
+    domesticWeight: 0.15, intlWeight: 0.15 },
+  { id: 'res_secure_startergg', type: 'result', tier: 'secure', brand: 'StarterGG',
+    domesticWeight: 0.2, intlWeight: 0.1 },
+  { id: 'res_secure_localarena', type: 'result', tier: 'secure', brand: 'LocalArena',
+    domesticWeight: 0.15, intlWeight: 0.15, presenceBonus: 10 },
+  { id: 'res_secure_copperleague', type: 'result', tier: 'secure', brand: 'CopperLeague',
+    domesticWeight: 0.1, intlWeight: 0.1 }
+];
+
+function getSponsorContract(contractId) {
+  return SPONSOR_CONTRACTS.find((c) => c.id === contractId) || null;
+}
+
+function getSponsorContractsByTierType(tier, type) {
+  return SPONSOR_CONTRACTS.filter((c) => c.tier === tier && c.type === type);
+}
+
+function isSponsorTierUnlocked(tier) {
+  return state.resources.prestige >= SPONSOR_TIERS[tier].prestigeReq;
+}
+
+function sponsorEffectiveYear() {
+  const pending = state.sponsor && state.sponsor.pendingNextSeason;
+  return pending ? pending.year : currentGameYear();
+}
+
+function pushSponsorLog(kind, contractId, extra) {
+  if (!Array.isArray(state.sponsorLog)) state.sponsorLog = [];
+  const contract = getSponsorContract(contractId);
+  const year = sponsorEffectiveYear();
+  state.sponsorLog.unshift(Object.assign({ y: year, k: kind, brand: contract ? contract.brand : contractId }, extra || {}));
+  const cutoff = year - 9;
+  state.sponsorLog = state.sponsorLog.filter((e) => e.y >= cutoff);
+}
+
+/* --- Accumulateur des résultats de l'année (persiste entre les 2 splits) --- */
+function createEmptySponsorYearRecap() {
+  return {
+    regBestRank: null,
+    poBestPlacement: null,
+    poTitleWon: false,
+    intlQualified: { msi: false, worlds: false },
+    intlBestPlacement: null
+  };
+}
+
+function updateSponsorYearRecap(patch) {
+  if (!state.sponsorYearRecap) state.sponsorYearRecap = createEmptySponsorYearRecap();
+  const r = state.sponsorYearRecap;
+  if (patch.regularRank != null) {
+    r.regBestRank = r.regBestRank == null ? patch.regularRank : Math.min(r.regBestRank, patch.regularRank);
+  }
+  if (patch.finalPlacement != null) {
+    r.poBestPlacement = r.poBestPlacement == null ? patch.finalPlacement : Math.min(r.poBestPlacement, patch.finalPlacement);
+  }
+  if (patch.poTitle) r.poTitleWon = true;
+  if (patch.intlEvent) {
+    r.intlQualified[patch.intlEvent] = true;
+    if (patch.intlPlacement != null) {
+      r.intlBestPlacement = r.intlBestPlacement == null ? patch.intlPlacement : Math.min(r.intlBestPlacement, patch.intlPlacement);
+    }
+  }
+}
+
+/* --- Évaluation des objectifs (sponsors signature) --- */
+function checkSponsorObjective(code, recap) {
+  switch (code) {
+    case 'REG1': return recap.regBestRank === 1;
+    case 'REGTOP2': return recap.regBestRank != null && recap.regBestRank <= 2;
+    case 'REGTOP4': return recap.regBestRank != null && recap.regBestRank <= 4;
+    case 'REGFLOOR6': return recap.regBestRank != null && recap.regBestRank <= 6;
+    case 'POTITLE': return recap.poTitleWon === true;
+    case 'POSF': return recap.poBestPlacement != null && recap.poBestPlacement <= 3;
+    case 'POF': return recap.poBestPlacement != null && recap.poBestPlacement <= 2;
+    case 'INTLQUAL': return recap.intlQualified.msi || recap.intlQualified.worlds;
+    case 'INTLQUAL2': return recap.intlQualified.msi && recap.intlQualified.worlds;
+    case 'INTLSF': return recap.intlBestPlacement != null && recap.intlBestPlacement <= 4;
+    case 'INTLF': return recap.intlBestPlacement != null && recap.intlBestPlacement <= 2;
+    case 'INTLWIN': return recap.intlBestPlacement === 1;
+    default: return false;
+  }
+}
+
+// 'success' (tous atteints), 'partial' (au moins un), 'failure' (aucun).
+function evaluateSponsorObjectives(objectives, recap) {
+  const results = objectives.map((item) => (
+    Array.isArray(item) ? item.some((c) => checkSponsorObjective(c, recap)) : checkSponsorObjective(item, recap)
+  ));
+  const metCount = results.filter(Boolean).length;
+  if (metCount === results.length) return 'success';
+  if (metCount === 0) return 'failure';
+  return 'partial';
+}
+
+// Échec total d'un sponsor signature : remboursement intégral du bonus en cours,
+// plafonné au budget disponible (jamais négatif) ; le manque se convertit en
+// perte de prestige (~1 point par tranche de 10 de budget non remboursé).
+function applySponsorTerminationRefund(current) {
+  const owed = Math.round(current.amount || 0);
+  const paid = Math.min(state.resources.budget, owed);
+  state.resources.budget -= paid;
+  const shortfall = owed - paid;
+  let prestigeLost = 0;
+  if (shortfall > 0) {
+    prestigeLost = Math.ceil(shortfall / 10);
+    state.resources.prestige = Math.max(0, state.resources.prestige - prestigeLost);
+  }
+  return { paid, shortfall, prestigeLost };
+}
+
+// Évalue le sponsor en cours à la clôture de l'année (avant de proposer la matrice
+// d'offres). Sponsors signature : succès/partiel/échec sur les objectifs de l'année.
+// Sponsors résultat : uniquement la clause de rupture liée à la qualification
+// internationale (la clause "hors playoffs" est déjà vérifiée en cours d'année,
+// voir applySponsorDomesticPayout).
+function evaluateCurrentSponsorAtYearEnd() {
+  state.sponsor.pendingRenewalAmount = null;
+  state.sponsor.pendingRenewalOutcome = null;
+  const current = state.sponsor.current;
+  if (!current) return;
+  const contract = getSponsorContract(current.contractId);
+  if (!contract) { state.sponsor.current = null; return; }
+  const recap = state.sponsorYearRecap || createEmptySponsorYearRecap();
+
+  if (current.type === 'result') {
+    if (contract.breach === 'NO_INTL_QUAL' && !(recap.intlQualified.msi || recap.intlQualified.worlds)) {
+      showToast(t('sponsor.toast.breach', { brand: contract.brand }), 'error');
+      pushSponsorLog('terminated_breach', current.contractId, {});
+      state.sponsor.current = null;
+    }
+    return;
+  }
+
+  const outcome = evaluateSponsorObjectives(contract.objectives, recap);
+  if (outcome === 'success') {
+    state.sponsor.pendingRenewalAmount = Math.round(current.amount * (1 + contract.successPct));
+    state.sponsor.pendingRenewalOutcome = 'success';
+  } else if (outcome === 'partial') {
+    state.sponsor.pendingRenewalAmount = Math.round(current.amount * (1 - contract.failurePct));
+    state.sponsor.pendingRenewalOutcome = 'partial';
+    showToast(t('sponsor.toast.warning', { brand: contract.brand }), 'warning');
+    pushSponsorLog('warned', current.contractId, {});
+  } else {
+    const { paid, prestigeLost } = applySponsorTerminationRefund(current);
+    showToast(t('sponsor.toast.terminated', { brand: contract.brand }), 'error');
+    pushSponsorLog(prestigeLost > 0 ? 'terminated_refund_shortfall' : 'terminated_refund', current.contractId, { paid, prestigeLost });
+    state.sponsor.current = null;
+  }
+}
+
+/* --- Paiements en continu des sponsors résultat --- */
+function applySponsorDomesticPayout(rewards, placement) {
+  const current = state.sponsor.current;
+  if (!current || current.type !== 'result') return;
+  const contract = getSponsorContract(current.contractId);
+  if (!contract) return;
+  let bonus = Math.round(rewards.budget * contract.domesticWeight);
+  if (contract.flatBonus && contract.flatBonus.onPoTitle && placement === 1) bonus += contract.flatBonus.onPoTitle;
+  if (contract.presenceBonus) bonus += contract.presenceBonus;
+  if (bonus > 0) {
+    state.resources.budget += bonus;
+    pushSponsorLog('payout', current.contractId, { amount: bonus });
+  }
+  // Clause de rupture "hors playoffs" : vérifiée au jalon existant fin de saison régulière.
+  if (contract.breach === 'MISSED_PLAYOFFS') {
+    const regularRank = getSortedStandings().indexOf('player') + 1;
+    if (regularRank > 6) {
+      showToast(t('sponsor.toast.breach', { brand: contract.brand }), 'error');
+      pushSponsorLog('terminated_breach', current.contractId, {});
+      state.sponsor.current = null;
+    }
+  }
+}
+
+function applySponsorInternationalPayout(placement, rewards) {
+  const current = state.sponsor.current;
+  if (!current || current.type !== 'result') return;
+  const contract = getSponsorContract(current.contractId);
+  if (!contract) return;
+  let bonus = Math.round(rewards.budget * contract.intlWeight);
+  if (contract.flatBonus && contract.flatBonus.onIntlFinal && placement != null && placement <= 2) bonus += contract.flatBonus.onIntlFinal;
+  if (bonus > 0) {
+    state.resources.budget += bonus;
+    pushSponsorLog('payout', current.contractId, { amount: bonus });
+  }
+}
+
+/* --- Fenêtre de renouvellement (fin d'année) --- */
+function drawSponsorOfferMatrix() {
+  const cells = [];
+  ['signature', 'result'].forEach((type) => {
+    SPONSOR_TIER_ORDER.forEach((tier) => {
+      const pool = getSponsorContractsByTierType(tier, type);
+      cells.push(randomChoice(pool).id);
+    });
+  });
+  return cells;
+}
+
+function openSponsorRenewalWindow(nextYear) {
+  evaluateCurrentSponsorAtYearEnd();
+  state.sponsor.pendingNextSeason = { split: 'spring', year: nextYear };
+  state.sponsor.offers = drawSponsorOfferMatrix();
+  state.sponsor.decisionPending = true;
+  saveGame();
+  showSponsorBanner();
+}
+
+function signSponsorContract(contractId) {
+  const contract = getSponsorContract(contractId);
+  if (!contract) return;
+  if (contract.type === 'signature') {
+    state.resources.budget += contract.signingBonus;
+  }
+  state.sponsor.current = {
+    contractId: contract.id,
+    type: contract.type,
+    tier: contract.tier,
+    signedYear: sponsorEffectiveYear(),
+    amount: contract.type === 'signature' ? contract.signingBonus : null,
+    streakYears: 1
+  };
+  pushSponsorLog('signed', contract.id, {});
+  finalizeSponsorDecision();
+}
+
+function renewCurrentSponsor() {
+  const current = state.sponsor.current;
+  if (!current) return;
+  const outcome = state.sponsor.pendingRenewalOutcome;
+  if (current.type === 'signature' && state.sponsor.pendingRenewalAmount != null) {
+    current.amount = state.sponsor.pendingRenewalAmount;
+  }
+  current.signedYear = sponsorEffectiveYear();
+  current.streakYears = (current.streakYears || 1) + 1;
+  pushSponsorLog(outcome === 'partial' ? 'renewed_malus' : 'renewed_bonus', current.contractId, {});
+  finalizeSponsorDecision();
+}
+
+function finalizeSponsorDecision() {
+  state.sponsor.offers = null;
+  state.sponsor.decisionPending = false;
+  state.sponsor.pendingRenewalAmount = null;
+  state.sponsor.pendingRenewalOutcome = null;
+  const pending = state.sponsor.pendingNextSeason;
+  state.sponsor.pendingNextSeason = null;
+  saveGame();
+  hideSponsorBanner();
+  closeModal();
+  if (pending) startSeason(pending.split, pending.year);
+  else if (typeof renderSponsorView === 'function' && currentView === 'sponsor') renderSponsorView();
+}
 
 function getContractTier(p) {
   const lvl = computeLevel(p);
@@ -3405,6 +3750,7 @@ function startSeason(split, year) {
   initAIRosters();
   split = split || 'spring';
   year = year || (state.season ? state.season.year : 1);
+  if (split === 'spring') state.sponsorYearRecap = createEmptySponsorYearRecap(); // v1.15.0 : nouvel accumulateur pour la nouvelle année
   const teamIds = getSeasonTeamIds();
   const standings = {};
   teamIds.forEach((id) => { standings[id] = { wins: 0, losses: 0, goldDiff: 0, nexusWon: 0, nexusLost: 0, h2h: {} }; });
@@ -3658,6 +4004,10 @@ function finishSeason() {
     ensurePalmares().regionalTitles++;
   }
   season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
+  // v1.15.0 — sponsors : accumulateur annuel + paiement en continu / clause de rupture des sponsors résultat.
+  const sponsorRegularRank = getSortedStandings().indexOf('player') + 1;
+  updateSponsorYearRecap({ regularRank: sponsorRegularRank, finalPlacement: placement, poTitle: placement === 1 });
+  applySponsorDomesticPayout(rewards, placement);
   applyCareerProgression();
   applyAICareerProgression();
   saveGame();
@@ -4486,6 +4836,9 @@ function finishInternational() {
       pal.titles++;
     }
     intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
+    // v1.15.0 — sponsors : accumulateur annuel + paiement en continu des sponsors résultat.
+    updateSponsorYearRecap({ intlEvent: intl.event, intlPlacement: placement });
+    applySponsorInternationalPayout(placement, rewards);
   } else {
     intl.log.unshift({ k: 'log.intlChampion', p: { event: eventLabel(intl), year: intl.year, teamId: intl.bracket.champion } });
   }
@@ -4508,10 +4861,11 @@ function proceedAfterInternational() {
   if (aiMovements.length) logAIRotation(nextYear, aiMovements);
   const leaving = processContractExpirations(completedYear);
   leaving.forEach((p) => logTransfer(nextYear, 'depart', playerTeamLabel(), p.name, p.role));
+  // v1.15.0 — fenêtre de renouvellement sponsor obligatoire avant la nouvelle année.
   if (leaving.length) {
-    showContractDeparturesModal(leaving, () => startSeason('spring', nextYear));
+    showContractDeparturesModal(leaving, () => openSponsorRenewalWindow(nextYear));
   } else {
-    startSeason('spring', nextYear);
+    openSponsorRenewalWindow(nextYear);
   }
 }
 
@@ -7772,12 +8126,243 @@ function showUpdateBanner() {
   });
 }
 
+// v1.15.0 — bandeau d'appel à l'action pour la fenêtre de renouvellement sponsor.
+// Réutilise le même style visuel que le bandeau de mise à jour (v1.14.2).
+function showSponsorBanner() {
+  const banner = document.getElementById('sponsor-banner');
+  if (!banner) return;
+  banner.innerHTML = `
+    <span class="update-banner__text">📋 ${t('sponsor.toast.new')}</span>
+    <button class="update-banner__btn" id="btn-sponsor-goto">${t('sponsor.banner.view')}</button>
+    <button class="update-banner__dismiss" id="btn-sponsor-dismiss" aria-label="${t('common.close')}">&times;</button>
+  `;
+  requestAnimationFrame(() => banner.classList.add('update-banner--visible'));
+  document.getElementById('btn-sponsor-goto').addEventListener('click', () => {
+    banner.classList.remove('update-banner--visible');
+    showView('sponsor');
+  });
+  document.getElementById('btn-sponsor-dismiss').addEventListener('click', () => {
+    banner.classList.remove('update-banner--visible');
+  });
+}
+
+function hideSponsorBanner() {
+  const banner = document.getElementById('sponsor-banner');
+  if (banner) banner.classList.remove('update-banner--visible');
+}
+
+/* ------------------------------------------------------------
+   Écran Sponsor (v1.15.0)
+   ------------------------------------------------------------ */
+function sponsorTierLabel(tier) { return t('sponsor.tier.' + tier); }
+function sponsorTypeLabel(type) { return t('sponsor.type.' + type); }
+
+function sponsorWeightLabel(w) {
+  if (w >= 0.9) return t('sponsor.weight.veryStrong');
+  if (w >= 0.5) return t('sponsor.weight.strong');
+  if (w >= 0.3) return t('sponsor.weight.moderate');
+  return t('sponsor.weight.light');
+}
+
+function objectiveLabel(code) { return t('sponsor.obj.' + code); }
+function objectiveGroupLabel(item) {
+  return Array.isArray(item) ? item.map(objectiveLabel).join(' ' + t('sponsor.obj.or') + ' ') : objectiveLabel(item);
+}
+
+function renderSponsorView() {
+  const el = document.getElementById('sponsor-content');
+  if (!el) return;
+  let html = renderSponsorCurrentBlock();
+  if (state.sponsor.decisionPending && Array.isArray(state.sponsor.offers)) {
+    html += renderSponsorOfferMatrix();
+  }
+  html += renderSponsorJournal();
+  el.innerHTML = html;
+  wireSponsorViewEvents();
+}
+
+function renderSponsorCurrentBlock() {
+  const current = state.sponsor.current;
+  if (!current) {
+    return `<div class="panel"><div class="empty-state">${t('sponsor.empty')}</div></div>`;
+  }
+  const contract = getSponsorContract(current.contractId);
+  const brand = contract ? contract.brand : current.contractId;
+  const canRenew = state.sponsor.decisionPending;
+  const nextYear = state.sponsor.pendingNextSeason ? state.sponsor.pendingNextSeason.year : '';
+  return `
+    <div class="panel sponsor-current">
+      <p class="sponsor-current__label">${t('sponsor.current.label')}</p>
+      <div class="sponsor-current__row">
+        <div class="sponsor-current__identity">
+          <p class="sponsor-current__brand">${brand}</p>
+          <p class="sponsor-current__meta">
+            <span class="sponsor-tier-badge sponsor-tier-badge--${current.tier}">${sponsorTierLabel(current.tier)}</span>
+            ${sponsorTypeLabel(current.type)} &middot; ${t('sponsor.current.signedYear', { year: current.signedYear })}
+          </p>
+        </div>
+        ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function sortSponsorByTier(list) {
+  return list.slice().sort((a, b) => SPONSOR_TIER_ORDER.indexOf(a.tier) - SPONSOR_TIER_ORDER.indexOf(b.tier));
+}
+
+function renderSponsorCard(contract) {
+  const unlocked = isSponsorTierUnlocked(contract.tier);
+  const payoutText = contract.type === 'signature'
+    ? t('sponsor.card.signingBonus', { amount: contract.signingBonus })
+    : t('sponsor.card.resultPayout');
+  return `
+    <div class="sponsor-card ${unlocked ? '' : 'sponsor-card--locked'}" ${unlocked ? `data-sponsor-offer="${contract.id}"` : ''}>
+      <span class="sponsor-tier-badge sponsor-tier-badge--${contract.tier}">${sponsorTierLabel(contract.tier)}</span>
+      <p class="sponsor-card__brand">${contract.brand}</p>
+      ${unlocked
+        ? `<p class="sponsor-card__payout">${payoutText}</p>`
+        : `<p class="sponsor-card__locked">${t('sponsor.locked', { prestige: SPONSOR_TIERS[contract.tier].prestigeReq })}</p>`}
+    </div>
+  `;
+}
+
+function renderSponsorOfferMatrix() {
+  const offers = state.sponsor.offers || [];
+  const byType = { signature: [], result: [] };
+  offers.forEach((id) => {
+    const c = getSponsorContract(id);
+    if (c) byType[c.type].push(c);
+  });
+  const renderRow = (list, label) => `
+    <p class="sponsor-matrix__label">${label}</p>
+    <div class="grid grid--cols-3 sponsor-matrix">
+      ${sortSponsorByTier(list).map(renderSponsorCard).join('')}
+    </div>
+  `;
+  return `
+    <div class="panel">
+      <h3 class="panel-title">${t('sponsor.matrix.title')}</h3>
+      ${renderRow(byType.signature, t('sponsor.matrix.signatureLabel'))}
+      ${renderRow(byType.result, t('sponsor.matrix.resultLabel'))}
+    </div>
+  `;
+}
+
+function sponsorLogLine(e) {
+  return t('sponsorLog.' + e.k, { brand: e.brand, y: e.y, amount: e.amount, paid: e.paid, prestigeLost: e.prestigeLost });
+}
+
+function renderSponsorJournal() {
+  const log = state.sponsorLog || [];
+  if (!log.length) return '';
+  const rows = log.slice(0, 12).map((e) => `<li>${sponsorLogLine(e)}</li>`).join('');
+  return `
+    <div class="panel">
+      <h3 class="panel-title">${t('sponsor.journal.title')}</h3>
+      <ul class="sponsor-journal">${rows}</ul>
+    </div>
+  `;
+}
+
+function wireSponsorViewEvents() {
+  const renewBtn = document.getElementById('btn-sponsor-renew');
+  if (renewBtn) renewBtn.addEventListener('click', () => showSponsorDetail(state.sponsor.current.contractId, true));
+  document.querySelectorAll('[data-sponsor-offer]').forEach((cardEl) => {
+    cardEl.addEventListener('click', () => showSponsorDetail(cardEl.dataset.sponsorOffer, false));
+  });
+}
+
+function showSponsorDetail(contractId, isRenewal) {
+  const contract = getSponsorContract(contractId);
+  if (!contract) return;
+  const amount = isRenewal && state.sponsor.pendingRenewalAmount != null ? state.sponsor.pendingRenewalAmount : contract.signingBonus;
+  const outcome = isRenewal ? state.sponsor.pendingRenewalOutcome : null;
+
+  let body = '';
+  if (contract.type === 'signature') {
+    body += `
+      <div class="sponsor-detail__stats">
+        <div class="sponsor-detail__stat">
+          <p class="sponsor-detail__stat-label">${t('sponsor.detail.bonus')}</p>
+          <p class="sponsor-detail__stat-value">${amount}</p>
+        </div>
+      </div>
+      ${outcome === 'partial' ? `<p class="sponsor-detail__warning">${t('sponsor.detail.warningPartial')}</p>` : ''}
+      <p class="sponsor-detail__section-title">${t('sponsor.detail.objectives')}</p>
+      <ul class="sponsor-detail__objectives">
+        ${contract.objectives.map((o) => `<li>${objectiveGroupLabel(o)}</li>`).join('')}
+      </ul>
+      <p class="sponsor-detail__section-title">${t('sponsor.detail.clauses')}</p>
+      <div class="sponsor-clause sponsor-clause--success">
+        <span>${t('sponsor.clause.success')}</span><span>${t('sponsor.clause.successValue', { pct: Math.round(contract.successPct * 100) })}</span>
+      </div>
+      <div class="sponsor-clause sponsor-clause--warning">
+        <span>${t('sponsor.clause.partial')}</span><span>${t('sponsor.clause.partialValue', { pct: Math.round(contract.failurePct * 100) })}</span>
+      </div>
+      <div class="sponsor-clause sponsor-clause--danger">
+        <span>${t('sponsor.clause.failure')}</span><span>${t('sponsor.clause.failureValue')}</span>
+      </div>
+    `;
+  } else {
+    body += `
+      <p class="sponsor-detail__section-title">${t('sponsor.detail.payout')}</p>
+      <div class="sponsor-detail__stats">
+        <div class="sponsor-detail__stat">
+          <p class="sponsor-detail__stat-label">${t('sponsor.detail.domesticWeight')}</p>
+          <p class="sponsor-detail__stat-value">${sponsorWeightLabel(contract.domesticWeight)}</p>
+        </div>
+        <div class="sponsor-detail__stat">
+          <p class="sponsor-detail__stat-label">${t('sponsor.detail.intlWeight')}</p>
+          <p class="sponsor-detail__stat-value">${sponsorWeightLabel(contract.intlWeight)}</p>
+        </div>
+      </div>
+      ${contract.breach ? `<p class="sponsor-detail__warning">${t('sponsor.detail.breach.' + (contract.breach === 'MISSED_PLAYOFFS' ? 'missedPlayoffs' : 'noIntlQual'))}</p>` : ''}
+    `;
+  }
+
+  showModal(`
+    <div class="sponsor-detail">
+      <div class="sponsor-detail__header">
+        <p class="sponsor-detail__brand">${contract.brand}</p>
+        <span class="sponsor-tier-badge sponsor-tier-badge--${contract.tier}">${sponsorTierLabel(contract.tier)}</span>
+        <span class="sponsor-detail__type">${sponsorTypeLabel(contract.type)}</span>
+      </div>
+      ${body}
+      <div class="modal-content__actions" style="margin-top:16px;">
+        <button class="btn-secondary" id="btn-sponsor-back">${t('sponsor.btn.back')}</button>
+        <button class="btn-primary" id="btn-sponsor-commit">${isRenewal ? t('sponsor.btn.renew') : t('sponsor.btn.commit')}</button>
+      </div>
+    </div>
+  `);
+  document.getElementById('btn-sponsor-back').addEventListener('click', () => closeModal());
+  document.getElementById('btn-sponsor-commit').addEventListener('click', () => showSponsorConfirm(contract, isRenewal));
+}
+
+function showSponsorConfirm(contract, isRenewal) {
+  showModal(`
+    <div class="sponsor-confirm">
+      <p>${t('sponsor.confirm.text', { brand: contract.brand })}</p>
+      <div class="modal-content__actions" style="margin-top:16px;">
+        <button class="btn-secondary" id="btn-sponsor-confirm-back">${t('sponsor.confirm.back')}</button>
+        <button class="btn-primary" id="btn-sponsor-confirm-commit">${t('sponsor.confirm.confirm')}</button>
+      </div>
+    </div>
+  `);
+  document.getElementById('btn-sponsor-confirm-back').addEventListener('click', () => showSponsorDetail(contract.id, isRenewal));
+  document.getElementById('btn-sponsor-confirm-commit').addEventListener('click', () => {
+    if (isRenewal) renewCurrentSponsor();
+    else signSponsorContract(contract.id);
+  });
+}
+
 function initGame() {
   state = loadGame();
   applyStaticI18n();
   updateResourceBar();
   setupNavigation();
   initUpdateBanner();
+  if (state.sponsor && state.sponsor.decisionPending) showSponsorBanner(); // décision sponsor laissée en attente lors de la session précédente
   if (!state.settings.langChosen) {
     showWelcomeLanguageModal(continueInit);
   } else {

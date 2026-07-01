@@ -5,6 +5,24 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.0] — 2026-07-01
+
+### Ajouté — Sponsors
+
+Nouvel onglet **Sponsor** : votre équipe doit désormais négocier un contrat de sponsoring chaque fin d'année, avant d'attaquer la saison suivante.
+
+- **Fenêtre de renouvellement obligatoire** : à la fin de Worlds, avant de démarrer la nouvelle année, une matrice de **6 offres** est proposée (2 types × 3 paliers), tirées au hasard parmi un vivier de **24 contrats**. Un bandeau discret prévient qu'une décision sponsor est en attente.
+- **3 paliers**, débloqués par le prestige de l'équipe : Secure (10), Standard (50), Premium (75).
+- **2 types de contrats** :
+  - **Signature** — bonus fixe versé à la signature, contre des objectifs à tenir sur l'année (classement, titre régional, qualifications internationales...). Tous les objectifs atteints → reconduction avec bonus composé l'année suivante. Partiellement atteints → avertissement et reconduction à montant réduit. Aucun atteint → résiliation immédiate et remboursement du bonus, plafonné au budget disponible (jamais négatif) ; le manque éventuel se convertit en perte de prestige.
+  - **Résultat** — aucun bonus à la signature, payé en continu selon les résultats de chaque compétition (domestique et internationale). Les sponsors Premium ont une clause de rupture (hors playoffs, ou absence de qualification internationale sur l'année) qui peut mettre fin au contrat en cours d'année.
+- Paliers non débloqués visibles mais verrouillés dans la matrice (badge de prestige requis), pour montrer la progression à viser.
+- Fiche de contrat détaillée au clic sur une offre (bonus, objectifs, clauses), avec confirmation explicite avant signature.
+- Journal des sponsors (contrats signés, reconduits, avertissements, résiliations, versements).
+- Bilingue FR/EN.
+
+---
+
 ## [1.14.2] — 2026-06-28
 
 ### Ajouté — Bandeau de nouvelle version disponible

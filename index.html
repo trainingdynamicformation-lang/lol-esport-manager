@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#080C14" />
-  <link rel="stylesheet" href="style.css?v=1.14.2" />
+  <link rel="stylesheet" href="style.css?v=1.15.0" />
 </head>
 <body>
 
@@ -55,6 +55,7 @@
       <button class="nav-btn" data-view="scouting" data-i18n="nav.scouting">Scouting</button>
       <button class="nav-btn" data-view="transfers" data-i18n="nav.transfers">Transferts</button>
       <button class="nav-btn" data-view="journal" data-i18n="nav.journal">Journal</button>
+      <button class="nav-btn" data-view="sponsor" data-i18n="nav.sponsor">Sponsor</button>
       <button class="nav-btn" data-view="progression" data-i18n="nav.progression">Progression</button>
     </nav>
 
@@ -269,6 +270,12 @@
       </div>
     </section>
 
+    <!-- ----------- SPONSOR (v1.15.0) ----------- -->
+    <section id="view-sponsor" class="view">
+      <h2 class="panel-title" data-i18n="view.sponsor">Sponsor</h2>
+      <div id="sponsor-content"></div>
+    </section>
+
     <!-- ----------- PROGRESSION ----------- -->
     <section id="view-progression" class="view">
       <h2 class="panel-title" data-i18n="view.progression">Progression</h2>
@@ -382,7 +389,7 @@
   <!-- ===================== FOOTER ===================== -->
   <footer class="app-footer">
     <span class="footer-beta">BETA</span>
-    LOL Esport Manager v1.14.2 &mdash; <span data-i18n="footer.tagline">Jeu de gestion d'&eacute;quipe esport League of Legends</span> &mdash;
+    LOL Esport Manager v1.15.0 &mdash; <span data-i18n="footer.tagline">Jeu de gestion d'&eacute;quipe esport League of Legends</span> &mdash;
     <button onclick="showChangelogModal()" class="footer-link footer-link--btn" data-i18n="footer.changelog">Changelog</button>
     <span class="footer-copy" data-i18n="footer.copyright">&copy; 2026 redbaron1308 &mdash; Tous droits r&eacute;serv&eacute;s. Concept et design prot&eacute;g&eacute;s par la propri&eacute;t&eacute; intellectuelle.</span>
     <span class="footer-copy" data-i18n="footer.localStorage">Les donn&eacute;es de progression sont stock&eacute;es localement dans votre navigateur (localStorage) et ne sont jamais transmises &agrave; des tiers.</span>
@@ -395,18 +402,21 @@
   <!-- ===================== BANDEAU MISE À JOUR (v1.14.2) ===================== -->
   <div id="update-banner" class="update-banner"></div>
 
+  <!-- ===================== BANDEAU SPONSOR (v1.15.0) ===================== -->
+  <div id="sponsor-banner" class="update-banner"></div>
+
   <!-- ===================== SCRIPTS ===================== -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js');
     }
   </script>
-  <script src="lang.js?v=1.14.2"></script>
-  <script src="data_teams.js?v=1.14.2"></script>
-  <script src="data_champions.js?v=1.14.2"></script>
-  <script src="data_counters.js?v=1.14.2"></script>
-  <script src="data_transfers.js?v=1.14.2"></script>
-  <script src="map.js?v=1.14.2"></script>
-  <script src="game.js?v=1.14.2"></script>
+  <script src="lang.js?v=1.15.0"></script>
+  <script src="data_teams.js?v=1.15.0"></script>
+  <script src="data_champions.js?v=1.15.0"></script>
+  <script src="data_counters.js?v=1.15.0"></script>
+  <script src="data_transfers.js?v=1.15.0"></script>
+  <script src="map.js?v=1.15.0"></script>
+  <script src="game.js?v=1.15.0"></script>
 </body>
 </html>
