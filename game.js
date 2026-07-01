@@ -8166,7 +8166,7 @@ function sponsorPayoutStatHtml(label, weight) {
   const info = t('sponsor.detail.payoutInfo', { pct });
   return `
     <div class="sponsor-detail__stat">
-      <p class="sponsor-detail__stat-label">${label} <span class="sponsor-info-icon" title="${escapeAttr(info)}">ⓘ</span></p>
+      <p class="sponsor-detail__stat-label">${label} <span class="sponsor-info-icon" data-tip="${escapeAttr(info)}" tabindex="0">ⓘ</span></p>
       <p class="sponsor-detail__stat-value">+${pct}%</p>
     </div>
   `;
