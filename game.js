@@ -4855,6 +4855,16 @@ function proceedAfterInternational() {
     startSeason('summer', season.year);
     return;
   }
+  // v1.15.0 — garde-fou : tant que la décision sponsor n'est pas finalisée,
+  // state.international reste sur phase 'done' et l'écran de recap Worlds reste
+  // accessible (ex: retour au calendrier). Sans ce verrou, recliquer "Continuer"
+  // relancerait la rotation IA, les fins de contrat ET retirerait une nouvelle
+  // matrice de sponsors à chaque clic.
+  if (intl.postProcessed) {
+    if (state.sponsor.decisionPending) showSponsorBanner();
+    return;
+  }
+  intl.postProcessed = true;
   // Worlds terminé : traiter les fins de contrat avant la nouvelle saison.
   const completedYear = season.year;
   const nextYear = season.year + 1;
