@@ -1449,11 +1449,12 @@ function drawSponsorOfferMatrix() {
 }
 
 function openSponsorRenewalWindow(nextYear) {
-  evaluateCurrentSponsorAtYearEnd();
+  evaluateCurrentSponsorAtYearEnd(); // peut modifier budget/prestige (remboursement, malus)
   state.sponsor.pendingNextSeason = { split: 'spring', year: nextYear };
   state.sponsor.offers = drawSponsorOfferMatrix();
   state.sponsor.decisionPending = true;
   saveGame();
+  updateResourceBar();
   showSponsorBanner();
 }
 
@@ -1496,6 +1497,7 @@ function finalizeSponsorDecision() {
   const pending = state.sponsor.pendingNextSeason;
   state.sponsor.pendingNextSeason = null;
   saveGame();
+  updateResourceBar(); // bonus de signature / reconduction : rafraîchit budget/prestige à l'écran
   hideSponsorBanner();
   closeModal();
   if (pending) startSeason(pending.split, pending.year);
