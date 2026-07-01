@@ -881,7 +881,11 @@ const I18N = {
     'depart.descN': "Faute de prolongation, ces joueurs quittent l'équipe. Recrutez des remplaçants au marché des transferts.",
 
     // -- Toast langue --
-    'lang.changed': 'Langue mise à jour.'
+    'lang.changed': 'Langue mise à jour.',
+
+    // -- Bandeau nouvelle version (v1.14.2) --
+    'update.available': 'Une nouvelle version du jeu est disponible.',
+    'update.reload': 'Recharger'
   },
 
   en: {
@@ -1757,7 +1761,11 @@ const I18N = {
     'depart.descN': 'Without an extension, these players leave the team. Recruit replacements on the transfer market.',
 
     // -- Language toast --
-    'lang.changed': 'Language updated.'
+    'lang.changed': 'Language updated.',
+
+    // -- New version banner (v1.14.2) --
+    'update.available': 'A new version of the game is available.',
+    'update.reload': 'Reload'
   }
 };
 

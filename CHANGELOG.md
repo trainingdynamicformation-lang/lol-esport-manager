@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.14.2] — 2026-06-28
+
+### Ajouté — Bandeau de nouvelle version disponible
+
+Jusqu'ici, un joueur devait deviner qu'une mise à jour existait et forcer un rechargement complet pour l'obtenir. Désormais, un **bandeau discret en bas d'écran** apparaît automatiquement dès qu'une nouvelle version est détectée :
+
+- **Détection native** : s'appuie sur l'événement `controllerchange` du Service Worker (le navigateur compare `sw.js` au fichier serveur automatiquement, sans code de vérification manuel).
+- **Hors-ligne friendly** : si aucune connexion n'est disponible (mode avion, etc.), la vérification échoue silencieusement — aucun bandeau ne s'affiche, le jeu se lance normalement sur la version déjà en cache. Aucune interruption forcée.
+- **Non-intrusif** : bandeau discret, pas de popup bloquante ; le joueur peut continuer sa partie en cours et recharger quand il le souhaite (bouton « Recharger » ou fermeture du bandeau).
+- **Garde-fou premier lancement** : un nouveau joueur (aucune version précédente installée) ne voit jamais ce bandeau à sa première visite — seule une vraie mise à jour (un Service Worker actif remplacé par un nouveau) le déclenche.
+- Bilingue FR/EN, cohérent avec le style visuel des notifications existantes.
+
+---
+
 ## [1.14.1] — 2026-06-28
 
 ### Modifié — Retours joueurs (Reddit)

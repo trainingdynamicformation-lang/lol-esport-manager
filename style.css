@@ -772,6 +772,68 @@ img { max-width: 100%; height: auto; }
 .toast--info     { border-left-color: var(--color-gold); }
 
 /* ------------------------------------------------------------
+   Bandeau nouvelle version (v1.14.2) — discret, en bas d'écran,
+   n'apparaît que si le bandeau a du contenu (voir showUpdateBanner()).
+   ------------------------------------------------------------ */
+.update-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translate(-50%, 24px);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-gold);
+  border-radius: 10px;
+  padding: 10px 12px 10px 16px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  font-size: var(--fs-body);
+  max-width: calc(100vw - 32px);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+.update-banner--visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  visibility: visible;
+}
+.update-banner__text { color: var(--color-text); white-space: nowrap; }
+.update-banner__btn {
+  background: var(--color-gold);
+  color: var(--color-ocean);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: var(--fs-label);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.update-banner__btn:hover { filter: brightness(1.1); }
+.update-banner__dismiss {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.update-banner__dismiss:hover { color: var(--color-text); }
+
+@media (max-width: 520px) {
+  .update-banner { left: 16px; right: 16px; bottom: 12px; transform: translateY(24px); max-width: none; flex-wrap: wrap; }
+  .update-banner--visible { transform: translateY(0); }
+  .update-banner__text { white-space: normal; flex: 1 1 100%; }
+}
+
+/* ------------------------------------------------------------
    Home screen
    ------------------------------------------------------------ */
 .home-hero {

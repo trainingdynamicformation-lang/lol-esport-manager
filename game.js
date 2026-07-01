@@ -176,6 +176,14 @@ function createDefaultState() {
    ------------------------------------------------------------ */
 let state = createDefaultState();
 
+// v1.14.2 — Détection de nouvelle version (Service Worker) : capturé le plus tôt
+// possible (avant tout `controllerchange`) pour distinguer une VRAIE mise à jour
+// (un contrôleur existait déjà) d'une première activation sur un tout nouveau
+// visiteur (aucun contrôleur au chargement → `self.clients.claim()` du SW
+// déclenche quand même un `controllerchange`, qu'il ne faut pas confondre avec
+// une mise à jour et donc ne pas signaler par le bandeau).
+const hadServiceWorkerControllerAtLoad = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
+
 /* ------------------------------------------------------------
    Persistance localStorage (CDC 2.2)
    ------------------------------------------------------------ */
@@ -7732,11 +7740,44 @@ function renderProgression() {
 /* ------------------------------------------------------------
    Initialisation
    ------------------------------------------------------------ */
+// v1.14.2 — Bandeau discret « nouvelle version disponible ». S'appuie sur
+// l'événement natif `controllerchange` du Service Worker : il se déclenche
+// dès qu'un nouveau sw.js a fini de s'installer et pris le contrôle de la
+// page (le navigateur compare sw.js au fichier serveur automatiquement,
+// aucune vérification manuelle à coder). Hors-ligne : cette vérification
+// échoue silencieusement, aucun bandeau ne s'affiche, le jeu se lance
+// normalement sur la version déjà en cache.
+function initUpdateBanner() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Ignore la toute première activation (nouveau visiteur, pas de vraie mise
+    // à jour) : on ne signale que si un contrôleur existait déjà au chargement.
+    if (!hadServiceWorkerControllerAtLoad) return;
+    showUpdateBanner();
+  });
+}
+
+function showUpdateBanner() {
+  const banner = document.getElementById('update-banner');
+  if (!banner || banner.classList.contains('update-banner--visible')) return;
+  banner.innerHTML = `
+    <span class="update-banner__text">🔄 ${t('update.available')}</span>
+    <button class="update-banner__btn" id="btn-update-reload">${t('update.reload')}</button>
+    <button class="update-banner__dismiss" id="btn-update-dismiss" aria-label="${t('common.close')}">&times;</button>
+  `;
+  requestAnimationFrame(() => banner.classList.add('update-banner--visible'));
+  document.getElementById('btn-update-reload').addEventListener('click', () => window.location.reload());
+  document.getElementById('btn-update-dismiss').addEventListener('click', () => {
+    banner.classList.remove('update-banner--visible');
+  });
+}
+
 function initGame() {
   state = loadGame();
   applyStaticI18n();
   updateResourceBar();
   setupNavigation();
+  initUpdateBanner();
   if (!state.settings.langChosen) {
     showWelcomeLanguageModal(continueInit);
   } else {
