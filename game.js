@@ -8177,6 +8177,28 @@ function objectiveGroupLabel(item) {
   return Array.isArray(item) ? item.map(objectiveLabel).join(' ' + t('sponsor.obj.or') + ' ') : objectiveLabel(item);
 }
 
+// Suivi live des objectifs du sponsor en cours, façon todo-list — coché dès que
+// l'objectif est atteint sur l'année en cours (state.sponsorYearRecap), sans attendre
+// la fenêtre de fin d'année.
+function sponsorObjectiveChecklistHtml(contract) {
+  const recap = state.sponsorYearRecap || createEmptySponsorYearRecap();
+  const rows = contract.objectives.map((item) => {
+    const met = Array.isArray(item) ? item.some((c) => checkSponsorObjective(c, recap)) : checkSponsorObjective(item, recap);
+    return `
+      <li class="sponsor-objective-row ${met ? 'sponsor-objective-row--met' : 'sponsor-objective-row--unmet'}">
+        <span class="sponsor-objective-row__icon">${met ? '✓' : '✗'}</span>
+        <span>${objectiveGroupLabel(item)}</span>
+      </li>
+    `;
+  }).join('');
+  return `
+    <div class="sponsor-current__objectives">
+      <p class="sponsor-current__objectives-title">${t('sponsor.current.objectivesTitle')}</p>
+      <ul class="sponsor-objective-list">${rows}</ul>
+    </div>
+  `;
+}
+
 function renderSponsorView() {
   const el = document.getElementById('sponsor-content');
   if (!el) return;
@@ -8211,6 +8233,7 @@ function renderSponsorCurrentBlock() {
         </div>
         ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
       </div>
+      ${contract && contract.type === 'signature' ? sponsorObjectiveChecklistHtml(contract) : ''}
     </div>
   `;
 }
