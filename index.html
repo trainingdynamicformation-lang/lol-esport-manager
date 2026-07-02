@@ -280,24 +280,24 @@
     <section id="view-progression" class="view">
       <h2 class="panel-title" data-i18n="view.progression">Progression</h2>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-stats">
         <h3 class="panel-title" data-i18n="prog.globalStats">Statistiques globales</h3>
         <div class="stats-grid" id="progression-stats"></div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-palmares">
         <h3 class="panel-title" data-i18n="prog.palmares">Palmarès</h3>
         <div class="stats-grid" id="progression-palmares"></div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-career">
         <h3 class="panel-title" data-i18n="prog.playerEvolution">Evolution des joueurs</h3>
         <div id="progression-career" class="career-progression-list">
           <p class="card__count" data-i18n="prog.noEvolution">Aucune evolution pour le moment.</p>
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-history">
         <h3 class="panel-title" data-i18n="prog.matchHistory">Historique des matchs</h3>
         <table class="history-table">
           <thead>
@@ -313,12 +313,12 @@
         </table>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-settings">
         <h3 class="panel-title" data-i18n="prog.worldSettings">Réglages du monde</h3>
         <div id="progression-settings"></div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-localsave">
         <h3 class="panel-title" data-i18n="prog.localSave">Sauvegarde locale</h3>
         <div class="quick-actions">
           <button class="btn-secondary" id="btn-export-save" data-i18n="prog.exportSave">Exporter ma sauvegarde</button>
@@ -330,7 +330,7 @@
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="panel-prog-cloudsave">
         <h3 class="panel-title">&#9729;&#65039; <span data-i18n="prog.cloudSave">Sauvegarde cloud</span> <span style="font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:8px;" data-i18n="prog.optional">(optionnel)</span></h3>
         <p style="color:var(--color-text-muted);font-size:13px;margin-bottom:16px;line-height:1.6;" data-i18n="prog.cloudIntro">
           Synchronisez votre progression sur tous vos appareils via GitHub Gist.

@@ -2327,7 +2327,7 @@ function renderTraining() {
   el.innerHTML = `
     <h3 class="panel-title">${t('train.planTitle')}</h3>
     <div class="training-form">
-      <div class="training-form__group">
+      <div class="training-form__group" id="scrim-objective-group">
         <div class="training-form__label-row">
           <label for="scrim-objective">${t('train.objective')}</label>
           <button type="button" class="btn-obj-guide" id="btn-obj-guide">${t('train.guideBtn')}</button>
@@ -8019,6 +8019,7 @@ const TUTORIAL_STEPS = [
   { view: 'roster',      target: '.nav-btn[data-view="roster"]',      titleKey: 'tutorial.step.roster.title',      textKey: 'tutorial.step.roster.text' },
   { view: 'roster',      target: '.rest-panel',                       titleKey: 'tutorial.step.rest.title',        textKey: 'tutorial.step.rest.text' },
   { view: 'training',    target: '.nav-btn[data-view="training"]',    titleKey: 'tutorial.step.training.title',    textKey: 'tutorial.step.training.text' },
+  { view: 'training',    target: '#scrim-objective-group',            titleKey: 'tutorial.step.trainObj.title',    textKey: 'tutorial.step.trainObj.text' },
   { view: 'calendar',    target: '.nav-btn[data-view="calendar"]',    titleKey: 'tutorial.step.calendar.title',    textKey: 'tutorial.step.calendar.text' },
   { view: 'draft',       target: '.nav-btn[data-view="draft"]',       titleKey: 'tutorial.step.draft.title',       textKey: 'tutorial.step.draft.text' },
   { view: 'champions',   target: '.nav-btn[data-view="champions"]',   titleKey: 'tutorial.step.champions.title',   textKey: 'tutorial.step.champions.text' },
@@ -8028,7 +8029,14 @@ const TUTORIAL_STEPS = [
   { view: 'transfers',   target: '.nav-btn[data-view="transfers"]',   titleKey: 'tutorial.step.transfers.title',   textKey: 'tutorial.step.transfers.text' },
   { view: 'journal',     target: '.nav-btn[data-view="journal"]',     titleKey: 'tutorial.step.journal.title',     textKey: 'tutorial.step.journal.text' },
   { view: 'sponsor',     target: '.nav-btn[data-view="sponsor"]',     titleKey: 'tutorial.step.sponsor.title',     textKey: 'tutorial.step.sponsor.text' },
-  { view: 'progression', target: '.nav-btn[data-view="progression"]', titleKey: 'tutorial.step.progression.title', textKey: 'tutorial.step.progression.text' }
+  { view: 'progression', target: '.nav-btn[data-view="progression"]', titleKey: 'tutorial.step.progression.title', textKey: 'tutorial.step.progression.text' },
+  { view: 'progression', target: '#panel-prog-stats',     titleKey: 'tutorial.step.progStats.title',     textKey: 'tutorial.step.progStats.text' },
+  { view: 'progression', target: '#panel-prog-palmares',  titleKey: 'tutorial.step.progPalmares.title',  textKey: 'tutorial.step.progPalmares.text' },
+  { view: 'progression', target: '#panel-prog-career',    titleKey: 'tutorial.step.progCareer.title',    textKey: 'tutorial.step.progCareer.text' },
+  { view: 'progression', target: '#panel-prog-history',   titleKey: 'tutorial.step.progHistory.title',   textKey: 'tutorial.step.progHistory.text' },
+  { view: 'progression', target: '#panel-prog-settings',  titleKey: 'tutorial.step.progSettings.title',  textKey: 'tutorial.step.progSettings.text' },
+  { view: 'progression', target: '#panel-prog-localsave', titleKey: 'tutorial.step.progLocalSave.title', textKey: 'tutorial.step.progLocalSave.text' },
+  { view: 'progression', target: '#panel-prog-cloudsave', titleKey: 'tutorial.step.progCloudSave.title', textKey: 'tutorial.step.progCloudSave.text' }
 ];
 
 let tutorialStepIndex = 0;
