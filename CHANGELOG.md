@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.1] — 2026-07-02
+
+### Ajouté — Visite guidée
+
+Plusieurs retours de joueurs demandaient un tutoriel pour mieux se repérer à la première connexion. Ajout d'une visite guidée du jeu :
+
+- **Popup d'invitation** dès le premier lancement (nouvelle partie **et** sauvegarde déjà en cours), avec un choix explicite « Oui, s'il vous plaît » / « Non merci ».
+- **9 étapes**, une par onglet principal (Accueil, Roster, Entraînement, Calendrier, Draft, Scouting, Transferts, Sponsor, Progression) : l'écran correspondant s'affiche en fond, son bouton de navigation est mis en évidence par un halo doré sur voile sombre, une bulle explique ce qu'on y trouve.
+- Bouton « Suivant » qui avance et change d'onglet automatiquement, bouton « Passer le tuto » disponible à tout moment.
+- Rejouable à volonté via un bouton dédié dans Progression.
+- Bilingue FR/EN.
+
+---
+
 ## [1.15.0] — 2026-07-01
 
 ### Ajouté — Sponsors

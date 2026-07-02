@@ -162,7 +162,8 @@ function createDefaultState() {
       playerContracts: true,   // v1.11.0 : âge + gestion des contrats de l'équipe du joueur
       seenOnboarding1110: false, // v1.11.0 : popup d'explication vue au moins une fois
       lang: 'fr',              // v1.13.0 : langue de l'interface ('fr' | 'en')
-      langChosen: false        // v1.13.0 : popup de bienvenue + choix de langue déjà affichée
+      langChosen: false,       // v1.13.0 : popup de bienvenue + choix de langue déjà affichée
+      seenTutorial: false      // v1.15.1 : visite guidée du jeu déjà proposée/vue
     },
     progress: {
       matchesPlayed: 0,
@@ -2121,7 +2122,7 @@ function confirmTeamSelection(team, regionId) {
   updateAllTeamNameDisplays();
   showView('home');
   showToast(t('toast.welcome', { team: team.name }), 'success');
-  maybeShowOnboarding1110();
+  maybeShowOnboarding1110(maybeShowTutorialPrompt);
 }
 
 /* ------------------------------------------------------------
@@ -7975,9 +7976,11 @@ function wireWorldSettings(container, onChange) {
 }
 
 // Popup unique au 1er lancement de la 1.11.0 : explique et laisse choisir.
-function maybeShowOnboarding1110() {
-  if (!state.settings || state.settings.seenOnboarding1110) return;
-  if (!Array.isArray(state.roster) || !state.roster.length) return;
+// v1.15.1 — onDone (optionnel) : chaîné vers maybeShowTutorialPrompt() une fois cette
+// popup traitée, y compris quand elle ne s'affiche pas (déjà vue / pas encore de roster).
+function maybeShowOnboarding1110(onDone) {
+  if (!state.settings || state.settings.seenOnboarding1110) { if (typeof onDone === 'function') onDone(); return; }
+  if (!Array.isArray(state.roster) || !state.roster.length) { if (typeof onDone === 'function') onDone(); return; }
   showModal(`
     <h2 class="panel-title" style="margin-bottom:6px;">${t('onboarding.title')}</h2>
     <p style="color:var(--color-text-muted);line-height:1.6;margin-bottom:14px;">
@@ -7996,7 +7999,150 @@ function maybeShowOnboarding1110() {
     saveGame();
     closeModal();
     showToast(t('toast.onboardingSaved'), 'success');
+    if (typeof onDone === 'function') onDone();
   });
+}
+
+/* ------------------------------------------------------------
+   Visite guidée (v1.15.1)
+   ------------------------------------------------------------
+   Une étape par onglet principal : on affiche l'écran correspondant en fond, on
+   met en évidence son bouton de navigation (voile sombre + halo, technique
+   box-shadow), et une bulle explique ce qu'on y trouve. "Suivant" avance et change
+   d'onglet automatiquement ; "Passer" quitte à tout moment. Proposé une seule fois
+   (nouvelle partie ET sauvegarde existante via state.settings.seenTutorial),
+   rejouable depuis Progression.
+   ------------------------------------------------------------ */
+const TUTORIAL_STEPS = [
+  { view: 'home',        target: '.nav-btn[data-view="home"]',        titleKey: 'tutorial.step.home.title',        textKey: 'tutorial.step.home.text' },
+  { view: 'roster',      target: '.nav-btn[data-view="roster"]',      titleKey: 'tutorial.step.roster.title',      textKey: 'tutorial.step.roster.text' },
+  { view: 'training',    target: '.nav-btn[data-view="training"]',    titleKey: 'tutorial.step.training.title',    textKey: 'tutorial.step.training.text' },
+  { view: 'calendar',    target: '.nav-btn[data-view="calendar"]',    titleKey: 'tutorial.step.calendar.title',    textKey: 'tutorial.step.calendar.text' },
+  { view: 'draft',       target: '.nav-btn[data-view="draft"]',       titleKey: 'tutorial.step.draft.title',       textKey: 'tutorial.step.draft.text' },
+  { view: 'scouting',    target: '.nav-btn[data-view="scouting"]',    titleKey: 'tutorial.step.scouting.title',    textKey: 'tutorial.step.scouting.text' },
+  { view: 'transfers',   target: '.nav-btn[data-view="transfers"]',   titleKey: 'tutorial.step.transfers.title',   textKey: 'tutorial.step.transfers.text' },
+  { view: 'sponsor',     target: '.nav-btn[data-view="sponsor"]',     titleKey: 'tutorial.step.sponsor.title',     textKey: 'tutorial.step.sponsor.text' },
+  { view: 'progression', target: '.nav-btn[data-view="progression"]', titleKey: 'tutorial.step.progression.title', textKey: 'tutorial.step.progression.text' }
+];
+
+let tutorialStepIndex = 0;
+
+function maybeShowTutorialPrompt() {
+  if (!state.settings || state.settings.seenTutorial) return;
+  if (!Array.isArray(state.roster) || !state.roster.length) return;
+  showModal(`
+    <h2 class="panel-title" style="margin-bottom:6px;">${t('tutorial.prompt.title')}</h2>
+    <p style="color:var(--color-text-muted);line-height:1.6;margin-bottom:18px;">${t('tutorial.prompt.desc')}</p>
+    <div class="modal-content__actions">
+      <button class="btn-secondary" id="btn-tutorial-decline">${t('tutorial.prompt.decline')}</button>
+      <button class="btn-primary" id="btn-tutorial-accept">${t('tutorial.prompt.accept')}</button>
+    </div>
+  `);
+  document.getElementById('btn-tutorial-decline').addEventListener('click', () => {
+    state.settings.seenTutorial = true;
+    saveGame();
+    closeModal();
+  });
+  document.getElementById('btn-tutorial-accept').addEventListener('click', () => {
+    closeModal();
+    startTutorial();
+  });
+}
+
+function ensureTutorialOverlay() {
+  let block = document.getElementById('tutorial-block');
+  if (!block) {
+    block = document.createElement('div');
+    block.id = 'tutorial-block';
+    block.className = 'tutorial-block';
+    document.body.appendChild(block);
+  }
+  let spot = document.getElementById('tutorial-spotlight');
+  if (!spot) {
+    spot = document.createElement('div');
+    spot.id = 'tutorial-spotlight';
+    spot.className = 'tutorial-spotlight';
+    document.body.appendChild(spot);
+  }
+  let bubble = document.getElementById('tutorial-bubble');
+  if (!bubble) {
+    bubble = document.createElement('div');
+    bubble.id = 'tutorial-bubble';
+    bubble.className = 'tutorial-bubble';
+    document.body.appendChild(bubble);
+  }
+  return { block, spot, bubble };
+}
+
+function startTutorial() {
+  tutorialStepIndex = 0;
+  const { block } = ensureTutorialOverlay();
+  block.classList.add('tutorial-block--visible');
+  renderTutorialStep();
+}
+
+function renderTutorialStep() {
+  const step = TUTORIAL_STEPS[tutorialStepIndex];
+  if (!step) { endTutorial(); return; }
+  showView(step.view);
+  requestAnimationFrame(() => positionTutorialStep(step));
+}
+
+function positionTutorialStep(step) {
+  const { spot, bubble } = ensureTutorialOverlay();
+  const target = document.querySelector(step.target);
+  if (!target) { advanceTutorial(); return; } // garde-fou : cible introuvable, on saute l'étape
+
+  const rect = target.getBoundingClientRect();
+  const pad = 6;
+  spot.style.top = (rect.top - pad) + 'px';
+  spot.style.left = (rect.left - pad) + 'px';
+  spot.style.width = (rect.width + pad * 2) + 'px';
+  spot.style.height = (rect.height + pad * 2) + 'px';
+  spot.classList.add('tutorial-spotlight--visible');
+
+  const isLast = tutorialStepIndex === TUTORIAL_STEPS.length - 1;
+  bubble.innerHTML = `
+    <p class="tutorial-bubble__step">${t('tutorial.stepCounter', { n: tutorialStepIndex + 1, total: TUTORIAL_STEPS.length })}</p>
+    <p class="tutorial-bubble__title">${t(step.titleKey)}</p>
+    <p class="tutorial-bubble__text">${t(step.textKey)}</p>
+    <div class="tutorial-bubble__actions">
+      <button class="tutorial-bubble__skip" id="btn-tutorial-skip">${t('tutorial.skip')}</button>
+      <button class="btn-primary" id="btn-tutorial-next">${isLast ? t('tutorial.finish') : t('tutorial.next')}</button>
+    </div>
+  `;
+
+  requestAnimationFrame(() => {
+    const bw = bubble.offsetWidth;
+    const bh = bubble.offsetHeight;
+    let top = rect.bottom + 16;
+    if (top + bh > window.innerHeight - 12) top = Math.max(12, rect.top - bh - 16);
+    let left = Math.max(12, Math.min(rect.left, window.innerWidth - bw - 12));
+    bubble.style.top = top + 'px';
+    bubble.style.left = left + 'px';
+    bubble.classList.add('tutorial-bubble--visible');
+  });
+
+  document.getElementById('btn-tutorial-next').addEventListener('click', advanceTutorial);
+  document.getElementById('btn-tutorial-skip').addEventListener('click', endTutorial);
+}
+
+function advanceTutorial() {
+  tutorialStepIndex++;
+  const { bubble } = ensureTutorialOverlay();
+  bubble.classList.remove('tutorial-bubble--visible');
+  renderTutorialStep();
+}
+
+function endTutorial() {
+  state.settings.seenTutorial = true;
+  saveGame();
+  const block = document.getElementById('tutorial-block');
+  const spot = document.getElementById('tutorial-spotlight');
+  const bubble = document.getElementById('tutorial-bubble');
+  if (block) block.classList.remove('tutorial-block--visible');
+  if (spot) spot.classList.remove('tutorial-spotlight--visible');
+  if (bubble) bubble.classList.remove('tutorial-bubble--visible');
 }
 
 // Popup de bienvenue + choix de langue au tout premier lancement (v1.13.0).
@@ -8085,8 +8231,18 @@ function renderProgression() {
 
   const settingsEl = document.getElementById('progression-settings');
   if (settingsEl) {
-    settingsEl.innerHTML = worldSettingsHtml();
+    settingsEl.innerHTML = worldSettingsHtml() + `
+      <div class="world-setting">
+        <span class="world-setting__text">
+          <span class="world-setting__title">${t('settings.tutorial.title')}</span>
+          <span class="world-setting__desc">${t('settings.tutorial.desc')}</span>
+        </span>
+        <button class="btn-secondary" id="btn-replay-tutorial">${t('settings.tutorial.replay')}</button>
+      </div>
+    `;
     wireWorldSettings(settingsEl, () => renderProgression());
+    const replayBtn = document.getElementById('btn-replay-tutorial');
+    if (replayBtn) replayBtn.addEventListener('click', () => startTutorial());
   }
 
   const careerEl = document.getElementById('progression-career');
@@ -8423,7 +8579,7 @@ function continueInit() {
     showRegionSelection();
   } else {
     showView('home');
-    maybeShowOnboarding1110();
+    maybeShowOnboarding1110(maybeShowTutorialPrompt);
   }
 }
 
