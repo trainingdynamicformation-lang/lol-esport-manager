@@ -8107,38 +8107,47 @@ function positionTutorialStep(step) {
   const target = document.querySelector(step.target);
   if (!target) { advanceTutorial(); return; } // garde-fou : cible introuvable, on saute l'étape
 
-  const rect = target.getBoundingClientRect();
-  const pad = 6;
-  spot.style.top = (rect.top - pad) + 'px';
-  spot.style.left = (rect.left - pad) + 'px';
-  spot.style.width = (rect.width + pad * 2) + 'px';
-  spot.style.height = (rect.height + pad * 2) + 'px';
-  spot.classList.add('tutorial-spotlight--visible');
-
-  const isLast = tutorialStepIndex === TUTORIAL_STEPS.length - 1;
-  bubble.innerHTML = `
-    <p class="tutorial-bubble__step">${t('tutorial.stepCounter', { n: tutorialStepIndex + 1, total: TUTORIAL_STEPS.length })}</p>
-    <p class="tutorial-bubble__title">${t(step.titleKey)}</p>
-    <p class="tutorial-bubble__text">${t(step.textKey)}</p>
-    <div class="tutorial-bubble__actions">
-      <button class="tutorial-bubble__skip" id="btn-tutorial-skip">${t('tutorial.skip')}</button>
-      <button class="btn-primary" id="btn-tutorial-next">${isLast ? t('tutorial.finish') : t('tutorial.next')}</button>
-    </div>
-  `;
+  // v1.15.1 — fix : la cible peut être hors du viewport (ex: bas de l'écran Progression),
+  // le voile étant fixe et bloquant les clics, le joueur restait alors coincé sans pouvoir
+  // atteindre le bouton Suivant. On scrolle d'abord la cible au centre de l'écran, puis on
+  // attend un frame pour que le navigateur applique le scroll avant de mesurer sa position.
+  target.scrollIntoView({ block: 'center', behavior: 'auto' });
 
   requestAnimationFrame(() => {
-    const bw = bubble.offsetWidth;
-    const bh = bubble.offsetHeight;
-    let top = rect.bottom + 16;
-    if (top + bh > window.innerHeight - 12) top = Math.max(12, rect.top - bh - 16);
-    let left = Math.max(12, Math.min(rect.left, window.innerWidth - bw - 12));
-    bubble.style.top = top + 'px';
-    bubble.style.left = left + 'px';
-    bubble.classList.add('tutorial-bubble--visible');
-  });
+    const rect = target.getBoundingClientRect();
+    const pad = 6;
+    spot.style.top = (rect.top - pad) + 'px';
+    spot.style.left = (rect.left - pad) + 'px';
+    spot.style.width = (rect.width + pad * 2) + 'px';
+    spot.style.height = (rect.height + pad * 2) + 'px';
+    spot.classList.add('tutorial-spotlight--visible');
 
-  document.getElementById('btn-tutorial-next').addEventListener('click', advanceTutorial);
-  document.getElementById('btn-tutorial-skip').addEventListener('click', endTutorial);
+    const isLast = tutorialStepIndex === TUTORIAL_STEPS.length - 1;
+    bubble.innerHTML = `
+      <p class="tutorial-bubble__step">${t('tutorial.stepCounter', { n: tutorialStepIndex + 1, total: TUTORIAL_STEPS.length })}</p>
+      <p class="tutorial-bubble__title">${t(step.titleKey)}</p>
+      <p class="tutorial-bubble__text">${t(step.textKey)}</p>
+      <div class="tutorial-bubble__actions">
+        <button class="tutorial-bubble__skip" id="btn-tutorial-skip">${t('tutorial.skip')}</button>
+        <button class="btn-primary" id="btn-tutorial-next">${isLast ? t('tutorial.finish') : t('tutorial.next')}</button>
+      </div>
+    `;
+
+    requestAnimationFrame(() => {
+      const bw = bubble.offsetWidth;
+      const bh = bubble.offsetHeight;
+      let top = rect.bottom + 16;
+      if (top + bh > window.innerHeight - 12) top = rect.top - bh - 16;
+      top = Math.max(12, Math.min(top, window.innerHeight - bh - 12)); // toujours dans le viewport, même si la cible est plus grande que l'écran
+      let left = Math.max(12, Math.min(rect.left, window.innerWidth - bw - 12));
+      bubble.style.top = top + 'px';
+      bubble.style.left = left + 'px';
+      bubble.classList.add('tutorial-bubble--visible');
+    });
+
+    document.getElementById('btn-tutorial-next').addEventListener('click', advanceTutorial);
+    document.getElementById('btn-tutorial-skip').addEventListener('click', endTutorial);
+  });
 }
 
 function advanceTutorial() {
