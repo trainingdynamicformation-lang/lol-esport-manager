@@ -1233,7 +1233,7 @@ const SPONSOR_CONTRACTS = [
   { id: 'res_premium_primevolt', type: 'result', tier: 'premium', brand: 'PrimeVolt',
     domesticWeight: 0.3, intlWeight: 1.0, breach: 'NO_INTL_QUAL' },
   { id: 'res_premium_eagleeye', type: 'result', tier: 'premium', brand: 'EagleEye Analytics',
-    domesticWeight: 1.0, intlWeight: 0.2, breach: 'MISSED_PLAYOFFS' },
+    domesticWeight: 1.0, intlWeight: 0.2, breach: 'MISSED_SEMIFINAL' },
   { id: 'res_premium_titanium', type: 'result', tier: 'premium', brand: 'Titanium Sports Co.',
     domesticWeight: 0.4, intlWeight: 0.4, flatBonus: { onPoTitle: 100, onIntlFinal: 150 }, breach: 'MISSED_PLAYOFFS' },
 
@@ -1412,14 +1412,18 @@ function applySponsorDomesticPayout(rewards, placement) {
     state.resources.budget += bonus;
     pushSponsorLog('payout', current.contractId, { amount: bonus });
   }
-  // Clause de rupture "hors playoffs" : vérifiée au jalon existant fin de saison régulière.
+  // Clauses de rupture vérifiées aux jalons existants (fin de saison régulière / fin des playoffs du split).
+  let breached = false;
   if (contract.breach === 'MISSED_PLAYOFFS') {
     const regularRank = getSortedStandings().indexOf('player') + 1;
-    if (regularRank > 6) {
-      showToast(t('sponsor.toast.breach', { brand: contract.brand }), 'error');
-      pushSponsorLog('terminated_breach', current.contractId, {});
-      state.sponsor.current = null;
-    }
+    breached = regularRank > 6;
+  } else if (contract.breach === 'MISSED_SEMIFINAL') {
+    breached = placement > 3; // pas au moins demi-finaliste (placement inclut déjà le résultat des playoffs du split)
+  }
+  if (breached) {
+    showToast(t('sponsor.toast.breach', { brand: contract.brand }), 'error');
+    pushSponsorLog('terminated_breach', current.contractId, {});
+    state.sponsor.current = null;
   }
 }
 
@@ -8169,6 +8173,15 @@ function hideSponsorBanner() {
 function sponsorTierLabel(tier) { return t('sponsor.tier.' + tier); }
 function sponsorTypeLabel(type) { return t('sponsor.type.' + type); }
 
+const SPONSOR_BREACH_KEYS = {
+  MISSED_PLAYOFFS: 'missedPlayoffs',
+  MISSED_SEMIFINAL: 'missedSemifinal',
+  NO_INTL_QUAL: 'noIntlQual'
+};
+function sponsorBreachLabel(breach) {
+  return t('sponsor.detail.breach.' + (SPONSOR_BREACH_KEYS[breach] || breach));
+}
+
 // Affiche le poids d'un sponsor résultat en pourcentage concret (plus lisible qu'un
 // libellé qualitatif type "Modéré"), avec une info-bulle expliquant le mécanisme.
 function sponsorPayoutStatHtml(label, weight) {
@@ -8352,7 +8365,7 @@ function showSponsorDetail(contractId, isRenewal) {
         ${sponsorPayoutStatHtml(t('sponsor.detail.domesticWeight'), contract.domesticWeight)}
         ${sponsorPayoutStatHtml(t('sponsor.detail.intlWeight'), contract.intlWeight)}
       </div>
-      ${contract.breach ? `<p class="sponsor-detail__warning">${t('sponsor.detail.breach.' + (contract.breach === 'MISSED_PLAYOFFS' ? 'missedPlayoffs' : 'noIntlQual'))}</p>` : ''}
+      ${contract.breach ? `<p class="sponsor-detail__warning">${sponsorBreachLabel(contract.breach)}</p>` : ''}
     `;
   }
 
