@@ -2572,7 +2572,7 @@ table.history-table th {
   position: fixed;
   border-radius: 10px;
   border: 2px solid var(--color-gold);
-  box-shadow: 0 0 0 9999px rgba(4, 6, 12, .8);
+  box-shadow: 0 0 0 9999px rgba(4, 6, 12, .5);
   pointer-events: none;
   z-index: 400;
   opacity: 0;
