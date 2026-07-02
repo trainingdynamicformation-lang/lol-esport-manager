@@ -8015,12 +8015,15 @@ function maybeShowOnboarding1110(onDone) {
    ------------------------------------------------------------ */
 const TUTORIAL_STEPS = [
   { view: 'home',        target: '.nav-btn[data-view="home"]',        titleKey: 'tutorial.step.home.title',        textKey: 'tutorial.step.home.text' },
+  { view: 'home',        target: '.resource-bar',                     titleKey: 'tutorial.step.resources.title',   textKey: 'tutorial.step.resources.text' },
   { view: 'roster',      target: '.nav-btn[data-view="roster"]',      titleKey: 'tutorial.step.roster.title',      textKey: 'tutorial.step.roster.text' },
+  { view: 'roster',      target: '.rest-panel',                       titleKey: 'tutorial.step.rest.title',        textKey: 'tutorial.step.rest.text' },
   { view: 'training',    target: '.nav-btn[data-view="training"]',    titleKey: 'tutorial.step.training.title',    textKey: 'tutorial.step.training.text' },
   { view: 'calendar',    target: '.nav-btn[data-view="calendar"]',    titleKey: 'tutorial.step.calendar.title',    textKey: 'tutorial.step.calendar.text' },
   { view: 'draft',       target: '.nav-btn[data-view="draft"]',       titleKey: 'tutorial.step.draft.title',       textKey: 'tutorial.step.draft.text' },
   { view: 'scouting',    target: '.nav-btn[data-view="scouting"]',    titleKey: 'tutorial.step.scouting.title',    textKey: 'tutorial.step.scouting.text' },
   { view: 'transfers',   target: '.nav-btn[data-view="transfers"]',   titleKey: 'tutorial.step.transfers.title',   textKey: 'tutorial.step.transfers.text' },
+  { view: 'journal',     target: '.nav-btn[data-view="journal"]',     titleKey: 'tutorial.step.journal.title',     textKey: 'tutorial.step.journal.text' },
   { view: 'sponsor',     target: '.nav-btn[data-view="sponsor"]',     titleKey: 'tutorial.step.sponsor.title',     textKey: 'tutorial.step.sponsor.text' },
   { view: 'progression', target: '.nav-btn[data-view="progression"]', titleKey: 'tutorial.step.progression.title', textKey: 'tutorial.step.progression.text' }
 ];
