@@ -320,17 +320,21 @@ function loadGame() {
 function resetGame() {
   const savedLang = (state.settings && state.settings.lang) || 'fr';
   state = createDefaultState();
-  state.settings.lang = savedLang;
-  state.settings.langChosen = true;
+  state.settings.lang = savedLang; // continuité visuelle immédiate (pas de flash dans l'autre langue)
+  // v1.15.1 — fix : langChosen reste à false (valeur par défaut) au lieu d'être forcé à true,
+  // pour que la popup de langue soit reproposée avant le tuto sur une "nouvelle partie" (reset),
+  // exactement comme au tout premier lancement du jeu.
   applyStaticI18n();
   saveGame();
   updateResourceBar();
-  if (!state.region && typeof showRegionSelection === 'function') {
-    showRegionSelection();
-  } else {
-    showView('home');
-  }
   showToast(t('toast.reset'), 'info');
+  showWelcomeLanguageModal(() => {
+    if (!state.region && typeof showRegionSelection === 'function') {
+      showRegionSelection();
+    } else {
+      showView('home');
+    }
+  });
 }
 
 /* ------------------------------------------------------------
