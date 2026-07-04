@@ -2420,6 +2420,8 @@ table.history-table th {
 .welcome-modal__note { font-size: 11px; color: var(--color-text-muted); margin: 6px 0 0; }
 
 /* ─── Journal des transferts (v1.11.0) ──────────────────────────────────── */
+.journal-filters { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.journal-filters .training-form__group { min-width: 160px; }
 .tj-season { margin-bottom: 14px; }
 .tj-season__title { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-gold); font-weight: 700; margin: 0 0 6px; }
 .tj-row { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 6px; font-size: 13px; border-left: 2px solid transparent; }

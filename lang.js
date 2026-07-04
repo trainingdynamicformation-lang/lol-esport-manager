@@ -201,8 +201,13 @@ const I18N = {
 
     // -- Journal des transferts --
     'journal.empty': 'Aucun mouvement enregistré pour le moment. Les retraites et recrutements apparaîtront ici saison après saison.',
+    'journal.emptyFiltered': 'Aucun mouvement ne correspond à ce filtre.',
     'journal.season': 'Saison {y}',
     'journal.intro': 'Tous les mouvements de la scène, saison par saison (10 dernières années).',
+    'journal.filterRegion': 'Région',
+    'journal.filterTeam': 'Équipe',
+    'journal.allRegions': 'Toutes les régions',
+    'journal.allTeams': 'Toutes les équipes',
     'transferKind.retraite': 'Retraite',
     'transferKind.arrivee': 'Arrivée',
     'transferKind.depart': 'Fin de contrat',
@@ -1237,8 +1242,13 @@ const I18N = {
 
     // -- Transfer journal --
     'journal.empty': 'No movement recorded yet. Retirements and signings will appear here season after season.',
+    'journal.emptyFiltered': 'No movement matches this filter.',
     'journal.season': 'Season {y}',
     'journal.intro': "All of the scene's movements, season by season (last 10 years).",
+    'journal.filterRegion': 'Region',
+    'journal.filterTeam': 'Team',
+    'journal.allRegions': 'All regions',
+    'journal.allTeams': 'All teams',
     'transferKind.retraite': 'Retirement',
     'transferKind.arrivee': 'Arrival',
     'transferKind.depart': 'Contract end',

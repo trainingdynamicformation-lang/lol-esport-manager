@@ -7631,15 +7631,68 @@ function playerTeamLabel() {
   return state.teamShortName || state.teamName || t('common.you');
 }
 
+// v1.15.4 — résout la région (id REGIONS) d'une entrée du journal, pour le filtre par
+// région. Les entrées ne stockent qu'un libellé d'équipe (shortName IA ou libellé joueur),
+// donc on le résout via AI_TEAMS.region (= REGIONS.aiRegion) ; l'entrée du joueur suit sa
+// propre région (state.region).
+function journalEntryRegion(e) {
+  if (e.t === playerTeamLabel()) return state.region;
+  const team = AI_TEAMS.find((tm) => tm.shortName === e.t);
+  if (!team) return null;
+  const region = REGIONS.find((r) => r.aiRegion === team.region);
+  return region ? region.id : null;
+}
+
 // Journal des transferts (v1.11.0) — groupé par saison décroissante.
+// v1.15.4 : filtres région + équipe (state._journalRegion/_journalTeam).
 function renderTransferJournal() {
   const log = Array.isArray(state.transferLog) ? state.transferLog : [];
   if (!log.length) {
     return `<div class="panel"><p class="card__count">${t('journal.empty')}</p></div>`;
   }
+
+  const regionFilter = state._journalRegion || 'all';
+  const teamFilter = state._journalTeam || 'all';
+
+  const teamsInRegion = Array.from(new Set(
+    log.filter((e) => regionFilter === 'all' || journalEntryRegion(e) === regionFilter).map((e) => e.t)
+  )).sort((a, b) => a.localeCompare(b));
+
+  const regionOptions = `<option value="all">${t('journal.allRegions')}</option>` +
+    REGIONS.map((r) => `<option value="${r.id}" ${regionFilter === r.id ? 'selected' : ''}>${r.name}</option>`).join('');
+  const teamOptions = `<option value="all">${t('journal.allTeams')}</option>` +
+    teamsInRegion.map((tm) => `<option value="${escapeAttr(tm)}" ${teamFilter === tm ? 'selected' : ''}>${escapeAttr(tm)}</option>`).join('');
+
+  const filtersHtml = `
+    <div class="journal-filters">
+      <div class="training-form__group">
+        <label for="journal-region-filter">${t('journal.filterRegion')}</label>
+        <select id="journal-region-filter">${regionOptions}</select>
+      </div>
+      <div class="training-form__group">
+        <label for="journal-team-filter">${t('journal.filterTeam')}</label>
+        <select id="journal-team-filter">${teamOptions}</select>
+      </div>
+    </div>
+  `;
+
+  const filtered = log.filter((e) => {
+    if (regionFilter !== 'all' && journalEntryRegion(e) !== regionFilter) return false;
+    if (teamFilter !== 'all' && e.t !== teamFilter) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    return `<div class="panel">
+      <p class="card__count" style="margin-bottom:12px;">${t('journal.intro')}</p>
+      ${filtersHtml}
+      <p class="card__count">${t('journal.emptyFiltered')}</p>
+    </div>`;
+  }
+
   const mine = playerTeamLabel();
   const byYear = {};
-  log.forEach((e) => { (byYear[e.y] = byYear[e.y] || []).push(e); });
+  filtered.forEach((e) => { (byYear[e.y] = byYear[e.y] || []).push(e); });
   const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
   const sections = years.map((y) => {
     const rows = byYear[y].map((e) => {
@@ -7658,6 +7711,7 @@ function renderTransferJournal() {
   }).join('');
   return `<div class="panel">
     <p class="card__count" style="margin-bottom:12px;">${t('journal.intro')}</p>
+    ${filtersHtml}
     ${sections}
   </div>`;
 }
@@ -7667,6 +7721,21 @@ function renderJournal() {
   const el = document.getElementById('journal-content');
   if (!el) return;
   el.innerHTML = renderTransferJournal();
+  const regionSelect = document.getElementById('journal-region-filter');
+  const teamSelect = document.getElementById('journal-team-filter');
+  if (regionSelect) {
+    regionSelect.addEventListener('change', (e) => {
+      state._journalRegion = e.target.value;
+      state._journalTeam = 'all'; // repli sur "toutes les équipes" au changement de région
+      renderJournal();
+    });
+  }
+  if (teamSelect) {
+    teamSelect.addEventListener('change', (e) => {
+      state._journalTeam = e.target.value;
+      renderJournal();
+    });
+  }
 }
 
 function renderTransfers() {

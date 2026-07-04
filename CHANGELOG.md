@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.4] — 2026-07-05
+
+### Ajouté — Filtres du journal des transferts
+
+Le journal (retraites, arrivées, fins de contrat, signatures) devenait difficile à lire au fil des saisons. Deux filtres combinables ont été ajoutés en haut de l'écran :
+
+- **Région** : n'affiche que les mouvements de la région sélectionnée (votre équipe suit sa propre région).
+- **Équipe** : la liste des équipes proposées se met à jour automatiquement selon la région choisie.
+
+---
+
 ## [1.15.3] — 2026-07-04
 
 ### Corrigé — Retraites des joueurs IA (sauvegardes anciennes)

@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.15.4] — 2026-07-05
+
+### Added — Transfer journal filters
+
+The journal (retirements, arrivals, contract endings, signings) was getting hard to read over the seasons. Two combinable filters were added at the top of the screen:
+
+- **Region**: only shows movements from the selected region (your team follows its own region).
+- **Team**: the list of available teams updates automatically based on the selected region.
+
+---
+
 ## [1.15.3] — 2026-07-04
 
 ### Fixed — AI player retirements (old saves)
