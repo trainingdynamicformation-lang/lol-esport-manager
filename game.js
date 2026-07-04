@@ -615,7 +615,8 @@ function closeModal() {
 
 function showChangelogModal() {
   showModal(`<div class="changelog-modal"><p class="changelog-loading">${t('common.loading')}</p></div>`);
-  fetch('CHANGELOG.md')
+  const changelogFile = getLang() === 'en' ? 'CHANGELOG.en.md' : 'CHANGELOG.md'; // v1.15.2 : changelog traduit en anglais
+  fetch(changelogFile)
     .then(r => r.text())
     .then(md => {
       const html = md
@@ -6961,8 +6962,6 @@ function renderMatchSetup() {
     return;
   }
 
-  const opponents = getAITeamsForRegion(state.region).filter((team) => team.id !== state.aiTeamId);
-
   setupEl.innerHTML = `
     <h2 class="panel-title">${t('match.setupTitle')}</h2>
     <p id="match-setup-message" class="card__count" style="margin-bottom: 12px;">
@@ -6970,10 +6969,14 @@ function renderMatchSetup() {
     </p>
     <div class="training-form">
       <div class="training-form__group">
-        <label>${t('match.opponentLabel')}</label>
-        <select id="match-opponent">
-          ${opponents.map((team) => `<option value="${team.id}">${team.name} (${team.shortName})</option>`).join('')}
+        <label>${t('match.regionLabel')}</label>
+        <select id="match-region">
+          ${REGIONS.map((r) => `<option value="${r.id}" ${r.id === state.region ? 'selected' : ''}>${r.name}</option>`).join('')}
         </select>
+      </div>
+      <div class="training-form__group">
+        <label>${t('match.opponentLabel')}</label>
+        <select id="match-opponent"></select>
       </div>
       <div class="training-form__group">
         <label>${t('match.formatLabel')}</label>
@@ -6997,6 +7000,7 @@ function renderMatchSetup() {
     <div id="match-scouting-preview"></div>
   `;
 
+  const regionSelect = document.getElementById('match-region');
   const opponentSelect = document.getElementById('match-opponent');
   const scoutingPreviewEl = document.getElementById('match-scouting-preview');
 
@@ -7006,10 +7010,19 @@ function renderMatchSetup() {
     }
   }
 
-  if (opponentSelect) {
-    opponentSelect.addEventListener('change', updateScoutingPreview);
+  // v1.15.2 — un sélecteur de région permet d'affronter n'importe quelle équipe de
+  // n'importe quelle région en scrim hors saison (auparavant limité à sa propre région),
+  // même principe déjà en place pour les scrims d'Entraînement (#scrim-region).
+  function updateOpponentOptions() {
+    if (!regionSelect || !opponentSelect) return;
+    const opponents = getAITeamsForRegion(regionSelect.value).filter((team) => team.id !== state.aiTeamId);
+    opponentSelect.innerHTML = opponents.map((team) => `<option value="${team.id}">${team.name} (${team.shortName})</option>`).join('');
     updateScoutingPreview();
   }
+
+  if (regionSelect) regionSelect.addEventListener('change', updateOpponentOptions);
+  if (opponentSelect) opponentSelect.addEventListener('change', updateScoutingPreview);
+  updateOpponentOptions();
 
   const startBtn = document.getElementById('btn-start-match');
   if (startBtn) {

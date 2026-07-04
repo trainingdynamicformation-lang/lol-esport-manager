@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#080C14" />
-  <link rel="stylesheet" href="style.css?v=1.15.1" />
+  <link rel="stylesheet" href="style.css?v=1.15.2" />
 </head>
 <body>
 
@@ -357,15 +357,15 @@
         <div id="cloud-save-status" style="margin-top:10px;font-size:13px;"></div>
 
         <details style="margin-top:16px;">
-          <summary style="cursor:pointer;color:var(--color-gold);font-size:13px;font-weight:600;">&#10067; Comment configurer GitHub Gist ?</summary>
-          <div style="color:var(--color-text-muted);font-size:13px;line-height:1.8;margin-top:10px;padding:12px;background:var(--color-surface-alt);border-radius:var(--radius);">
+          <summary style="cursor:pointer;color:var(--color-gold);font-size:13px;font-weight:600;" data-i18n="prog.gistGuideSummary">&#10067; Comment configurer GitHub Gist ?</summary>
+          <div style="color:var(--color-text-muted);font-size:13px;line-height:1.8;margin-top:10px;padding:12px;background:var(--color-surface-alt);border-radius:var(--radius);" data-i18n-html="prog.gistGuideHtml">
             <strong style="color:var(--color-text);">Étape 1 — Créer un Gist</strong><br>
             Rendez-vous sur <strong>gist.github.com</strong> (compte GitHub gratuit requis).<br>
             Filename : <code>save.json</code> &bull; Contenu : <code>{}</code> &bull; Cliquez <strong>"Create secret gist"</strong>.<br>
             Copiez l'ID dans l'URL : gist.github.com/votrenom/<strong>cet-id-ici</strong><br><br>
             <strong style="color:var(--color-text);">Étape 2 — Créer un token GitHub</strong><br>
-            1. Sur GitHub, cliquez sur votre <strong>avatar</strong> en haut a droite &rarr; <strong>"Your GitHub profile"</strong><br>
-            2. Sur votre page profil, cliquez a nouveau sur votre <strong>avatar</strong> en haut a droite<br>
+            1. Sur GitHub, cliquez sur votre <strong>avatar</strong> en haut à droite &rarr; <strong>"Your GitHub profile"</strong><br>
+            2. Sur votre page profil, cliquez à nouveau sur votre <strong>avatar</strong> en haut à droite<br>
             3. Cette fois, cliquez sur <strong>"Settings"</strong> dans la liste<br>
             4. Dans le menu de gauche, descendez tout en bas et cliquez sur <strong>"Developer settings"</strong><br>
             5. Cliquez sur <strong>"Personal access tokens"</strong> puis <strong>"Tokens (classic)"</strong><br>
@@ -375,7 +375,7 @@
             &nbsp;&nbsp;&bull; <strong>Expiration</strong> : <code>No expiration</code><br>
             &nbsp;&nbsp;&bull; <strong>Permission</strong> : cochez uniquement la case <code>gist</code><br>
             8. Cliquez <strong>"Generate token"</strong> en bas de page<br>
-            9. <strong style="color:var(--color-gold);">Copiez immédiatement le token affiche</strong> (commencé par <code>ghp_</code>) — il ne sera plus visible après avoir quitte la page.<br><br>
+            9. <strong style="color:var(--color-gold);">Copiez immédiatement le token affiché</strong> (commençant par <code>ghp_</code>) — il ne sera plus visible après avoir quitté la page.<br><br>
             <strong style="color:var(--color-text);">Étape 3 — Configurer dans le jeu</strong><br>
             Collez l'ID du Gist et le token dans les champs ci-dessus, puis cliquez <strong>"Enregistrer la configuration"</strong>.
           </div>
@@ -389,7 +389,7 @@
   <!-- ===================== FOOTER ===================== -->
   <footer class="app-footer">
     <span class="footer-beta">BETA</span>
-    LOL Esport Manager v1.15.1 &mdash; <span data-i18n="footer.tagline">Jeu de gestion d'&eacute;quipe esport League of Legends</span> &mdash;
+    LOL Esport Manager v1.15.2 &mdash; <span data-i18n="footer.tagline">Jeu de gestion d'&eacute;quipe esport League of Legends</span> &mdash;
     <button onclick="showChangelogModal()" class="footer-link footer-link--btn" data-i18n="footer.changelog">Changelog</button>
     <span class="footer-copy" data-i18n="footer.copyright">&copy; 2026 redbaron1308 &mdash; Tous droits r&eacute;serv&eacute;s. Concept et design prot&eacute;g&eacute;s par la propri&eacute;t&eacute; intellectuelle.</span>
     <span class="footer-copy" data-i18n="footer.localStorage">Les donn&eacute;es de progression sont stock&eacute;es localement dans votre navigateur (localStorage) et ne sont jamais transmises &agrave; des tiers.</span>
@@ -411,12 +411,12 @@
       navigator.serviceWorker.register('/sw.js');
     }
   </script>
-  <script src="lang.js?v=1.15.1"></script>
-  <script src="data_teams.js?v=1.15.1"></script>
-  <script src="data_champions.js?v=1.15.1"></script>
-  <script src="data_counters.js?v=1.15.1"></script>
-  <script src="data_transfers.js?v=1.15.1"></script>
-  <script src="map.js?v=1.15.1"></script>
-  <script src="game.js?v=1.15.1"></script>
+  <script src="lang.js?v=1.15.2"></script>
+  <script src="data_teams.js?v=1.15.2"></script>
+  <script src="data_champions.js?v=1.15.2"></script>
+  <script src="data_counters.js?v=1.15.2"></script>
+  <script src="data_transfers.js?v=1.15.2"></script>
+  <script src="map.js?v=1.15.2"></script>
+  <script src="game.js?v=1.15.2"></script>
 </body>
 </html>

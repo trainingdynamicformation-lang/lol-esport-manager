@@ -104,6 +104,26 @@ const I18N = {
     'prog.saveConfig': 'Enregistrer la configuration',
     'prog.cloudExport': 'Envoyer vers le cloud',
     'prog.cloudImport': 'Charger depuis le cloud',
+    'prog.gistGuideSummary': '❓ Comment configurer GitHub Gist ?',
+    'prog.gistGuideHtml': `<strong style="color:var(--color-text);">Étape 1 — Créer un Gist</strong><br>
+      Rendez-vous sur <strong>gist.github.com</strong> (compte GitHub gratuit requis).<br>
+      Filename : <code>save.json</code> &bull; Contenu : <code>{}</code> &bull; Cliquez <strong>"Create secret gist"</strong>.<br>
+      Copiez l'ID dans l'URL : gist.github.com/votrenom/<strong>cet-id-ici</strong><br><br>
+      <strong style="color:var(--color-text);">Étape 2 — Créer un token GitHub</strong><br>
+      1. Sur GitHub, cliquez sur votre <strong>avatar</strong> en haut à droite &rarr; <strong>"Your GitHub profile"</strong><br>
+      2. Sur votre page profil, cliquez à nouveau sur votre <strong>avatar</strong> en haut à droite<br>
+      3. Cette fois, cliquez sur <strong>"Settings"</strong> dans la liste<br>
+      4. Dans le menu de gauche, descendez tout en bas et cliquez sur <strong>"Developer settings"</strong><br>
+      5. Cliquez sur <strong>"Personal access tokens"</strong> puis <strong>"Tokens (classic)"</strong><br>
+      6. Cliquez sur <strong>"Generate new token"</strong> &rarr; <strong>"Generate new token (classic)"</strong><br>
+      7. Remplissez les champs :<br>
+      &nbsp;&nbsp;&bull; <strong>Note</strong> : <code>LOL Esport Manager</code><br>
+      &nbsp;&nbsp;&bull; <strong>Expiration</strong> : <code>No expiration</code><br>
+      &nbsp;&nbsp;&bull; <strong>Permission</strong> : cochez uniquement la case <code>gist</code><br>
+      8. Cliquez <strong>"Generate token"</strong> en bas de page<br>
+      9. <strong style="color:var(--color-gold);">Copiez immédiatement le token affiché</strong> (commençant par <code>ghp_</code>) — il ne sera plus visible après avoir quitté la page.<br><br>
+      <strong style="color:var(--color-text);">Étape 3 — Configurer dans le jeu</strong><br>
+      Collez l'ID du Gist et le token dans les champs ci-dessus, puis cliquez <strong>"Enregistrer la configuration"</strong>.`,
 
     // -- Réglage de langue --
     'settings.language': 'Langue',
@@ -638,6 +658,7 @@ const I18N = {
     'match.seriesScore': '{fmt} contre {opp} — score {a}-{b}, Game {n}.',
     'match.resumeSeries': 'Continuer la série',
     'match.intro': 'Chaque match commence par une draft. Les picks influencent directement le déroulement de la partie.',
+    'match.regionLabel': 'RÉGION ADVERSE',
     'match.opponentLabel': 'ADVERSAIRE',
     'match.formatLabel': 'FORMAT',
     'match.fearlessLabel': 'FEARLESS DRAFT',
@@ -1114,6 +1135,26 @@ const I18N = {
     'prog.saveConfig': 'Save configuration',
     'prog.cloudExport': 'Upload to cloud',
     'prog.cloudImport': 'Load from cloud',
+    'prog.gistGuideSummary': '❓ How to set up GitHub Gist?',
+    'prog.gistGuideHtml': `<strong style="color:var(--color-text);">Step 1 — Create a Gist</strong><br>
+      Go to <strong>gist.github.com</strong> (a free GitHub account is required).<br>
+      Filename: <code>save.json</code> &bull; Content: <code>{}</code> &bull; Click <strong>"Create secret gist"</strong>.<br>
+      Copy the ID from the URL: gist.github.com/yourname/<strong>this-id-here</strong><br><br>
+      <strong style="color:var(--color-text);">Step 2 — Create a GitHub token</strong><br>
+      1. On GitHub, click your <strong>avatar</strong> top-right &rarr; <strong>"Your GitHub profile"</strong><br>
+      2. On your profile page, click your <strong>avatar</strong> top-right again<br>
+      3. This time, click <strong>"Settings"</strong> in the list<br>
+      4. In the left menu, scroll all the way down and click <strong>"Developer settings"</strong><br>
+      5. Click <strong>"Personal access tokens"</strong> then <strong>"Tokens (classic)"</strong><br>
+      6. Click <strong>"Generate new token"</strong> &rarr; <strong>"Generate new token (classic)"</strong><br>
+      7. Fill in the fields:<br>
+      &nbsp;&nbsp;&bull; <strong>Note</strong>: <code>LOL Esport Manager</code><br>
+      &nbsp;&nbsp;&bull; <strong>Expiration</strong>: <code>No expiration</code><br>
+      &nbsp;&nbsp;&bull; <strong>Permission</strong>: check only the <code>gist</code> box<br>
+      8. Click <strong>"Generate token"</strong> at the bottom of the page<br>
+      9. <strong style="color:var(--color-gold);">Copy the displayed token immediately</strong> (starting with <code>ghp_</code>) — it won't be visible again after leaving the page.<br><br>
+      <strong style="color:var(--color-text);">Step 3 — Set it up in the game</strong><br>
+      Paste the Gist ID and the token into the fields above, then click <strong>"Save configuration"</strong>.`,
 
     // -- Language setting --
     'settings.language': 'Language',
@@ -1648,6 +1689,7 @@ const I18N = {
     'match.seriesScore': '{fmt} vs {opp} — score {a}-{b}, Game {n}.',
     'match.resumeSeries': 'Resume the series',
     'match.intro': 'Every match starts with a draft. Picks directly influence how the game plays out.',
+    'match.regionLabel': 'OPPONENT REGION',
     'match.opponentLabel': 'OPPONENT',
     'match.formatLabel': 'FORMAT',
     'match.fearlessLabel': 'FEARLESS DRAFT',

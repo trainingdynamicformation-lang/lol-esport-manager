@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.2] — 2026-07-03
+
+### Ajouté
+- **Changelog traduit en anglais** : l'intégralité de l'historique (90 versions) est désormais disponible en anglais, affiché automatiquement si la langue du jeu est réglée sur English.
+- **Aide GitHub Gist traduite en anglais** : le guide de configuration en 3 étapes (Progression → Sauvegarde cloud) bascule désormais avec la langue du jeu, comme le reste de l'interface.
+- **Scrims hors saison contre toutes les régions** : l'écran Match propose désormais un sélecteur de région pour affronter n'importe quelle équipe de n'importe quelle région, comme c'était déjà le cas pour les scrims d'Entraînement.
+
+---
+
 ## [1.15.1] — 2026-07-02
 
 ### Ajouté — Visite guidée
