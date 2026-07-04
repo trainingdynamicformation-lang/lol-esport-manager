@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.15.5] — 2026-07-06
+
+### Fixed — A game should never end without the nexus being destroyed
+
+A match could be lost (or won) without the nexus ever being destroyed, simply because the in-game clock passed 55 minutes — a winner was then picked based on structural/gold/kill advantage. But just like in League of Legends, **the only win condition is nexus destruction**, no matter how long the actual game takes (60, 90 minutes or more). The forced time limit has been removed: a game can now run as long as needed, until a nexus is actually destroyed.
+
+---
+
 ## [1.15.4] — 2026-07-05
 
 ### Added — Transfer journal filters

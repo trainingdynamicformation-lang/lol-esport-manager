@@ -5876,7 +5876,6 @@ function renderInternationalRecap(el, intl) {
    ------------------------------------------------------------ */
 const MATCH_PHASE_THRESHOLDS = { early: 14 * 60, mid: 25 * 60 };
 const MATCH_PHASE_LABELS = { early: 'Early game', mid: 'Mid game', late: 'Late game' };
-const MATCH_SOFT_TIME_LIMIT = 55 * 60;
 
 function formatClock(totalSeconds) {
   const m = Math.floor(totalSeconds / 60);
@@ -6670,10 +6669,10 @@ function simulateTick() {
 
   updateMatchScoreboard();
 
-  if (!rt.finished && rt.gameClock >= MATCH_SOFT_TIME_LIMIT) {
-    rt.finished = true;
-    rt.endReason = 'time_limit';
-  }
+  // v1.15.5 — fix : seule la destruction du nexus met fin à une partie, comme dans LoL
+  // (une limite de temps forcée à 55 min désignait un vainqueur par avantage structurel
+  // sans que le nexus ne tombe — supprimée, la partie peut désormais durer aussi
+  // longtemps que nécessaire jusqu'à la vraie condition de victoire).
   if (rt.finished) finishMatch();
 }
 
@@ -6868,19 +6867,9 @@ function finishMatch() {
   const rt = matchRuntime;
   if (rt.timer) clearInterval(rt.timer);
 
-  // Le vainqueur découle de l'état de la partie (cohérence écran) : nexus détruit avant tout,
-  // sinon (garde-fou de temps) avance structurelle, puis or, puis kills.
-  let winnerSide;
-  if (rt.nexusWinner) {
-    winnerSide = rt.nexusWinner;
-  } else {
-    const blueDestroyed = rt.structuresDown.red.length; // structures rouges tombées = détruites par blue
-    const redDestroyed = rt.structuresDown.blue.length;
-    if (blueDestroyed !== redDestroyed) winnerSide = blueDestroyed > redDestroyed ? 'blue' : 'red';
-    else if (rt.gold.blue !== rt.gold.red) winnerSide = rt.gold.blue > rt.gold.red ? 'blue' : 'red';
-    else if (rt.score.blue !== rt.score.red) winnerSide = rt.score.blue > rt.score.red ? 'blue' : 'red';
-    else winnerSide = Math.random() < 0.5 ? 'blue' : 'red';
-  }
+  // v1.15.5 : la destruction du nexus est l'unique condition de victoire (comme dans
+  // LoL) — finishMatch() n'est désormais appelée que lorsque rt.nexusWinner est défini.
+  const winnerSide = rt.nexusWinner;
 
   const win = winnerSide === rt.picks.playerSide;
   rt.result = win ? 'win' : 'loss';

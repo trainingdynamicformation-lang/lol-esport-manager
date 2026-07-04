@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.5] — 2026-07-06
+
+### Corrigé — Une partie ne devait plus se terminer sans destruction du nexus
+
+Un match pouvait être perdu (ou gagné) sans que le nexus n'ait été détruit, simplement parce que l'horloge de la partie dépassait 55 minutes — un vainqueur était alors désigné par avantage structurel/or/kills. Or comme dans League of Legends, **la seule condition de victoire est la destruction du nexus**, quelle que soit la durée réelle de la partie (60, 90 minutes ou plus). La limite de temps forcée a été supprimée : une partie peut désormais durer aussi longtemps que nécessaire, jusqu'à ce qu'un nexus tombe réellement.
+
+---
+
 ## [1.15.4] — 2026-07-05
 
 ### Ajouté — Filtres du journal des transferts
