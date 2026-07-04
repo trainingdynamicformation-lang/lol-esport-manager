@@ -889,6 +889,12 @@ function getTeamDraftPriorityList(team) {
     lines.push(t('scout.priorityBan', { champ }));
   });
   DRAFT_ROLES.forEach((role) => {
+    // v1.15.3 : pas de priorité de pick fiable pour un joueur encore inconnu.
+    const rolePlayer = team.roster.find((r) => r.role === role);
+    if (rolePlayer && rolePlayer.unknownScout) {
+      lines.push(t('scout.priorityUnknown', { role: ROLE_NAMES[role] }));
+      return;
+    }
     const picks = (team.draftProfile.comfortPicks || {})[role];
     if (picks && picks.length) lines.push(t('scout.priorityComfort', { role: ROLE_NAMES[role], champ: picks[0] }));
   });
@@ -959,7 +965,13 @@ function buildScoutingReportBody(team) {
     // Pool par rôle
     const poolRows = DRAFT_ROLES.map((role) => {
       const p = team.roster.find((r) => r.role === role);
-      if (!p || p.championPool.length === 0) return '';
+      if (!p) return '';
+      // v1.15.3 : un remplaçant tout juste arrivé reste inconnu tant qu'aucun match/scrim
+      // n'a été joué contre son équipe (voir revealScoutedTeam).
+      if (p.unknownScout) {
+        return `<div class="scout-pool-row"><span class="scout-pool-role">${ROLE_NAMES[role]}</span><span class="scout-pool-name">${p.name}</span><span class="scout-pool-champs scout-unknown">${t('scout.unknownInfo')}</span></div>`;
+      }
+      if (p.championPool.length === 0) return '';
       const picks = p.championPool.slice(0, 3).join(', ');
       return `<div class="scout-pool-row"><span class="scout-pool-role">${ROLE_NAMES[role]}</span><span class="scout-pool-name">${p.name}</span><span class="scout-pool-champs">${picks}</span></div>`;
     }).join('');
@@ -967,7 +979,11 @@ function buildScoutingReportBody(team) {
     // Traits joueurs
     const traitRows = DRAFT_ROLES.map((role) => {
       const p = team.roster.find((r) => r.role === role);
-      if (!p || !p.traits || p.traits.length === 0) return '';
+      if (!p) return '';
+      if (p.unknownScout) {
+        return `<div class="scout-trait-row"><span class="scout-pool-name">${p.name} <span class="scout-pool-role">${ROLE_NAMES[role]}</span></span><span class="scout-unknown">${t('scout.unknownInfo')}</span></div>`;
+      }
+      if (!p.traits || p.traits.length === 0) return '';
       const traitLabels = p.traits.map((tr) => {
         const lbl = scoutTraitLabel(tr);
         return lbl ? `<span class="scout-trait">${lbl}</span>` : null;
@@ -1013,6 +1029,14 @@ function buildScoutingReportBody(team) {
     const playerRows = DRAFT_ROLES.map((role) => {
       const p = team.roster.find((r) => r.role === role);
       if (!p) return '';
+      // v1.15.3 : pas de stats détaillées fiables pour un joueur encore inconnu.
+      if (p.unknownScout) {
+        return `
+        <div class="career-progression-row">
+          <span class="career-progression-row__name">${p.name} <span class="career-progression-row__role">${role}</span></span>
+          <span class="career-progression-row__levels scout-unknown">${t('scout.unknownInfo')}</span>
+        </div>`;
+      }
       const avg = Math.round((p.laning + p.teamfight + p.mechanics + p.shotcalling + p.mental) / 5);
       const myP = state.roster.find((r) => r.role === role);
       const myAvg = myP ? Math.round((myP.laning + myP.teamfight + myP.mechanics + myP.shotcalling + myP.mental) / 5) : null;
@@ -2717,6 +2741,7 @@ function applyMatchupPrepGain(plan, opponent, intensity, resultFactor) {
   const report = state.scouting[opponent.id];
   report.confidence = clamp(report.confidence + Math.round(15 * intensity.multiplier), 0, 100);
   report.scrimsPlayed = (report.scrimsPlayed || 0) + 1;
+  revealScoutedTeam(opponent.id); // v1.15.3 : ce scrim découvre les joueurs inconnus de l'adversaire
 
   let extra = '';
   const player = state.roster.find((p) => p.id === plan.focusPlayerId);
@@ -4247,8 +4272,18 @@ function generateAIReplacement(teamId, retiree, remainingRoster, year) {
     mental, shotcalling, laning, teamfight, mechanics,
     championPool: pool,
     traits: ['rookie'],
-    masteries
+    masteries,
+    unknownScout: true // v1.15.3 : inconnu tant qu'aucun match/scrim n'a été joué contre son équipe
   };
+}
+
+// v1.15.3 — lève le statut "inconnu" de tous les joueurs d'une équipe IA : appelé dès
+// qu'un match (réel ou scrim) est joué contre elle, cohérent avec le gain de confiance
+// scouting existant (mêmes points de déclenchement).
+function revealScoutedTeam(teamId) {
+  const roster = state.aiRosters && state.aiRosters[teamId];
+  if (!Array.isArray(roster)) return;
+  roster.forEach((p) => { if (p.unknownScout) delete p.unknownScout; });
 }
 
 // Traite les retraites IA pour la saison `year` et remplace les partants.
@@ -6836,6 +6871,7 @@ function finishMatch() {
 
   if (!state.scouting[rt.opponent.id]) state.scouting[rt.opponent.id] = { confidence: 0, scrimsPlayed: 0 };
   state.scouting[rt.opponent.id].confidence = clamp(state.scouting[rt.opponent.id].confidence + VIDEO_REVIEW_CONFIDENCE_GAIN, 0, 100);
+  revealScoutedTeam(rt.opponent.id); // v1.15.3 : ce match découvre les joueurs inconnus de l'adversaire
 
   // Garde-fou CDC 13.1.2 : le repos post-match attenue la fatigué accumulee
   state.roster.forEach((player) => {

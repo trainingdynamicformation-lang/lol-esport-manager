@@ -20,6 +20,8 @@ Sur les parties commencées avant l'ajout des âges (v1.8.4), les effectifs IA n
 
 Un nouveau joueur qui débarque en équipe IA (suite à une retraite) reste un inconnu pour votre staff : la confiance scouting de l'équipe concernée baisse désormais de 15 points (l'équivalent d'un match de préparation en moins) à chaque remplacement, clampée à 0. Le compteur de scrims de préparation déjà effectués n'est pas affecté — seule la connaissance actuelle de l'équipe se périme.
 
+- **Un remplaçant reste "inconnu" tant qu'aucun match n'a été joué contre son équipe** : son pool de champions, son profil/traits, sa priorité de draft (et son détail de stats en rapport premium) affichent désormais « Inconnu — jouez un match ou un scrim contre cette équipe pour le découvrir » à la place de ses vraies données. Dès qu'un match réel **ou** un scrim d'entraînement est joué contre cette équipe, le joueur est révélé et le rapport redevient normal.
+
 ---
 
 ## [1.15.2] — 2026-07-03

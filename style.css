@@ -733,6 +733,7 @@ img { max-width: 100%; height: auto; }
 }
 .scout-pool-name { font-weight: 600; min-width: 80px; flex-shrink: 0; }
 .scout-pool-champs { color: var(--color-text-muted); font-size: 12px; }
+.scout-unknown { color: var(--color-text-muted); font-size: 12px; font-style: italic; }
 
 .scout-trait { background: rgba(200,155,60,.12); border: 1px solid rgba(200,155,60,.3); border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--color-gold); margin-right: 3px; }
 .scout-trait-row { flex-wrap: wrap; gap: 4px; padding: 3px 0; }

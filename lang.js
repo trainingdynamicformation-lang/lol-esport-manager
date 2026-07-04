@@ -784,6 +784,8 @@ const I18N = {
     'scout.lockedPremium': 'Continuez le scouting pour débloquer le rapport premium : stats complètes par joueur, forme individuelle, counter-picks suggérés et joueur à surveiller.',
     'scout.priorityBan': '{champ} (ban prioritaire)',
     'scout.priorityComfort': '{role} : {champ} (pick confort)',
+    'scout.priorityUnknown': '{role} : inconnu — jouez un match ou un scrim contre cette équipe',
+    'scout.unknownInfo': 'Inconnu — jouez un match ou un scrim contre cette équipe pour le découvrir',
 
     // -- Commun (suite 4) --
     'common.loading': 'Chargement…',
@@ -1818,6 +1820,8 @@ const I18N = {
     'scout.lockedPremium': 'Keep scouting to unlock the premium report: full per-player stats, individual form, suggested counter-picks and player to watch.',
     'scout.priorityBan': '{champ} (priority ban)',
     'scout.priorityComfort': '{role}: {champ} (comfort pick)',
+    'scout.priorityUnknown': '{role}: unknown — play a match or scrim against this team',
+    'scout.unknownInfo': 'Unknown — play a match or scrim against this team to find out',
 
     // -- Common (cont.) --
     'common.loading': 'Loading…',

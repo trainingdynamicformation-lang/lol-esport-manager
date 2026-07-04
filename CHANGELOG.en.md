@@ -20,6 +20,8 @@ On games started before ages were added (v1.8.4), AI rosters had never received 
 
 A new player arriving on an AI team (following a retirement) is still an unknown to your staff: the team's scouting confidence now drops by 15 points (the equivalent of one less preparation match) on every replacement, capped at 0. The count of preparation scrims already played is unaffected — only the team's current knowledge decays.
 
+- **A replacement stays "unknown" until a match has been played against their team**: their champion pool, profile/traits, draft priority (and detailed stats in the premium report) now show "Unknown — play a match or scrim against this team to find out" instead of their real data. As soon as a real match **or** a training scrim is played against that team, the player is revealed and the report returns to normal.
+
 ---
 
 ## [1.15.2] — 2026-07-03
