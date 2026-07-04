@@ -13,6 +13,8 @@ Sur les parties commencées avant l'ajout des âges (v1.8.4), les effectifs IA n
 
 - **Rattrapage d'âge des effectifs IA au chargement** : chaque joueur IA sans âge récupère désormais son `baseAge`/`retirementAge` par correspondance de nom avec les données du jeu (repli aléatoire cohérent avec son niveau pour les remplaçants générés). Le rattrapage appliqué aux effectifs du joueur depuis la v1.8.4 couvre enfin aussi les équipes adverses.
 - **Renouvellement générationnel lissé** : pour éviter qu'une sauvegarde « en retard » ne voie la moitié de la ligue partir à la retraite d'un seul coup, un plafond limite désormais les départs à **un par équipe et par intersaison** (les joueurs les plus âgés partent en priorité, les autres attendent l'intersaison suivante). Le rattrapage se fait donc progressivement sur quelques saisons, puis le rythme se normalise.
+- **Rattrapage manquant sur les imports** : charger une sauvegarde depuis un fichier ou depuis le cloud contournait ce rattrapage d'âge (chemins d'import séparés du chargement normal). Corrigé : les deux passent désormais par le même correctif.
+- **Effectifs affichés périmés après un remplacement** : l'écran Scouting (et tout autre écran lisant la liste d'équipes d'une région) continuait d'afficher l'ancien joueur après une retraite/remplacement IA, alors que la Draft et les matchs affichaient déjà le bon — `getAITeamsForRegion()` retournait les équipes brutes des données du jeu au lieu de la version à jour. Corrigé pour toujours refléter l'effectif réel.
 
 ---
 

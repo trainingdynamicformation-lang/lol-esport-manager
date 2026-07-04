@@ -13,6 +13,8 @@ On games started before ages were added (v1.8.4), AI rosters had never received 
 
 - **AI roster age backfill on load**: every AI player without an age now recovers their `baseAge`/`retirementAge` by name match against the game data (random fallback consistent with their level for generated replacements). The backfill applied to the player's own roster since v1.8.4 finally covers the opposing teams too.
 - **Smoothed generational turnover**: to prevent a "behind" save from seeing half the league retire at once, a cap now limits departures to **one per team per offseason** (the oldest players leave first, the others wait for the next offseason). The catch-up therefore happens gradually over a few seasons, then the pace normalizes.
+- **Missing catch-up on imports**: loading a save from a file or from the cloud bypassed this age backfill (import paths separate from the normal load). Fixed: both now go through the same fix.
+- **Stale rosters shown after a replacement**: the Scouting screen (and any other screen reading a region's team list) kept showing the old player after an AI retirement/replacement, while Draft and matches already showed the right one — `getAITeamsForRegion()` returned the raw teams from the game data instead of the up-to-date version. Fixed to always reflect the actual roster.
 
 ---
 

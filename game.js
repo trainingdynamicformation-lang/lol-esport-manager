@@ -33,10 +33,20 @@ function regionDisplayName(id) {
 /* ------------------------------------------------------------
    Accès aux équipes IA (data_teams.js, CDC 11.1)
    ------------------------------------------------------------ */
+// v1.15.3 — fix : retournait les équipes brutes de AI_TEAMS (jamais rotées), donc tout
+// écran qui lit team.roster à partir de ce résultat (ex. Scouting) affichait un effectif
+// périmé après une retraite/remplacement IA, alors que Draft/Match (qui repassent par
+// getTeamRef) montraient déjà le bon joueur. Fusion avec state.aiRosters, même logique
+// que getTeamRef, pour que tous les consommateurs voient l'effectif à jour.
 function getAITeamsForRegion(regionId) {
   const region = REGIONS.find(r => r.id === regionId);
   if (!region || typeof AI_TEAMS === 'undefined') return [];
-  return AI_TEAMS.filter(team => team.region === region.aiRegion);
+  return AI_TEAMS.filter(team => team.region === region.aiRegion).map((team) => {
+    if (state.aiRosters && state.aiRosters[team.id]) {
+      return Object.assign({}, team, { roster: state.aiRosters[team.id] });
+    }
+    return team;
+  });
 }
 
 /* ------------------------------------------------------------
@@ -310,27 +320,9 @@ function loadGame() {
         }
       });
     }
-    // Migration âge IA (v1.15.3) : les âges des joueurs IA (state.aiRosters) n'avaient
-    // jamais été rétro-remplis, contrairement au roster du joueur. Sur une sauvegarde dont
-    // les aiRosters ont été figés avant les âges (v1.8.4), chaque joueur IA retombait sur
-    // les défauts 22/30 → plus aucune retraite avant l'année ~9, journal de transferts vide.
-    // Backfill par nom depuis AI_TEAMS ; repli aléatoire par tier (assignPlayerAge) pour les
-    // remplaçants générés ou les noms absents des données de base.
-    if (merged.aiRosters && typeof merged.aiRosters === 'object') {
-      const aiAgeLookup = {};
-      if (typeof AI_TEAMS !== 'undefined') AI_TEAMS.forEach(t => (t.roster || []).forEach(r => {
-        if (r.name && r.baseAge != null) aiAgeLookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
-      }));
-      Object.values(merged.aiRosters).forEach((roster) => {
-        if (!Array.isArray(roster)) return;
-        roster.forEach((p) => {
-          if (p.baseAge != null && p.retirementAge != null) return;
-          const found = p.name && aiAgeLookup[p.name.toLowerCase()];
-          if (found) { p.baseAge = found.baseAge; p.retirementAge = found.retirementAge; }
-          else assignPlayerAge(p);
-        });
-      });
-    }
+    // Migration âge IA (v1.15.3) : voir ensureAIRosterAges(). Appelée aussi depuis les
+    // imports fichier/cloud (v1.15.3, fix) qui contournaient loadGame() et donc ce backfill.
+    ensureAIRosterAges(merged.aiRosters);
     return merged;
   } catch (e) {
     console.error('Erreur de chargement', e);
@@ -419,6 +411,7 @@ async function cloudImport() {
     state = parsed;
     ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves cloud
     ensureRosterAges();       // migration âge (v1.8.4)
+    ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
     saveGame();
     updateResourceBar();
     showView('home');
@@ -505,6 +498,7 @@ function importSave(file) {
       state = parsed;
       ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves importées
       ensureRosterAges();       // migration âge (v1.8.4)
+      ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
       saveGame();
       updateResourceBar();
       showView('home');
@@ -1660,6 +1654,29 @@ function assignPlayerAge(p) {
 function ensureRosterAges() {
   if (!Array.isArray(state.roster)) return;
   state.roster.forEach(p => { if (p.baseAge == null) assignPlayerAge(p); });
+}
+
+// v1.15.3 — équivalent de ensureRosterAges() pour les effectifs IA (state.aiRosters).
+// Backfill par nom depuis AI_TEAMS ; repli assignPlayerAge (aléatoire par tier) pour les
+// remplaçants générés ou les noms absents des données de base. Sans ce backfill, les
+// joueurs IA retombent sur les défauts (22 ans / retraite à 30) → aucune retraite avant
+// l'année ~9, journal des transferts vide côté IA. Appelée par loadGame() ET par les
+// imports fichier/cloud (qui écrivent state directement sans passer par loadGame).
+function ensureAIRosterAges(aiRosters) {
+  if (!aiRosters || typeof aiRosters !== 'object') return;
+  const lookup = {};
+  if (typeof AI_TEAMS !== 'undefined') AI_TEAMS.forEach(t => (t.roster || []).forEach(r => {
+    if (r.name && r.baseAge != null) lookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+  }));
+  Object.values(aiRosters).forEach((roster) => {
+    if (!Array.isArray(roster)) return;
+    roster.forEach((p) => {
+      if (p.baseAge != null && p.retirementAge != null) return;
+      const found = p.name && lookup[p.name.toLowerCase()];
+      if (found) { p.baseAge = found.baseAge; p.retirementAge = found.retirementAge; }
+      else assignPlayerAge(p);
+    });
+  });
 }
 
 // ─── Fin de saison Worlds ────────────────────────────────────────────────────
