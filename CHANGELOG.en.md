@@ -13,6 +13,11 @@ The journal (retirements, arrivals, contract endings, signings) was getting hard
 
 - **Region**: only shows movements from the selected region (your team follows its own region).
 - **Team**: the list of available teams updates automatically based on the selected region.
+- Filters aligned with the game's visual style (same styled selects as Training/Scouting).
+
+### Fixed — False "retirement"/"arrival" entries under your own team's name
+
+The journal could show one of your own players as retired and replaced (e.g. Canna), even though they were still present and active on your real roster. Cause: the AI retirement rotation was mistakenly touching an internal technical copy of your team, never displayed, that the rotation code couldn't tell apart from real opposing teams. Fixed: your team is never affected by this rotation anymore — only contracts/transfers you decide yourself now appear under its name in the journal. Any false entries already present in existing saves are purged automatically on load.
 
 ---
 

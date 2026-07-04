@@ -323,6 +323,8 @@ function loadGame() {
     // Migration âge IA (v1.15.3) : voir ensureAIRosterAges(). Appelée aussi depuis les
     // imports fichier/cloud (v1.15.3, fix) qui contournaient loadGame() et donc ce backfill.
     ensureAIRosterAges(merged.aiRosters);
+    // Nettoyage rétroactif (v1.15.4) : voir cleanupPhantomPlayerJournalEntries().
+    cleanupPhantomPlayerJournalEntries(merged);
     return merged;
   } catch (e) {
     console.error('Erreur de chargement', e);
@@ -412,6 +414,7 @@ async function cloudImport() {
     ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves cloud
     ensureRosterAges();       // migration âge (v1.8.4)
     ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
+    cleanupPhantomPlayerJournalEntries(state); // v1.15.4 : purge les fausses entrées retraite/arrivée
     saveGame();
     updateResourceBar();
     showView('home');
@@ -499,6 +502,7 @@ function importSave(file) {
       ensureRosterContracts(0); // migration contrats (v1.8.0) pour les saves importées
       ensureRosterAges();       // migration âge (v1.8.4)
       ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
+    cleanupPhantomPlayerJournalEntries(state); // v1.15.4 : purge les fausses entrées retraite/arrivée
       saveGame();
       updateResourceBar();
       showView('home');
@@ -1701,6 +1705,19 @@ function ensureAIRosterAges(aiRosters) {
       else assignPlayerAge(p);
     });
   });
+}
+
+// v1.15.4 — nettoyage rétroactif : avant le fix de applyAIRetirementRotation (qui
+// touchait par erreur la copie fantôme de l'équipe du joueur dans aiRosters), une
+// sauvegarde pouvait contenir de fausses entrées "retraite"/"arrivée" au nom de votre
+// équipe, alors que votre vrai roster (state.roster) n'était jamais concerné. Ces deux
+// types d'entrées ne doivent exister QUE côté IA ; côté joueur, seuls 'depart'
+// (fin de contrat) et 'signature' sont légitimes.
+function cleanupPhantomPlayerJournalEntries(s) {
+  if (!Array.isArray(s.transferLog) || !s.transferLog.length) return;
+  const mine = s.teamShortName || s.teamName || null;
+  if (!mine) return;
+  s.transferLog = s.transferLog.filter((e) => !(e.t === mine && (e.k === 'retraite' || e.k === 'arrivee')));
 }
 
 // ─── Fin de saison Worlds ────────────────────────────────────────────────────
@@ -4299,6 +4316,14 @@ function applyAIRetirementRotation(year) {
   if (state.settings && state.settings.aiRotation === false) return movements;
   if (!state.aiRosters) return movements;
   Object.keys(state.aiRosters).forEach((teamId) => {
+    // v1.15.4 — fix : initAIRosters() copie AUSSI l'équipe du joueur dans state.aiRosters
+    // (copie fantôme jamais affichée, ignorée ailleurs via ce même garde-fou — voir
+    // generateTransferMarket). Sans lui, la rotation IA faisait "partir en retraite" et
+    // "remplaçait" des joueurs bien réels de VOTRE roster dans le journal (ex: Canna),
+    // alors que votre effectif réel (state.roster) n'était jamais touché — ces retraites
+    // ne devaient exister QUE côté IA, votre équipe suit exclusivement les contrats
+    // joueur (processContractExpirations / signatures volontaires).
+    if (teamId === state.aiTeamId) return;
     const roster = state.aiRosters[teamId];
     if (!Array.isArray(roster)) return;
     // Candidats à la retraite (âge >= âge de retraite), triés du plus âgé au moins âgé
@@ -7664,7 +7689,7 @@ function renderTransferJournal() {
     teamsInRegion.map((tm) => `<option value="${escapeAttr(tm)}" ${teamFilter === tm ? 'selected' : ''}>${escapeAttr(tm)}</option>`).join('');
 
   const filtersHtml = `
-    <div class="journal-filters">
+    <div class="training-form">
       <div class="training-form__group">
         <label for="journal-region-filter">${t('journal.filterRegion')}</label>
         <select id="journal-region-filter">${regionOptions}</select>

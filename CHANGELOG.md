@@ -13,6 +13,11 @@ Le journal (retraites, arrivées, fins de contrat, signatures) devenait difficil
 
 - **Région** : n'affiche que les mouvements de la région sélectionnée (votre équipe suit sa propre région).
 - **Équipe** : la liste des équipes proposées se met à jour automatiquement selon la région choisie.
+- Filtres alignés sur la charte graphique du jeu (mêmes sélecteurs stylés que Entraînement/Scouting).
+
+### Corrigé — Fausses entrées « retraite »/« arrivée » au nom de votre équipe
+
+Le journal pouvait afficher un joueur de votre effectif comme parti à la retraite et remplacé (ex. Canna), alors qu'il restait bien présent et actif dans votre roster réel. Cause : la rotation des retraites IA touchait par erreur une copie technique de votre équipe conservée en interne, jamais affichée mais que le code de rotation ne savait pas distinguer des vraies équipes adverses. Corrigé : votre équipe n'est plus jamais concernée par cette rotation — seuls les contrats/transferts que vous décidez vous-même apparaissent désormais en son nom dans le journal. Les fausses entrées déjà présentes dans les sauvegardes existantes sont purgées automatiquement au chargement.
 
 ---
 
