@@ -7012,11 +7012,25 @@ function renderMatchSetup() {
 
   // v1.15.2 — un sélecteur de région permet d'affronter n'importe quelle équipe de
   // n'importe quelle région en scrim hors saison (auparavant limité à sa propre région),
-  // même principe déjà en place pour les scrims d'Entraînement (#scrim-region).
+  // mêmes conditions d'accès que les scrims d'Entraînement : région, prestige, exemption
+  // tournoi partagé (mêmes fonctions getScrimPrestigeReq/getScrimExemptionReason).
   function updateOpponentOptions() {
     if (!regionSelect || !opponentSelect) return;
+    const playerAiRegion = (REGIONS.find(r => r.id === state.region) || {}).aiRegion;
     const opponents = getAITeamsForRegion(regionSelect.value).filter((team) => team.id !== state.aiTeamId);
-    opponentSelect.innerHTML = opponents.map((team) => `<option value="${team.id}">${team.name} (${team.shortName})</option>`).join('');
+    opponentSelect.innerHTML = opponents.map((team) => {
+      const isSameRegion = team.region === playerAiRegion;
+      const req = getScrimPrestigeReq(team.tier);
+      const hasPrestige = state.resources.prestige >= req;
+      const exemption = getScrimExemptionReason(team);
+      let suffix = '';
+      if (!isSameRegion && req > 0 && !exemption) {
+        suffix = hasPrestige ? t('train.prestigeOk', { req }) : t('train.prestigeReq', { req });
+      } else if (!isSameRegion && exemption) {
+        suffix = t('train.sameComp');
+      }
+      return `<option value="${team.id}">${team.name} (${team.shortName})${suffix}</option>`;
+    }).join('');
     updateScoutingPreview();
   }
 
@@ -7030,9 +7044,48 @@ function renderMatchSetup() {
       const opponentId = document.getElementById('match-opponent').value;
       const format = document.getElementById('match-format').value;
       const fearlessMode = document.getElementById('match-fearless').value;
+      const opponent = getTeamRef(opponentId);
+      if (!opponent) return;
+
+      const playerAiRegion = (REGIONS.find(r => r.id === state.region) || {}).aiRegion;
+      const isSameRegion = opponent.region === playerAiRegion;
+      const exemptionReason = !isSameRegion ? getScrimExemptionReason(opponent) : null;
+      const prestigeReq = getScrimPrestigeReq(opponent.tier || 3);
+      const playerPrestige = state.resources.prestige;
+
+      if (!isSameRegion && !exemptionReason && prestigeReq > 0 && playerPrestige < prestigeReq) {
+        showMatchRefusalModal(opponent, prestigeReq, playerPrestige);
+        return;
+      }
+      if (exemptionReason) {
+        showToast(t('train.toastAccepted', { name: opponent.name, reason: exemptionReason }), 'info');
+      }
+
       startMatchSeries(opponentId, format, fearlessMode);
     });
   }
+}
+
+// v1.15.2 — refus d'un match amical hors saison pour prestige insuffisant, même logique
+// que showScrimRefusalModal (Entraînement) mais sans coût en points de coaching : Match
+// n'a pas de ressource engagée avant le lancement, contrairement à un scrim.
+function showMatchRefusalModal(opponent, required, currentPrestige) {
+  showModal(`
+    <h3 class="panel-title" style="color:var(--color-danger, #e05);">${t('match.refusalTitle')}</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
+      <p style="color:var(--color-text);">${t('match.refusalDesc', { name: opponent.name })}</p>
+      <div style="background:var(--color-surface-alt);border:1px solid var(--color-border);border-radius:6px;padding:12px 14px;">
+        <p style="color:var(--color-text-muted);margin:0 0 6px;">
+          &#127942; ${t('train.refusalReqLabel')} <strong style="color:var(--color-gold);">${required}</strong>
+          &nbsp;|&nbsp; ${t('train.refusalYourLabel')} <strong style="color:${currentPrestige >= required ? 'var(--color-seafoam)' : '#e05'};">${currentPrestige}</strong>
+        </p>
+        <p style="color:var(--color-text-muted);margin:0;font-size:13px;">${t('match.refusalReason', { name: opponent.name })}</p>
+      </div>
+    </div>
+    <div class="modal-content__actions" style="margin-top:20px;">
+      <button class="btn-primary" onclick="closeModal();renderMatchSetup();">${t('common.understood')}</button>
+    </div>
+  `);
 }
 
 function scoutingPreviewHtml(opponentId) {

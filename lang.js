@@ -666,6 +666,9 @@ const I18N = {
     'match.fearlessOn': 'Activé (champions verrouillés entre les games)',
     'match.startSeries': 'Commencer la série (Draft)',
     'match.noOpponents': 'Aucune équipe adverse disponible dans cette région.',
+    'match.refusalTitle': '✗ Demande de match refusée',
+    'match.refusalDesc': '<strong>{name}</strong> a refusé de vous affronter.',
+    'match.refusalReason': "L'organisation {name} estime que votre réputation n'est pas encore suffisante pour justifier ce match. Terminez des splits et des tournois internationaux pour gagner en prestige.",
 
     // -- Aperçu scouting --
     'match.scoutTitle': 'Scouting — {team}',
@@ -1697,6 +1700,9 @@ const I18N = {
     'match.fearlessOn': 'Enabled (champions locked between games)',
     'match.startSeries': 'Start the series (Draft)',
     'match.noOpponents': 'No opposing team available in this region.',
+    'match.refusalTitle': '✗ Match request declined',
+    'match.refusalDesc': '<strong>{name}</strong> declined to face you.',
+    'match.refusalReason': '{name} feels your reputation is not yet enough to justify this match. Finish splits and international tournaments to gain prestige.',
 
     // -- Scouting preview --
     'match.scoutTitle': 'Scouting — {team}',
