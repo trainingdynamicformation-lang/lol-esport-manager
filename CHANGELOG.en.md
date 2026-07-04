@@ -16,6 +16,10 @@ On games started before ages were added (v1.8.4), AI rosters had never received 
 - **Missing catch-up on imports**: loading a save from a file or from the cloud bypassed this age backfill (import paths separate from the normal load). Fixed: both now go through the same fix.
 - **Stale rosters shown after a replacement**: the Scouting screen (and any other screen reading a region's team list) kept showing the old player after an AI retirement/replacement, while Draft and matches already showed the right one — `getAITeamsForRegion()` returned the raw teams from the game data instead of the up-to-date version. Fixed to always reflect the actual roster.
 
+### Added — Scouting confidence drops after an AI replacement
+
+A new player arriving on an AI team (following a retirement) is still an unknown to your staff: the team's scouting confidence now drops by 15 points (the equivalent of one less preparation match) on every replacement, capped at 0. The count of preparation scrims already played is unaffected — only the team's current knowledge decays.
+
 ---
 
 ## [1.15.2] — 2026-07-03

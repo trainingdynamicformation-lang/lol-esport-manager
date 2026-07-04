@@ -4282,6 +4282,12 @@ function applyAIRetirementRotation(year) {
       const rep = generateAIReplacement(teamId, player, remaining, year);
       roster[idx] = rep;
       movements.push({ teamId, out: player, in: rep });
+      // v1.15.3 — un remplaçant est un inconnu (lore) : on perd l'équivalent d'un match
+      // de connaissance sur l'équipe. N'agit que si un rapport existe déjà ; scrimsPlayed
+      // (effort de préparation passé) n'est pas touché, seule la connaissance actuelle l'est.
+      if (state.scouting[teamId]) {
+        state.scouting[teamId].confidence = clamp(state.scouting[teamId].confidence - VIDEO_REVIEW_CONFIDENCE_GAIN, 0, 100);
+      }
     });
   });
   return movements;
