@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.3] — 2026-07-04
+
+### Corrigé — Retraites des joueurs IA (sauvegardes anciennes)
+
+Sur les parties commencées avant l'ajout des âges (v1.8.4), les effectifs IA n'avaient jamais reçu leurs âges : ils restaient figés sur des valeurs par défaut, et **aucun joueur IA ne partait à la retraite** — le journal des transferts restait donc vide côté IA, saison après saison.
+
+- **Rattrapage d'âge des effectifs IA au chargement** : chaque joueur IA sans âge récupère désormais son `baseAge`/`retirementAge` par correspondance de nom avec les données du jeu (repli aléatoire cohérent avec son niveau pour les remplaçants générés). Le rattrapage appliqué aux effectifs du joueur depuis la v1.8.4 couvre enfin aussi les équipes adverses.
+- **Renouvellement générationnel lissé** : pour éviter qu'une sauvegarde « en retard » ne voie la moitié de la ligue partir à la retraite d'un seul coup, un plafond limite désormais les départs à **un par équipe et par intersaison** (les joueurs les plus âgés partent en priorité, les autres attendent l'intersaison suivante). Le rattrapage se fait donc progressivement sur quelques saisons, puis le rythme se normalise.
+
+---
+
 ## [1.15.2] — 2026-07-03
 
 ### Ajouté

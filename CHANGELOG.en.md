@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.15.3] — 2026-07-04
+
+### Fixed — AI player retirements (old saves)
+
+On games started before ages were added (v1.8.4), AI rosters had never received their ages: they stayed frozen on default values, and **no AI player ever retired** — so the transfer journal stayed empty on the AI side, season after season.
+
+- **AI roster age backfill on load**: every AI player without an age now recovers their `baseAge`/`retirementAge` by name match against the game data (random fallback consistent with their level for generated replacements). The backfill applied to the player's own roster since v1.8.4 finally covers the opposing teams too.
+- **Smoothed generational turnover**: to prevent a "behind" save from seeing half the league retire at once, a cap now limits departures to **one per team per offseason** (the oldest players leave first, the others wait for the next offseason). The catch-up therefore happens gradually over a few seasons, then the pace normalizes.
+
+---
+
 ## [1.15.2] — 2026-07-03
 
 ### Added

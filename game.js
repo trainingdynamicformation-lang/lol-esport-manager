@@ -310,6 +310,27 @@ function loadGame() {
         }
       });
     }
+    // Migration âge IA (v1.15.3) : les âges des joueurs IA (state.aiRosters) n'avaient
+    // jamais été rétro-remplis, contrairement au roster du joueur. Sur une sauvegarde dont
+    // les aiRosters ont été figés avant les âges (v1.8.4), chaque joueur IA retombait sur
+    // les défauts 22/30 → plus aucune retraite avant l'année ~9, journal de transferts vide.
+    // Backfill par nom depuis AI_TEAMS ; repli aléatoire par tier (assignPlayerAge) pour les
+    // remplaçants générés ou les noms absents des données de base.
+    if (merged.aiRosters && typeof merged.aiRosters === 'object') {
+      const aiAgeLookup = {};
+      if (typeof AI_TEAMS !== 'undefined') AI_TEAMS.forEach(t => (t.roster || []).forEach(r => {
+        if (r.name && r.baseAge != null) aiAgeLookup[r.name.toLowerCase()] = { baseAge: r.baseAge, retirementAge: r.retirementAge };
+      }));
+      Object.values(merged.aiRosters).forEach((roster) => {
+        if (!Array.isArray(roster)) return;
+        roster.forEach((p) => {
+          if (p.baseAge != null && p.retirementAge != null) return;
+          const found = p.name && aiAgeLookup[p.name.toLowerCase()];
+          if (found) { p.baseAge = found.baseAge; p.retirementAge = found.retirementAge; }
+          else assignPlayerAge(p);
+        });
+      });
+    }
     return merged;
   } catch (e) {
     console.error('Erreur de chargement', e);
@@ -4215,6 +4236,12 @@ function generateAIReplacement(teamId, retiree, remainingRoster, year) {
 
 // Traite les retraites IA pour la saison `year` et remplace les partants.
 // Renvoie la liste des mouvements { teamId, out, in } pour le journal.
+// v1.15.3 — plafond de départs à la retraite par équipe et par mercato. Lisse le
+// renouvellement : une sauvegarde « en retard » (ex. âges IA rétro-remplis après coup)
+// ne vide plus la moitié de la ligue d'un coup ; les plus âgés partent en priorité,
+// les autres attendent le mercato suivant.
+const AI_MAX_RETIREMENTS_PER_TEAM_PER_YEAR = 1;
+
 function applyAIRetirementRotation(year) {
   const movements = [];
   if (state.settings && state.settings.aiRotation === false) return movements;
@@ -4222,16 +4249,22 @@ function applyAIRetirementRotation(year) {
   Object.keys(state.aiRosters).forEach((teamId) => {
     const roster = state.aiRosters[teamId];
     if (!Array.isArray(roster)) return;
+    // Candidats à la retraite (âge >= âge de retraite), triés du plus âgé au moins âgé
+    // (plus grand dépassement d'abord) pour retirer les vétérans en priorité sous plafond.
+    const candidates = [];
     roster.forEach((player, idx) => {
       const base = player.baseAge != null ? player.baseAge : 22;
       const age = base + (year - 1);
       const retAge = player.retirementAge != null ? player.retirementAge : 30;
-      if (age >= retAge) {
-        const remaining = roster.filter((_, i) => i !== idx);
-        const rep = generateAIReplacement(teamId, player, remaining, year);
-        roster[idx] = rep;
-        movements.push({ teamId, out: player, in: rep });
-      }
+      if (age >= retAge) candidates.push({ idx, over: age - retAge });
+    });
+    candidates.sort((a, b) => b.over - a.over);
+    candidates.slice(0, AI_MAX_RETIREMENTS_PER_TEAM_PER_YEAR).forEach(({ idx }) => {
+      const player = roster[idx];
+      const remaining = roster.filter((_, i) => i !== idx);
+      const rep = generateAIReplacement(teamId, player, remaining, year);
+      roster[idx] = rep;
+      movements.push({ teamId, out: player, in: rep });
     });
   });
   return movements;
