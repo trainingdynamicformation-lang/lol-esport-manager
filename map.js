@@ -192,12 +192,16 @@ function champAbbrev(rt, side, role) {
 
 /* Portrait du champion dans la bulle de la mini-carte : garde la taille
    actuelle de la bulle (r=14), juste le portrait recadré en cercle par-dessus
-   l'abbreviation. Repli silencieux sur l'abbreviation si l'image n'existe pas. */
+   l'abbreviation. Le portrait est volontairement plus petit que le cercle
+   (r=10 au lieu du rayon complet) pour laisser un liseré bleu/rouge bien
+   visible autour de l'image (sinon le portrait le recouvre presque entièrement
+   et on perd l'identification rapide de l'équipe). Repli silencieux sur
+   l'abbreviation si l'image n'existe pas. */
 function mapUnitPortraitSvg(rt, side, role) {
   const champName = rt.picks[side] && rt.picks[side][role];
   const champ = champName ? getChampionByName(champName) : null;
   if (!champ) return '';
-  return `<image class="map-unit__portrait" href="img/champions/${champ.id}.png" x="-13" y="-13" width="26" height="26" style="clip-path: circle(13px at 13px 13px);" preserveAspectRatio="xMidYMid slice" onerror="this.style.display='none'"></image>`;
+  return `<image class="map-unit__portrait" href="img/champions/${champ.id}.png" x="-10" y="-10" width="20" height="20" style="clip-path: circle(10px at 10px 10px);" preserveAspectRatio="xMidYMid slice" onerror="this.style.display='none'"></image>`;
 }
 
 /* Chemin SVG en étoile 5 branches (rayon ext, rayon int) */
