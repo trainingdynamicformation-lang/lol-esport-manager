@@ -7308,6 +7308,7 @@ function renderChampionsList(el) {
 
   const cardsHtml = list.length ? list.map((c) => `
     <button class="champ-card" data-champ-id="${c.id}">
+      ${championPortraitHtml(c.name, 'champ-card__portrait')}
       <span class="champ-card__name">${c.name}</span>
       <span class="champ-card__role champ-card__role--${c.role}">${c.role}</span>
       <span class="champ-card__tags">${(c.tags || []).slice(0, 3).join(' · ') || '—'}</span>
@@ -7364,6 +7365,7 @@ function renderChampionDetail(el, champId) {
   el.innerHTML = `
     <button class="btn-back" id="champ-detail-back">${t('common.back')}</button>
     <div class="panel">
+      ${championPortraitHtml(c.name, 'champ-detail__portrait', true)}
       <div class="champ-detail__head">
         <h3 class="panel-title">${c.name}</h3>
         <span class="champ-card__role champ-card__role--${c.role}">${roleLine}</span>

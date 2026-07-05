@@ -201,14 +201,18 @@ function getChampionById(id) {
 
 /**
  * Portrait d'un champion (img/champions/{id}.png, genere par l'utilisateur).
- * La plupart des champions n'ont pas encore d'image : le conteneur est toujours
- * rendu (reserve l'espace dans la grille/liste), mais l'<img> se retire
- * silencieusement au onerror si le fichier n'existe pas encore.
+ * La plupart des champions n'ont pas encore d'image : par defaut, le
+ * conteneur est toujours rendu (reserve l'espace dans la grille/liste),
+ * mais l'<img> se retire silencieusement au onerror si le fichier n'existe
+ * pas encore. Avec collapseIfMissing=true (ex. grande image de fiche
+ * champion, hors grille), le conteneur entier se retire aussi : pas de
+ * pave vide qui traine tant que l'image n'a pas ete generee.
  */
-function championPortraitHtml(champName, wrapperClass) {
+function championPortraitHtml(champName, wrapperClass, collapseIfMissing) {
   const champ = getChampionByName(champName);
+  const onErrorAction = collapseIfMissing ? "this.parentElement.style.display='none'" : "this.style.display='none'";
   const imgTag = champ
-    ? `<img src="img/champions/${champ.id}.png" alt="" loading="lazy" onerror="this.style.display='none'">`
+    ? `<img src="img/champions/${champ.id}.png" alt="" loading="lazy" onerror="${onErrorAction}">`
     : '';
   return `<span class="${wrapperClass}">${imgTag}</span>`;
 }
