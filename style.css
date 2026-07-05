@@ -146,27 +146,24 @@ img { max-width: 100%; height: auto; }
    ------------------------------------------------------------ */
 .app-main {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
   flex: 1;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 .main-nav {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  width: 100%;
+  gap: 6px;
   background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
-  padding: 20px 12px;
+  border-bottom: 2px solid var(--color-border);
+  padding: 8px 20px;
   position: sticky;
   top: 61px;
-  height: calc(100vh - 61px);
-  width: 190px;
   flex-shrink: 0;
-  overflow-y: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
 }
 
@@ -175,7 +172,8 @@ img { max-width: 100%; height: auto; }
 .app-content {
   flex: 1;
   min-width: 0;
-  padding: 20px 24px;
+  width: 100%;
+  padding: 24px clamp(20px, 4vw, 64px);
 }
 
 .app-footer {
@@ -312,14 +310,16 @@ img { max-width: 100%; height: auto; }
    Navigation sidebar
    ------------------------------------------------------------ */
 .nav-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  flex-shrink: 0;
+  text-align: center;
   background: transparent;
   color: var(--color-text-muted);
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 11px 14px;
+  padding: 10px 16px;
   font-size: 14px;
   font-weight: 600;
   transition: var(--transition-fast);
@@ -2212,27 +2212,12 @@ table.history-table th {
    Responsive — Tablette / Mobile (<= 768px) : sidebar → barre horizontale en haut
    ------------------------------------------------------------ */
 @media (max-width: 768px) {
-  .app-main {
-    flex-direction: column;
-  }
-
   .main-nav {
-    flex-direction: row;
-    width: 100%;
-    height: auto;
-    position: sticky;
-    top: 61px;
-    border-right: none;
-    border-bottom: 2px solid var(--color-border);
     padding: 8px 12px;
     gap: 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
   }
 
   .nav-btn {
-    width: auto;
-    flex-shrink: 0;
     padding: 8px 12px;
     font-size: 13px;
   }

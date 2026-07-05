@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.15.6] — 2026-07-07
+
+### Modifié — Mise en page desktop plus large
+
+Sur PC, l'écran était bridé à 1400px de large et le menu latéral prenait une colonne fixe à gauche : sur les grands écrans, cela laissait beaucoup d'espace inutilisé de chaque côté.
+
+- **Menu en bandeau horizontal, même sur desktop** : la navigation adopte désormais partout (PC comme mobile) une barre horizontale en haut de l'écran, au lieu d'une colonne latérale fixe.
+- **Contenu pleine largeur** : les écrans exploitent maintenant toute la largeur disponible de la fenêtre, avec un espacement qui s'adapte progressivement à la taille de l'écran plutôt qu'un contenu centré dans une colonne étroite.
+
+---
+
 ## [1.15.5] — 2026-07-06
 
 ### Corrigé — Une partie ne devait plus se terminer sans destruction du nexus

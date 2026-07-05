@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.15.6] — 2026-07-07
+
+### Changed — Wider desktop layout
+
+On PC, the screen was capped at 1400px wide and the side menu took up a fixed column on the left: on large monitors, this left a lot of unused space on either side.
+
+- **Horizontal top bar navigation, even on desktop**: navigation now uses a horizontal bar at the top of the screen everywhere (PC as well as mobile), instead of a fixed side column.
+- **Full-width content**: screens now use the full available width of the window, with spacing that scales progressively with screen size instead of content being centered in a narrow column.
+
+---
+
 ## [1.15.5] — 2026-07-06
 
 ### Fixed — A game should never end without the nexus being destroyed
