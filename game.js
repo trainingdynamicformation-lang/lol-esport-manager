@@ -7328,6 +7328,8 @@ function renderChampionsList(el) {
   el.querySelectorAll('[data-champ-id]').forEach((btn) => btn.addEventListener('click', () => {
     championsView.selected = btn.dataset.champId;
     renderChampions();
+    const view = document.getElementById('view-champions');
+    if (view) view.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
 }
 
@@ -7394,7 +7396,12 @@ function renderChampionDetail(el, champId) {
   `;
 
   const backBtn = document.getElementById('champ-detail-back');
-  if (backBtn) backBtn.addEventListener('click', () => { championsView.selected = null; renderChampions(); });
+  if (backBtn) backBtn.addEventListener('click', () => {
+    championsView.selected = null;
+    renderChampions();
+    const view = document.getElementById('view-champions');
+    if (view) view.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   el.querySelectorAll('[data-champ-id]').forEach((btn) => btn.addEventListener('click', () => {
     championsView.selected = btn.dataset.champId;
     renderChampions();
