@@ -1198,32 +1198,48 @@ img { max-width: 100%; height: auto; }
   text-transform: uppercase;
 }
 
-.draft-ban-history__slots { display: flex; gap: 4px; }
+.draft-ban-history__slots { display: flex; gap: 6px; }
 
 .mini-ban-slot {
   flex: 1;
-  max-width: 42px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.mini-ban-slot__portrait {
+  display: block;
+  width: 100%;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--color-border);
   border-radius: 5px;
   background: var(--color-surface);
   overflow: hidden;
 }
+.mini-ban-slot--filled .mini-ban-slot__portrait { border-color: var(--color-danger); }
 
-.mini-ban-slot--filled { border-color: var(--color-danger); }
-
-.mini-ban-slot__portrait {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
 .mini-ban-slot__portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top;
   display: block;
   filter: grayscale(0.5) brightness(0.7);
 }
+
+.mini-ban-slot__name {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mini-ban-slot--filled .mini-ban-slot__name { color: var(--color-danger); }
 
 .draft-team-column {
   display: flex;
@@ -1240,43 +1256,60 @@ img { max-width: 100%; height: auto; }
 }
 
 .draft-pick-slot {
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: stretch;
   flex: 1;
   min-height: 0;
-  gap: 6px;
   padding: 8px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface-alt);
   margin-bottom: 6px;
   font-size: var(--fs-body);
+  overflow: hidden;
 }
 
 .draft-pick-slot--filled { border-color: var(--color-seafoam); }
 
+/* Le portrait est le fond plein cadre de la tuile (pas une simple vignette
+   au-dessus du nom) : recadre depuis le haut de l'image pour garder la tête
+   du champion visible, quelle que soit la hauteur de la tuile. */
 .draft-pick-slot__portrait {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  flex: 1;
-  min-height: 50px;
-  border-radius: 6px;
-  overflow: hidden;
+  height: 100%;
   background: var(--color-surface);
+  z-index: 0;
 }
-.draft-pick-slot__portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.draft-pick-slot__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
 
 .draft-pick-slot__text {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   flex-shrink: 0;
 }
+.draft-pick-slot--filled .draft-pick-slot__text {
+  padding: 10px 4px 2px;
+  margin: 0 -8px;
+  background: linear-gradient(to top, rgba(8,12,20,0.92) 45%, rgba(8,12,20,0));
+}
 .draft-pick-slot__role { color: var(--color-text-muted); font-size: var(--fs-label); text-transform: uppercase; }
 .draft-pick-slot__champion { font-weight: 600; }
-.draft-pick-slot > .champion-chip { align-self: center; flex-shrink: 0; }
+.draft-pick-slot > .champion-chip { position: relative; z-index: 1; align-self: center; flex-shrink: 0; margin-top: 4px; }
 
 .draft-turn-banner { font-weight: 700; color: var(--color-gold); margin: 12px 0 8px; }
 

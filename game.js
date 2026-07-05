@@ -3357,9 +3357,10 @@ function renderMiniBans(bans) {
   const slots = [];
   for (let i = 0; i < 5; i++) slots.push(bans[i] || null);
   return slots.map((b) => `
-    <span class="mini-ban-slot ${b ? 'mini-ban-slot--filled' : ''}">
+    <div class="mini-ban-slot ${b ? 'mini-ban-slot--filled' : ''}">
       ${championPortraitHtml(b, 'mini-ban-slot__portrait')}
-    </span>
+      <span class="mini-ban-slot__name">${b || '-'}</span>
+    </div>
   `).join('');
 }
 
