@@ -9,9 +9,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ### Ajouté — Portraits de champions et nouvelle mise en page de la draft
 
-- **Portraits de champions** : les cartes de pick/ban, les emplacements de picks de chaque équipe et les bans affichent désormais le portrait du champion (`img/champions/{id}.png`, généré par vos soins). Tant qu'un champion n'a pas encore d'image, son emplacement reste simplement en texte — rien ne casse au fil de l'ajout progressif des images.
-- **Nouvelle mise en page de l'écran de draft** : les picks de votre équipe et de l'adversaire encadrent désormais la zone centrale (bannière de tour, coach, filtres, grille de champions), sur le modèle des outils de draft professionnels.
-- **Historique des bans du set** : en bas de l'écran, un nouveau bloc récapitule les bans de la game en cours et de toutes les games précédentes du même set (BO3/BO5), la plus récente en premier.
+> ℹ️ Les portraits de champions ajoutés dans cette version sont des images **générées par intelligence artificielle**, et non des illustrations officielles Riot Games.
+
+- **Portraits de champions** : les cartes de pick/ban, les emplacements de picks de chaque équipe et les bans affichent désormais le portrait du champion (`img/champions/{id}.png`). Tant qu'un champion n'a pas encore d'image, son emplacement reste simplement en texte — rien ne casse au fil de l'ajout progressif des images.
+- **Nouvelle mise en page de l'écran de draft** : les picks de votre équipe et de l'adversaire encadrent désormais la zone centrale (bannière de tour, coach, filtres, grille de champions), sur le modèle des outils de draft professionnels. Le portrait devient le fond plein cadre de chaque tuile de pick (recadré depuis le haut pour garder la tête du champion visible), et les 5 emplacements par équipe exploitent toute la hauteur disponible.
+- **Historique des bans du set** : en bas de l'écran, un nouveau bloc récapitule les bans de la game en cours et de toutes les games précédentes du même set (BO3/BO5), la plus récente en premier — les 5 vignettes par équipe s'étalent sur toute la largeur, avec le nom du champion banni sous chaque vignette.
+- **Écran Champions** : chaque carte de la liste affiche désormais le portrait du champion, et sa fiche détaillée affiche l'image en grand format carré (1:1).
+- **Carte de match** : les bulles de joueurs sur la mini-carte affichent désormais le portrait du champion (recadré en cercle), à la même taille qu'auparavant.
 
 ---
 

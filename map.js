@@ -190,6 +190,16 @@ function champAbbrev(rt, side, role) {
   return champName ? champName.slice(0, 2).toUpperCase() : role.slice(0, 1);
 }
 
+/* Portrait du champion dans la bulle de la mini-carte : garde la taille
+   actuelle de la bulle (r=14), juste le portrait recadré en cercle par-dessus
+   l'abbreviation. Repli silencieux sur l'abbreviation si l'image n'existe pas. */
+function mapUnitPortraitSvg(rt, side, role) {
+  const champName = rt.picks[side] && rt.picks[side][role];
+  const champ = champName ? getChampionByName(champName) : null;
+  if (!champ) return '';
+  return `<image class="map-unit__portrait" href="img/champions/${champ.id}.png" x="-13" y="-13" width="26" height="26" style="clip-path: circle(13px at 13px 13px);" preserveAspectRatio="xMidYMid slice" onerror="this.style.display='none'"></image>`;
+}
+
 /* Chemin SVG en étoile 5 branches (rayon ext, rayon int) */
 function starPath(cx, cy, rOut, rIn) {
   const pts = [];
@@ -243,6 +253,7 @@ function renderMatchMap(rt) {
         <g id="map-unit-${side}-${role}" class="map-unit map-unit--${side}" data-side="${side}" data-role="${role}" transform="translate(${home.x}, ${home.y})">
           <circle class="map-unit__circle" r="14"></circle>
           <text class="map-unit__label" dy="4">${champAbbrev(rt, side, role)}</text>
+          ${mapUnitPortraitSvg(rt, side, role)}
         </g>`;
     }).join('');
   }).join('');

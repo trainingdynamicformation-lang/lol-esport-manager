@@ -1650,9 +1650,11 @@ table.history-table th {
 .map-unit--blue .map-unit__circle { fill: rgba(58,130,246,0.85); stroke: #BFD9FF; }
 .map-unit--red  .map-unit__circle { fill: rgba(232,64,87,0.85);  stroke: #FFD0D6; }
 .map-unit__label      { fill: #FFFFFF; font-size: 10px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+.map-unit__portrait   { pointer-events: none; }
 .map-unit--active .map-unit__circle  { stroke-width: 3; filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
 .map-unit--winner .map-unit__circle  { stroke: var(--color-gold); }
 .map-unit--loser  .map-unit__circle  { opacity: 0.55; }
+.map-unit--loser  .map-unit__portrait { opacity: 0.55; }
 
 .map-pulse { fill: none; stroke-width: 3; opacity: 0.9; animation: mapPulseGrow 1100ms ease-out forwards; }
 .map-pulse--blue      { stroke: #3A82F6; }
