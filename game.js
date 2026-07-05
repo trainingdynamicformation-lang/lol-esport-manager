@@ -3353,11 +3353,47 @@ function renderCoachPanel(advice) {
   return `<div class="coach-panel"><div class="coach-panel__title">${t('coach.title')}</div><div class="coach-panel__cards">${cards}</div></div>`;
 }
 
-function renderBansRow(draft, side) {
-  const bans = draft[side + 'Bans'];
+function renderMiniBans(bans) {
   const slots = [];
   for (let i = 0; i < 5; i++) slots.push(bans[i] || null);
-  return slots.map((b) => `<div class="ban-slot ${b ? 'ban-slot--filled' : ''}">${b || '-'}</div>`).join('');
+  return slots.map((b) => `
+    <span class="mini-ban-slot ${b ? 'mini-ban-slot--filled' : ''}">
+      ${championPortraitHtml(b, 'mini-ban-slot__portrait')}
+    </span>
+  `).join('');
+}
+
+/**
+ * Bans du set : la game en cours + l'historique des games précédentes
+ * (série BO3/BO5). Alimenté par series.gameBansHistory, poussé dans
+ * finishMatch() juste avant que state.draft ne soit réinitialisé.
+ */
+function renderBanHistorySection(draft) {
+  const series = state.matchSeries;
+  const history = (series && series.gameBansHistory) || [];
+  const games = history.map((g, i) => ({ n: i + 1, blueBans: g.blueBans, redBans: g.redBans, current: false }));
+  const currentN = series ? series.gameNumber : (games.length + 1);
+  games.push({ n: currentN, blueBans: draft.blueBans, redBans: draft.redBans, current: true });
+  return `
+    <div class="draft-ban-history">
+      <h4 class="panel-title draft-ban-history__title">${t('draft.banHistoryTitle')}</h4>
+      ${games.slice().reverse().map((g) => `
+        <div class="draft-ban-history__game">
+          <span class="draft-ban-history__label">${t('draft.gameLabel', { n: g.n })}${g.current ? ` · ${t('draft.currentGame')}` : ''}</span>
+          <div class="draft-ban-history__row">
+            <div class="draft-ban-history__side">
+              <span class="draft-ban-history__side-label">${t('draft.bansFirst')}</span>
+              <div class="draft-ban-history__slots">${renderMiniBans(g.blueBans)}</div>
+            </div>
+            <div class="draft-ban-history__side">
+              <span class="draft-ban-history__side-label">${t('draft.bansLast')}</span>
+              <div class="draft-ban-history__slots">${renderMiniBans(g.redBans)}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 function renderPicksColumn(draft, side) {
@@ -3374,8 +3410,11 @@ function renderPicksColumn(draft, side) {
     }
     return `
       <div class="draft-pick-slot ${champName ? 'draft-pick-slot--filled' : ''}">
-        <span class="draft-pick-slot__role">${player ? player.name : ROLE_NAMES[role]}</span>
-        <span class="draft-pick-slot__champion">${champName || '—'}</span>
+        ${championPortraitHtml(champName, 'draft-pick-slot__portrait')}
+        <span class="draft-pick-slot__text">
+          <span class="draft-pick-slot__role">${player ? player.name : ROLE_NAMES[role]}</span>
+          <span class="draft-pick-slot__champion">${champName || '—'}</span>
+        </span>
         ${masteryInfo}
       </div>
     `;
@@ -3454,6 +3493,7 @@ function renderChampionGrid(draft, mode, role, roleFilter, search) {
         const tooltipAttr = tooltipText ? ` title="${escapeAttr(tooltipText)}"` : '';
         return `
           <button class="draft-champion-card ${taken ? 'draft-champion-card--taken' : ''}${comfortClass}" data-champion="${c.name}"${tooltipAttr} ${taken ? 'disabled' : ''}>
+            ${championPortraitHtml(c.name, 'draft-champion-card__portrait')}
             <span class="draft-champion-card__name">${c.name}</span>
             <span class="draft-champion-card__role">${ROLE_NAMES[c.role] || c.role}</span>
             ${masteryBadge}
@@ -3594,29 +3634,22 @@ function renderDraft() {
   const whoLast = draft.playerSide === 'red' ? `(${t('common.you')})` : `(${opponent.shortName})`;
 
   el.innerHTML = `
-    <div class="panel">
+    <div class="panel draft-arena">
       <h3 class="panel-title">${t('draft.vsTitle', { opp: opponent.name, side: sideLabel(draft.mapSide || draft.playerSide), pickOrder })}${seriesLabel}</h3>
-      <div class="draft-bans">
-        <div class="draft-bans__team">
-          <span class="draft-bans__label">Bans First Pick</span>
-          <div class="draft-bans__row">${renderBansRow(draft, 'blue')}</div>
-        </div>
-        <div class="draft-bans__team">
-          <span class="draft-bans__label">Bans Last Pick</span>
-          <div class="draft-bans__row">${renderBansRow(draft, 'red')}</div>
-        </div>
-      </div>
-      <div class="draft-board">
+      <div class="draft-arena-layout">
         <div class="draft-team-column">
           <h4>${t('draft.colFirst', { who: whoFirst })}</h4>
           ${renderPicksColumn(draft, 'blue')}
+        </div>
+        <div class="draft-center">
+          ${actionHtml}
         </div>
         <div class="draft-team-column">
           <h4>${t('draft.colLast', { who: whoLast })}</h4>
           ${renderPicksColumn(draft, 'red')}
         </div>
       </div>
-      ${actionHtml}
+      ${renderBanHistorySection(draft)}
     </div>
     <div class="panel">
       <h3 class="panel-title">${t('draft.scoutingTitle', { team: opponent.shortName })}</h3>
@@ -6001,7 +6034,8 @@ function startMatchSeries(opponentTeamId, format, fearlessMode, context) {
     scoreAgainst: 0,
     goldDiffTotal: 0,
     gameNumber: 1,
-    globalFearlessLocked: []
+    globalFearlessLocked: [],
+    gameBansHistory: []
   };
   state.draft = null;
   saveGame();
@@ -6921,6 +6955,10 @@ function finishMatch() {
   if (series) {
     if (win) series.scoreFor++; else series.scoreAgainst++;
     series.goldDiffTotal = (series.goldDiffTotal || 0) + gameGoldDiff;
+    if (state.draft) {
+      series.gameBansHistory = series.gameBansHistory || [];
+      series.gameBansHistory.push({ blueBans: state.draft.blueBans.slice(), redBans: state.draft.redBans.slice() });
+    }
     const winsNeeded = series.format === 'BO3' ? 2 : (series.format === 'BO5' ? 3 : 1);
     if (series.scoreFor >= winsNeeded || series.scoreAgainst >= winsNeeded) {
       rt.seriesEvent = { type: 'done', won: series.scoreFor >= winsNeeded, scoreFor: series.scoreFor, scoreAgainst: series.scoreAgainst, goldDiffTotal: series.goldDiffTotal, format: series.format };

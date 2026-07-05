@@ -198,3 +198,17 @@ function getChampionByName(name) {
 function getChampionById(id) {
   return CHAMPIONS.find((c) => c.id === id) || null;
 }
+
+/**
+ * Portrait d'un champion (img/champions/{id}.png, genere par l'utilisateur).
+ * La plupart des champions n'ont pas encore d'image : le conteneur est toujours
+ * rendu (reserve l'espace dans la grille/liste), mais l'<img> se retire
+ * silencieusement au onerror si le fichier n'existe pas encore.
+ */
+function championPortraitHtml(champName, wrapperClass) {
+  const champ = getChampionByName(champName);
+  const imgTag = champ
+    ? `<img src="img/champions/${champ.id}.png" alt="" loading="lazy" onerror="this.style.display='none'">`
+    : '';
+  return `<span class="${wrapperClass}">${imgTag}</span>`;
+}

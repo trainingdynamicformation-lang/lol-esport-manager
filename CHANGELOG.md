@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.0] — 2026-07-08
+
+### Ajouté — Portraits de champions et nouvelle mise en page de la draft
+
+- **Portraits de champions** : les cartes de pick/ban, les emplacements de picks de chaque équipe et les bans affichent désormais le portrait du champion (`img/champions/{id}.png`, généré par vos soins). Tant qu'un champion n'a pas encore d'image, son emplacement reste simplement en texte — rien ne casse au fil de l'ajout progressif des images.
+- **Nouvelle mise en page de l'écran de draft** : les picks de votre équipe et de l'adversaire encadrent désormais la zone centrale (bannière de tour, coach, filtres, grille de champions), sur le modèle des outils de draft professionnels.
+- **Historique des bans du set** : en bas de l'écran, un nouveau bloc récapitule les bans de la game en cours et de toutes les games précédentes du même set (BO3/BO5), la plus récente en premier.
+
+---
+
 ## [1.15.6] — 2026-07-07
 
 ### Modifié — Mise en page desktop plus large
