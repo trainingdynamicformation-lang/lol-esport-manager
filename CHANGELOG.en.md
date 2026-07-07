@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.2] — 2026-07-10
+
+### Changed — Much lighter champion portraits
+
+Portraits weighed up to 2.5 MB each (390 MB for all 173 champions), which slowed down the first load despite the caching added in 1.16.1. Two formats are now used:
+
+- **Lightweight thumbnail (~75 KB)**: the Champions screen, draft (picks, bans, grid) and match mini-map now use a compressed, resized version.
+- **Full image**: a champion's detail sheet (the only place the portrait is shown large) still uses the original, full-quality image.
+
+---
+
 ## [1.16.1] — 2026-07-09
 
 ### Fixed — Much faster champion portrait loading

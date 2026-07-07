@@ -7367,7 +7367,7 @@ function renderChampionDetail(el, champId) {
   el.innerHTML = `
     <button class="btn-back" id="champ-detail-back">${t('common.back')}</button>
     <div class="panel">
-      ${championPortraitHtml(c.name, 'champ-detail__portrait', true)}
+      ${championPortraitHtml(c.name, 'champ-detail__portrait', true, 'large')}
       <div class="champ-detail__head">
         <h3 class="panel-title">${c.name}</h3>
         <span class="champ-card__role champ-card__role--${c.role}">${roleLine}</span>

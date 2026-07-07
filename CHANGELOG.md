@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.2] — 2026-07-10
+
+### Modifié — Portraits de champions bien plus légers
+
+Les portraits pesaient jusqu'à 2,5 Mo chacune (390 Mo pour les 173 champions), ce qui alourdissait le premier chargement malgré le cache mis en place en 1.16.1. Deux formats sont désormais utilisés :
+
+- **Vignette légère (~75 Ko)** : écran Champions, draft (picks, bans, grille) et mini-carte de match utilisent maintenant une version compressée et redimensionnée.
+- **Image complète** : la fiche détaillée d'un champion (le seul endroit où le portrait est affiché en grand) continue d'utiliser l'image d'origine, en pleine qualité.
+
+---
+
 ## [1.16.1] — 2026-07-09
 
 ### Corrigé — Chargement des portraits de champions bien plus rapide

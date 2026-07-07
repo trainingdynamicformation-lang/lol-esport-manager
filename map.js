@@ -201,7 +201,7 @@ function mapUnitPortraitSvg(rt, side, role) {
   const champName = rt.picks[side] && rt.picks[side][role];
   const champ = champName ? getChampionByName(champName) : null;
   if (!champ) return '';
-  return `<image class="map-unit__portrait" href="img/champions/${champ.id}.png" x="-10" y="-10" width="20" height="20" style="clip-path: circle(10px at 10px 10px);" preserveAspectRatio="xMidYMid slice" onerror="this.style.display='none'"></image>`;
+  return `<image class="map-unit__portrait" href="img/champions/small/${champ.id}.jpg" x="-10" y="-10" width="20" height="20" style="clip-path: circle(10px at 10px 10px);" preserveAspectRatio="xMidYMid slice" onerror="this.style.display='none'"></image>`;
 }
 
 /* Chemin SVG en étoile 5 branches (rayon ext, rayon int) */

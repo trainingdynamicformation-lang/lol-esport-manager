@@ -200,19 +200,28 @@ function getChampionById(id) {
 }
 
 /**
- * Portrait d'un champion (img/champions/{id}.png, genere par l'utilisateur).
- * La plupart des champions n'ont pas encore d'image : par defaut, le
- * conteneur est toujours rendu (reserve l'espace dans la grille/liste),
- * mais l'<img> se retire silencieusement au onerror si le fichier n'existe
- * pas encore. Avec collapseIfMissing=true (ex. grande image de fiche
- * champion, hors grille), le conteneur entier se retire aussi : pas de
- * pave vide qui traine tant que l'image n'a pas ete generee.
+ * Portrait d'un champion, genere par l'utilisateur. Deux formats :
+ * - 'small' (par defaut) : img/champions/small/{id}.jpg, vignette 400x400
+ *   compressee (JPEG q85), utilisee partout ou l'image est petite/moyenne
+ *   (écran Champions, draft, mini-carte de match).
+ * - 'large' : img/champions/{id}.png, image source pleine qualite, reservee
+ *   à la fiche detail d'un champion (le seul endroit où l'image est affichée
+ *   en grand).
+ * La plupart des champions n'ont pas encore d'image pour un format donne :
+ * par defaut, le conteneur est toujours rendu (reserve l'espace dans la
+ * grille/liste), mais l'<img> se retire silencieusement au onerror si le
+ * fichier n'existe pas encore. Avec collapseIfMissing=true (ex. grande image
+ * de fiche champion, hors grille), le conteneur entier se retire aussi : pas
+ * de pave vide qui traine tant que l'image n'a pas ete generee.
  */
-function championPortraitHtml(champName, wrapperClass, collapseIfMissing) {
+function championPortraitHtml(champName, wrapperClass, collapseIfMissing, size) {
   const champ = getChampionByName(champName);
   const onErrorAction = collapseIfMissing ? "this.parentElement.style.display='none'" : "this.style.display='none'";
-  const imgTag = champ
-    ? `<img src="img/champions/${champ.id}.png" alt="" loading="lazy" onerror="${onErrorAction}">`
+  const src = champ
+    ? (size === 'large' ? `img/champions/${champ.id}.png` : `img/champions/small/${champ.id}.jpg`)
+    : null;
+  const imgTag = src
+    ? `<img src="${src}" alt="" loading="lazy" onerror="${onErrorAction}">`
     : '';
   return `<span class="${wrapperClass}">${imgTag}</span>`;
 }
