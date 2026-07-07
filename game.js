@@ -7408,6 +7408,30 @@ function renderChampionDetail(el, champId) {
     const view = document.getElementById('view-champions');
     if (view) view.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
+
+  const portraitImg = el.querySelector('.champ-detail__portrait img');
+  if (portraitImg) portraitImg.addEventListener('click', () => openChampionLightbox(c));
+}
+
+/* Portrait en grand, taille réelle, en surimpression. Clic sur l'image =
+   ne ferme pas (stopPropagation) ; clic ailleurs sur l'overlay = ferme. */
+function openChampionLightbox(champ) {
+  let overlay = document.getElementById('champion-lightbox-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'champion-lightbox-overlay';
+    overlay.className = 'champion-lightbox-overlay';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', closeChampionLightbox);
+  }
+  overlay.innerHTML = `<img src="img/champions/${champ.id}.png" alt="${escapeAttr(champ.name)}" class="champion-lightbox-img">`;
+  overlay.querySelector('.champion-lightbox-img').addEventListener('click', (e) => e.stopPropagation());
+  overlay.classList.add('champion-lightbox-overlay--visible');
+}
+
+function closeChampionLightbox() {
+  const overlay = document.getElementById('champion-lightbox-overlay');
+  if (overlay) overlay.classList.remove('champion-lightbox-overlay--visible');
 }
 
 function renderCounters() {

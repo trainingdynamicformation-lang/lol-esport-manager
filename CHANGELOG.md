@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.3] — 2026-07-11
+
+### Ajouté — Portrait en grand format sur la fiche champion
+
+Sur la fiche détaillée d'un champion, cliquer sur son portrait l'affiche désormais en grand, en taille réelle, en surimpression. Cliquer ailleurs sur l'écran referme l'image.
+
+---
+
 ## [1.16.2] — 2026-07-10
 
 ### Modifié — Portraits de champions bien plus légers

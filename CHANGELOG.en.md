@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.3] — 2026-07-11
+
+### Added — Full-size portrait on the champion detail sheet
+
+On a champion's detail sheet, clicking its portrait now shows it large, at full size, in an overlay. Clicking anywhere else closes it.
+
+---
+
 ## [1.16.2] — 2026-07-10
 
 ### Changed — Much lighter champion portraits
