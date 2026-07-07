@@ -1161,6 +1161,29 @@ img { max-width: 100%; height: auto; }
 
 .draft-center { min-width: 0; }
 
+.draft-current-bans {
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  margin-top: 6px;
+}
+.draft-current-bans__title { margin-bottom: 10px; }
+.draft-current-bans__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.draft-current-bans__side { display: flex; flex-direction: column; gap: 4px; }
+.draft-current-bans__label {
+  font-size: var(--fs-label);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+.draft-current-bans__slots { display: flex; gap: 6px; }
+/* Teinte « ban » : les portraits des bans de la game en cours sont grisés + bordure rouge */
+.draft-current-bans .mini-pick-slot--filled .mini-pick-slot__portrait { border-color: var(--color-danger); }
+.draft-current-bans .mini-pick-slot__portrait img { filter: grayscale(0.5) brightness(0.7); }
+.draft-current-bans .mini-pick-slot--filled .mini-pick-slot__name { color: var(--color-danger); }
+
 .draft-pick-history {
   border-top: 1px solid var(--color-border);
   padding-top: 12px;

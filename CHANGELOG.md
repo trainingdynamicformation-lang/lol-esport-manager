@@ -9,7 +9,11 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ### Modifié — Draft : historique des picks des games précédentes (au lieu des bans)
 
-Le bloc en bas de l'écran de draft affichait les bans des games précédentes du set, ce qui n'apportait pas grand-chose. Il montre désormais les **picks de chaque équipe lors des games déjà jouées** du même set (vos picks et ceux de l'adversaire), bien plus utile pour anticiper les compositions. Les picks sont mémorisés par équipe (et non par côté bleu/rouge, qui peut changer d'une game à l'autre) et n'apparaissent que pour les games précédentes — la game en cours reste visible sur le plateau principal.
+Le bloc en bas de l'écran de draft affichait les bans des games précédentes du set, ce qui n'apportait pas grand-chose. Désormais :
+
+- Les **bans de la game en cours** restent toujours affichés (bloc dédié).
+- En dessous, les **picks de chaque équipe lors des games déjà jouées** du même set (vos picks et ceux de l'adversaire) — bien plus utile pour anticiper les compositions.
+- Les picks passés sont **alignés par colonne** sur la game en cours : vos picks apparaissent toujours du même côté (gauche/droite) que sur le plateau actuel, quel que soit le côté que vous jouiez lors des games précédentes. Ils sont mémorisés par équipe (et non par côté bleu/rouge, qui peut changer d'une game à l'autre).
 
 ---
 

@@ -3471,6 +3471,33 @@ function renderMiniPicks(picks) {
 }
 
 /**
+ * Bans de la GAME EN COURS, toujours affichés (v1.16.5.1). Colonnes alignées
+ * sur le board principal : côté bleu (First Pick) à gauche, côté rouge (Last
+ * Pick) à droite — donc « vous » du même côté que vos picks de la game.
+ */
+function renderCurrentBans(draft) {
+  const opponent = getOpponentTeam(draft);
+  const oppShort = opponent ? opponent.shortName : '';
+  const leftWho = draft.playerSide === 'blue' ? t('common.you') : oppShort;
+  const rightWho = draft.playerSide === 'red' ? t('common.you') : oppShort;
+  return `
+    <div class="draft-current-bans">
+      <h4 class="panel-title draft-current-bans__title">${t('draft.currentBansTitle')}</h4>
+      <div class="draft-current-bans__row">
+        <div class="draft-current-bans__side">
+          <span class="draft-current-bans__label">${t('draft.bansCol', { who: leftWho })}</span>
+          <div class="draft-current-bans__slots">${renderMiniPicks(draft.blueBans)}</div>
+        </div>
+        <div class="draft-current-bans__side">
+          <span class="draft-current-bans__label">${t('draft.bansCol', { who: rightWho })}</span>
+          <div class="draft-current-bans__slots">${renderMiniPicks(draft.redBans)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
  * Picks des games précédentes du set (série BO3/BO5) : ce que chaque équipe
  * a pické lors des games déjà jouées. Bien plus utile que les bans (v1.16.5,
  * remplace l'historique des bans). Alimenté par series.gamePicksHistory,
@@ -3478,6 +3505,9 @@ function renderMiniPicks(picks) {
  * stocké par ÉQUIPE (vos picks / adversaire) et non par côté bleu/rouge, car
  * les côtés peuvent changer d'une game à l'autre. N'affiche que les games
  * précédentes : la game en cours est déjà visible sur le board principal.
+ * v1.16.5.1 — les colonnes sont ordonnées selon le côté ACTUEL du joueur, pour
+ * que vos picks passés restent alignés avec vos picks de la game en cours
+ * (même colonne gauche/droite que le board), quel que soit le côté joué alors.
  */
 function renderPickHistorySection(draft) {
   const series = state.matchSeries;
@@ -3485,6 +3515,10 @@ function renderPickHistorySection(draft) {
   if (!history.length) return '';
   const opp = getOpponentTeam(draft);
   const oppLabel = opp ? opp.shortName : '';
+  const playerBlock = { label: t('draft.yourPicks'), key: 'playerPicks' };
+  const oppBlock = { label: t('draft.oppPicks', { team: oppLabel }), key: 'opponentPicks' };
+  // côté bleu (gauche) = joueur si playerSide bleu, sinon adversaire
+  const [leftBlock, rightBlock] = draft.playerSide === 'blue' ? [playerBlock, oppBlock] : [oppBlock, playerBlock];
   return `
     <div class="draft-pick-history">
       <h4 class="panel-title draft-pick-history__title">${t('draft.pickHistoryTitle')}</h4>
@@ -3493,12 +3527,12 @@ function renderPickHistorySection(draft) {
           <span class="draft-pick-history__label">${t('draft.gameLabel', { n })}</span>
           <div class="draft-pick-history__row">
             <div class="draft-pick-history__side">
-              <span class="draft-pick-history__side-label">${t('draft.yourPicks')}</span>
-              <div class="draft-pick-history__slots">${renderMiniPicks(g.playerPicks)}</div>
+              <span class="draft-pick-history__side-label">${leftBlock.label}</span>
+              <div class="draft-pick-history__slots">${renderMiniPicks(g[leftBlock.key])}</div>
             </div>
             <div class="draft-pick-history__side">
-              <span class="draft-pick-history__side-label">${t('draft.oppPicks', { team: oppLabel })}</span>
-              <div class="draft-pick-history__slots">${renderMiniPicks(g.opponentPicks)}</div>
+              <span class="draft-pick-history__side-label">${rightBlock.label}</span>
+              <div class="draft-pick-history__slots">${renderMiniPicks(g[rightBlock.key])}</div>
             </div>
           </div>
         </div>
@@ -3760,6 +3794,7 @@ function renderDraft() {
           ${renderPicksColumn(draft, 'red')}
         </div>
       </div>
+      ${renderCurrentBans(draft)}
       ${renderPickHistorySection(draft)}
     </div>
     <div class="panel">

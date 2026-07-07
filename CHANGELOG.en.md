@@ -9,7 +9,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed — Draft: previous games' picks history (instead of bans)
 
-The block at the bottom of the draft screen used to show the previous games' bans, which wasn't very useful. It now shows **each team's picks from the games already played** in the same series (your picks and the opponent's), far more useful to anticipate compositions. Picks are stored per team (not per blue/red side, which can change from game to game) and only appear for previous games — the current game stays visible on the main board.
+The block at the bottom of the draft screen used to show the previous games' bans, which wasn't very useful. Now:
+
+- The **current game's bans** are always displayed (dedicated block).
+- Below them, **each team's picks from the games already played** in the same series (your picks and the opponent's) — far more useful to anticipate compositions.
+- Past picks are **column-aligned** with the current game: your picks always appear on the same side (left/right) as on the current board, regardless of which side you played in previous games. They are stored per team (not per blue/red side, which can change from game to game).
 
 ---
 
