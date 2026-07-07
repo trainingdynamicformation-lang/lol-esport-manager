@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.1] — 2026-07-09
+
+### Fixed — Much faster champion portrait loading
+
+Champion portraits (draft, Champions screen, match mini-map) were being re-downloaded every time, which made loading slow. The service worker now caches each portrait the first time it's viewed: every time after that, the image shows up instantly from the device, without going back to the network — even across future game updates (only the app code is refreshed each version, not the images already downloaded).
+
+---
+
 ## [1.16.0] — 2026-07-08
 
 ### Added — Champion portraits and a redesigned draft screen

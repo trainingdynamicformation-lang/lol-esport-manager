@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.1] — 2026-07-09
+
+### Corrigé — Chargement des portraits de champions bien plus rapide
+
+Les portraits de champions (draft, écran Champions, mini-carte de match) étaient retéléchargés à chaque fois, ce qui rendait le chargement lent. Le service worker les met désormais en cache dès la première consultation d'un portrait : les fois suivantes, l'image s'affiche instantanément depuis l'appareil, sans repasser par le réseau — y compris après les prochaines mises à jour du jeu (seul le code applicatif est renouvelé à chaque version, pas les images déjà téléchargées).
+
+---
+
 ## [1.16.0] — 2026-07-08
 
 ### Ajouté — Portraits de champions et nouvelle mise en page de la draft
