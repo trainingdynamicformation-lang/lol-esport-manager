@@ -629,7 +629,10 @@ function showModal(innerHtml) {
 
 function closeModal() {
   const overlay = document.getElementById('modal-overlay');
-  if (overlay) overlay.classList.remove('modal-overlay--visible');
+  if (overlay) {
+    overlay.classList.remove('modal-overlay--visible');
+    overlay.onclick = null; // v1.16.4 — évite que le clic-hors-modal (fiche joueur) fuite vers d'autres modals
+  }
 }
 
 function showChangelogModal() {
@@ -2318,6 +2321,17 @@ function renderRoster() {
   document.querySelectorAll('[data-rest]').forEach((btn) => {
     btn.addEventListener('click', () => restTeam(btn.dataset.rest));
   });
+
+  document.querySelectorAll('.player-card--clickable').forEach((card) => {
+    const open = () => {
+      const player = state.roster.find((p) => p.id === card.dataset.playerId);
+      if (player) showPlayerCardModal(player);
+    };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+  });
 }
 
 function restTeam(optionId) {
@@ -2359,7 +2373,7 @@ function playerCardHtml(p) {
   ` : '';
 
   return `
-    <div class="player-card">
+    <div class="player-card player-card--clickable" data-player-id="${p.id}" role="button" tabindex="0" title="${escapeAttr(t('roster.cardHint'))}">
       <div class="player-card__header">
         <div class="mini-avatar">${getInitials(p.name)}</div>
         <div class="player-card__identity">
@@ -2397,6 +2411,71 @@ function playerCardHtml(p) {
       ` : ''}
     </div>
   `;
+}
+
+/* v1.16.4 — Fiche joueur détaillée (clic sur une carte du roster). Reprend les
+   mêmes données que la carte minimale, mais le champion pool est affiché avec
+   les portraits en miniature, trié du plus haut confort au plus bas, chaque
+   champion coloré selon son tier de confort pick + son score de maîtrise. */
+function showPlayerCardModal(p) {
+  const progression = (state.lastCareerProgression || []).find((e) => e.playerId === p.id);
+  const deltaHtml = progression ? `
+    <span class="level-delta ${progression.delta > 0 ? 'level-delta--up' : 'level-delta--down'}">
+      ${progression.delta > 0 ? '&#9650;' : '&#9660;'} ${progression.delta > 0 ? '+' : ''}${progression.delta}
+    </span>` : '';
+
+  const pool = p.championPool.map((c) => {
+    const m = getChampionMastery(p.id, c);
+    const mastery = m ? m.mastery : 0;
+    return { name: c, mastery, tier: getMasteryTier(mastery) };
+  }).sort((a, b) => b.mastery - a.mastery);
+
+  const poolHtml = pool.length ? `
+    <div class="player-pool-grid">
+      ${pool.map((cf) => `
+        <div class="player-pool-card player-pool-card--${cf.tier.id}" title="${escapeAttr(cf.name + ' — ' + masteryTierLabel(cf.tier.id) + ' (' + cf.mastery + ')')}">
+          ${championPortraitHtml(cf.name, 'player-pool-card__portrait')}
+          <span class="player-pool-card__name">${cf.name}</span>
+          <span class="player-pool-card__score">${cf.mastery}</span>
+        </div>
+      `).join('')}
+    </div>` : `<p class="card__count">${t('roster.emptyPool')}</p>`;
+
+  showModal(`
+    <button class="changelog-close" onclick="closeModal()">✕</button>
+    <div class="player-modal">
+      <div class="player-card__header">
+        <div class="mini-avatar">${getInitials(p.name)}</div>
+        <div class="player-card__identity">
+          <div class="player-card__name">${p.name}</div>
+          <div class="player-card__role">${p.role} &mdash; ${p.nationality}</div>
+          ${state.settings.playerContracts !== false && p.baseAge != null ? `<div style="font-size:11px;margin-top:1px;color:var(--color-text-muted);">${t('roster.age', { n: playerAge(p) })}</div>` : ''}
+          ${state.settings.playerContracts !== false && p.contractUntil != null ? `<div style="font-size:11px;margin-top:2px;color:${isContractFinalYear(p) ? '#e0a020' : 'var(--color-text-muted)'};">${t('roster.contract', { y: p.contractUntil })}${isContractFinalYear(p) ? t('roster.lastYear') : ''}</div>` : ''}
+        </div>
+        <div class="player-card__level">${computeLevel(p)}${deltaHtml}</div>
+      </div>
+      <div class="player-card__stats">
+        ${playerStatRow(t('stat.form'), p.form)}
+        ${playerStatRow(t('stat.fatigue'), p.fatigue)}
+        ${playerStatRow(t('stat.mental'), p.mental)}
+        ${playerStatRow(t('stat.shotcalling'), p.shotcalling)}
+        ${playerStatRow(t('stat.laning'), p.laning)}
+        ${playerStatRow(t('stat.teamfight'), p.teamfight)}
+        ${playerStatRow(t('stat.mechanics'), p.mechanics)}
+      </div>
+      ${p.traits.length ? `
+        <div class="player-card__traits" style="margin-top:10px;">
+          ${p.traits.map((tr) => `<span class="trait-chip">${traitLabel(tr)}</span>`).join('')}
+        </div>` : ''}
+      <div class="player-modal__pool">
+        <span class="player-card__pool-label">${t('roster.championPool')}</span>
+        ${poolHtml}
+      </div>
+    </div>
+  `);
+
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 }
 
 function renderTraining() {

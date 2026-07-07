@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.4] — 2026-07-12
+
+### Ajouté — Fiche joueur détaillée avec champion pool illustré
+
+Dans l'écran Roster, cliquer sur la carte d'un joueur ouvre désormais sa fiche détaillée en surimpression (mêmes données que la carte : niveau, statistiques, traits). Le champion pool y est affiché avec les portraits en miniature, **trié du plus haut confort au plus bas**, chaque champion coloré selon son niveau de maîtrise (Élite en or plein, Signature en liseré or, Confort en vert, Praticable en bleu, Découverte en gris) et accompagné de son score de maîtrise. Cliquer en dehors de la fiche la referme.
+
+---
+
 ## [1.16.3] — 2026-07-11
 
 ### Ajouté — Portrait en grand format sur la fiche champion

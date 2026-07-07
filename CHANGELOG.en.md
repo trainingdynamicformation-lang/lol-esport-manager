@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.4] — 2026-07-12
+
+### Added — Detailed player card with illustrated champion pool
+
+On the Roster screen, clicking a player's card now opens their detailed card as an overlay (same data as the card: level, stats, traits). The champion pool is shown with thumbnail portraits, **sorted from highest to lowest comfort**, each champion colored by mastery tier (Elite in solid gold, Signature with a gold border, Comfort in green, Workable in blue, Discovery in grey) and accompanied by its mastery score. Clicking outside the card closes it.
+
+---
+
 ## [1.16.3] — 2026-07-11
 
 ### Added — Full-size portrait on the champion detail sheet
