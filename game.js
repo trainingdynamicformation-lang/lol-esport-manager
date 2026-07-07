@@ -2413,6 +2413,31 @@ function playerCardHtml(p) {
   `;
 }
 
+/* v1.16.4 — Historique d'évolution de niveau d'un joueur, split par split.
+   Puise dans state.careerLog (entrées objet {playerId, year, split, oldLevel,
+   newLevel, delta}, les splits sans changement de niveau n'y figurent pas ;
+   careerLog contient aussi des chaînes libres — d'où le filtre typeof object).
+   Plus récent en premier, cohérent avec le panneau Progression. */
+function playerEvolutionHtml(playerId) {
+  const history = (state.careerLog || []).filter((e) => e && typeof e === 'object' && e.playerId === playerId);
+  const rows = history.map((e) => {
+    const sign = e.delta > 0 ? '+' : '';
+    const cls = e.delta > 0 ? 'level-delta--up' : 'level-delta--down';
+    const arrow = e.delta > 0 ? '&#9650;' : '&#9660;';
+    return `
+      <div class="career-progression-row">
+        <span class="career-progression-row__period">${splitLabel(e.split)} ${e.year}</span>
+        <span class="career-progression-row__levels">${e.oldLevel} &rarr; ${e.newLevel}</span>
+        <span class="level-delta ${cls}">${arrow} ${sign}${e.delta}</span>
+      </div>`;
+  }).join('');
+  return `
+    <div class="player-modal__evolution">
+      <span class="player-card__pool-label">${t('roster.evolSplitTitle')}</span>
+      ${rows ? `<div class="career-progression-list">${rows}</div>` : `<p class="card__count">${t('prog.noEvolution')}</p>`}
+    </div>`;
+}
+
 /* v1.16.4 — Fiche joueur détaillée (clic sur une carte du roster). Reprend les
    mêmes données que la carte minimale, mais le champion pool est affiché avec
    les portraits en miniature, trié du plus haut confort au plus bas, chaque
@@ -2467,6 +2492,7 @@ function showPlayerCardModal(p) {
         <div class="player-card__traits" style="margin-top:10px;">
           ${p.traits.map((tr) => `<span class="trait-chip">${traitLabel(tr)}</span>`).join('')}
         </div>` : ''}
+      ${playerEvolutionHtml(p.id)}
       <div class="player-modal__pool">
         <span class="player-card__pool-label">${t('roster.championPool')}</span>
         ${poolHtml}

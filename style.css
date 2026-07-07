@@ -1914,6 +1914,8 @@ table.history-table th {
 .player-card--clickable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 
 /* Fiche joueur détaillée (modal) — champion pool en portraits triés par confort (v1.16.4) */
+.player-modal__evolution { margin-top: 14px; }
+.player-modal__evolution .career-progression-list { margin-top: 8px; }
 .player-modal__pool { margin-top: 14px; }
 .player-pool-grid {
   display: grid;
