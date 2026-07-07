@@ -3459,42 +3459,46 @@ function renderCoachPanel(advice) {
   return `<div class="coach-panel"><div class="coach-panel__title">${t('coach.title')}</div><div class="coach-panel__cards">${cards}</div></div>`;
 }
 
-function renderMiniBans(bans) {
+function renderMiniPicks(picks) {
   const slots = [];
-  for (let i = 0; i < 5; i++) slots.push(bans[i] || null);
-  return slots.map((b) => `
-    <div class="mini-ban-slot ${b ? 'mini-ban-slot--filled' : ''}">
-      ${championPortraitHtml(b, 'mini-ban-slot__portrait')}
-      <span class="mini-ban-slot__name">${b || '-'}</span>
+  for (let i = 0; i < 5; i++) slots.push(picks[i] || null);
+  return slots.map((c) => `
+    <div class="mini-pick-slot ${c ? 'mini-pick-slot--filled' : ''}">
+      ${championPortraitHtml(c, 'mini-pick-slot__portrait')}
+      <span class="mini-pick-slot__name">${c || '-'}</span>
     </div>
   `).join('');
 }
 
 /**
- * Bans du set : la game en cours + l'historique des games précédentes
- * (série BO3/BO5). Alimenté par series.gameBansHistory, poussé dans
- * finishMatch() juste avant que state.draft ne soit réinitialisé.
+ * Picks des games précédentes du set (série BO3/BO5) : ce que chaque équipe
+ * a pické lors des games déjà jouées. Bien plus utile que les bans (v1.16.5,
+ * remplace l'historique des bans). Alimenté par series.gamePicksHistory,
+ * poussé dans finishMatch() juste avant que state.draft ne soit réinitialisé,
+ * stocké par ÉQUIPE (vos picks / adversaire) et non par côté bleu/rouge, car
+ * les côtés peuvent changer d'une game à l'autre. N'affiche que les games
+ * précédentes : la game en cours est déjà visible sur le board principal.
  */
-function renderBanHistorySection(draft) {
+function renderPickHistorySection(draft) {
   const series = state.matchSeries;
-  const history = (series && series.gameBansHistory) || [];
-  const games = history.map((g, i) => ({ n: i + 1, blueBans: g.blueBans, redBans: g.redBans, current: false }));
-  const currentN = series ? series.gameNumber : (games.length + 1);
-  games.push({ n: currentN, blueBans: draft.blueBans, redBans: draft.redBans, current: true });
+  const history = (series && series.gamePicksHistory) || [];
+  if (!history.length) return '';
+  const opp = getOpponentTeam(draft);
+  const oppLabel = opp ? opp.shortName : '';
   return `
-    <div class="draft-ban-history">
-      <h4 class="panel-title draft-ban-history__title">${t('draft.banHistoryTitle')}</h4>
-      ${games.slice().reverse().map((g) => `
-        <div class="draft-ban-history__game">
-          <span class="draft-ban-history__label">${t('draft.gameLabel', { n: g.n })}${g.current ? ` · ${t('draft.currentGame')}` : ''}</span>
-          <div class="draft-ban-history__row">
-            <div class="draft-ban-history__side">
-              <span class="draft-ban-history__side-label">${t('draft.bansFirst')}</span>
-              <div class="draft-ban-history__slots">${renderMiniBans(g.blueBans)}</div>
+    <div class="draft-pick-history">
+      <h4 class="panel-title draft-pick-history__title">${t('draft.pickHistoryTitle')}</h4>
+      ${history.map((g, i) => ({ n: i + 1, g })).reverse().map(({ n, g }) => `
+        <div class="draft-pick-history__game">
+          <span class="draft-pick-history__label">${t('draft.gameLabel', { n })}</span>
+          <div class="draft-pick-history__row">
+            <div class="draft-pick-history__side">
+              <span class="draft-pick-history__side-label">${t('draft.yourPicks')}</span>
+              <div class="draft-pick-history__slots">${renderMiniPicks(g.playerPicks)}</div>
             </div>
-            <div class="draft-ban-history__side">
-              <span class="draft-ban-history__side-label">${t('draft.bansLast')}</span>
-              <div class="draft-ban-history__slots">${renderMiniBans(g.redBans)}</div>
+            <div class="draft-pick-history__side">
+              <span class="draft-pick-history__side-label">${t('draft.oppPicks', { team: oppLabel })}</span>
+              <div class="draft-pick-history__slots">${renderMiniPicks(g.opponentPicks)}</div>
             </div>
           </div>
         </div>
@@ -3756,7 +3760,7 @@ function renderDraft() {
           ${renderPicksColumn(draft, 'red')}
         </div>
       </div>
-      ${renderBanHistorySection(draft)}
+      ${renderPickHistorySection(draft)}
     </div>
     <div class="panel">
       <h3 class="panel-title">${t('draft.scoutingTitle', { team: opponent.shortName })}</h3>
@@ -6142,7 +6146,7 @@ function startMatchSeries(opponentTeamId, format, fearlessMode, context) {
     goldDiffTotal: 0,
     gameNumber: 1,
     globalFearlessLocked: [],
-    gameBansHistory: []
+    gamePicksHistory: []
   };
   state.draft = null;
   saveGame();
@@ -7063,8 +7067,15 @@ function finishMatch() {
     if (win) series.scoreFor++; else series.scoreAgainst++;
     series.goldDiffTotal = (series.goldDiffTotal || 0) + gameGoldDiff;
     if (state.draft) {
-      series.gameBansHistory = series.gameBansHistory || [];
-      series.gameBansHistory.push({ blueBans: state.draft.blueBans.slice(), redBans: state.draft.redBans.slice() });
+      // v1.16.5 — mémorise les picks de la game (par ÉQUIPE, pas par côté :
+      // le camp bleu/rouge peut changer d'une game à l'autre) pour l'historique
+      // « Picks des games précédentes » de l'écran de draft.
+      const ps = state.draft.playerSide;
+      const os = ps === 'blue' ? 'red' : 'blue';
+      const playerPicks = DRAFT_ROLES.map((r) => state.draft[ps + 'Picks'][r] || null);
+      const opponentPicks = DRAFT_ROLES.map((r) => state.draft[os + 'Picks'][r] || null);
+      series.gamePicksHistory = series.gamePicksHistory || [];
+      series.gamePicksHistory.push({ playerPicks, opponentPicks });
     }
     const winsNeeded = series.format === 'BO3' ? 2 : (series.format === 'BO5' ? 3 : 1);
     if (series.scoreFor >= winsNeeded || series.scoreAgainst >= winsNeeded) {

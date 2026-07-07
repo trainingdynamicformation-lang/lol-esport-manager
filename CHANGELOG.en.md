@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.5] — 2026-07-13
+
+### Changed — Draft: previous games' picks history (instead of bans)
+
+The block at the bottom of the draft screen used to show the previous games' bans, which wasn't very useful. It now shows **each team's picks from the games already played** in the same series (your picks and the opponent's), far more useful to anticipate compositions. Picks are stored per team (not per blue/red side, which can change from game to game) and only appear for previous games — the current game stays visible on the main board.
+
+---
+
 ## [1.16.4] — 2026-07-12
 
 ### Added — Detailed player card with illustrated champion pool

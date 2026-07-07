@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lol-esport-manager-v1.16.4';
+const CACHE_NAME = 'lol-esport-manager-v1.16.5';
 /* Cache dédié aux portraits de champions, volontairement NON versionné :
    contrairement au reste (CACHE_NAME, purgé à chaque mise à jour pour forcer
    le rechargement du code), les images ne doivent être téléchargées qu'une
@@ -7,14 +7,14 @@ const IMAGE_CACHE_NAME = 'lol-esport-manager-champion-images';
 const ASSETS = [
   '/',
   '/index.html',
-  '/style.css?v=1.16.4',
-  '/lang.js?v=1.16.4',
-  '/game.js?v=1.16.4',
-  '/map.js?v=1.16.4',
-  '/data_teams.js?v=1.16.4',
-  '/data_champions.js?v=1.16.4',
-  '/data_counters.js?v=1.16.4',
-  '/data_transfers.js?v=1.16.4',
+  '/style.css?v=1.16.5',
+  '/lang.js?v=1.16.5',
+  '/game.js?v=1.16.5',
+  '/map.js?v=1.16.5',
+  '/data_teams.js?v=1.16.5',
+  '/data_champions.js?v=1.16.5',
+  '/data_counters.js?v=1.16.5',
+  '/data_transfers.js?v=1.16.5',
   '/img/logo.png',
   '/img/logoV2.png',
   '/img/map.png',
