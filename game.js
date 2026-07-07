@@ -2434,6 +2434,7 @@ function playerEvolutionHtml(playerId) {
   return `
     <div class="player-modal__evolution">
       <span class="player-card__pool-label">${t('roster.evolSplitTitle')}</span>
+      <p class="card__count player-modal__evolution-note">${t('roster.evolExplain')}</p>
       ${rows ? `<div class="career-progression-list">${rows}</div>` : `<p class="card__count">${t('prog.noEvolution')}</p>`}
     </div>`;
 }

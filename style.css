@@ -1915,6 +1915,7 @@ table.history-table th {
 
 /* Fiche joueur détaillée (modal) — champion pool en portraits triés par confort (v1.16.4) */
 .player-modal__evolution { margin-top: 14px; }
+.player-modal__evolution-note { margin: 4px 0 0; font-style: italic; }
 .player-modal__evolution .career-progression-list { margin-top: 8px; }
 .player-modal__pool { margin-top: 14px; }
 .player-pool-grid {

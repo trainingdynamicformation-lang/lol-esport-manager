@@ -9,7 +9,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ### Ajouté — Fiche joueur détaillée avec champion pool illustré
 
-Dans l'écran Roster, cliquer sur la carte d'un joueur ouvre désormais sa fiche détaillée en surimpression (mêmes données que la carte : niveau, statistiques, traits). Entre les jauges et le champion pool, la fiche affiche aussi l'**évolution de niveau du joueur split par split**. Le champion pool y est affiché avec les portraits en miniature, **trié du plus haut confort au plus bas**, chaque champion coloré selon son niveau de maîtrise (Élite en or plein, Signature en liseré or, Confort en vert, Praticable en bleu, Découverte en gris) et accompagné de son score de maîtrise. Cliquer en dehors de la fiche la referme.
+Dans l'écran Roster, cliquer sur la carte d'un joueur ouvre désormais sa fiche détaillée en surimpression (mêmes données que la carte : niveau, statistiques, traits). Entre les jauges et le champion pool, la fiche affiche aussi l'**évolution de niveau du joueur split par split**, avec une phrase explicative (également ajoutée dans l'écran Progression) précisant que ce score suit la progression interne vers le potentiel, distincte du niveau affiché en haut de la carte (moyenne des 5 statistiques). Le champion pool y est affiché avec les portraits en miniature, **trié du plus haut confort au plus bas**, chaque champion coloré selon son niveau de maîtrise (Élite en or plein, Signature en liseré or, Confort en vert, Praticable en bleu, Découverte en gris) et accompagné de son score de maîtrise. Cliquer en dehors de la fiche la referme.
 
 ---
 
