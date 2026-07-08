@@ -646,37 +646,95 @@ function closeModal() {
   }
 }
 
+// v1.17.3 — Découpe le changelog brut en entrées structurées {version, date,
+// bodyMd}, une par en-tête `## [x.y.z] — date` (format Keep a Changelog).
+// Le texte avant la 1ère entrée (titre, intro, 1er `---`) est volontairement
+// ignoré : il n'apporte rien une fois le titre "Changelog" déjà affiché.
+function parseChangelogEntries(md) {
+  const headerRe = /^## \[(.+?)\] — (.+)$/gm;
+  const heads = [];
+  let m;
+  while ((m = headerRe.exec(md))) {
+    heads.push({ index: m.index, end: m.index + m[0].length, version: m[1], date: m[2] });
+  }
+  return heads.map((h, i) => {
+    const bodyEnd = i + 1 < heads.length ? heads[i + 1].index : md.length;
+    const bodyMd = md.slice(h.end, bodyEnd).replace(/\n?-{3,}\s*$/, '').trim();
+    return { version: h.version, date: h.date, bodyMd };
+  });
+}
+
+// Conversion markdown -> HTML du corps d'UNE entrée (les niveaux ## et ---
+// sont déjà consommés par parseChangelogEntries, donc absents ici).
+function changelogBodyToHtml(md) {
+  return md
+    .replace(/^### (.+)$/gm, '<h4 class="changelog-section">$1</h4>')
+    .replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<li><strong>$1</strong> — $2</li>')
+    .replace(/^- \*\*(.+?)\*\*\s*:(.+)$/gm, '<li><strong>$1</strong> :$2</li>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, (s) => `<ul>${s}</ul>`)
+    .replace(/\n{2,}/g, '\n')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\`(.+?)\`/g, '<code>$1</code>');
+}
+
 function showChangelogModal() {
   showModal(`<div class="changelog-modal"><p class="changelog-loading">${t('common.loading')}</p></div>`);
   const changelogFile = getLang() === 'en' ? 'CHANGELOG.en.md' : 'CHANGELOG.md'; // v1.15.2 : changelog traduit en anglais
   fetch(changelogFile)
     .then(r => r.text())
     .then(md => {
-      const html = md
-        .replace(/^# (.+)$/gm, '<h2 class="changelog-h1">$1</h2>')
-        .replace(/^## \[(.+)\] — (.+)$/gm, '<h3 class="changelog-version"><span class="changelog-tag">v$1</span><span class="changelog-date">$2</span></h3>')
-        .replace(/^### (.+)$/gm, '<h4 class="changelog-section">$1</h4>')
-        .replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<li><strong>$1</strong> — $2</li>')
-        .replace(/^- \*\*(.+?)\*\*\s*:(.+)$/gm, '<li><strong>$1</strong> :$2</li>')
-        .replace(/^- (.+)$/gm, '<li>$1</li>')
-        .replace(/(<li>[\s\S]+?<\/li>)(\n(?=<li>))?/g, (m) => m)
-        .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
-        .replace(/\n{2,}/g, '\n')
-        .replace(/^---$/gm, '<hr class="changelog-hr">')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\`(.+?)\`/g, '<code>$1</code>');
-
+      const entries = parseChangelogEntries(md);
       const overlay = document.getElementById('modal-overlay');
-      if (overlay) {
-        overlay.querySelector('.modal-content').innerHTML = `
-          <div class="changelog-modal">
-            <div class="changelog-header">
-              <h2 class="changelog-title">Changelog</h2>
-              <button class="changelog-close" id="changelog-close-btn">✕</button>
-            </div>
-            <div class="changelog-body">${html}</div>
-          </div>`;
-        document.getElementById('changelog-close-btn').addEventListener('click', closeModal);
+      if (!overlay) return;
+      overlay.querySelector('.modal-content').innerHTML = `
+        <div class="changelog-modal">
+          <div class="changelog-header">
+            <h2 class="changelog-title">Changelog</h2>
+            <button class="changelog-close" id="changelog-close-btn">✕</button>
+          </div>
+          <input type="text" id="changelog-search" class="counters-search changelog-search" placeholder="${escapeAttr(t('changelog.searchPlaceholder'))}" autocomplete="off">
+          <div class="changelog-body">
+            ${entries.map((e, i) => `
+              <div class="changelog-entry${i === 0 ? ' changelog-entry--open' : ''}" data-search="${escapeAttr((e.version + ' ' + e.date + ' ' + e.bodyMd).toLowerCase())}">
+                <button class="changelog-entry__header">
+                  <span class="changelog-tag">v${e.version}</span>
+                  <span class="changelog-date">${e.date}</span>
+                  <span class="changelog-entry__chevron">&#9662;</span>
+                </button>
+                <div class="changelog-entry__body">${changelogBodyToHtml(e.bodyMd)}</div>
+              </div>
+            `).join('')}
+            <p class="changelog-no-results" id="changelog-no-results" style="display:none;">${t('changelog.noResults')}</p>
+          </div>
+        </div>`;
+      document.getElementById('changelog-close-btn').addEventListener('click', closeModal);
+
+      // Accordéon : un seul volet ouvert à la fois (clic sur le même = ferme,
+      // clic sur un autre = ferme le précédent et ouvre le nouveau).
+      document.querySelectorAll('.changelog-entry__header').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const entry = btn.closest('.changelog-entry');
+          const wasOpen = entry.classList.contains('changelog-entry--open');
+          document.querySelectorAll('.changelog-entry--open').forEach((el) => el.classList.remove('changelog-entry--open'));
+          if (!wasOpen) entry.classList.add('changelog-entry--open');
+        });
+      });
+
+      // Recherche : filtre les entrées dont le texte (version + date + contenu) matche.
+      const searchInput = document.getElementById('changelog-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          const q = searchInput.value.trim().toLowerCase();
+          let anyVisible = false;
+          document.querySelectorAll('.changelog-entry').forEach((el) => {
+            const isMatch = !q || (el.dataset.search || '').includes(q);
+            el.style.display = isMatch ? '' : 'none';
+            if (isMatch) anyVisible = true;
+          });
+          const noResults = document.getElementById('changelog-no-results');
+          if (noResults) noResults.style.display = anyVisible ? 'none' : '';
+        });
       }
     })
     .catch(() => {

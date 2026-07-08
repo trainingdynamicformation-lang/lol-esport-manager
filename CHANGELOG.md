@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.3] — 2026-07-19
+
+### Ajouté — Changelog : recherche et accordéon
+
+L'écran du changelog devient plus facile à parcourir : chaque version s'affiche désormais en ligne repliée (numéro + date), et un clic déplie son contenu en dessous. Cliquer sur la même ligne la referme ; cliquer sur une autre version referme la précédente et ouvre la nouvelle. Un champ de recherche en haut permet de ne garder que les versions dont le contenu correspond à ce que vous tapez (ex. « champions » n'affiche que les versions qui en parlent).
+
+---
+
 ## [1.17.2] — 2026-07-18
 
 ### Ajouté — Bootcamp Élite : choix des nouveaux champions

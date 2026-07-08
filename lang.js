@@ -970,6 +970,8 @@ const I18N = {
     // -- Bandeau nouvelle version (v1.14.2) --
     'update.available': 'Une nouvelle version du jeu est disponible.',
     'update.reload': 'Recharger',
+    'changelog.searchPlaceholder': 'Rechercher dans le changelog…',
+    'changelog.noResults': 'Aucune version ne correspond à votre recherche.',
 
     // -- Sponsors (v1.15.0) --
     'sponsor.toast.new': 'Vous avez reçu une nouvelle information de vos sponsors.',
@@ -2062,6 +2064,8 @@ const I18N = {
     // -- New version banner (v1.14.2) --
     'update.available': 'A new version of the game is available.',
     'update.reload': 'Reload',
+    'changelog.searchPlaceholder': 'Search the changelog…',
+    'changelog.noResults': 'No version matches your search.',
 
     // -- Sponsors (v1.15.0) --
     'sponsor.toast.new': 'You have received a new update from your sponsors.',
