@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.6a] — 2026-07-14
+
+### Corrigé — Écran de récap : centrage et adaptation à la taille d'écran
+
+- La fenêtre de récap est désormais **centrée verticalement et horizontalement** (elle était collée en haut de l'écran).
+- Le récap et son contenu **s'adaptent à la taille de l'écran** : sur grand écran, la fenêtre s'élargit (jusqu'à 1500px) et les textes, chiffres, portraits et la courbe grandissent pour occuper l'espace ; sur mobile, tout se réduit et se réorganise en une seule colonne.
+
+---
+
 ## [1.16.6] — 2026-07-14
 
 ### Ajouté — Écran de récap de fin de match

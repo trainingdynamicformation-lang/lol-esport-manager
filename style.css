@@ -1777,18 +1777,18 @@ table.history-table th {
   position: fixed;
   inset: 0;
   background: rgba(3, 6, 15, 0.88);
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 1400;
-  padding: 24px 16px;
+  padding: clamp(12px, 3vh, 40px) clamp(12px, 3vw, 48px);
   overflow-y: auto;
 }
 .match-recap-overlay--visible { display: flex; }
 
 .match-recap {
   position: relative;
-  width: 100%;
-  max-width: 980px;
+  width: min(1500px, 100%);
+  margin: auto;
   background: var(--color-ocean);
   border: 1px solid var(--color-border);
   border-radius: 12px;
@@ -1806,62 +1806,62 @@ table.history-table th {
   display: grid;
   grid-template-columns: 1fr auto auto auto 1fr;
   align-items: center;
-  gap: 14px;
-  padding: 20px 28px;
+  gap: clamp(10px, 1.4vw, 22px);
+  padding: clamp(16px, 1.8vw, 30px) clamp(20px, 2.4vw, 42px);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
 .match-recap-header__team--blue { text-align: left; }
 .match-recap-header__team--red { text-align: right; }
-.match-recap-header__name { font-family: var(--font-title); font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+.match-recap-header__name { font-family: var(--font-title); font-size: clamp(20px, 2vw, 34px); font-weight: 700; letter-spacing: 1px; }
 .match-recap-header__team--blue .match-recap-header__name { color: var(--color-seafoam); }
 .match-recap-header__team--red .match-recap-header__name { color: var(--color-danger); }
-.match-recap-header__region { font-size: 11px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-.match-recap-header__kills { font-family: var(--font-title); font-size: 34px; font-weight: 900; }
+.match-recap-header__region { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.match-recap-header__kills { font-family: var(--font-title); font-size: clamp(34px, 3.4vw, 58px); font-weight: 900; }
 .match-recap-header__kills--blue { color: var(--color-seafoam); }
 .match-recap-header__kills--red { color: var(--color-danger); }
-.match-recap-header__center { text-align: center; padding: 0 16px; }
-.match-recap-header__time { font-family: var(--font-title); font-size: 22px; font-weight: 700; color: var(--color-gold); }
-.match-recap-header__timelbl { font-size: 11px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.match-recap-header__center { text-align: center; padding: 0 clamp(12px, 1.5vw, 28px); }
+.match-recap-header__time { font-family: var(--font-title); font-size: clamp(22px, 2.2vw, 40px); font-weight: 700; color: var(--color-gold); }
+.match-recap-header__timelbl { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
 .match-recap-band {
   background: var(--color-gold);
   color: #2C2107;
   text-align: center;
-  padding: 8px;
+  padding: clamp(8px, 0.9vw, 14px);
   font-family: var(--font-title);
   font-weight: 700;
   letter-spacing: 2px;
-  font-size: 14px;
+  font-size: clamp(14px, 1.3vw, 20px);
   text-transform: uppercase;
 }
 
 .match-recap-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  padding: 24px 28px;
+  gap: clamp(20px, 2.5vw, 48px);
+  padding: clamp(20px, 2vw, 36px) clamp(20px, 2.4vw, 42px);
 }
 
 .match-recap-stat {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 9px 0;
+  padding: clamp(9px, 1vw, 16px) 0;
   border-bottom: 1px solid var(--color-border);
 }
 .match-recap-stat:last-of-type { border-bottom: none; }
-.match-recap-stat__blue { color: var(--color-seafoam); font-weight: 700; font-size: 18px; }
-.match-recap-stat__red { color: var(--color-danger); font-weight: 700; font-size: 18px; text-align: right; }
-.match-recap-stat__label { color: var(--color-text-muted); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+.match-recap-stat__blue { color: var(--color-seafoam); font-weight: 700; font-size: clamp(18px, 1.7vw, 28px); }
+.match-recap-stat__red { color: var(--color-danger); font-weight: 700; font-size: clamp(18px, 1.7vw, 28px); text-align: right; }
+.match-recap-stat__label { color: var(--color-text-muted); text-transform: uppercase; font-size: clamp(12px, 1.05vw, 16px); letter-spacing: 1px; }
 
-.match-recap-bans { margin-top: 14px; }
-.match-recap-bans__label { font-size: 11px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.match-recap-bans__wrap { display: flex; justify-content: space-between; gap: 14px; }
-.match-recap-bans__row { display: flex; gap: 6px; }
+.match-recap-bans { margin-top: clamp(14px, 1.6vw, 26px); }
+.match-recap-bans__label { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.match-recap-bans__wrap { display: flex; justify-content: space-between; gap: clamp(10px, 1.4vw, 28px); }
+.match-recap-bans__row { display: flex; gap: clamp(5px, 0.6vw, 10px); }
 .match-recap-ban {
-  width: 38px;
-  height: 38px;
+  width: clamp(38px, 3.6vw, 60px);
+  height: clamp(38px, 3.6vw, 60px);
   border-radius: 6px;
   overflow: hidden;
   background: var(--color-surface-alt);
@@ -1872,9 +1872,9 @@ table.history-table th {
 .match-recap-ban__portrait { display: block; width: 100%; height: 100%; }
 .match-recap-ban__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; filter: grayscale(0.5) brightness(0.7); }
 
-.match-recap-chart__label { font-size: 11px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.match-recap-chart__label { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
 .match-recap-chart__plot { position: relative; }
-.match-recap-chart__svg { width: 100%; height: 200px; display: block; }
+.match-recap-chart__svg { width: 100%; height: clamp(200px, 22vw, 360px); display: block; }
 .match-recap-chart__guide {
   position: absolute;
   top: 0;
@@ -1907,19 +1907,19 @@ table.history-table th {
   white-space: nowrap;
   z-index: 2;
 }
-.match-recap-chart__tip-time { font-size: 11px; color: var(--color-text-muted); }
-.match-recap-chart__tip-diff { font-size: 13px; font-weight: 700; }
+.match-recap-chart__tip-time { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); }
+.match-recap-chart__tip-diff { font-size: clamp(13px, 1.1vw, 18px); font-weight: 700; }
 .match-recap-chart__tip-diff--blue { color: var(--color-seafoam); }
 .match-recap-chart__tip-diff--red { color: var(--color-danger); }
 .match-recap-chart__axis { stroke: var(--color-border); stroke-width: 1; }
 .match-recap-chart__grid { stroke: var(--color-border); stroke-width: 0.5; stroke-dasharray: 3 3; }
 .match-recap-chart__lbl { fill: var(--color-text-muted); font-size: 10px; font-family: var(--font-body); }
 .match-recap-chart__empty { color: var(--color-text-muted); text-align: center; padding: 40px 0; font-style: italic; }
-.match-recap-chart__legend { text-align: center; margin-top: 8px; font-size: 12px; }
+.match-recap-chart__legend { text-align: center; margin-top: 8px; font-size: clamp(12px, 1vw, 16px); }
 .match-recap-chart__legend--blue { color: var(--color-seafoam); }
 .match-recap-chart__legend--red { color: var(--color-danger); }
 
-.match-recap__actions { display: flex; justify-content: center; padding: 16px 28px 24px; border-top: 1px solid var(--color-border); }
+.match-recap__actions { display: flex; justify-content: center; padding: clamp(16px, 1.6vw, 26px) 28px clamp(20px, 2vw, 32px); border-top: 1px solid var(--color-border); }
 
 @media (max-width: 640px) {
   .match-recap-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }

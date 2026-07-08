@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.6a] — 2026-07-14
+
+### Fixed — Recap screen: centering and screen-size adaptation
+
+- The recap window is now **centered both vertically and horizontally** (it was stuck to the top of the screen).
+- The recap and its content **adapt to screen size**: on large screens the window widens (up to 1500px) and the text, numbers, portraits, and chart grow to fill the space; on mobile everything shrinks and reflows into a single column.
+
+---
+
 ## [1.16.6] — 2026-07-14
 
 ### Added — Post-game recap screen
