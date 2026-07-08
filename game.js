@@ -7202,33 +7202,88 @@ function buildMatchRecapData(rt, series, win) {
   };
 }
 
-// Courbe SVG de l'écart d'or (bleu − rouge) dans le temps.
-function renderGoldChartSvg(series) {
-  if (!series || series.length < 2) {
-    return `<div class="match-recap-chart__empty">${t('match.recapNoGold')}</div>`;
-  }
+// Géométrie partagée entre le rendu SVG et le survol (une seule source de vérité).
+function goldChartGeometry(series) {
   const W = 400, H = 200, midY = H / 2;
   const maxMin = Math.max(1, series[series.length - 1].min);
   const maxAbs = Math.max(1000, ...series.map((p) => Math.abs(p.diff)));
   const x = (min) => (min / maxMin) * W;
   const y = (diff) => midY - (diff / maxAbs) * (midY - 10);
-  const pts = series.map((p) => `${x(p.min).toFixed(1)},${y(p.diff).toFixed(1)}`);
-  const finalDiff = series[series.length - 1].diff;
-  const color = finalDiff >= 0 ? 'var(--color-seafoam)' : 'var(--color-danger)';
+  return { W, H, midY, maxMin, maxAbs, x, y };
+}
+
+// Courbe SVG de l'écart d'or (bleu − rouge) dans le temps. v1.16.6.1 : bicolore
+// (bleu au-dessus de zéro, rouge en dessous, changement à chaque croisement via
+// deux clipPaths haut/bas), + repères de survol (guide/point/tooltip) posés en
+// HTML par-dessus (le SVG étant étiré via preserveAspectRatio="none", un cercle
+// SVG deviendrait une ellipse — d'où des repères HTML).
+function renderGoldChartSvg(series) {
+  if (!series || series.length < 2) {
+    return `<div class="match-recap-chart__empty">${t('match.recapNoGold')}</div>`;
+  }
+  const g = goldChartGeometry(series);
+  const pts = series.map((p) => `${g.x(p.min).toFixed(1)},${g.y(p.diff).toFixed(1)}`);
   const linePath = `M${pts.join(' L')}`;
-  const areaPath = `${linePath} L${x(maxMin).toFixed(1)},${midY.toFixed(1)} L0,${midY.toFixed(1)} Z`;
-  const kLabel = (maxAbs / 1000).toFixed(1);
+  const areaPath = `${linePath} L${g.x(g.maxMin).toFixed(1)},${g.midY.toFixed(1)} L0,${g.midY.toFixed(1)} Z`;
+  const kLabel = (g.maxAbs / 1000).toFixed(1);
   return `
-    <svg viewBox="0 0 ${W} ${H}" class="match-recap-chart__svg" preserveAspectRatio="none">
-      <line x1="0" y1="${midY}" x2="${W}" y2="${midY}" class="match-recap-chart__axis"></line>
-      <line x1="0" y1="${midY / 2}" x2="${W}" y2="${midY / 2}" class="match-recap-chart__grid"></line>
-      <line x1="0" y1="${midY * 1.5}" x2="${W}" y2="${midY * 1.5}" class="match-recap-chart__grid"></line>
-      <path d="${areaPath}" fill="${color}" fill-opacity="0.16"></path>
-      <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2"></path>
-      <text x="4" y="14" class="match-recap-chart__lbl">+${kLabel}k</text>
-      <text x="4" y="${H - 6}" class="match-recap-chart__lbl">-${kLabel}k</text>
-      <text x="2" y="${midY - 4}" class="match-recap-chart__lbl">0</text>
-    </svg>`;
+    <div class="match-recap-chart__plot" id="match-recap-plot">
+      <svg viewBox="0 0 ${g.W} ${g.H}" class="match-recap-chart__svg" preserveAspectRatio="none">
+        <defs>
+          <clipPath id="recap-clip-top"><rect x="0" y="0" width="${g.W}" height="${g.midY}"></rect></clipPath>
+          <clipPath id="recap-clip-bot"><rect x="0" y="${g.midY}" width="${g.W}" height="${g.H - g.midY}"></rect></clipPath>
+        </defs>
+        <line x1="0" y1="${g.midY / 2}" x2="${g.W}" y2="${g.midY / 2}" class="match-recap-chart__grid"></line>
+        <line x1="0" y1="${g.midY * 1.5}" x2="${g.W}" y2="${g.midY * 1.5}" class="match-recap-chart__grid"></line>
+        <path d="${areaPath}" fill="var(--color-seafoam)" fill-opacity="0.16" clip-path="url(#recap-clip-top)"></path>
+        <path d="${areaPath}" fill="var(--color-danger)" fill-opacity="0.16" clip-path="url(#recap-clip-bot)"></path>
+        <path d="${linePath}" fill="none" stroke="var(--color-seafoam)" stroke-width="2" clip-path="url(#recap-clip-top)"></path>
+        <path d="${linePath}" fill="none" stroke="var(--color-danger)" stroke-width="2" clip-path="url(#recap-clip-bot)"></path>
+        <line x1="0" y1="${g.midY}" x2="${g.W}" y2="${g.midY}" class="match-recap-chart__axis"></line>
+        <text x="4" y="14" class="match-recap-chart__lbl">+${kLabel}k</text>
+        <text x="4" y="${g.H - 6}" class="match-recap-chart__lbl">-${kLabel}k</text>
+        <text x="2" y="${g.midY - 4}" class="match-recap-chart__lbl">0</text>
+      </svg>
+      <div class="match-recap-chart__guide" style="display:none;"></div>
+      <div class="match-recap-chart__marker" style="display:none;"></div>
+      <div class="match-recap-chart__tooltip" style="display:none;"></div>
+    </div>`;
+}
+
+// Survol de la courbe : affiche durée + écart d'or, coloré selon l'équipe en tête.
+function wireGoldChartHover(overlay, series, blueName, redName) {
+  const plot = overlay.querySelector('#match-recap-plot');
+  if (!plot || !series || series.length < 2) return;
+  const svg = plot.querySelector('.match-recap-chart__svg');
+  const guide = plot.querySelector('.match-recap-chart__guide');
+  const marker = plot.querySelector('.match-recap-chart__marker');
+  const tip = plot.querySelector('.match-recap-chart__tooltip');
+  const g = goldChartGeometry(series);
+  const fmtK = (v) => Math.abs(v) >= 1000 ? `${(Math.abs(v) / 1000).toFixed(1)}k` : String(Math.round(Math.abs(v)));
+
+  const onMove = (e) => {
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width) return;
+    const frac = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+    const minute = frac * g.maxMin;
+    let best = series[0], bestD = Infinity;
+    for (const p of series) { const d = Math.abs(p.min - minute); if (d < bestD) { bestD = d; best = p; } }
+    const leftPx = (g.x(best.min) / g.W) * rect.width;
+    const topPx = (g.y(best.diff) / g.H) * rect.height;
+    guide.style.left = `${leftPx}px`; guide.style.display = '';
+    const lead = best.diff >= 0 ? 'blue' : 'red';
+    marker.style.left = `${leftPx}px`; marker.style.top = `${topPx}px`;
+    marker.className = `match-recap-chart__marker match-recap-chart__marker--${lead}`;
+    marker.style.display = '';
+    const leaderName = best.diff >= 0 ? blueName : redName;
+    const sign = best.diff === 0 ? '' : '+';
+    tip.innerHTML = `<div class="match-recap-chart__tip-time">${formatClock(Math.round(best.min * 60))}</div>` +
+      `<div class="match-recap-chart__tip-diff match-recap-chart__tip-diff--${lead}">${leaderName} ${sign}${fmtK(best.diff)}</div>`;
+    tip.style.left = `${leftPx}px`; tip.style.top = `${topPx}px`; tip.style.display = '';
+  };
+  const onLeave = () => { guide.style.display = 'none'; marker.style.display = 'none'; tip.style.display = 'none'; };
+  plot.addEventListener('mousemove', onMove);
+  plot.addEventListener('mouseleave', onLeave);
 }
 
 function showMatchRecap() {
@@ -7314,6 +7369,7 @@ function showMatchRecap() {
   overlay.onclick = (e) => { if (e.target === overlay) closeMatchRecap(); };
   overlay.querySelector('#match-recap-close').addEventListener('click', closeMatchRecap);
   overlay.querySelector('#match-recap-close-btn').addEventListener('click', closeMatchRecap);
+  wireGoldChartHover(overlay, recap.goldSeries, recap.blueName, recap.redName);
   overlay.classList.add('match-recap-overlay--visible');
 }
 

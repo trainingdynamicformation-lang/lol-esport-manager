@@ -13,7 +13,7 @@ At the end of a game, a new **Recap** button appears next to the "Next game" but
 
 - **Header**: each team's name (blue on the left, red on the right), its kill count, and the game duration in the center. A themed band recalls the competition and format.
 - **Left column**: the game's team stats (turrets, dragons, elder dragons, barons, rift heralds, void grubs) and the game's bans. KDA and per-team gold aren't shown (the engine doesn't track these at the individual level).
-- **Right column**: the **gold difference over time** curve, drawn across the whole game, with the leading team shown in the legend.
+- **Right column**: the **gold difference over time** curve, drawn across the whole game. The curve is **two-toned** — blue while the blue team leads, red while the red team leads, switching color at each crossing of the balance line. Hovering the curve shows a tooltip with the minute and the gold difference, in the color of the team that was ahead at that moment.
 
 ---
 

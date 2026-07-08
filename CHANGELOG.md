@@ -13,7 +13,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 - **En-tête** : le nom de chaque équipe (bleu à gauche, rouge à droite), son nombre de kills, et la durée de la partie au centre. Un bandeau à la couleur du jeu rappelle la compétition et le format.
 - **Colonne de gauche** : les statistiques collectives de la partie (tourelles, dragons, dragons ancestraux, barons, hérauts, void grubs) et les bans de la game. Le KDA et l'or par équipe ne sont pas affichés (le moteur ne suit pas ces données au niveau individuel).
-- **Colonne de droite** : la **courbe de l'écart d'or dans le temps**, tracée tout au long de la partie, avec l'équipe qui a mené indiquée en légende.
+- **Colonne de droite** : la **courbe de l'écart d'or dans le temps**, tracée tout au long de la partie. La courbe est **bicolore** — bleue quand l'équipe bleue mène, rouge quand l'équipe rouge mène, avec changement de couleur à chaque croisement de la ligne d'équilibre. Au survol de la courbe, une infobulle affiche la minute et l'écart d'or, à la couleur de l'équipe qui menait à cet instant.
 
 ---
 
