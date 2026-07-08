@@ -5,6 +5,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.17.0] — 2026-07-16
+
+### Added — Bootcamps (budget spending)
+
+On the Roster screen, below "Team rest", a new **Bootcamp** section lets you spend budget to strengthen the team. Three cumulative tiers:
+
+- **Cohesion** (50 budget) — improves team coordination: shotcalling, teamfight and mental of your 5 players (diminishing returns near the cap).
+- **Intensive** (140 budget) — Cohesion **+** every pool champion below Signature mastery gains **+20% comfort** (never beyond Signature/Elite: those tiers are earned by playing).
+- **Elite** (300 budget) — Intensive **+** each player returns with **2 new champions** at Workable comfort (25-49).
+
+**Balance safeguards:**
+- **Only one bootcamp per gap between two competitions** (any tier).
+- **Intensive and Elite** are only possible **after the regular season/playoffs and before your first international match** (if your team isn't qualified, until the next split starts), and **once per year each**.
+- **Cohesion** is available in any gap between two competitions.
+- A bootcamp is **tiring**: each player comes back with variable fatigue (the higher the tier, the more tiring). A permanent reminder invites you to plan coaching points to rest the team before the next match.
+
+---
+
 ## [1.16.6a] — 2026-07-14
 
 ### Fixed — Recap screen: centering and screen-size adaptation

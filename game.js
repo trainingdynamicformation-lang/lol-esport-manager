@@ -143,6 +143,12 @@ function createDefaultState() {
     lastMsiWinnerRegion: null, // région du dernier vainqueur MSI → ouvre une 3e place Worlds (même année)
     lastWorldsWinnerRegion: null, // région du dernier vainqueur Worlds → ouvre une 2e place MSI (année suivante)
     mercatoOpen: true, // fenêtre de prolongation : ouverte en pré-saison, fermée au 1er match du split
+    // v1.17.0 — Bootcamp (dépense de budget dans l'écran Roster) :
+    compEndSeq: 0,            // compteur monotone bumpé à chaque fin de compétition (= id du trou de calendrier)
+    lastCompType: null,       // 'domestic' | 'intl' — type de la dernière compétition finie (pré/post-inter)
+    bootcampUsedGap: null,    // valeur de compEndSeq du dernier trou où un bootcamp a été fait (1 par trou)
+    bootcampEliteYear: null,  // année du dernier bootcamp Élite (1 par an)
+    bootcampIntensifYear: null, // année du dernier bootcamp Intensif (1 par an)
     aiRosters: {},
     aiMatchHistory: {},
     careerLog: [],
@@ -275,6 +281,11 @@ function loadGame() {
       lastMsiWinnerRegion: parsed.lastMsiWinnerRegion !== undefined ? parsed.lastMsiWinnerRegion : defaults.lastMsiWinnerRegion,
       lastWorldsWinnerRegion: parsed.lastWorldsWinnerRegion !== undefined ? parsed.lastWorldsWinnerRegion : defaults.lastWorldsWinnerRegion,
       mercatoOpen: parsed.mercatoOpen !== undefined ? parsed.mercatoOpen : true,
+      compEndSeq: parsed.compEndSeq !== undefined ? parsed.compEndSeq : defaults.compEndSeq,
+      lastCompType: parsed.lastCompType !== undefined ? parsed.lastCompType : defaults.lastCompType,
+      bootcampUsedGap: parsed.bootcampUsedGap !== undefined ? parsed.bootcampUsedGap : defaults.bootcampUsedGap,
+      bootcampEliteYear: parsed.bootcampEliteYear !== undefined ? parsed.bootcampEliteYear : defaults.bootcampEliteYear,
+      bootcampIntensifYear: parsed.bootcampIntensifYear !== undefined ? parsed.bootcampIntensifYear : defaults.bootcampIntensifYear,
       aiRosters: parsed.aiRosters || defaults.aiRosters,
       aiMatchHistory: parsed.aiMatchHistory || defaults.aiMatchHistory,
       careerLog: parsed.careerLog || defaults.careerLog,
@@ -1193,6 +1204,16 @@ const REST_OPTIONS = [
   { id: 'short', label: 'Courte (1 jour)', fatigueReduction: 10, cost: 5 },
   { id: 'medium', label: 'Moyenne (2 jours)', fatigueReduction: 20, cost: 10 },
   { id: 'long', label: 'Longue (3 jours)', fatigueReduction: 35, cost: 18 }
+];
+
+// v1.17.0 — Bootcamp : dépense de budget dans l'écran Roster, effets cumulatifs
+// selon le niveau. `preIntlOnly` = uniquement dans la fenêtre post-saison /
+// pré-international. `yearlyField` = champ de state limitant à 1 par an.
+// `fatigue` = intervalle de fatigue tirée aléatoirement pour CHAQUE joueur.
+const BOOTCAMP_OPTIONS = [
+  { id: 'cohesion', cost: 50,  preIntlOnly: false, yearlyField: null,                  fatigue: [10, 20] },
+  { id: 'intensif', cost: 140, preIntlOnly: true,  yearlyField: 'bootcampIntensifYear', fatigue: [25, 40] },
+  { id: 'elite',    cost: 300, preIntlOnly: true,  yearlyField: 'bootcampEliteYear',    fatigue: [45, 65] }
 ];
 
 // Seuil de prestige requis pour demander un scrim à une équipe hors-région selon son tier
@@ -2315,11 +2336,16 @@ function renderRoster() {
         ${REST_OPTIONS.map((o) => `<button class="btn-secondary" data-rest="${o.id}">${t('roster.restBtn', { label: restLabel(o.id), red: o.fatigueReduction, cost: o.cost })}</button>`).join('')}
       </div>
     </div>
+    ${renderBootcampPanelHtml()}
     <div class="player-grid">${sorted.map(playerCardHtml).join('')}</div>
   `;
 
   document.querySelectorAll('[data-rest]').forEach((btn) => {
     btn.addEventListener('click', () => restTeam(btn.dataset.rest));
+  });
+
+  document.querySelectorAll('[data-bootcamp]').forEach((btn) => {
+    btn.addEventListener('click', () => showBootcampConfirm(btn.dataset.bootcamp));
   });
 
   document.querySelectorAll('.player-card--clickable').forEach((card) => {
@@ -2352,6 +2378,160 @@ function restTeam(optionId) {
   updateResourceBar();
   renderRoster();
   showToast(t('toast.restDone', { label: restLabel(option.id) }), 'success');
+}
+
+/* ------------------------------------------------------------
+   Bootcamp (v1.17.0)
+   ------------------------------------------------------------ */
+
+// Fenêtre de bootcamp courante, ou null si en pleine compétition.
+// gapId = compEndSeq (monotone) → « un seul bootcamp par trou de calendrier ».
+// preIntl = true dans la fenêtre post-saison régulière/playoffs, avant le 1er
+// match international du joueur (ou, s'il n'est pas qualifié, avant que
+// l'international ne se termine) → seule fenêtre qui autorise Intensif/Élite.
+function getBootcampContext() {
+  const season = state.season;
+  if (!season) return null;
+  const intl = state.international;
+  // Fenêtre POST-internationale (mercato ouvert) : Cohésion uniquement.
+  if (state.mercatoOpen) {
+    return { gapId: state.compEndSeq || 0, preIntl: false };
+  }
+  // Fenêtre PRÉ-internationale : domestique terminé, le joueur n'a pas encore
+  // joué son 1er match international et l'international n'est pas fini.
+  if (season.phase === 'done') {
+    const ps = intl && intl.groupStandings && intl.groupStandings.player;
+    const playerPlayed = ps && (ps.wins + ps.losses) > 0;
+    const intlDone = intl && intl.phase === 'done';
+    if (!playerPlayed && !intlDone) {
+      return { gapId: state.compEndSeq || 0, preIntl: true };
+    }
+  }
+  return null;
+}
+
+// { ok, reason } — 'window' | 'preIntlOnly' | 'gapUsed' | 'yearlyUsed' | 'budget'
+function bootcampAvailability(optId) {
+  const opt = BOOTCAMP_OPTIONS.find((o) => o.id === optId);
+  const ctx = getBootcampContext();
+  if (!ctx) return { ok: false, reason: 'window' };
+  if (opt.preIntlOnly && !ctx.preIntl) return { ok: false, reason: 'preIntlOnly' };
+  if (state.bootcampUsedGap === ctx.gapId) return { ok: false, reason: 'gapUsed' };
+  if (opt.yearlyField && state[opt.yearlyField] === state.season.year) return { ok: false, reason: 'yearlyUsed' };
+  if (state.resources.budget < opt.cost) return { ok: false, reason: 'budget' };
+  return { ok: true };
+}
+
+function bootcampReasonLabel(reason) {
+  return t('bootcamp.reason.' + reason);
+}
+
+// Rendements décroissants sur les stats de cohésion.
+function bootcampStatGain(v) {
+  if (v >= 95) return randomInt(0, 1);
+  if (v >= 85) return 1;
+  return randomInt(1, 2);
+}
+
+function applyBootcampCohesion() {
+  state.roster.forEach((p) => {
+    ['shotcalling', 'teamfight', 'mental'].forEach((stat) => {
+      p[stat] = clamp(p[stat] + bootcampStatGain(p[stat]), 0, 99);
+    });
+  });
+}
+
+// +20% de confort sur les champions du pool SOUS 75 de maîtrise (jamais Signature/Élite).
+function applyBootcampMasteryBoost() {
+  state.roster.forEach((p) => {
+    p.championPool.forEach((champName) => {
+      const entry = getChampionMastery(p.id, champName);
+      if (entry && entry.mastery < 75) {
+        entry.mastery = clamp(Math.round(entry.mastery * 1.2), 0, 74);
+      }
+    });
+  });
+}
+
+// Chaque joueur revient avec 2 nouveaux champions de son rôle à confort 25-49.
+function applyBootcampNewChampions() {
+  state.roster.forEach((p) => {
+    const known = new Set(p.championPool);
+    const rolePool = getChampionsForRole(p.role).filter((c) => !known.has(c.name));
+    const picks = rolePool.slice().sort(() => Math.random() - 0.5).slice(0, 2);
+    picks.forEach((champ) => {
+      const entry = ensureChampionMasteryEntry(p.id, champ);
+      entry.mastery = randomInt(25, 49);
+      entry.confidence = clamp(entry.mastery + 5, 0, 100);
+      entry.stageReady = entry.mastery >= 50;
+      if (!p.championPool.includes(champ.name)) p.championPool.push(champ.name);
+    });
+  });
+}
+
+function applyBootcamp(optId) {
+  const avail = bootcampAvailability(optId);
+  if (!avail.ok) { showToast(bootcampReasonLabel(avail.reason), 'error'); return; }
+  const opt = BOOTCAMP_OPTIONS.find((o) => o.id === optId);
+  const ctx = getBootcampContext();
+
+  state.resources.budget -= opt.cost;
+  // Effets cumulatifs selon le niveau
+  applyBootcampCohesion();
+  if (optId === 'intensif' || optId === 'elite') applyBootcampMasteryBoost();
+  if (optId === 'elite') applyBootcampNewChampions();
+  // Fatigue aléatoire par joueur (non dévoilée dans l'UI)
+  state.roster.forEach((p) => {
+    p.fatigue = clamp(p.fatigue + randomInt(opt.fatigue[0], opt.fatigue[1]), 0, 100);
+  });
+  // Garde-fous anti-abus
+  state.bootcampUsedGap = ctx.gapId;
+  if (opt.yearlyField) state[opt.yearlyField] = state.season.year;
+
+  saveGame();
+  updateResourceBar();
+  renderRoster();
+  showToast(t('bootcamp.done.' + optId), 'success');
+}
+
+function showBootcampConfirm(optId) {
+  const avail = bootcampAvailability(optId);
+  if (!avail.ok) { showToast(bootcampReasonLabel(avail.reason), 'error'); return; }
+  const opt = BOOTCAMP_OPTIONS.find((o) => o.id === optId);
+  showModal(`
+    <h3 class="panel-title">${t('bootcamp.opt.' + optId)}</h3>
+    <p>${t('bootcamp.desc.' + optId)}</p>
+    <p class="card__count">${t('bootcamp.confirmCost', { cost: opt.cost, budget: state.resources.budget })}</p>
+    <p class="card__count bootcamp-panel__warn">${t('bootcamp.warn')}</p>
+    <div class="training-form__actions">
+      <button class="btn-secondary" onclick="closeModal()">${t('common.cancel')}</button>
+      <button class="btn-primary" id="btn-confirm-bootcamp">${t('bootcamp.confirmBtn')}</button>
+    </div>
+  `);
+  const btn = document.getElementById('btn-confirm-bootcamp');
+  if (btn) btn.addEventListener('click', () => { closeModal(); applyBootcamp(optId); });
+}
+
+function renderBootcampPanelHtml() {
+  const rows = BOOTCAMP_OPTIONS.map((opt) => {
+    const av = bootcampAvailability(opt.id);
+    const statusNote = av.ok ? '' : `<span class="bootcamp-opt__status">${bootcampReasonLabel(av.reason)}</span>`;
+    return `
+      <div class="bootcamp-opt ${av.ok ? '' : 'bootcamp-opt--locked'}">
+        <button class="btn-secondary bootcamp-opt__btn" data-bootcamp="${opt.id}" ${av.ok ? '' : 'disabled'}>
+          <span class="bootcamp-opt__name">${t('bootcamp.opt.' + opt.id)}</span>
+          <span class="bootcamp-opt__cost">&#128176; ${opt.cost}</span>
+        </button>
+        <p class="bootcamp-opt__desc">${t('bootcamp.desc.' + opt.id)}</p>
+        ${statusNote}
+      </div>`;
+  }).join('');
+  return `
+    <div class="panel-subsection bootcamp-panel">
+      <h3 class="panel-title">${t('bootcamp.title')}</h3>
+      <p class="card__count bootcamp-panel__warn">${t('bootcamp.warn')}</p>
+      <div class="bootcamp-grid">${rows}</div>
+    </div>`;
 }
 
 function playerStatRow(label, value) {
@@ -4265,6 +4445,11 @@ function placementLabel(placement) {
 function finishSeason() {
   const season = state.season;
   season.phase = 'done';
+  // v1.17.0 — bootcamp : chaque fin de compétition ouvre un nouveau « trou »
+  // de calendrier (identifié par compEndSeq, monotone). lastCompType='domestic'
+  // → la fenêtre qui suit est PRÉ-internationale (bootcamp Intensif/Élite permis).
+  state.compEndSeq = (state.compEndSeq || 0) + 1;
+  state.lastCompType = 'domestic';
   const placement = getFinalPlacement();
   const rewards = getPlacementRewards(placement);
   state.resources.coachingPoints += rewards.coaching;
@@ -5122,6 +5307,11 @@ function getTeamRegionId(teamId) {
 function finishInternational() {
   const intl = state.international;
   intl.phase = 'done';
+  // v1.17.0 — bootcamp : fin d'un international → nouveau trou de calendrier.
+  // lastCompType='intl' → la fenêtre qui suit est POST-internationale (seul le
+  // bootcamp Cohésion y est permis, pas Intensif/Élite).
+  state.compEndSeq = (state.compEndSeq || 0) + 1;
+  state.lastCompType = 'intl';
   // Mémorise la région du champion → débloque la place bonus du tournoi suivant
   // (MSI → 3e place Worlds même année ; Worlds → 2e place MSI année suivante).
   const championRegion = intl.bracket ? getTeamRegionId(intl.bracket.champion) : null;

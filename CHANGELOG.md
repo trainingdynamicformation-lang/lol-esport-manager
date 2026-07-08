@@ -5,6 +5,24 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.0] — 2026-07-16
+
+### Ajouté — Bootcamps (dépense de budget)
+
+Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcamp** permet de dépenser du budget pour renforcer l'équipe. Trois niveaux cumulatifs :
+
+- **Cohésion** (50 budget) — améliore la coordination de l'équipe : shotcalling, teamfight et mental de vos 5 joueurs (rendements décroissants près du plafond).
+- **Intensif** (140 budget) — Cohésion **+** tous les champions du pool sous la maîtrise Signature gagnent **+20 % de confort** (jamais au-delà de Signature/Élite : ces niveaux se gagnent en jouant).
+- **Élite** (300 budget) — Intensif **+** chaque joueur revient avec **2 nouveaux champions** à confort Praticable (25-49).
+
+**Garde-fous d'équilibrage :**
+- **Un seul bootcamp par intervalle entre deux compétitions** (tous niveaux confondus).
+- **Intensif et Élite** ne sont possibles qu'**après la saison régulière/playoffs et avant votre 1er match international** (si votre équipe n'est pas qualifiée, jusqu'au début du split suivant), et **une seule fois par an chacun**.
+- **Cohésion** est possible dans n'importe quel intervalle entre deux compétitions.
+- Un bootcamp est **fatigant** : chaque joueur en ressort avec une fatigue variable (plus le niveau est élevé, plus c'est fatigant). Un rappel permanent invite à prévoir des points de coaching pour reposer l'équipe avant la reprise.
+
+---
+
 ## [1.16.6a] — 2026-07-14
 
 ### Corrigé — Écran de récap : centrage et adaptation à la taille d'écran

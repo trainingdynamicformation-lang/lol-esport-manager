@@ -2186,6 +2186,48 @@ table.history-table th {
 .rest-panel .training-form__actions { gap: 8px; }
 .rest-panel .btn-secondary  { flex: 1 1 200px; }
 
+/* Bootcamp (v1.17.0) */
+.bootcamp-panel {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 18px;
+}
+.bootcamp-panel .panel-title { margin-bottom: 4px; }
+.bootcamp-panel__warn {
+  margin-bottom: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+.bootcamp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.bootcamp-opt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+}
+.bootcamp-opt--locked { opacity: 0.65; }
+.bootcamp-opt__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+.bootcamp-opt__btn:disabled { cursor: not-allowed; }
+.bootcamp-opt__name { font-weight: 700; }
+.bootcamp-opt__cost { color: var(--color-gold); font-weight: 700; white-space: nowrap; }
+.bootcamp-opt__desc { font-size: var(--fs-label); color: var(--color-text-muted); margin: 0; }
+.bootcamp-opt__status { font-size: var(--fs-label); color: var(--color-danger); font-style: italic; }
+
 .career-progression-list { display: flex; flex-direction: column; gap: 8px; }
 
 .career-progression-row {
