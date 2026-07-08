@@ -5,7 +5,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [1.17.3] — 2026-07-19
+## [1.17.3] — 2026-07-08
 
 ### Added — Changelog: search and accordion
 
@@ -13,7 +13,7 @@ The changelog screen is now easier to browse: each version now shows as a collap
 
 ---
 
-## [1.17.2] — 2026-07-18
+## [1.17.2] — 2026-07-08
 
 ### Added — Elite bootcamp: choosing the new champions
 
@@ -26,7 +26,7 @@ Once all 5 choices are made, the bootcamp applies normally and the end-of-bootca
 
 ---
 
-## [1.17.1] — 2026-07-17
+## [1.17.1] — 2026-07-08
 
 ### Fixed — Outdated Intensive bootcamp description
 
@@ -34,7 +34,7 @@ The Intensive bootcamp text still mentioned "+20% comfort", a formula replaced i
 
 ---
 
-## [1.17.0] — 2026-07-16
+## [1.17.0] — 2026-07-08
 
 ### Added — Bootcamps (budget spending)
 
@@ -54,7 +54,7 @@ At the end of a bootcamp, a **summary** appears (centered on screen, like the ma
 
 ---
 
-## [1.16.6a] — 2026-07-14
+## [1.16.6a] — 2026-07-08
 
 ### Fixed — Recap screen: centering and screen-size adaptation
 
@@ -63,7 +63,7 @@ At the end of a bootcamp, a **summary** appears (centered on screen, like the ma
 
 ---
 
-## [1.16.6] — 2026-07-14
+## [1.16.6] — 2026-07-08
 
 ### Added — Post-game recap screen
 
@@ -75,7 +75,7 @@ At the end of a game, a new **Recap** button appears next to the "Next game" but
 
 ---
 
-## [1.16.5] — 2026-07-13
+## [1.16.5] — 2026-07-08
 
 ### Changed — Draft: previous games' picks history (instead of bans)
 
@@ -87,7 +87,7 @@ The block at the bottom of the draft screen used to show the previous games' ban
 
 ---
 
-## [1.16.4] — 2026-07-12
+## [1.16.4] — 2026-07-08
 
 ### Added — Detailed player card with illustrated champion pool
 
@@ -95,7 +95,7 @@ On the Roster screen, clicking a player's card now opens their detailed card as 
 
 ---
 
-## [1.16.3] — 2026-07-11
+## [1.16.3] — 2026-07-08
 
 ### Added — Full-size portrait on the champion detail sheet
 
@@ -103,7 +103,7 @@ On a champion's detail sheet, clicking its portrait now shows it large, at full 
 
 ---
 
-## [1.16.2] — 2026-07-10
+## [1.16.2] — 2026-07-08
 
 ### Changed — Much lighter champion portraits
 
@@ -114,7 +114,7 @@ Portraits weighed up to 2.5 MB each (390 MB for all 173 champions), which slowed
 
 ---
 
-## [1.16.1] — 2026-07-09
+## [1.16.1] — 2026-07-08
 
 ### Fixed — Much faster champion portrait loading
 

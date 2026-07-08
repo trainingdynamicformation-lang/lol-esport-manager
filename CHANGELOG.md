@@ -5,7 +5,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
-## [1.17.3] — 2026-07-19
+## [1.17.3] — 08/07/2026
 
 ### Ajouté — Changelog : recherche et accordéon
 
@@ -13,7 +13,7 @@ L'écran du changelog devient plus facile à parcourir : chaque version s'affich
 
 ---
 
-## [1.17.2] — 2026-07-18
+## [1.17.2] — 08/07/2026
 
 ### Ajouté — Bootcamp Élite : choix des nouveaux champions
 
@@ -26,7 +26,7 @@ Une fois les 5 choix faits, le bootcamp s'applique normalement et le bilan de fi
 
 ---
 
-## [1.17.1] — 2026-07-17
+## [1.17.1] — 08/07/2026
 
 ### Corrigé — Description du bootcamp Intensif obsolète
 
@@ -34,7 +34,7 @@ Le texte du bootcamp Intensif mentionnait encore « +20 % de confort », une for
 
 ---
 
-## [1.17.0] — 2026-07-16
+## [1.17.0] — 08/07/2026
 
 ### Ajouté — Bootcamps (dépense de budget)
 
@@ -54,7 +54,7 @@ Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcam
 
 ---
 
-## [1.16.6a] — 2026-07-14
+## [1.16.6a] — 08/07/2026
 
 ### Corrigé — Écran de récap : centrage et adaptation à la taille d'écran
 
@@ -63,7 +63,7 @@ Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcam
 
 ---
 
-## [1.16.6] — 2026-07-14
+## [1.16.6] — 08/07/2026
 
 ### Ajouté — Écran de récap de fin de match
 
@@ -75,7 +75,7 @@ Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcam
 
 ---
 
-## [1.16.5] — 2026-07-13
+## [1.16.5] — 08/07/2026
 
 ### Modifié — Draft : historique des picks des games précédentes (au lieu des bans)
 
@@ -87,7 +87,7 @@ Le bloc en bas de l'écran de draft affichait les bans des games précédentes d
 
 ---
 
-## [1.16.4] — 2026-07-12
+## [1.16.4] — 08/07/2026
 
 ### Ajouté — Fiche joueur détaillée avec champion pool illustré
 
@@ -95,7 +95,7 @@ Dans l'écran Roster, cliquer sur la carte d'un joueur ouvre désormais sa fiche
 
 ---
 
-## [1.16.3] — 2026-07-11
+## [1.16.3] — 08/07/2026
 
 ### Ajouté — Portrait en grand format sur la fiche champion
 
@@ -103,7 +103,7 @@ Sur la fiche détaillée d'un champion, cliquer sur son portrait l'affiche déso
 
 ---
 
-## [1.16.2] — 2026-07-10
+## [1.16.2] — 08/07/2026
 
 ### Modifié — Portraits de champions bien plus légers
 
@@ -114,7 +114,7 @@ Les portraits pesaient jusqu'à 2,5 Mo chacune (390 Mo pour les 173 champions), 
 
 ---
 
-## [1.16.1] — 2026-07-09
+## [1.16.1] — 08/07/2026
 
 ### Corrigé — Chargement des portraits de champions bien plus rapide
 
@@ -122,7 +122,7 @@ Les portraits de champions (draft, écran Champions, mini-carte de match) étaie
 
 ---
 
-## [1.16.0] — 2026-07-08
+## [1.16.0] — 08/07/2026
 
 ### Ajouté — Portraits de champions et nouvelle mise en page de la draft
 
@@ -136,7 +136,7 @@ Les portraits de champions (draft, écran Champions, mini-carte de match) étaie
 
 ---
 
-## [1.15.6] — 2026-07-07
+## [1.15.6] — 07/07/2026
 
 ### Modifié — Mise en page desktop plus large
 
@@ -147,7 +147,7 @@ Sur PC, l'écran était bridé à 1400px de large et le menu latéral prenait un
 
 ---
 
-## [1.15.5] — 2026-07-06
+## [1.15.5] — 06/07/2026
 
 ### Corrigé — Une partie ne devait plus se terminer sans destruction du nexus
 
@@ -155,7 +155,7 @@ Un match pouvait être perdu (ou gagné) sans que le nexus n'ait été détruit,
 
 ---
 
-## [1.15.4] — 2026-07-05
+## [1.15.4] — 05/07/2026
 
 ### Ajouté — Filtres du journal des transferts
 
@@ -171,7 +171,7 @@ Le journal pouvait afficher un joueur de votre effectif comme parti à la retrai
 
 ---
 
-## [1.15.3] — 2026-07-04
+## [1.15.3] — 04/07/2026
 
 ### Corrigé — Retraites des joueurs IA (sauvegardes anciennes)
 
@@ -190,7 +190,7 @@ Un nouveau joueur qui débarque en équipe IA (suite à une retraite) reste un i
 
 ---
 
-## [1.15.2] — 2026-07-03
+## [1.15.2] — 03/07/2026
 
 ### Ajouté
 - **Changelog traduit en anglais** : l'intégralité de l'historique (90 versions) est désormais disponible en anglais, affiché automatiquement si la langue du jeu est réglée sur English.
@@ -199,7 +199,7 @@ Un nouveau joueur qui débarque en équipe IA (suite à une retraite) reste un i
 
 ---
 
-## [1.15.1] — 2026-07-02
+## [1.15.1] — 02/07/2026
 
 ### Ajouté — Visite guidée
 
@@ -219,7 +219,7 @@ Plusieurs retours de joueurs demandaient un tutoriel pour mieux se repérer à l
 
 ---
 
-## [1.15.0] — 2026-07-01
+## [1.15.0] — 01/07/2026
 
 ### Ajouté — Sponsors
 
@@ -237,7 +237,7 @@ Nouvel onglet **Sponsor** : votre équipe doit désormais négocier un contrat d
 
 ---
 
-## [1.14.2] — 2026-06-28
+## [1.14.2] — 28/06/2026
 
 ### Ajouté — Bandeau de nouvelle version disponible
 
@@ -251,7 +251,7 @@ Jusqu'ici, un joueur devait deviner qu'une mise à jour existait et forcer un re
 
 ---
 
-## [1.14.1] — 2026-06-28
+## [1.14.1] — 28/06/2026
 
 ### Modifié — Retours joueurs (Reddit)
 
@@ -266,7 +266,7 @@ Jusqu'ici, un joueur devait deviner qu'une mise à jour existait et forcer un re
 
 ---
 
-## [1.14.0] — 2026-06-28
+## [1.14.0] — 28/06/2026
 
 ### Ajouté — Programme des journées (calendrier de saison régulière)
 
@@ -280,7 +280,7 @@ Sous le classement, une nouvelle section **« Programme des journées »** liste
 
 ---
 
-## [1.13.0] — 2026-06-27 — 🌍 Jeu entièrement bilingue FR / EN
+## [1.13.0] — 27/06/2026 — 🌍 Jeu entièrement bilingue FR / EN
 
 ### Version majeure — Internationalisation complète
 
@@ -300,7 +300,7 @@ LOL Esport Manager est désormais **intégralement jouable en français et en an
 
 ---
 
-## [1.12.13] — 2026-06-27
+## [1.12.13] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 8 : Scouting)
 
@@ -313,7 +313,7 @@ L'écran Scouting complet est traduit (sélecteur d'équipes/région + rapports 
 
 ---
 
-## [1.12.12] — 2026-06-27
+## [1.12.12] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 7 : Match)
 
@@ -327,7 +327,7 @@ L'écran Scouting complet est traduit (sélecteur d'équipes/région + rapports 
 
 ---
 
-## [1.12.11] — 2026-06-27
+## [1.12.11] — 27/06/2026
 
 ### Ajouté — i18n FR/EN : Pile ou Face (coin flip)
 
@@ -335,7 +335,7 @@ Le pile ou face d'avant-draft (choix du side et de l'ordre de pick) n'était pas
 
 ---
 
-## [1.12.10] — 2026-06-27
+## [1.12.10] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 6 : Draft + Assistant Coach)
 
@@ -346,7 +346,7 @@ Le pile ou face d'avant-draft (choix du side et de l'ordre de pick) n'était pas
 
 ---
 
-## [1.12.9] — 2026-06-27
+## [1.12.9] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 3 (lot 5 : Entraînement)
 
@@ -360,7 +360,7 @@ Le pile ou face d'avant-draft (choix du side et de l'ordre de pick) n'était pas
 
 ---
 
-## [1.12.8] — 2026-06-27
+## [1.12.8] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 4/4 : Transferts + contrats)
 
@@ -377,7 +377,7 @@ Le plus gros écran narratif du jeu, entièrement traduit (~55 chaînes).
 
 ---
 
-## [1.12.7] — 2026-06-27
+## [1.12.7] — 27/06/2026
 
 ### Ajouté — i18n FR/EN : journaux de résultats (« Derniers résultats »)
 
@@ -390,7 +390,7 @@ Les entrées de résultats récents (calendrier domestique, playoffs, phase de g
 
 ---
 
-## [1.12.6] — 2026-06-27
+## [1.12.6] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 3/4 : Calendrier international MSI/Worlds)
 
@@ -404,7 +404,7 @@ Les entrées de résultats récents (calendrier domestique, playoffs, phase de g
 
 ---
 
-## [1.12.5] — 2026-06-27
+## [1.12.5] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 2/4 : Journal + Calendrier domestique)
 
@@ -417,7 +417,7 @@ Les entrées de résultats récents (calendrier domestique, playoffs, phase de g
 
 ---
 
-## [1.12.4] — 2026-06-27
+## [1.12.4] — 27/06/2026
 
 ### Ajouté — i18n FR/EN Phase 2 (lot 1/4 : Roster, Champions, Counters)
 
@@ -430,14 +430,14 @@ Traduction des écrans dynamiques (le contenu rendu par JavaScript), au-delà du
 
 ---
 
-## [1.12.3] — 2026-06-27
+## [1.12.3] — 27/06/2026
 
 ### Modifié
 - **Popup d'onboarding (rotation IA / contrats)** : le sélecteur de langue en a été retiré — il faisait doublon avec la popup de bienvenue. Le choix de langue reste accessible à tout moment dans **Progression → Réglages du monde**.
 
 ---
 
-## [1.12.2] — 2026-06-27
+## [1.12.2] — 27/06/2026
 
 ### Ajouté — Internationalisation FR/EN (Phase 1/3 du chantier v1.13.0)
 
@@ -453,7 +453,7 @@ Premier socle du système bilingue. Le jeu pourra être joué intégralement en 
 
 ---
 
-## [1.12.1] — 2026-06-26
+## [1.12.1] — 26/06/2026
 
 ### Ajouté — Assistant Coach de draft
 
@@ -469,7 +469,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.12.0] — 2026-06-26
+## [1.12.0] — 26/06/2026
 
 ### Ajouté — Scouting enrichi (apprentissage progressif maintenu)
 
@@ -492,63 +492,63 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.11.8] — 2026-06-26
+## [1.11.8] — 26/06/2026
 
 ### Modifié
 - **Draft — noms des joueurs** : les colonnes de picks affichent désormais le nom du joueur à la place du rôle (TOP → Caps, JUNGLE → Jankos, etc.) pour les deux équipes. Si un joueur est introuvable pour un rôle, le nom de rôle reste affiché en fallback.
 
 ---
 
-## [1.11.7] — 2026-06-26
+## [1.11.7] — 26/06/2026
 
 ### Modifié
 - **Accueil — Prochain match** : la zone affichait toujours "À définir". Elle indique désormais la compétition active et le prochain adversaire selon le contexte : saison régulière (`Spring Split · J3 · vs FNC`), playoffs (`Playoffs · vs T1`), phase de groupes internationale (`MSI 2027 · Phase de groupes · vs BLG`) ou bracket international (`Worlds 2027 · Bracket · vs G2`). Se met à jour à chaque retour sur l'écran Accueil.
 
 ---
 
-## [1.11.6] — 2026-06-25
+## [1.11.6] — 25/06/2026
 
 ### Ajouté
 - **Nouveau champion : Locke** (patch 26.13) — AP assassin/skirmisher MID (rôle secondaire JUNGLE). Difficulty 4, tags `dive / pick / scaling`, phase early 7 / mid 8 / late 6. Disponible en draft dès l'installation ; absent des pools de joueurs au départ (à débloquer via Champion ciblé). 22 matchups défavorables (X bat Locke) et 8 matchups favorables (Locke bat X) ajoutés dans `data_counters.js`. Données issues de `CDC/lol_esports_locke_counters_2026.xlsx` — valeurs à affiner dans une version ultérieure.
 
 ---
 
-## [1.11.5] — 2026-06-23
+## [1.11.5] — 23/06/2026
 
 ### Modifié
 - **Score de série avec acronymes** — le label au-dessus du timer affiche désormais les abréviations des deux équipes de part et d'autre du score, ex. `BO3 - Game 2 · G2 2 - 0 GX`.
 
 ---
 
-## [1.11.4] — 2026-06-23
+## [1.11.4] — 23/06/2026
 
 ### Ajouté
 - **Guide des objectifs d'entraînement** — chaque objectif de scrim affiche désormais une carte enrichie dès sa sélection : icône, description, barres de gains (●●● / ●●○ / ●○○), cas d'usage idéal et mise en garde. Un bouton **? Guide** ouvre une modale défilable comparant les 5 objectifs côte à côte, accessible à tout moment depuis l'écran Entraînement.
 
 ---
 
-## [1.11.3] — 2026-06-23
+## [1.11.3] — 23/06/2026
 
 ### Corrigé
 - **Calendrier varié entre les saisons** — l'ordre des adversaires en saison régulière était toujours identique (Spring = Summer = saison suivante). Les équipes IA sont désormais mélangées aléatoirement (Fisher-Yates) à chaque début de saison, en conservant le joueur en position fixe du round-robin. Le format (tout le monde affronte tout le monde une fois) est inchangé.
 
 ---
 
-## [1.11.2] — 2026-06-23
+## [1.11.2] — 23/06/2026
 
 ### Ajouté
 - **Tooltip gains par compétition** — survoler la bulle 💰 Budget ou ⭐ Prestige en haut de l'écran affiche une popup récapitulant les récompenses (budget, prestige, coaching) pour chaque placement en saison régulière, MSI et Worlds.
 
 ---
 
-## [1.11.1] — 2026-06-23
+## [1.11.1] — 23/06/2026
 
 ### Corrigé
 - **Régression Training / Draft / Scouting** — les menus de sélection de champion affichaient « undefined (nouveau) » au lieu des noms. Cause : la fonction `getChampionsForRole` ajoutée en v1.11.0 pour la génération de remplaçants IA (retournant des chaînes) écrasait la version originale (retournant des objets champion), cassant tous les appels `.name` / `.id`. Fix : suppression du doublon ; `generateAIReplacement` appelle désormais `getChampionsForRole(role).map(c => c.name)` pour extraire les noms.
 
 ---
 
-## [1.11.0] — 2026-06-23
+## [1.11.0] — 23/06/2026
 
 ### Ajouté
 - **Rotation des effectifs IA** — les rosters adverses vivent enfin : à la fin de chaque saison Worlds, les joueurs IA qui atteignent leur âge de retraite quittent leur équipe et sont remplacés par un **jeune talent généré** (18–22 ans, `potential > niveau`) au **niveau moyen de l'équipe ± 3**, avec un pool de 5 champions cohérent avec son rôle, des masteries et un nom fictif varié. La hiérarchie par tier reste ainsi stable saison après saison.
@@ -563,35 +563,35 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.10.4] — 2026-06-22
+## [1.10.4] — 22/06/2026
 
 ### Modifié
 - **Worlds — bracket centré et noms complets** : les arbres de la phase finale (upper bracket, lower bracket, grande finale) étaient tassés à gauche ; ils sont désormais **centrés horizontalement** et prennent davantage de place (cartes élargies, espacements plus larges), tout en conservant le centrage vertical. Sur écran large (≥ 900 px), les cartes affichent le **nom complet** des équipes (ex. « CTBC Flying Oyster » au lieu de « CFO ») ; sur petit écran (smartphone/tablette), l'abréviation est conservée pour la lisibilité.
 
 ---
 
-## [1.10.3] — 2026-06-22
+## [1.10.3] — 22/06/2026
 
 ### Modifié
 - **Worlds — le bracket s'alimente match par match** : les blocs suivants (demis UB, finale UB, tours du lower bracket…) affichent désormais les équipes qualifiées **dès que les matchs sources sont joués**, sans attendre la fin de l'étape. Exemple : si les Quarts 1 et 2 sont terminés mais que le Quart 3 (votre match) est encore en attente, la Demi UB 1 et le LB Tour 1 affichent déjà leurs équipes au lieu de « TBD ». Nouvelle fonction `propagateDoubleBracket` (purement visuelle, n'avance pas la compétition).
 
 ---
 
-## [1.10.2] — 2026-06-22
+## [1.10.2] — 22/06/2026
 
 ### Corrigé
 - **Worlds — alignement visuel de l'upper bracket** : les demi-finales upper bracket n'étaient pas centrées verticalement par rapport à leurs quarts (Demi 1 collée au Quart 1, Demi 2 collée au Quart 4), ce qui rendait les lignes de liaison asymétriques. Demi UB 1 est désormais centrée sur le couple Quart 1/Quart 2 et Demi UB 2 sur le couple Quart 3/Quart 4 → liaisons centrées et symétriques.
 
 ---
 
-## [1.10.1] — 2026-06-22
+## [1.10.1] — 22/06/2026
 
 ### Modifié
 - **Worlds — 3e place mieux récompensée** : le perdant de la finale lower bracket (3e) constitue désormais un palier distinct du 4e, pour valoriser son parcours plus long. Récompenses 3e : **165 budget / 120 coaching / 13 prestige** (au lieu de 143 / 105 / 11, identiques au 4e auparavant). Le 4e et les autres places sont inchangés ; le barème domestique et le MSI ne sont pas affectés.
 
 ---
 
-## [1.10.0] — 2026-06-22
+## [1.10.0] — 22/06/2026
 
 ### Ajouté
 - **Worlds en double élimination** — la phase finale des Worlds adopte le format réaliste à upper/lower bracket (le MSI reste en simple élimination). Les 8 qualifiés des groupes entrent dans un **upper bracket** (Quarts → Demis UB → Finale UB) ; chaque défaite fait basculer dans le **lower bracket** (LB Tour 1 → LB Tour 2 → LB Demi → LB Finale), où une 2ᵉ défaite élimine. Le vainqueur de l'upper et le survivant du lower s'affrontent en **grande finale** (BO5). 14 séries au total au lieu de 7.
@@ -604,14 +604,14 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.9.4] — 2026-06-22
+## [1.9.4] — 22/06/2026
 
 ### Corrigé
 - **Phase de groupes internationale jouée deux fois** — au démarrage du MSI/Worlds, les groupes 100 % IA (sans le joueur) voyaient leur journée 1 simulée deux fois : chaque équipe affichait 1V-1D (2 séries) alors qu'un seul match aurait dû être joué, pendant que le groupe du joueur restait à 0-0 et que l'en-tête indiquait toujours « Journée 1/3 ». Cause : deux points d'entrée déclenchaient la simulation (l'effet de bord du rendu du calendrier **et** le bouton « C'est parti ! » du modal d'intro), et un appel « frais » repartait du groupe 0 sans que la journée se soit incrémentée. Ajout d'une garde dans `processInternationalGroupMatchday()` : un démarrage sans argument ne resimule plus une journée déjà lancée et en attente du match du joueur. Le déroulé reprend désormais un seul round par journée pour tous les groupes.
 
 ---
 
-## [1.9.3] — 2026-06-22
+## [1.9.3] — 22/06/2026
 
 ### Ajouté
 - **Boucle de qualification MSI ↔ Worlds (système réaliste)** — les places internationales de chaque région ne sont plus figées, elles se gagnent sur la scène internationale :
@@ -628,21 +628,21 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.9.2] — 2026-06-21
+## [1.9.2] — 21/06/2026
 
 ### Modifié
 - **Nouveau logo (logoV2.png)** — logo principal remplacé dans le jeu, le header et l'écran d'accueil. Icônes PWA régénérées : `icon-512.png` (512×512), `icon-192.png` (192×192), `apple-touch-icon.png` (180×180 iOS). Favicons navigateur : `favicon-32.png` et `favicon-16.png` avec balises `<link sizes>` dans `index.html` pour une meilleure prise en charge multi-navigateur.
 
 ---
 
-## [1.9.1] — 2026-06-21
+## [1.9.1] — 21/06/2026
 
 ### Corrigé
 - **Scouting — noms d'équipes invisibles** : les boutons de sélection d'équipe adverse n'avaient pas de couleur de texte explicite et héritaient d'une valeur sombre sur fond sombre. Ajout de `color: var(--color-text)` sur `.comp-tag-option` dans `style.css`.
 
 ---
 
-## [1.9.0] — 2026-06-21
+## [1.9.0] — 21/06/2026
 
 ### Ajouté
 - **IA de draft non-linéaire (counter-pick)** — l'IA ne suit plus strictement l'ordre TOP→JUNGLE→MID→ADC→SUPPORT. À chaque pick, elle cherche d'abord un rôle vide où le joueur a déjà choisi un champion qu'elle peut contrer dans la même lane (via `data_counters.js` + repli sur les counterTags), et y répond en priorité. Si aucun contre pertinent, elle retombe sur l'ordre habituel (confort pick). L'agressivité est pilotée par `riskTolerance` du profil IA : une équipe prudente ne contre pas systématiquement, ce qui la garde imprévisible. Nouvelles fonctions : `aiChampCounters`, `aiCandidateForRole`, `aiChoosePick` réécrit.
@@ -651,35 +651,35 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.11] — 2026-06-21
+## [1.8.11] — 21/06/2026
 
 ### Modifié
 - **Carte joueur (marché des transferts)** — l'âge s'affiche désormais sur sa propre ligne entre le nom et la ligne "Rôle — Équipe", cohérent avec l'affichage du roster.
 
 ---
 
-## [1.8.10] — 2026-06-20
+## [1.8.10] — 20/06/2026
 
 ### Modifié
 - **Tooltips retraite — compatibilité mobile/tablette/Mac** : les badges ⚠ retraite et "impossible (limite 33 ans)" utilisent désormais `data-lore-tooltip` + délégation globale au clic en plus du `title` natif. Un tap/clic affiche le message via toast, ce qui fonctionne sur tous les appareils.
 
 ---
 
-## [1.8.9] — 2026-06-20
+## [1.8.9] — 20/06/2026
 
 ### Ajouté
 - **Tooltips de retraite (immersion/lore)** — survoler le badge ⚠ retraite W{N} affiche : *"Choix personnel : {joueur} a décidé de mettre fin à sa carrière à {age} ans. Une prolongation reste possible, mais à des conditions exceptionnelles (×1.5)."* Survoler le texte "impossible (limite 33 ans)" affiche : *"La réglementation ne permet pas de jouer après 33 ans."*
 
 ---
 
-## [1.8.8] — 2026-06-20
+## [1.8.8] — 20/06/2026
 
 ### Modifié
 - **Carte joueur (roster)** — l'âge est maintenant affiché sur sa propre ligne entre "Rôle — Nationalité" et la date de fin de contrat, au lieu d'être accolé sur la même ligne que la nationalité.
 
 ---
 
-## [1.8.7] — 2026-06-20
+## [1.8.7] — 20/06/2026
 
 ### Équilibrage
 - **Renouvellements de contrat — budget revus à la hausse** : Superstar 💰100/185, Star 💰75/140, Solide 💰50/95, Role 💰30/55 (prestige inchangé). Les négociations de carrière ×1.5 s'appliquent sur ces nouveaux montants.
@@ -687,14 +687,14 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.6] — 2026-06-20
+## [1.8.6] — 20/06/2026
 
 ### Équilibrage
 - **Coûts de renouvellement de contrat revus à la hausse** — les budgets étaient trop bas par rapport aux prix du marché des transferts (renouveler une Star coûtait 22 budget, recruter un remplaçant plus faible en coûtait 61). Nouveau barème aligné sur le marché : Superstar 💰65/120, Star 💰50/90, Solide 💰35/65, Role player 💰20/38. Les exigences de prestige restent inchangées.
 
 ---
 
-## [1.8.5] — 2026-06-20
+## [1.8.5] — 20/06/2026
 
 ### Ajouté
 - **Négociation de carrière (prolongation au-delà de la retraite prévue)** — quand une extension dépasse `retirementAge` mais reste dans la limite absolue de 33 ans, un mode "négociation de carrière" s'active : coût x1.5 (prestige et budget, arrondi au supérieur), bouton ⭐ ambré distinctif, bannière explicative dans le modal.
@@ -703,7 +703,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.4] — 2026-06-20
+## [1.8.4] — 20/06/2026
 
 ### Ajouté
 - **Système d'âge joueurs** — chaque joueur a désormais un `baseAge` (âge en saison 1) et un `retirementAge` (âge de retraite). L'âge s'affiche sur les cartes du roster et du marché des transferts. `data_teams.js` (330 joueurs) et `data_transfers.js` (75 joueurs) ont été enrichis depuis l'Excel `lol_esports_update_2026_contracts_age.xlsx`.
@@ -714,14 +714,14 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.3] — 2026-06-20
+## [1.8.3] — 20/06/2026
 
 ### Ajouté
 - **Limite de prolongation : une seule fois par joueur par saison** — il n'était pas possible d'empêcher l'abus de cliquer plusieurs fois sur +1 an / +2 ans pour un même joueur. Désormais, dès qu'un joueur est prolongé, un champ `contractExtendedYear` est enregistré. Toute tentative supplémentaire pendant la même saison affiche un message clair et les boutons sont remplacés par un badge « ✓ Prolongé cette saison ».
 
 ---
 
-## [1.8.2] — 2026-06-20
+## [1.8.2] — 20/06/2026
 
 ### Corrigé
 - **Boutons « +1 an / +2 ans » sans effet au clic** — les boutons étaient rendus `disabled` quand la fenêtre était fermée ou le coût non payable ; or un bouton désactivé n'émet aucun clic → « rien ne se passe », sans explication. Les boutons sont désormais toujours cliquables et un message clair indique le blocage (mercato fermé, prestige ou budget insuffisant).
@@ -731,7 +731,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.1] — 2026-06-20
+## [1.8.1] — 20/06/2026
 
 ### Corrigé
 - **Contrats « Worlds undefined » sur les sauvegardes importées** — les chemins d'import (fichier `importSave` et cloud `cloudImport`) affectaient l'état directement (`state = parsed`) sans passer par la migration de `loadGame`, laissant `contractUntil` indéfini → affichage « Wundefined / Worlds undefined » dans la section contrats.
@@ -740,7 +740,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.8.0] — 2026-06-20
+## [1.8.0] — 20/06/2026
 
 ### Ajouté
 - **Système de contrats joueurs** — chaque joueur du roster est désormais engagé jusqu'à la fin d'un Worlds donné (« jusqu'à Worlds 1 », « Worlds 2 »…). L'échéance est affichée sur sa carte (avec alerte ⚠ « dernière année »).
@@ -752,7 +752,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.8] — 2026-06-20
+## [1.7.8] — 20/06/2026
 
 ### Corrigé
 - **Palmarès : qualifications MSI/Worlds comptées plusieurs fois** — un clic répété sur « Continuer vers le MSI/les Worlds » (possible à l'époque du bug d'enchaînement v1.6.2) appelait `startInternational` plusieurs fois, incrémentant le compteur de qualifications à chaque clic et réinitialisant les groupes.
@@ -761,7 +761,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.7] — 2026-06-20
+## [1.7.7] — 20/06/2026
 
 ### Corrigé
 - **Popup d'intro de saison : nombre de qualifiés pour l'international** — la popup annonçait toujours « les 2 meilleures équipes » quel que soit le split, alors que le Summer Split qualifie **3 équipes** de la région du joueur pour les Worlds (contre 2 pour le MSI au Spring).
@@ -775,7 +775,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.6] — 2026-06-20
+## [1.7.6] — 20/06/2026
 
 ### Corrigé
 - **Scores inversés dans l'arbre de phase finale** — sur l'écran de synthèse (saison, MSI, Worlds), les scores de chaque série étaient affichés à l'envers (le gagnant montrait le score du perdant et inversement), par ex. une défaite 0-3 affichée comme 3-0.
@@ -785,7 +785,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.5] — 2026-06-20
+## [1.7.5] — 20/06/2026
 
 ### Corrigé
 - **Arbre de phase finale : lignes de connexion en angles droits uniquement** — certains connecteurs étaient tracés en diagonale lorsqu'un bloc cible n'était pas pile au centre vertical de ses deux sources, et le trait Finale → Vainqueur faisait un coude inutile.
@@ -795,7 +795,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.4] — 2026-06-20
+## [1.7.4] — 20/06/2026
 
 ### Amélioré
 - **Les maîtrises de l'IA évoluent dans le temps** — auparavant figées, les maîtrises champion des équipes IA progressent désormais à chaque fin de split, pour qu'elles restent compétitives saison après saison (et n'accumulent plus un retard permanent face à un roster joueur qui, lui, s'entraîne).
@@ -806,7 +806,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.3] — 2026-06-20
+## [1.7.3] — 20/06/2026
 
 ### Amélioré
 - **Maîtrise réelle des champions de l'IA en match** — auparavant, l'IA jouait tous ses champions avec une maîtrise figée à 40, quel que soit le champion : les grosses équipes (T1, Gen.G, G2…) étaient artificiellement faibles, rendant les matchs trop faciles pour un roster développé.
@@ -817,7 +817,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.2] — 2026-06-19
+## [1.7.2] — 19/06/2026
 
 ### Corrigé
 - **Phase de groupes internationale (MSI/Worlds) : pairings IA skippés** — après que le joueur terminait son match dans un groupe, les pairings suivants du même round (ex. CFO vs FUR) n'étaient jamais simulés. Résultat : certaines équipes restaient à 0 match joué tandis que d'autres cumulaient des défaites impossibles sur une même journée.
@@ -826,7 +826,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.1] — 2026-06-19
+## [1.7.1] — 19/06/2026
 
 ### Amélioré
 - **Scrims : bonus de gains selon le tier de l'adversaire** — s'entraîner contre une équipe d'élite rapporte davantage que contre une équipe de bas tableau.
@@ -837,7 +837,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.7.0] — 2026-06-19
+## [1.7.0] — 19/06/2026
 
 ### Ajouté
 - **Système de prestige pour les scrims** : les équipes hors-région de tier élevé peuvent désormais refuser une demande de scrim si le prestige du joueur est insuffisant.
@@ -851,21 +851,21 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.6.2] — 2026-06-19
+## [1.6.2] — 19/06/2026
 
 ### Corrigé
 - **Fin de playoffs → MSI/Worlds** : après avoir cliqué "Continuer vers le MSI" (ou Worlds) et confirmé dans la popup "C'est parti !", rien ne se passait et l'écran revenait à la récapitulation. Cause : `showView('calendar')` était appelé avant `processInternationalGroupMatchday()`, provoquant un `TypeError` (`pendingMatch` était encore `null`). Corrigé en inversant l'ordre des appels + garde défensive dans `renderInternationalGroups`.
 
 ---
 
-## [1.6.1] — 2026-06-19
+## [1.6.1] — 19/06/2026
 
 ### Corrigé
 - **Écran Champions** : dans la fiche détail d'un champion, les noms des champions counter (panneaux « X contre » et « Contré par ») s'affichaient en noir sur fond sombre. Texte passé en blanc (`var(--color-text)`).
 
 ---
 
-## [1.6.0] — 2026-06-19
+## [1.6.0] — 19/06/2026
 
 ### Ajouté
 - **Roster complet des champions de League of Legends** : la base passe de 90 à **172 champions** (liste officielle Riot complète), répartis sur les 5 rôles (TOP 38, JUNGLE 41, MID 43, ADC 24, SUPPORT 26).
@@ -879,14 +879,14 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.5.4] — 2026-06-19
+## [1.5.4] — 19/06/2026
 
 ### Corrigé
 - **Arbre de phase finale sur les écrans de fin** : l'arbre du bracket réapparaît désormais sur l'écran récapitulatif de fin de saison (« … - Terminée ») ainsi qu'en fin de MSI et de Worlds. Il avait disparu de ces écrans pourtant essentiels pour visualiser le résultat final après les playoffs.
 
 ---
 
-## [1.5.3] — 2026-06-19
+## [1.5.3] — 19/06/2026
 
 ### Amélioré
 - **Simulation de match plus réaliste et plus variée** : refonte de la résolution des affrontements pour casser le schéma répétitif (une équipe à 10-0 en 5 min puis stomp systématique).
@@ -899,7 +899,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.5.2] — 2026-06-19
+## [1.5.2] — 19/06/2026
 
 ### Ajouté
 - **Bloc Vainqueur dans l'arbre** : à droite de la finale (playoffs, MSI, Worlds), un encart doré affiche « Vainqueur », le nom de la compétition (ex. *Spring 1 - LEC*) et l'équipe championne. Reste en pointillés « À déterminer » tant que la finale n'est pas jouée.
@@ -910,7 +910,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.5.1] — 2026-06-19
+## [1.5.1] — 19/06/2026
 
 ### Amélioré
 - **Arbre de phase finale** : les playoffs (saison), MSI et Worlds affichent désormais un bracket visuel avec connecteurs SVG calculés dynamiquement — à la place des anciens chips texte. Chaque rencontre est une carte avec équipes, scores et état (qualifié/éliminé/à venir). La carte du prochain match est mise en évidence en doré. La section "Derniers résultats" reste inchangée en dessous.
@@ -924,7 +924,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.5.0] — 2026-06-19
+## [1.5.0] — 19/06/2026
 
 ### Refonte
 - **Simulation de match recalibrée sur les données pro réelles** (LCK/LPL/LEC/LCS 2026 — gol.gg) : les parties génèrent désormais des statistiques cohérentes avec le pro play (27-31 kills/partie, durée 29-35 min, écart d'or progressif).
@@ -947,28 +947,28 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.4.3] — 2026-06-19
+## [1.4.3] — 19/06/2026
 
 ### Amélioré
 - **Effet snowball** : l'avantage en or influence désormais directement la puissance de chaque camp lors des events de match. Chaque tranche de 2 000 or d'avance apporte +1 de puissance (plafonné à ±5, soit ±10 000 or). Concrètement, une équipe avec 10 000 or d'avance gagne les events de façon quasi systématique, ce qui reflète le comportement réel d'une partie de League of Legends où un retour de 10k gold n'existe quasiment pas.
 
 ---
 
-## [1.4.2] — 2026-06-19
+## [1.4.2] — 19/06/2026
 
 ### Corrigé
 - **Filtre de rôle en draft — rôles secondaires inclus** : le filtre Top/Jungle/Mid/ADC/Support affiche désormais aussi les champions dont ce rôle est un rôle secondaire (ex : Gragas avec `role: TOP` et `secondaryRoles: ['JUNGLE']` apparaît dans le filtre Jungle). Alignement avec ce que l'IA peut picker.
 
 ---
 
-## [1.4.1] — 2026-06-19
+## [1.4.1] — 19/06/2026
 
 ### Corrigé
 - **Qualification MSI / Worlds basée sur les playoffs** : les équipes représentant la région du joueur sont désormais sélectionnées selon les résultats des playoffs, et non le classement de saison régulière. MSI : champion + finaliste (2 spots). Worlds : champion + finaliste + meilleur demi-finaliste éliminé par seed de saison régulière (3 spots). Sans victoire en finale de playoffs il n'est plus possible de se qualifier automatiquement au MSI/Worlds depuis le classement régulier
 
 ---
 
-## [1.4.0] — 2026-06-19
+## [1.4.0] — 19/06/2026
 
 ### Modifié
 - **Niveau global dynamique** : la valeur globale d'un joueur (ex. 89) n'est plus un chiffre statique importé — elle est désormais calculée en temps réel comme la moyenne de ses 5 sous-stats (Mental + Shotcalling + Laning + Teamfight + Mécaniques) / 5. Si l'entraînement améliore une stat, le niveau global monte immédiatement
@@ -978,7 +978,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.3.7] — 2026-06-19
+## [1.3.7] — 19/06/2026
 
 ### Corrigé
 - **Classement — suppression du "(Vous)"** : le nom de l'équipe du joueur s'affiche sans mention, comme les autres équipes (saison régulière et groupes MSI/Worlds)
@@ -988,7 +988,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.3.6] — 2026-06-18
+## [1.3.6] — 18/06/2026
 
 ### Modifié
 - **Économie — suppression du gain de budget par match** : le budget ne s'incrémente plus à chaque victoire (+10) ou défaite (+3) — les revenus proviennent uniquement du classement en fin de compétition
@@ -997,28 +997,28 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.3.5] — 2026-06-18
+## [1.3.5] — 18/06/2026
 
 ### Corrigé
 - **Historique des matchs — colonne Compétition** : la colonne affichait toujours « Scrim » pour tous les matchs. Elle indique désormais le bon contexte : « Spring 1 - LEC » (saison régulière), « Playoffs - Spring 1 - LEC » (playoffs), « MSI 1 - Groupes » / « MSI 1 - Phase finale », « Worlds 1 - Groupes » / « Worlds 1 - Phase finale », ou « Scrim » pour les entraînements
 
 ---
 
-## [1.3.4] — 2026-06-18
+## [1.3.4] — 18/06/2026
 
 ### Modifié
 - **Synthèse de draft — raison du matchup** : chaque ligne de matchup indique désormais pourquoi le matchup est favorable ou défavorable, entre parenthèses (ex : « Top : Sion contre Jayce, matchup favorable (Poke) » et « Top : Sion contre Jayce, matchup défavorable (Engage) »). Lorsque deux entrées coexistent dans la base (champ. A contre B ET B contre A), les deux lignes s'affichent avec leur profil respectif
 
 ---
 
-## [1.3.3] — 2026-06-18
+## [1.3.3] — 18/06/2026
 
 ### Modifié
 - **Classement — colonne Diff. or masquée** : la différence d'or n'est plus affichée dans les tableaux de classement (saison régulière, groupes MSI et Worlds) mais reste utilisée en dernier critère de départage (victoires → h2h → diff. nexus → diff. or)
 
 ---
 
-## [1.3.2] — 2026-06-18
+## [1.3.2] — 18/06/2026
 
 ### Corrigé
 - **Inversion des matchups (counter ↔ synthèse de draft)** : la synthèse post-draft annonçait l'inverse de l'écran Counters (ex : « Renekton contre Jayce, matchup favorable » alors que Jayce contre Renekton). La synthèse s'appuie désormais sur le fichier de counters (même source que l'écran Counters) ; le repli sur les tags a été remis dans le bon sens
@@ -1026,7 +1026,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.3.1] — 2026-06-18
+## [1.3.1] — 18/06/2026
 
 ### Modifié
 - **Passe d'équilibrage majeure (330 joueurs)** : recalibrage des stats globales et sous-stats des rosters principaux (`lol_esports_update_2026_major_balance_v2.xlsx`). Moyenne de niveau 75,0 → 81,3 ; min 55 → 66 ; max 96 → 97
@@ -1037,7 +1037,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.3.0] — 2026-06-18
+## [1.3.0] — 18/06/2026
 
 ### Ajouté
 - **Draft — liséré de confort sur les bans** : pendant la phase de ban (et de pick), chaque champion qu'un de vos joueurs sait jouer (confort ≥ 1) est entouré d'un liséré coloré selon le niveau de maîtrise, avec les mêmes couleurs que le roster (bleu praticable, vert confort, or signature/élite). Survol = nom du joueur et maîtrise
@@ -1047,7 +1047,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.7] — 2026-06-18
+## [1.2.7] — 18/06/2026
 
 ### Modifié
 - **Classement des round robins (saison + groupes MSI/Worlds)** : ajout de la différence de nexus (nexus gagnés - nexus perdus) comme départage, intercalée entre le head-to-head et la différence d'or. Nouvel ordre : victoires → confrontation directe → diff. nexus → diff. or
@@ -1059,7 +1059,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.6] — 2026-06-17
+## [1.2.6] — 17/06/2026
 
 ### Ajouté
 - **Recherche de champion en draft** : un champ de saisie à droite des filtres de rôle (bans ET picks) — la liste se réduit en temps réel aux champions dont le nom contient le texte tapé
@@ -1074,14 +1074,14 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.5] — 2026-06-17
+## [1.2.5] — 17/06/2026
 
 ### Ajouté
 - **Différence d'or en simulation** : sous le compteur de kills, affichage dynamique de l'avance en or — valeur toujours positive, en bleu si l'équipe bleue est devant, en rouge sinon ; calculée à partir des kills (300g/kill), objectifs (dragons 250g, baron 300g, herald 150g, etc.) et structures (tours T1/T2/T3, inhibiteurs)
 
 ---
 
-## [1.2.4] — 2026-06-17
+## [1.2.4] — 17/06/2026
 
 ### Corrigé
 - **Side/Pick indépendants** : Blue Side et First Pick sont désormais deux choix séparés — un joueur peut être Blue Side + Last Pick ou Red Side + First Pick ; attribution toujours respectée
@@ -1093,7 +1093,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.3] — 2026-06-17
+## [1.2.3] — 17/06/2026
 
 ### Corrigé
 - **Timings objectifs neutres** : Baron (Nashor) apparaît à la minute 20 de jeu, réapparaît 6 min après sa mort ; Herald apparaît à la minute 14 — la simulation respecte ces délais et empêche tout événement Baron avant ces seuils
@@ -1105,7 +1105,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.2] — 2026-06-17
+## [1.2.2] — 17/06/2026
 
 ### Ajouté
 - **Tours & Nexus sur la carte** — tours représentées par des carrés bleu/rouge (noirs avec liseré coloré quand détruites), nexus en étoile ★ avec même logique visuelle
@@ -1122,21 +1122,21 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [1.2.1] — 2026-06-16
+## [1.2.1] — 16/06/2026
 
 ### Corrigé
 - **Accents français** — tous les textes du jeu corrigés avec les accents manquants (é, è, ê, à, î, ç, etc.) dans `game.js` et `index.html` (~400 remplacements)
 
 ---
 
-## [1.2.0] — 2026-06-16
+## [1.2.0] — 16/06/2026
 
 ### Ajouté
 - **Sauvegarde cloud GitHub Gist** — synchronisation optionnelle inter-appareils via GitHub Gist (ID + token), tuto intégré, fonctionne en parallèle du mode local
 
 ---
 
-## [1.1.0] — 2026-06-16
+## [1.1.0] — 16/06/2026
 
 ### Ajouté
 - **Marché des transferts** — recrutement de joueurs libres et issus des équipes IA, comparaison de stats, gestion budget, modal de confirmation
@@ -1155,7 +1155,7 @@ Remplace la ligne de suggestion unique par un **panneau coach structuré** affic
 
 ---
 
-## [0.1.0-beta] — 2026-06-16
+## [0.1.0-beta] — 16/06/2026
 
 ### Ajouté
 - **Roster** — affichage des 5 joueurs avec stats complètes, champion pool, traits et barre de fatigue
