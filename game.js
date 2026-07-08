@@ -626,7 +626,7 @@ function showToast(message, type = 'info') {
 /* ------------------------------------------------------------
    Modal generique
    ------------------------------------------------------------ */
-function showModal(innerHtml) {
+function showModal(innerHtml, extraClass) {
   let overlay = document.getElementById('modal-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -634,7 +634,7 @@ function showModal(innerHtml) {
     overlay.className = 'modal-overlay';
     document.body.appendChild(overlay);
   }
-  overlay.innerHTML = `<div class="modal-content">${innerHtml}</div>`;
+  overlay.innerHTML = `<div class="modal-content${extraClass ? ' ' + extraClass : ''}">${innerHtml}</div>`;
   overlay.classList.add('modal-overlay--visible');
 }
 
@@ -2477,11 +2477,17 @@ function applyBootcampMasteryBoost() {
 
 // Chaque joueur revient avec 2 nouveaux champions DE SON RÔLE à confort 25-49.
 // Renvoie le bilan par joueur : { name, role, champs: [{ name, mastery }] }.
-function applyBootcampNewChampions() {
+// v1.17.2 — forcedChoices = { [playerId]: [champName1, champName2] } quand le
+// coach a désigné lui-même les champions (via startEliteChoiceFlow) ; sinon
+// (valeur absente/vide) tirage aléatoire comme avant.
+function applyBootcampNewChampions(forcedChoices) {
   return state.roster.map((p) => {
     const known = new Set(p.championPool);
     const rolePool = getChampionsForRole(p.role).filter((c) => !known.has(c.name));
-    const picks = rolePool.slice().sort(() => Math.random() - 0.5).slice(0, 2);
+    const forcedNames = forcedChoices && forcedChoices[p.id];
+    const picks = (forcedNames && forcedNames.length)
+      ? forcedNames.map((n) => getChampionByName(n)).filter(Boolean)
+      : rolePool.slice().sort(() => Math.random() - 0.5).slice(0, 2);
     const added = [];
     picks.forEach((champ) => {
       const entry = ensureChampionMasteryEntry(p.id, champ);
@@ -2495,7 +2501,90 @@ function applyBootcampNewChampions() {
   });
 }
 
-function applyBootcamp(optId) {
+/* v1.17.2 — Choix des 2 nouveaux champions du bootcamp Élite, joueur par joueur.
+   Pour chacun des 5 joueurs, le coach choisit soit de laisser le joueur piocher
+   au hasard (comportement historique), soit de désigner lui-même les 2 champions
+   à travailler (sélecteur avec portraits, champions du rôle du joueur uniquement).
+   flow.choices[playerId] = null (aléatoire) ou [nom1, nom2] (désignés). */
+function startEliteChoiceFlow() {
+  renderEliteChoiceStep({ index: 0, choices: {} });
+}
+
+function renderEliteChoiceStep(flow) {
+  const players = state.roster;
+  if (flow.index >= players.length) {
+    closeModal();
+    applyBootcamp('elite', flow.choices);
+    return;
+  }
+  const player = players[flow.index];
+  const known = new Set(player.championPool);
+  const availableCount = getChampionsForRole(player.role).filter((c) => !known.has(c.name)).length;
+  showModal(`
+    <h3 class="panel-title">${t('bootcamp.choice.title', { name: player.name, role: player.role })}</h3>
+    <p>${t('bootcamp.choice.prompt', { name: player.name })}</p>
+    <div class="training-form__actions bootcamp-choice-actions">
+      <button class="btn-secondary" id="btn-elite-let-choose">${t('bootcamp.choice.letChoose', { name: player.name })}</button>
+      <button class="btn-primary" id="btn-elite-ask-choose" ${availableCount === 0 ? 'disabled' : ''}>${t('bootcamp.choice.askChoose')}</button>
+    </div>
+    ${availableCount === 0 ? `<p class="card__count bootcamp-choice-empty">${t('bootcamp.choice.noneAvailable')}</p>` : ''}
+  `);
+  document.getElementById('btn-elite-let-choose').addEventListener('click', () => {
+    flow.choices[player.id] = null;
+    flow.index++;
+    renderEliteChoiceStep(flow);
+  });
+  const askBtn = document.getElementById('btn-elite-ask-choose');
+  if (askBtn) askBtn.addEventListener('click', () => renderEliteChampPicker(flow, player));
+}
+
+function renderEliteChampPicker(flow, player) {
+  const known = new Set(player.championPool);
+  const rolePool = getChampionsForRole(player.role).filter((c) => !known.has(c.name));
+  const needed = Math.min(2, rolePool.length);
+  const selected = [];
+
+  const draw = () => {
+    showModal(`
+      <h3 class="panel-title">${t('bootcamp.choice.pickerTitle', { name: player.name })}</h3>
+      <p>${t('bootcamp.choice.pickerHint', { n: needed, role: player.role })}</p>
+      <div class="draft-champion-grid bootcamp-champ-picker">
+        ${rolePool.map((c) => `
+          <button class="draft-champion-card ${selected.includes(c.name) ? 'draft-champion-card--picked' : ''}" data-champ="${c.name}">
+            ${championPortraitHtml(c.name, 'draft-champion-card__portrait')}
+            <span class="draft-champion-card__name">${c.name}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="training-form__actions">
+        <button class="btn-secondary" id="btn-elite-picker-back">${t('common.back')}</button>
+        <button class="btn-primary" id="btn-elite-picker-confirm" ${selected.length === needed ? '' : 'disabled'}>${t('bootcamp.choice.pickerConfirm', { n: selected.length, needed })}</button>
+      </div>
+    `, 'modal-content--wide');
+    document.querySelectorAll('.bootcamp-champ-picker [data-champ]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.champ;
+        const idx = selected.indexOf(name);
+        if (idx >= 0) selected.splice(idx, 1);
+        else if (selected.length < needed) selected.push(name);
+        draw();
+      });
+    });
+    document.getElementById('btn-elite-picker-back').addEventListener('click', () => renderEliteChoiceStep(flow));
+    const confirmBtn = document.getElementById('btn-elite-picker-confirm');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        if (selected.length !== needed) return;
+        flow.choices[player.id] = selected.slice();
+        flow.index++;
+        renderEliteChoiceStep(flow);
+      });
+    }
+  };
+  draw();
+}
+
+function applyBootcamp(optId, eliteChoices) {
   const avail = bootcampAvailability(optId);
   if (!avail.ok) { showToast(bootcampReasonLabel(avail.reason), 'error'); return; }
   const opt = BOOTCAMP_OPTIONS.find((o) => o.id === optId);
@@ -2505,7 +2594,7 @@ function applyBootcamp(optId) {
   // Effets cumulatifs selon le niveau (chaque effet renvoie son bilan par joueur)
   const report = { tier: optId, cohesion: applyBootcampCohesion() };
   if (optId === 'intensif' || optId === 'elite') report.mastery = applyBootcampMasteryBoost();
-  if (optId === 'elite') report.newChamps = applyBootcampNewChampions();
+  if (optId === 'elite') report.newChamps = applyBootcampNewChampions(eliteChoices);
   // Fatigue aléatoire par joueur (non dévoilée dans l'UI)
   state.roster.forEach((p) => {
     p.fatigue = clamp(p.fatigue + randomInt(opt.fatigue[0], opt.fatigue[1]), 0, 100);
@@ -2614,7 +2703,12 @@ function showBootcampConfirm(optId) {
     </div>
   `);
   const btn = document.getElementById('btn-confirm-bootcamp');
-  if (btn) btn.addEventListener('click', () => { closeModal(); applyBootcamp(optId); });
+  if (btn) btn.addEventListener('click', () => {
+    closeModal();
+    // v1.17.2 — Élite : choix des 2 nouveaux champions joueur par joueur avant application.
+    if (optId === 'elite') startEliteChoiceFlow();
+    else applyBootcamp(optId);
+  });
 }
 
 function renderBootcampPanelHtml() {

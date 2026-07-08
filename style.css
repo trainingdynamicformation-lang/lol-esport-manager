@@ -592,6 +592,7 @@ img { max-width: 100%; height: auto; }
   overflow-y: auto;
   animation: fadeIn 200ms ease;
 }
+.modal-content--wide { max-width: 720px; }
 
 .modal-content__actions {
   display: flex;
@@ -1408,6 +1409,13 @@ img { max-width: 100%; height: auto; }
 .draft-champion-card--comfort-confort       { border-color: #4caf7d; box-shadow: 0 0 6px rgba(76,175,125,0.45); }
 .draft-champion-card--comfort-signature     { border-color: var(--color-gold); box-shadow: 0 0 7px rgba(200,155,60,0.55); }
 .draft-champion-card--comfort-elite         { border-color: var(--color-gold); box-shadow: 0 0 9px rgba(200,155,60,0.75); }
+
+/* Sélection dans le sélecteur de champions du bootcamp Élite (v1.17.2) */
+.draft-champion-card--picked {
+  border-color: var(--color-seafoam);
+  border-width: 2px;
+  box-shadow: 0 0 8px rgba(26,120,194,0.6);
+}
 
 .draft-score-panel { margin-top: 14px; }
 
@@ -2227,6 +2235,13 @@ table.history-table th {
 .bootcamp-opt__cost { color: var(--color-gold); font-weight: 700; white-space: nowrap; }
 .bootcamp-opt__desc { font-size: var(--fs-label); color: var(--color-text-muted); margin: 0; }
 .bootcamp-opt__status { font-size: var(--fs-label); color: var(--color-danger); font-style: italic; }
+
+/* Choix des champions du bootcamp Élite, joueur par joueur (v1.17.2) */
+.bootcamp-choice-actions { flex-direction: column; align-items: stretch; }
+.bootcamp-choice-actions .btn-secondary,
+.bootcamp-choice-actions .btn-primary { width: 100%; text-align: center; }
+.bootcamp-choice-empty { margin-top: 10px; font-style: italic; color: var(--color-text-muted); }
+.bootcamp-champ-picker { max-height: 320px; margin: 10px 0; }
 
 /* Bilan de fin de bootcamp (overlay centré, 1 à 3 colonnes selon le niveau) */
 .bootcamp-recap-overlay {

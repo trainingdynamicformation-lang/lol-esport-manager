@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.2] — 2026-07-18
+
+### Ajouté — Bootcamp Élite : choix des nouveaux champions
+
+Quand vous validez un bootcamp **Élite**, une fenêtre s'ouvre pour chacun des 5 joueurs avant que le bootcamp ne s'applique. Pour chaque joueur, deux options :
+
+- **Laisser {joueur} choisir ses deux champions** — tirage au hasard parmi les champions de son rôle, comme avant.
+- **Désigner moi-même les deux champions à travailler** — un sélecteur affiche tous les champions compatibles avec le rôle du joueur (portraits inclus) ; vous en choisissez exactement deux.
+
+Une fois les 5 choix faits, le bootcamp s'applique normalement et le bilan de fin de bootcamp affiche les champions réellement obtenus (choisis ou tirés au sort).
+
+---
+
 ## [1.17.1] — 2026-07-17
 
 ### Corrigé — Description du bootcamp Intensif obsolète
