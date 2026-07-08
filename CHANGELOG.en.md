@@ -5,6 +5,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.16.6] — 2026-07-14
+
+### Added — Post-game recap screen
+
+At the end of a game, a new **Recap** button appears next to the "Next game" button. It opens a broadcast-style recap screen, full-width on PC and adapted for mobile:
+
+- **Header**: each team's name (blue on the left, red on the right), its kill count, and the game duration in the center. A themed band recalls the competition and format.
+- **Left column**: the game's team stats (turrets, dragons, elder dragons, barons, rift heralds, void grubs) and the game's bans. KDA and per-team gold aren't shown (the engine doesn't track these at the individual level).
+- **Right column**: the **gold difference over time** curve, drawn across the whole game, with the leading team shown in the legend.
+
+---
+
 ## [1.16.5] — 2026-07-13
 
 ### Changed — Draft: previous games' picks history (instead of bans)

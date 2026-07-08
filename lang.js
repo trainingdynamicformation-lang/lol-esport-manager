@@ -78,6 +78,16 @@ const I18N = {
     'match.baronBuff': 'Buff Baron actif',
     'match.elderBuff': 'Buff Elder actif',
     'match.pause': 'Pause',
+    'match.recap': 'Récap',
+    'match.recapDuration': 'Durée',
+    'match.turrets': 'Tourelles',
+    'match.elders': 'Dragons Ancestraux',
+    'match.barons': 'Barons',
+    'match.heralds': 'Hérauts',
+    'match.bans': 'Bans',
+    'match.goldOverTime': "Écart d'or dans le temps",
+    'match.recapAdvantage': 'Avantage {team}',
+    'match.recapNoGold': "Données d'or indisponibles.",
 
     // -- Progression --
     'prog.globalStats': 'Statistiques globales',
@@ -1129,6 +1139,16 @@ const I18N = {
     'match.baronBuff': 'Baron buff active',
     'match.elderBuff': 'Elder buff active',
     'match.pause': 'Pause',
+    'match.recap': 'Recap',
+    'match.recapDuration': 'Duration',
+    'match.turrets': 'Turrets',
+    'match.elders': 'Elder Dragons',
+    'match.barons': 'Barons',
+    'match.heralds': 'Rift Heralds',
+    'match.bans': 'Bans',
+    'match.goldOverTime': 'Gold difference over time',
+    'match.recapAdvantage': '{team} advantage',
+    'match.recapNoGold': 'Gold data unavailable.',
 
     // -- Progression --
     'prog.globalStats': 'Global statistics',

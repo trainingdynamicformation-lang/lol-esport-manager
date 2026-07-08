@@ -6479,6 +6479,8 @@ function startMatch(opponentTeamId) {
     nextElderTime: null,
     winProbability: computeBaseWinProbability(opponent),
     eventHistory: [],
+    goldHistory: [{ t: 0, blue: 0, red: 0 }], // v1.16.6 — courbe d'or dans le temps (écran récap)
+    recap: null,                              // v1.16.6 — snapshot de fin de match pour l'écran récap
     before: snapshotRosterStats(),
     speed: state.settings.speed || 2,
     paused: false,
@@ -6849,6 +6851,9 @@ function simulateTick() {
 
   updateMatchScoreboard();
 
+  // v1.16.6 — point de courbe d'or (par tick) pour l'écran de récap de fin de match
+  rt.goldHistory.push({ t: rt.gameClock, blue: Math.round(rt.gold.blue), red: Math.round(rt.gold.red) });
+
   // v1.15.5 — fix : seule la destruction du nexus met fin à une partie, comme dans LoL
   // (une limite de temps forcée à 55 min désignait un vainqueur par avantage structurel
   // sans que le nexus ne tombe — supprimée, la partie peut désormais durer aussi
@@ -7097,6 +7102,11 @@ function finishMatch() {
   const opponentMapSide = rt.picks.playerSide === 'blue' ? 'red' : 'blue';
   const gameGoldDiff = rt.gold[rt.picks.playerSide] - rt.gold[opponentMapSide];
 
+  // v1.16.6 — snapshot pour l'écran de récap, AVANT que le bloc série ne vide state.draft
+  // (les bans en dépendent). matchRuntime persiste jusqu'au prochain match, donc rt.recap reste
+  // lisible par le bouton « Récap ».
+  rt.recap = buildMatchRecapData(rt, series, win);
+
   rt.seriesEvent = null;
   if (series) {
     if (win) series.scoreFor++; else series.scoreAgainst++;
@@ -7146,7 +7156,170 @@ function finishMatch() {
       pauseBtn.textContent = t('match.return');
     }
   }
+  const recapBtn = document.getElementById('btn-recap-match');
+  if (recapBtn) {
+    recapBtn.style.display = '';
+    recapBtn.onclick = () => showMatchRecap();
+  }
   showScrimReportModal(rt.report);
+}
+
+/* ------------------------------------------------------------
+   Écran de récap de fin de match (v1.16.6)
+   ------------------------------------------------------------ */
+
+// Nombre de tours détruits par un camp = tours du camp adverse tombées.
+function buildMatchRecapData(rt, series, win) {
+  const draft = state.draft;
+  const playerMapSide = rt.picks.playerSide;
+  const blueName = playerMapSide === 'blue' ? (state.teamName || t('match.yourTeam')) : rt.opponent.name;
+  const redName = playerMapSide === 'red' ? (state.teamName || t('match.yourTeam')) : rt.opponent.name;
+  const blueRegion = playerMapSide === 'blue' ? (state.region ? regionDisplayName(state.region) : '') : rt.opponent.region;
+  const redRegion = playerMapSide === 'red' ? (state.region ? regionDisplayName(state.region) : '') : rt.opponent.region;
+  const goldSeries = (rt.goldHistory || []).map((pt) => ({ min: pt.t / 60, diff: pt.blue - pt.red }));
+  return {
+    win,
+    playerIsBlue: playerMapSide === 'blue',
+    blueName, redName, blueRegion, redRegion,
+    blueKills: rt.score.blue, redKills: rt.score.red,
+    durationSec: rt.gameClock,
+    compContext: series ? series.context : 'Scrim',
+    compFormat: series ? series.format : null,
+    gameNumber: series ? series.gameNumber : null,
+    stats: {
+      turrets: { blue: structureTowerCount('red', rt), red: structureTowerCount('blue', rt) },
+      drakes: { blue: rt.objectives.dragons.blue, red: rt.objectives.dragons.red },
+      elders: { blue: rt.objectives.elders.blue, red: rt.objectives.elders.red },
+      barons: { blue: rt.objectives.barons.blue, red: rt.objectives.barons.red },
+      heralds: { blue: rt.objectives.heralds.blue, red: rt.objectives.heralds.red },
+      grubs: { blue: rt.objectives.grubs.blue, red: rt.objectives.grubs.red }
+    },
+    bans: {
+      blue: draft ? (draft.blueBans || []).slice() : [],
+      red: draft ? (draft.redBans || []).slice() : []
+    },
+    goldSeries
+  };
+}
+
+// Courbe SVG de l'écart d'or (bleu − rouge) dans le temps.
+function renderGoldChartSvg(series) {
+  if (!series || series.length < 2) {
+    return `<div class="match-recap-chart__empty">${t('match.recapNoGold')}</div>`;
+  }
+  const W = 400, H = 200, midY = H / 2;
+  const maxMin = Math.max(1, series[series.length - 1].min);
+  const maxAbs = Math.max(1000, ...series.map((p) => Math.abs(p.diff)));
+  const x = (min) => (min / maxMin) * W;
+  const y = (diff) => midY - (diff / maxAbs) * (midY - 10);
+  const pts = series.map((p) => `${x(p.min).toFixed(1)},${y(p.diff).toFixed(1)}`);
+  const finalDiff = series[series.length - 1].diff;
+  const color = finalDiff >= 0 ? 'var(--color-seafoam)' : 'var(--color-danger)';
+  const linePath = `M${pts.join(' L')}`;
+  const areaPath = `${linePath} L${x(maxMin).toFixed(1)},${midY.toFixed(1)} L0,${midY.toFixed(1)} Z`;
+  const kLabel = (maxAbs / 1000).toFixed(1);
+  return `
+    <svg viewBox="0 0 ${W} ${H}" class="match-recap-chart__svg" preserveAspectRatio="none">
+      <line x1="0" y1="${midY}" x2="${W}" y2="${midY}" class="match-recap-chart__axis"></line>
+      <line x1="0" y1="${midY / 2}" x2="${W}" y2="${midY / 2}" class="match-recap-chart__grid"></line>
+      <line x1="0" y1="${midY * 1.5}" x2="${W}" y2="${midY * 1.5}" class="match-recap-chart__grid"></line>
+      <path d="${areaPath}" fill="${color}" fill-opacity="0.16"></path>
+      <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2"></path>
+      <text x="4" y="14" class="match-recap-chart__lbl">+${kLabel}k</text>
+      <text x="4" y="${H - 6}" class="match-recap-chart__lbl">-${kLabel}k</text>
+      <text x="2" y="${midY - 4}" class="match-recap-chart__lbl">0</text>
+    </svg>`;
+}
+
+function showMatchRecap() {
+  const rt = matchRuntime;
+  const recap = rt && rt.recap;
+  if (!recap) return;
+
+  const compLabel = recap.compFormat
+    ? `${recap.compContext} — ${recap.compFormat}${recap.gameNumber ? ` · ${t('draft.gameLabel', { n: recap.gameNumber })}` : ''}`
+    : recap.compContext;
+
+  const statRow = (labelKey, s) => `
+    <div class="match-recap-stat">
+      <span class="match-recap-stat__blue">${s.blue}</span>
+      <span class="match-recap-stat__label">${t(labelKey)}</span>
+      <span class="match-recap-stat__red">${s.red}</span>
+    </div>`;
+
+  const bansSide = (list, sideClass) => {
+    const slots = [];
+    for (let i = 0; i < 5; i++) slots.push(list[i] || null);
+    return `<div class="match-recap-bans__row match-recap-bans__row--${sideClass}">${slots.map((c) => `
+      <span class="match-recap-ban ${c ? 'match-recap-ban--filled' : ''}" title="${c ? escapeAttr(c) : ''}">${championPortraitHtml(c, 'match-recap-ban__portrait')}</span>`).join('')}</div>`;
+  };
+
+  const finalDiff = recap.goldSeries.length ? recap.goldSeries[recap.goldSeries.length - 1].diff : 0;
+  const leaderName = finalDiff >= 0 ? recap.blueName : recap.redName;
+  const leaderClass = finalDiff >= 0 ? 'blue' : 'red';
+
+  let overlay = document.getElementById('match-recap-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'match-recap-overlay';
+    overlay.className = 'match-recap-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="match-recap">
+      <button class="changelog-close match-recap__close" id="match-recap-close">✕</button>
+      <div class="match-recap-header">
+        <div class="match-recap-header__team match-recap-header__team--blue">
+          <div class="match-recap-header__name">${recap.blueName}</div>
+          <div class="match-recap-header__region">${recap.blueRegion || ''} · ${recap.win === recap.playerIsBlue ? t('train.won') : t('train.lost')}</div>
+        </div>
+        <div class="match-recap-header__kills match-recap-header__kills--blue">${recap.blueKills}</div>
+        <div class="match-recap-header__center">
+          <div class="match-recap-header__time">${formatClock(recap.durationSec)}</div>
+          <div class="match-recap-header__timelbl">${t('match.recapDuration')}</div>
+        </div>
+        <div class="match-recap-header__kills match-recap-header__kills--red">${recap.redKills}</div>
+        <div class="match-recap-header__team match-recap-header__team--red">
+          <div class="match-recap-header__name">${recap.redName}</div>
+          <div class="match-recap-header__region">${recap.redRegion || ''} · ${recap.win !== recap.playerIsBlue ? t('train.won') : t('train.lost')}</div>
+        </div>
+      </div>
+      <div class="match-recap-band">${compLabel}</div>
+      <div class="match-recap-body">
+        <div class="match-recap-col">
+          ${statRow('match.turrets', recap.stats.turrets)}
+          ${statRow('match.dragons', recap.stats.drakes)}
+          ${statRow('match.elders', recap.stats.elders)}
+          ${statRow('match.barons', recap.stats.barons)}
+          ${statRow('match.heralds', recap.stats.heralds)}
+          ${statRow('match.grubs', recap.stats.grubs)}
+          <div class="match-recap-bans">
+            <div class="match-recap-bans__label">${t('match.bans')}</div>
+            <div class="match-recap-bans__wrap">
+              ${bansSide(recap.bans.blue, 'blue')}
+              ${bansSide(recap.bans.red, 'red')}
+            </div>
+          </div>
+        </div>
+        <div class="match-recap-col">
+          <div class="match-recap-chart__label">${t('match.goldOverTime')}</div>
+          ${renderGoldChartSvg(recap.goldSeries)}
+          <div class="match-recap-chart__legend match-recap-chart__legend--${leaderClass}">${t('match.recapAdvantage', { team: leaderName })}</div>
+        </div>
+      </div>
+      <div class="match-recap__actions">
+        <button class="btn-secondary" id="match-recap-close-btn">${t('common.close')}</button>
+      </div>
+    </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) closeMatchRecap(); };
+  overlay.querySelector('#match-recap-close').addEventListener('click', closeMatchRecap);
+  overlay.querySelector('#match-recap-close-btn').addEventListener('click', closeMatchRecap);
+  overlay.classList.add('match-recap-overlay--visible');
+}
+
+function closeMatchRecap() {
+  const overlay = document.getElementById('match-recap-overlay');
+  if (overlay) overlay.classList.remove('match-recap-overlay--visible');
 }
 
 function renderMatchArena() {
@@ -7186,6 +7359,9 @@ function renderMatchArena() {
   });
 
   updateMatchObjectivesPanel();
+
+  const recapBtn = document.getElementById('btn-recap-match');
+  if (recapBtn) recapBtn.style.display = 'none'; // v1.16.6 — masqué tant que le match n'est pas fini
 
   const pauseBtn = document.getElementById('btn-pause-match');
   pauseBtn.textContent = t('match.pause');

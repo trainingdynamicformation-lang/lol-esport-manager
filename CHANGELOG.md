@@ -5,6 +5,18 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.16.6] — 2026-07-14
+
+### Ajouté — Écran de récap de fin de match
+
+À la fin d'une game, un nouveau bouton **Récap** apparaît à côté du bouton « Game suivante ». Il ouvre un écran de récapitulatif façon retransmission esport, pleine largeur sur PC et adapté sur mobile :
+
+- **En-tête** : le nom de chaque équipe (bleu à gauche, rouge à droite), son nombre de kills, et la durée de la partie au centre. Un bandeau à la couleur du jeu rappelle la compétition et le format.
+- **Colonne de gauche** : les statistiques collectives de la partie (tourelles, dragons, dragons ancestraux, barons, hérauts, void grubs) et les bans de la game. Le KDA et l'or par équipe ne sont pas affichés (le moteur ne suit pas ces données au niveau individuel).
+- **Colonne de droite** : la **courbe de l'écart d'or dans le temps**, tracée tout au long de la partie, avec l'équipe qui a mené indiquée en légende.
+
+---
+
 ## [1.16.5] — 2026-07-13
 
 ### Modifié — Draft : historique des picks des games précédentes (au lieu des bans)
