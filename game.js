@@ -2433,39 +2433,53 @@ function bootcampStatGain(v) {
   return randomInt(1, 2);
 }
 
+// Renvoie le bilan par joueur : { name, role, gains: {shotcalling, teamfight, mental} }.
 function applyBootcampCohesion() {
-  state.roster.forEach((p) => {
+  return state.roster.map((p) => {
+    const gains = {};
     ['shotcalling', 'teamfight', 'mental'].forEach((stat) => {
-      p[stat] = clamp(p[stat] + bootcampStatGain(p[stat]), 0, 99);
+      const before = p[stat];
+      p[stat] = clamp(before + bootcampStatGain(before), 0, 99);
+      gains[stat] = p[stat] - before;
     });
+    return { name: p.name, role: p.role, gains };
   });
 }
 
 // +20% de confort sur les champions du pool SOUS 75 de maîtrise (jamais Signature/Élite).
+// Renvoie le bilan par joueur : { name, role, champs: [{ name, before, after }] }.
 function applyBootcampMasteryBoost() {
-  state.roster.forEach((p) => {
+  return state.roster.map((p) => {
+    const champs = [];
     p.championPool.forEach((champName) => {
       const entry = getChampionMastery(p.id, champName);
       if (entry && entry.mastery < 75) {
+        const before = entry.mastery;
         entry.mastery = clamp(Math.round(entry.mastery * 1.2), 0, 74);
+        if (entry.mastery !== before) champs.push({ name: champName, before, after: entry.mastery });
       }
     });
+    return { name: p.name, role: p.role, champs };
   });
 }
 
-// Chaque joueur revient avec 2 nouveaux champions de son rôle à confort 25-49.
+// Chaque joueur revient avec 2 nouveaux champions DE SON RÔLE à confort 25-49.
+// Renvoie le bilan par joueur : { name, role, champs: [{ name, mastery }] }.
 function applyBootcampNewChampions() {
-  state.roster.forEach((p) => {
+  return state.roster.map((p) => {
     const known = new Set(p.championPool);
     const rolePool = getChampionsForRole(p.role).filter((c) => !known.has(c.name));
     const picks = rolePool.slice().sort(() => Math.random() - 0.5).slice(0, 2);
+    const added = [];
     picks.forEach((champ) => {
       const entry = ensureChampionMasteryEntry(p.id, champ);
       entry.mastery = randomInt(25, 49);
       entry.confidence = clamp(entry.mastery + 5, 0, 100);
       entry.stageReady = entry.mastery >= 50;
       if (!p.championPool.includes(champ.name)) p.championPool.push(champ.name);
+      added.push({ name: champ.name, mastery: entry.mastery });
     });
+    return { name: p.name, role: p.role, champs: added };
   });
 }
 
@@ -2476,10 +2490,10 @@ function applyBootcamp(optId) {
   const ctx = getBootcampContext();
 
   state.resources.budget -= opt.cost;
-  // Effets cumulatifs selon le niveau
-  applyBootcampCohesion();
-  if (optId === 'intensif' || optId === 'elite') applyBootcampMasteryBoost();
-  if (optId === 'elite') applyBootcampNewChampions();
+  // Effets cumulatifs selon le niveau (chaque effet renvoie son bilan par joueur)
+  const report = { tier: optId, cohesion: applyBootcampCohesion() };
+  if (optId === 'intensif' || optId === 'elite') report.mastery = applyBootcampMasteryBoost();
+  if (optId === 'elite') report.newChamps = applyBootcampNewChampions();
   // Fatigue aléatoire par joueur (non dévoilée dans l'UI)
   state.roster.forEach((p) => {
     p.fatigue = clamp(p.fatigue + randomInt(opt.fatigue[0], opt.fatigue[1]), 0, 100);
@@ -2491,7 +2505,86 @@ function applyBootcamp(optId) {
   saveGame();
   updateResourceBar();
   renderRoster();
-  showToast(t('bootcamp.done.' + optId), 'success');
+  showBootcampRecap(report);
+}
+
+// Bilan de fin de bootcamp, centré à l'écran (comme le récap de match).
+// 1 colonne (Cohésion), 2 (Intensif), ou 3 (Élite) selon le niveau.
+function showBootcampRecap(report) {
+  const roleTag = (role) => `<span class="bootcamp-recap-player__role">${role}</span>`;
+
+  const cohesionCol = () => {
+    const rows = report.cohesion.map((r) => {
+      const parts = [['shotcalling', 'stat.shotcalling'], ['teamfight', 'stat.teamfight'], ['mental', 'stat.mental']]
+        .filter(([k]) => r.gains[k] > 0)
+        .map(([k, key]) => `<span class="bootcamp-recap-gain">${t(key)} <strong>+${r.gains[k]}</strong></span>`);
+      return `<div class="bootcamp-recap-player">
+        <div class="bootcamp-recap-player__name">${r.name} ${roleTag(r.role)}</div>
+        <div class="bootcamp-recap-player__body">${parts.length ? parts.join('') : `<span class="bootcamp-recap-none">${t('bootcamp.noGain')}</span>`}</div>
+      </div>`;
+    }).join('');
+    return `<div class="bootcamp-recap-col"><h4 class="bootcamp-recap-col__title">${t('bootcamp.colCohesion')}</h4>${rows}</div>`;
+  };
+
+  const masteryCol = () => {
+    const rows = report.mastery.map((r) => {
+      const lines = r.champs.map((c) => `<div class="bootcamp-recap-champ">
+        ${championPortraitHtml(c.name, 'bootcamp-recap-champ__portrait')}
+        <span class="bootcamp-recap-champ__name">${c.name}</span>
+        <span class="bootcamp-recap-champ__delta">${c.before} &rarr; <strong>${c.after}</strong></span>
+      </div>`).join('');
+      return `<div class="bootcamp-recap-player">
+        <div class="bootcamp-recap-player__name">${r.name} ${roleTag(r.role)}</div>
+        <div class="bootcamp-recap-player__body">${lines || `<span class="bootcamp-recap-none">${t('bootcamp.noGain')}</span>`}</div>
+      </div>`;
+    }).join('');
+    return `<div class="bootcamp-recap-col"><h4 class="bootcamp-recap-col__title">${t('bootcamp.colMastery')}</h4>${rows}</div>`;
+  };
+
+  const newChampsCol = () => {
+    const rows = report.newChamps.map((r) => {
+      const lines = r.champs.map((c) => `<div class="bootcamp-recap-champ">
+        ${championPortraitHtml(c.name, 'bootcamp-recap-champ__portrait')}
+        <span class="bootcamp-recap-champ__name">${c.name}</span>
+        <span class="bootcamp-recap-champ__delta"><strong>${c.mastery}</strong></span>
+      </div>`).join('');
+      return `<div class="bootcamp-recap-player">
+        <div class="bootcamp-recap-player__name">${r.name} ${roleTag(r.role)}</div>
+        <div class="bootcamp-recap-player__body">${lines || `<span class="bootcamp-recap-none">—</span>`}</div>
+      </div>`;
+    }).join('');
+    return `<div class="bootcamp-recap-col"><h4 class="bootcamp-recap-col__title">${t('bootcamp.colNew')}</h4>${rows}</div>`;
+  };
+
+  const cols = [cohesionCol()];
+  if (report.mastery) cols.push(masteryCol());
+  if (report.newChamps) cols.push(newChampsCol());
+
+  let overlay = document.getElementById('bootcamp-recap-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'bootcamp-recap-overlay';
+    overlay.className = 'bootcamp-recap-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="bootcamp-recap" style="--bootcamp-cols:${cols.length};">
+      <button class="changelog-close bootcamp-recap__close" id="bootcamp-recap-close">✕</button>
+      <div class="bootcamp-recap-band">${t('bootcamp.recapTitle', { level: t('bootcamp.opt.' + report.tier) })}</div>
+      <div class="bootcamp-recap-body">${cols.join('')}</div>
+      <div class="bootcamp-recap__actions">
+        <button class="btn-primary" id="bootcamp-recap-close-btn">${t('common.close')}</button>
+      </div>
+    </div>`;
+  overlay.onclick = (e) => { if (e.target === overlay) closeBootcampRecap(); };
+  overlay.querySelector('#bootcamp-recap-close').addEventListener('click', closeBootcampRecap);
+  overlay.querySelector('#bootcamp-recap-close-btn').addEventListener('click', closeBootcampRecap);
+  overlay.classList.add('bootcamp-recap-overlay--visible');
+}
+
+function closeBootcampRecap() {
+  const overlay = document.getElementById('bootcamp-recap-overlay');
+  if (overlay) overlay.classList.remove('bootcamp-recap-overlay--visible');
 }
 
 function showBootcampConfirm(optId) {

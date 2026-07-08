@@ -13,7 +13,9 @@ Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcam
 
 - **Cohésion** (50 budget) — améliore la coordination de l'équipe : shotcalling, teamfight et mental de vos 5 joueurs (rendements décroissants près du plafond).
 - **Intensif** (140 budget) — Cohésion **+** tous les champions du pool sous la maîtrise Signature gagnent **+20 % de confort** (jamais au-delà de Signature/Élite : ces niveaux se gagnent en jouant).
-- **Élite** (300 budget) — Intensif **+** chaque joueur revient avec **2 nouveaux champions** à confort Praticable (25-49).
+- **Élite** (300 budget) — Intensif **+** chaque joueur revient avec **2 nouveaux champions** de son rôle à confort Praticable (25-49).
+
+À la fin d'un bootcamp, un **bilan** s'affiche (centré à l'écran, comme le récap de match) avec autant de colonnes que le niveau : 1 pour Cohésion (gains de stats par joueur), 2 pour Intensif (+ gains de confort par champion et par joueur, ex. « Nasus 74 → … »), 3 pour Élite (+ les 2 nouveaux champions de chaque joueur).
 
 **Garde-fous d'équilibrage :**
 - **Un seul bootcamp par intervalle entre deux compétitions** (tous niveaux confondus).
