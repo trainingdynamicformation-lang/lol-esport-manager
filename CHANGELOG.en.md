@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.17.1] — 2026-07-17
+
+### Fixed — Outdated Intensive bootcamp description
+
+The Intensive bootcamp text still mentioned "+20% comfort", a formula replaced in 1.17.0 by fixed points that decrease with mastery. The text now reads "gain comfort" (no number, consistent with there no longer being a fixed percentage).
+
+---
+
 ## [1.17.0] — 2026-07-16
 
 ### Added — Bootcamps (budget spending)

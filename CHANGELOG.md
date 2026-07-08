@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.1] — 2026-07-17
+
+### Corrigé — Description du bootcamp Intensif obsolète
+
+Le texte du bootcamp Intensif mentionnait encore « +20 % de confort », une formule remplacée en 1.17.0 par des points fixes décroissants selon la maîtrise. Le texte affiche désormais « gagnent du confort » (sans chiffre, cohérent avec l'absence de pourcentage fixe).
+
+---
+
 ## [1.17.0] — 2026-07-16
 
 ### Ajouté — Bootcamps (dépense de budget)
