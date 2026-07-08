@@ -2446,7 +2446,19 @@ function applyBootcampCohesion() {
   });
 }
 
-// +20% de confort sur les champions du pool SOUS 75 de maîtrise (jamais Signature/Élite).
+// v1.17.0 — progression inversée : moins on connaît le champion, plus il y a de
+// fondamentaux à apprendre d'un coup en bootcamp (gain absolu élevé) ; un joueur
+// déjà à l'aise (Confort) n'a plus que des détails à peaufiner (gain modeste).
+// Un ×1,2 multiplicatif faisait l'inverse (un joueur à 6 ne gagnait qu'un point,
+// un joueur à 65 en gagnait neuf) — remplacé par des points fixes par bande de
+// maîtrise, cohérent avec les bandes de MASTERY_TIERS.
+function bootcampMasteryGain(mastery) {
+  if (mastery < 25) return randomInt(15, 20);  // Découverte
+  if (mastery < 50) return randomInt(8, 12);   // Praticable
+  return randomInt(3, 6);                      // Confort
+}
+
+// Renforce les champions du pool SOUS 75 de maîtrise (jamais Signature/Élite).
 // Renvoie le bilan par joueur : { name, role, champs: [{ name, before, after }] }.
 function applyBootcampMasteryBoost() {
   return state.roster.map((p) => {
@@ -2455,7 +2467,7 @@ function applyBootcampMasteryBoost() {
       const entry = getChampionMastery(p.id, champName);
       if (entry && entry.mastery < 75) {
         const before = entry.mastery;
-        entry.mastery = clamp(Math.round(entry.mastery * 1.2), 0, 74);
+        entry.mastery = clamp(entry.mastery + bootcampMasteryGain(entry.mastery), 0, 74);
         if (entry.mastery !== before) champs.push({ name: champName, before, after: entry.mastery });
       }
     });

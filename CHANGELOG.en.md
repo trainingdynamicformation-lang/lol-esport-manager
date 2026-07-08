@@ -12,7 +12,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 On the Roster screen, below "Team rest", a new **Bootcamp** section lets you spend budget to strengthen the team. Three cumulative tiers:
 
 - **Cohesion** (50 budget) — improves team coordination: shotcalling, teamfight and mental of your 5 players (diminishing returns near the cap).
-- **Intensive** (140 budget) — Cohesion **+** every pool champion below Signature mastery gains **+20% comfort** (never beyond Signature/Elite: those tiers are earned by playing).
+- **Intensive** (140 budget) — Cohesion **+** every pool champion below Signature mastery gains comfort, with an **inverted progression**: the less mastered the champion, the bigger the gain (Discovery +15 to +20, Workable +8 to +12, Comfort +3 to +6), capped before Signature/Elite (those tiers are earned by playing).
 - **Elite** (300 budget) — Intensive **+** each player returns with **2 new champions** for their role at Workable comfort (25-49).
 
 At the end of a bootcamp, a **summary** appears (centered on screen, like the match recap) with as many columns as the tier: 1 for Cohesion (per-player stat gains), 2 for Intensive (+ per-champion, per-player comfort gains, e.g. "Nasus 74 → …"), 3 for Elite (+ each player's 2 new champions).

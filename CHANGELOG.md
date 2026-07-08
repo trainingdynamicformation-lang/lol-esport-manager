@@ -12,7 +12,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 Dans l'écran Roster, sous « Repos de l'équipe », une nouvelle zone **Bootcamp** permet de dépenser du budget pour renforcer l'équipe. Trois niveaux cumulatifs :
 
 - **Cohésion** (50 budget) — améliore la coordination de l'équipe : shotcalling, teamfight et mental de vos 5 joueurs (rendements décroissants près du plafond).
-- **Intensif** (140 budget) — Cohésion **+** tous les champions du pool sous la maîtrise Signature gagnent **+20 % de confort** (jamais au-delà de Signature/Élite : ces niveaux se gagnent en jouant).
+- **Intensif** (140 budget) — Cohésion **+** tous les champions du pool sous la maîtrise Signature gagnent du confort, avec une **progression inversée** : moins le champion est maîtrisé, plus le gain est important (Découverte +15 à +20, Praticable +8 à +12, Confort +3 à +6), plafonné avant Signature/Élite (ces niveaux se gagnent en jouant).
 - **Élite** (300 budget) — Intensif **+** chaque joueur revient avec **2 nouveaux champions** de son rôle à confort Praticable (25-49).
 
 À la fin d'un bootcamp, un **bilan** s'affiche (centré à l'écran, comme le récap de match) avec autant de colonnes que le niveau : 1 pour Cohésion (gains de stats par joueur), 2 pour Intensif (+ gains de confort par champion et par joueur, ex. « Nasus 74 → … »), 3 pour Élite (+ les 2 nouveaux champions de chaque joueur).
