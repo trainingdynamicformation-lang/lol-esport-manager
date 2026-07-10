@@ -4944,6 +4944,7 @@ function matchPostCategory(won, gap) {
 
 // Pioche des templates distincts de la catégorie, génère les posts et les
 // empile dans le fil (plafonné à 40). vars = { team, opp, comp, score } (selon cat).
+// vars.team est toujours l'équipe du joueur (les 3 appelants le garantissent).
 function generateFanFeedPosts(cat, vars) {
   const personas = FAN_POST_PERSONAS[cat];
   if (!personas) return;
@@ -4951,11 +4952,15 @@ function generateFanFeedPosts(cat, vars) {
   const count = Math.min(FAN_POST_NOTABLE.includes(cat) ? randomInt(2, 3) : 1, personas.length);
   const pool = personas.map((_, i) => i);
   for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); const tmp = pool[k]; pool[k] = pool[j]; pool[j] = tmp; }
+  // v1.18.4 — alterne nom complet / acronyme de l'équipe du joueur d'un post à l'autre.
+  const teamFull = vars.team;
+  const teamShort = (state.teamShortName && String(state.teamShortName).trim()) ? String(state.teamShortName).trim() : null;
   pool.slice(0, count).forEach((ti) => {
     const persona = personas[ti];
     const author = generateFanAuthor(persona);
     const eng = fanEngagement(cat);
-    fans.feed.unshift({ cat, ti, vars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, mins: randomInt(2, 90) });
+    const postVars = Object.assign({}, vars, { team: (teamShort && Math.random() < 0.5) ? teamShort : teamFull });
+    fans.feed.unshift({ cat, ti, vars: postVars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, mins: randomInt(2, 90) });
   });
   if (fans.feed.length > 40) fans.feed.length = 40;
 }
@@ -9856,7 +9861,7 @@ function renderFanFeedHtml() {
   if (!fans.feed.length) {
     return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p><p class="fans-empty">${t('fans.feedEmpty')}</p></div>`;
   }
-  const posts = fans.feed.map((p) => {
+  const posts = fans.feed.slice(0, 10).map((p) => { // v1.18.4 — affiche les 10 plus récents (feed newest-first)
     const text = t('fanpost.' + p.cat + '.' + p.ti, p.vars);
     return `
       <div class="fans-post">
