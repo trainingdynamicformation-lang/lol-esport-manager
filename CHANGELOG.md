@@ -11,7 +11,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 - Le **fil des fans** s'affiche désormais **par pages de 10 publications** (du plus récent au plus ancien), avec des boutons Précédent / Suivant. Le fil conserve toujours les 40 posts les plus récents.
 - Les publications alternent désormais entre le **nom complet** de votre équipe et son **acronyme**, au lieu de toujours afficher le nom complet — plus naturel, façon vrais réseaux sociaux.
-- Suppression de l'**heure de publication** (« il y a 1 h ») sur les posts, qui devenait vite incohérente au fil des saisons.
+- Remplacement de l'**heure de publication** (« il y a 1 h »), qui devenait vite incohérente, par un **en-tête de contexte en gras** : « Match AA contre BB — Compétition : CC / DD » (acronymes des deux équipes, nom de la compétition et étape — journée, demi-finale, phase de groupes, etc.). Les posts de titre affichent « Compétition : CC — Champion / Éliminé ».
 
 ---
 

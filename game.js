@@ -4942,10 +4942,33 @@ function matchPostCategory(won, gap) {
   return gap >= 5 ? 'upsetLoss' : 'loss';
 }
 
+// v1.18.4 — Contexte (compétition CC / étape DD) du match en cours, à capturer
+// AVANT la résolution de la série (resolveSeasonSeries incrémente season.matchday).
+function currentMatchContext() {
+  const intl = state.international;
+  if (intl && intl.pendingMatch) {
+    const pm = intl.pendingMatch;
+    return {
+      comp: `${eventLabel(intl)} ${intl.year}`,
+      stage: pm.type === 'group' ? t('fans.feedGroupStage') : intlMatchLabel(pm.matchKey)
+    };
+  }
+  const season = state.season;
+  if (season && season.pendingMatch) {
+    const pm = season.pendingMatch;
+    const stage = pm.type === 'playoff'
+      ? playoffRoundLabel(String(pm.matchKey).replace(/[0-9]+$/, ''))
+      : t('fans.feedMatchday', { n: season.matchday });
+    return { comp: `${splitLabel(season.split)} ${season.year}`, stage };
+  }
+  return { comp: '', stage: '' };
+}
+
 // Pioche des templates distincts de la catégorie, génère les posts et les
-// empile dans le fil (plafonné à 40). vars = { team, opp, comp, score } (selon cat).
-// vars.team est toujours l'équipe du joueur (les 3 appelants le garantissent).
-function generateFanFeedPosts(cat, vars) {
+// empile dans le fil (plafonné à 40). vars = { team, opp, comp, score } (texte,
+// selon cat) ; ctx = contexte de l'en-tête gras (v1.18.4 : match {my}/{opp}/comp/stage
+// ou titre comp/stage). vars.team est toujours l'équipe du joueur (les 3 appelants).
+function generateFanFeedPosts(cat, vars, ctx) {
   const personas = FAN_POST_PERSONAS[cat];
   if (!personas) return;
   const fans = ensureFans();
@@ -4960,7 +4983,7 @@ function generateFanFeedPosts(cat, vars) {
     const author = generateFanAuthor(persona);
     const eng = fanEngagement(cat);
     const postVars = Object.assign({}, vars, { team: (teamShort && Math.random() < 0.5) ? teamShort : teamFull });
-    fans.feed.unshift({ cat, ti, vars: postVars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts });
+    fans.feed.unshift({ cat, ti, vars: postVars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, ctx: ctx || null });
   });
   if (fans.feed.length > 40) fans.feed.length = 40;
 }
@@ -4982,7 +5005,7 @@ function finishSeason() {
     state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.region})`);
     ensurePalmares().regionalTitles++;
     // v1.18.3 — fil social : posts de célébration du titre régional
-    generateFanFeedPosts('regionalTitle', { team: state.teamName || t('match.yourTeam'), comp: `${regionDisplayName(season.region)} ${splitLabel(season.split)}` });
+    generateFanFeedPosts('regionalTitle', { team: state.teamName || t('match.yourTeam'), comp: `${regionDisplayName(season.region)} ${splitLabel(season.split)}` }, { comp: `${splitLabel(season.split)} ${season.year}`, stage: t('fans.feedStageChampion') });
   }
   season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
   applyFanDividend('split', season.log); // v1.18.0 — dividende de ferveur (fin de split)
@@ -5859,8 +5882,8 @@ function finishInternational() {
       pal.titles++;
     }
     // v1.18.3 — fil social : sacre international, ou déception si élimination précoce (hors top 6)
-    if (placement === 1) generateFanFeedPosts('intlTitle', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) });
-    else if (placement >= 7) generateFanFeedPosts('intlFlop', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) });
+    if (placement === 1) generateFanFeedPosts('intlTitle', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) }, { comp: `${eventLabel(intl)} ${intl.year}`, stage: t('fans.feedStageChampion') });
+    else if (placement >= 7) generateFanFeedPosts('intlFlop', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) }, { comp: `${eventLabel(intl)} ${intl.year}`, stage: t('fans.feedStageEliminated') });
     intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
     applyFanDividend(intl.event, intl.log); // v1.18.0 — dividende de ferveur (fin de MSI/Worlds)
     // v1.15.0 — sponsors : accumulateur annuel + paiement en continu des sponsors résultat.
@@ -7791,6 +7814,9 @@ function finishMatch() {
   const opponentScore = rt.score[rt.picks.playerSide === 'blue' ? 'red' : 'blue'];
 
   const series = state.matchSeries;
+  // v1.18.4 — contexte du match (compétition/étape) capturé AVANT resolveSeasonSeries
+  // qui incrémente season.matchday et modifie pendingMatch.
+  const matchCtx = currentMatchContext();
 
   if (!state.scouting[rt.opponent.id]) state.scouting[rt.opponent.id] = { confidence: 0, scrimsPlayed: 0 };
   state.scouting[rt.opponent.id].confidence = clamp(state.scouting[rt.opponent.id].confidence + VIDEO_REVIEW_CONFIDENCE_GAIN, 0, 100);
@@ -7872,11 +7898,13 @@ function finishMatch() {
   if (rt.seriesEvent && rt.seriesEvent.type === 'done' && series && series.context && series.context !== 'Scrim') {
     fanReaction = applyFanReaction(rt.seriesEvent.won, series.opponentTeamId);
     // v1.18.3 — fil social : posts de fans réagissant au résultat
+    // v1.18.4 — ctx = en-tête gras « Match {my} contre {opp} — Compétition : {comp} / {stage} »
+    const myTag = (state.teamShortName && String(state.teamShortName).trim()) ? String(state.teamShortName).trim() : (state.teamName || t('match.yourTeam'));
     generateFanFeedPosts(matchPostCategory(rt.seriesEvent.won, fanReaction.gap), {
       team: state.teamName || t('match.yourTeam'),
       opp: getTeamName(series.opponentTeamId),
       score: `${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst}`
-    });
+    }, { my: myTag, opp: getTeamShortName(series.opponentTeamId), comp: matchCtx.comp, stage: matchCtx.stage });
   }
 
   saveGame();
@@ -9855,6 +9883,15 @@ function fanInitials(name) {
   const s = (parts[0] ? parts[0][0] : '') + (parts[1] ? parts[1][0] : (parts[0] && parts[0][1] ? parts[0][1] : ''));
   return s.toUpperCase() || '?';
 }
+// v1.18.4 — en-tête de contexte en gras : match (my/opp/comp/stage) ou titre (comp/stage).
+function fanPostContextLine(p) {
+  if (!p.ctx) return '';
+  const c = p.ctx;
+  const isMatch = p.cat === 'upsetWin' || p.cat === 'win' || p.cat === 'loss' || p.cat === 'upsetLoss';
+  return isMatch
+    ? t('fans.feedCtxMatch', { my: c.my || '?', opp: c.opp || '?', comp: c.comp || '?', stage: c.stage || '?' })
+    : t('fans.feedCtxTitle', { comp: c.comp || '?', stage: c.stage || '?' });
+}
 function renderFanFeedHtml() {
   const fans = ensureFans();
   if (!fans.feed.length) {
@@ -9867,6 +9904,7 @@ function renderFanFeedHtml() {
   const start = page * FAN_FEED_PAGE_SIZE;
   const posts = fans.feed.slice(start, start + FAN_FEED_PAGE_SIZE).map((p) => {
     const text = t('fanpost.' + p.cat + '.' + p.ti, p.vars);
+    const ctxLine = fanPostContextLine(p);
     return `
       <div class="fans-post">
         <div class="fans-post__avatar fans-post__avatar--${p.persona}">${fanInitials(p.name)}</div>
@@ -9876,6 +9914,7 @@ function renderFanFeedHtml() {
             <span class="fans-post__handle">${p.handle}</span>
             <span class="fans-post__tag fans-post__tag--${p.cat}">${t('fans.feedTag.' + p.cat)}</span>
           </div>
+          ${ctxLine ? `<p class="fans-post__ctx">${ctxLine}</p>` : ''}
           <p class="fans-post__text">${text}</p>
           <div class="fans-post__meta"><span>&hearts; ${fanFeedCount(p.likes)}</span><span>&#8635; ${fanFeedCount(p.reposts)}</span></div>
         </div>

@@ -3294,6 +3294,7 @@ table.history-table th {
 .fans-post__tag--upsetWin, .fans-post__tag--win { color: var(--color-success); }
 .fans-post__tag--upsetLoss, .fans-post__tag--intlFlop { color: var(--color-danger); }
 .fans-post__tag--regionalTitle, .fans-post__tag--intlTitle { color: var(--color-gold); }
+.fans-post__ctx { margin: 3px 0 2px; font-weight: 700; font-size: var(--fs-label); color: var(--color-gold); }
 .fans-post__text { margin: 4px 0 6px; color: var(--color-text); line-height: 1.5; font-size: var(--fs-body); }
 .fans-post__meta { display: flex; gap: 16px; font-size: var(--fs-label); color: var(--color-text-muted); }
 .fans-feed__pager {

@@ -11,7 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The **fan feed** now displays in **pages of 10 posts** (newest to oldest), with Previous / Next buttons. The feed still keeps the 40 most recent posts.
 - Posts now alternate between your team's **full name** and its **acronym**, instead of always showing the full name — more natural, like real social media.
-- Removed the **post timestamp** ("1 h ago") on posts, which quickly became inconsistent over the seasons.
+- Replaced the **post timestamp** ("1 h ago"), which quickly became inconsistent, with a **bold context header**: "Match AA vs BB — Competition: CC / DD" (both team acronyms, competition name and stage — matchday, semifinal, group stage, etc.). Title posts show "Competition: CC — Champion / Eliminated".
 
 ---
 
