@@ -13,6 +13,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Posts now alternate between your team's **full name** and its **acronym**, instead of always showing the full name — more natural, like real social media.
 - Replaced the **post timestamp** ("1 h ago"), which quickly became inconsistent, with a **bold context header**: "Match AA vs BB — Competition: CC / DD" (both team acronyms, competition name and stage — matchday, semifinal, group stage, etc.). Title posts show "Competition: CC — Champion / Eliminated".
 
+### Added — Tutorial: new steps
+
+The guided tour now covers the recent features: the **bootcamp** (Roster screen) and the new **Fanbase** screen (the prestige ladder, fan mood and the fan feed).
+
 ---
 
 ## [1.18.3] — 2026-07-10

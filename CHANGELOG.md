@@ -13,6 +13,10 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 - Les publications alternent désormais entre le **nom complet** de votre équipe et son **acronyme**, au lieu de toujours afficher le nom complet — plus naturel, façon vrais réseaux sociaux.
 - Remplacement de l'**heure de publication** (« il y a 1 h »), qui devenait vite incohérente, par un **en-tête de contexte en gras** : « Match AA contre BB — Compétition : CC / DD » (acronymes des deux équipes, nom de la compétition et étape — journée, demi-finale, phase de groupes, etc.). Les posts de titre affichent « Compétition : CC — Champion / Éliminé ».
 
+### Ajouté — Tutoriel : nouvelles étapes
+
+La visite guidée couvre désormais les fonctionnalités récentes : le **bootcamp** (écran Roster) et le nouvel écran **Ferveur** (l'échelle de prestige, l'humeur des fans et le fil des fans).
+
 ---
 
 ## [1.18.3] — 10/07/2026
