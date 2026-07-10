@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.18.0] — 10/07/2026
+
+### Ajouté — Ferveur des fans : l'échelle de prestige
+
+Le prestige n'était jusqu'ici qu'un seuil de standing (pour débloquer les sponsors et les prolongations de superstars) : il ne servait à rien de plus. Il alimente désormais une **échelle de ferveur des fans**, accessible depuis le nouvel onglet **Ferveur**.
+
+- **8 paliers** aux seuils croissants (50, 120, 250, 500, 900, 1500, 2500, 4000 de prestige), de « Étincelle » à « Icône mondiale ».
+- Chaque palier atteint verse un **dividende de ferveur** (budget) automatiquement **à la fin de chaque compétition** : ×1 par split, ×1.2 au MSI, ×1.5 aux Worlds.
+- L'écran Ferveur affiche votre palier actuel, votre progression vers le suivant, le dividende que vous touchez par type de compétition, et l'échelle complète.
+
+Le prestige n'est **jamais dépensé** par ce système : il continue de monter normalement et tous vos seuils de sponsors et de prolongations restent intacts. C'est la première étape d'un chantier en plusieurs versions (l'humeur des fans et des bonus plus variés arriveront ensuite).
+
+---
+
 ## [1.17.5] — 08/07/2026
 
 ### Ajouté — Sponsor : récompenses par compétition sur la tuile du sponsor résultat

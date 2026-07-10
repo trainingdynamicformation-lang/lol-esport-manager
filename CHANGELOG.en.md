@@ -5,6 +5,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.18.0] — 2026-07-10
+
+### Added — Fanbase fervor: the prestige ladder
+
+Until now prestige was only a standing threshold (to unlock sponsors and superstar extensions): it did nothing else. It now powers a **fanbase fervor ladder**, available from the new **Fanbase** tab.
+
+- **8 tiers** with rising thresholds (50, 120, 250, 500, 900, 1500, 2500, 4000 prestige), from "Spark" to "Global icon".
+- Each tier reached pays a **fervor dividend** (budget) automatically **at the end of every competition**: ×1 per split, ×1.2 at MSI, ×1.5 at Worlds.
+- The Fanbase screen shows your current tier, your progress to the next one, the dividend you earn per competition type, and the full ladder.
+
+Prestige is **never spent** by this system: it keeps rising normally and all your sponsor and extension thresholds stay intact. This is the first step of a multi-version feature (fan mood and more varied bonuses will come next).
+
+---
+
 ## [1.17.5] — 2026-07-08
 
 ### Added — Sponsor: per-competition rewards on the result sponsor tile

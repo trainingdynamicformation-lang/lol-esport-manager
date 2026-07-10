@@ -582,6 +582,9 @@ function showView(viewName) {
     case 'sponsor':
       if (typeof renderSponsorView === 'function') renderSponsorView();
       break;
+    case 'fans':
+      if (typeof renderFansView === 'function') renderFansView();
+      break;
     case 'progression':
       if (typeof renderProgression === 'function') renderProgression();
       break;
@@ -4699,6 +4702,64 @@ function placementLabel(placement) {
   return t('placement.regular', { n: placement });
 }
 
+/* ─── Ferveur des fans (v1.18.0) ─────────────────────────────────────────────
+   Le prestige (state.resources.prestige) alimente une échelle de ferveur. C'est
+   une LECTURE pure du prestige : il n'est jamais consommé ici, donc tous les
+   seuils sponsors/superstars restent intacts. Récompense de la v1.18.0 = un
+   dividende de ferveur (budget) versé à chaque fin de compétition, ×1.2 au MSI,
+   ×1.5 aux Worlds. Humeur des fans + perks avancés = versions ultérieures.
+*/
+const FAN_TIERS = [
+  { id: 'spark',       threshold: 50,   dividend: 20 },
+  { id: 'local',       threshold: 120,  dividend: 30 },
+  { id: 'regional',    threshold: 250,  dividend: 45 },
+  { id: 'continental', threshold: 500,  dividend: 60 },
+  { id: 'intl',        threshold: 900,  dividend: 80 },
+  { id: 'dynasty',     threshold: 1500, dividend: 105 },
+  { id: 'legend',      threshold: 2500, dividend: 140 },
+  { id: 'icon',        threshold: 4000, dividend: 180 }
+];
+
+// Multiplicateurs de dividende par type de compétition (formule utilisateur).
+const FAN_DIVIDEND_MULT = { split: 1, msi: 1.2, worlds: 1.5 };
+
+// Index du palier de ferveur atteint pour un prestige donné (-1 si sous le 1er seuil).
+function getFanTierIndex(prestige) {
+  let idx = -1;
+  for (let i = 0; i < FAN_TIERS.length; i++) {
+    if (prestige >= FAN_TIERS[i].threshold) idx = i; else break;
+  }
+  return idx;
+}
+
+// Palier de ferveur courant (objet FAN_TIERS) ou null si aucun atteint.
+function getFanTier(prestige) {
+  const idx = getFanTierIndex(prestige);
+  return idx >= 0 ? FAN_TIERS[idx] : null;
+}
+
+function fanTierLabel(id) { return t('fans.tier.' + id); }
+
+// Montant du dividende de ferveur pour une fin de compétition donnée
+// (compType ∈ 'split'|'msi'|'worlds'). 0 si aucun palier atteint.
+function fanDividendAmount(compType) {
+  const tier = getFanTier(state.resources.prestige);
+  if (!tier) return 0;
+  const mult = FAN_DIVIDEND_MULT[compType] || 1;
+  return Math.round(tier.dividend * mult);
+}
+
+// Crédite le dividende de ferveur au budget et journalise dans le log fourni.
+// Renvoie le montant versé (0 si aucun palier atteint).
+function applyFanDividend(compType, log) {
+  const amount = fanDividendAmount(compType);
+  if (amount <= 0) return 0;
+  state.resources.budget += amount;
+  const tier = getFanTier(state.resources.prestige);
+  if (log) log.unshift({ k: 'log.fanDividend', p: { amount, tier: fanTierLabel(tier.id) } });
+  return amount;
+}
+
 function finishSeason() {
   const season = state.season;
   season.phase = 'done';
@@ -4717,6 +4778,7 @@ function finishSeason() {
     ensurePalmares().regionalTitles++;
   }
   season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
+  applyFanDividend('split', season.log); // v1.18.0 — dividende de ferveur (fin de split)
   // v1.15.0 — sponsors : accumulateur annuel + paiement en continu / clause de rupture des sponsors résultat.
   const sponsorRegularRank = getSortedStandings().indexOf('player') + 1;
   updateSponsorYearRecap({ regularRank: sponsorRegularRank, finalPlacement: placement, poTitle: placement === 1 });
@@ -5590,6 +5652,7 @@ function finishInternational() {
       pal.titles++;
     }
     intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
+    applyFanDividend(intl.event, intl.log); // v1.18.0 — dividende de ferveur (fin de MSI/Worlds)
     // v1.15.0 — sponsors : accumulateur annuel + paiement en continu des sponsors résultat.
     updateSponsorYearRecap({ intlEvent: intl.event, intlPlacement: placement });
     applySponsorInternationalPayout(placement, rewards);
@@ -9546,6 +9609,78 @@ function sponsorObjectiveChecklistHtml(contract) {
       <p class="sponsor-current__objectives-title">${t('sponsor.current.objectivesTitle')}</p>
       <ul class="sponsor-objective-list">${rows}</ul>
     </div>
+  `;
+}
+
+// v1.18.0 — Écran Ferveur des fans : résumé du palier courant + progression vers
+// le suivant + dividende versé par type de compétition, puis l'échelle complète.
+function renderFansView() {
+  const el = document.getElementById('fans-content');
+  if (!el) return;
+  const prestige = state.resources.prestige;
+  const idx = getFanTierIndex(prestige);
+  const current = idx >= 0 ? FAN_TIERS[idx] : null;
+  const next = (idx + 1) < FAN_TIERS.length ? FAN_TIERS[idx + 1] : null;
+
+  let progressHtml = '';
+  if (next) {
+    const floor = current ? current.threshold : 0;
+    const span = next.threshold - floor;
+    const done = prestige - floor;
+    const pct = clamp(Math.round((done / span) * 100), 0, 100);
+    progressHtml = `
+      <div class="fans-progress">
+        <div class="fans-progress__track"><div class="fans-progress__fill" style="width:${pct}%"></div></div>
+        <p class="fans-progress__label">${t('fans.progressToNext', { remaining: next.threshold - prestige, next: fanTierLabel(next.id) })}</p>
+      </div>`;
+  } else if (current) {
+    progressHtml = `<p class="fans-progress__label">${t('fans.maxTier')}</p>`;
+  }
+
+  const dividendHtml = current ? `
+    <div class="fans-dividend">
+      <p class="fans-dividend__title">${t('fans.dividendTitle')}</p>
+      <div class="fans-dividend__grid">
+        <div class="fans-dividend__item"><span class="fans-dividend__amt">+${fanDividendAmount('split')}</span><span class="fans-dividend__lbl">${t('fans.perSplit')}</span></div>
+        <div class="fans-dividend__item"><span class="fans-dividend__amt">+${fanDividendAmount('msi')}</span><span class="fans-dividend__lbl">${t('fans.perMsi')}</span></div>
+        <div class="fans-dividend__item"><span class="fans-dividend__amt">+${fanDividendAmount('worlds')}</span><span class="fans-dividend__lbl">${t('fans.perWorlds')}</span></div>
+      </div>
+    </div>` : `<p class="fans-empty">${t('fans.firstTierHint', { threshold: FAN_TIERS[0].threshold, remaining: FAN_TIERS[0].threshold - prestige })}</p>`;
+
+  const ladderRows = FAN_TIERS.map((tier, i) => {
+    const reached = prestige >= tier.threshold;
+    const isCurrent = i === idx;
+    const stateCls = isCurrent ? 'fans-tier--current' : (reached ? 'fans-tier--reached' : 'fans-tier--locked');
+    const statusIcon = reached ? '✓' : '🔒';
+    return `
+      <div class="fans-tier ${stateCls}">
+        <div class="fans-tier__rank">${i + 1}</div>
+        <div class="fans-tier__body">
+          <p class="fans-tier__name">${fanTierLabel(tier.id)} <span class="fans-tier__status">${statusIcon}</span></p>
+          <p class="fans-tier__desc">${t('fans.tierDesc.' + tier.id)}</p>
+        </div>
+        <div class="fans-tier__meta">
+          <span class="fans-tier__threshold">${tier.threshold} ${t('fans.prestigeUnit')}</span>
+          <span class="fans-tier__dividend">+${tier.dividend} / ${t('fans.splitShort')}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="panel fans-summary">
+      <p class="fans-summary__label">${t('fans.currentTier')}</p>
+      <div class="fans-summary__row">
+        <span class="fans-tier-badge">${current ? fanTierLabel(current.id) : t('fans.noTier')}</span>
+        <span class="fans-summary__prestige">${prestige} ${t('fans.prestigeUnit')}</span>
+      </div>
+      ${progressHtml}
+      ${dividendHtml}
+    </div>
+    <div class="panel fans-ladder">
+      <p class="fans-ladder__title">${t('fans.ladderTitle')}</p>
+      ${ladderRows}
+    </div>
+    <p class="fans-note">${t('fans.note')}</p>
   `;
 }
 
