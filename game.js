@@ -149,6 +149,7 @@ function createDefaultState() {
     bootcampUsedGap: null,    // valeur de compEndSeq du dernier trou où un bootcamp a été fait (1 par trou)
     bootcampEliteYear: null,  // année du dernier bootcamp Élite (1 par an)
     bootcampIntensifYear: null, // année du dernier bootcamp Intensif (1 par an)
+    fans: { mood: 100 },      // v1.18.1 — humeur des fans (0-100) : module le dividende de ferveur
     aiRosters: {},
     aiMatchHistory: {},
     careerLog: [],
@@ -286,6 +287,7 @@ function loadGame() {
       bootcampUsedGap: parsed.bootcampUsedGap !== undefined ? parsed.bootcampUsedGap : defaults.bootcampUsedGap,
       bootcampEliteYear: parsed.bootcampEliteYear !== undefined ? parsed.bootcampEliteYear : defaults.bootcampEliteYear,
       bootcampIntensifYear: parsed.bootcampIntensifYear !== undefined ? parsed.bootcampIntensifYear : defaults.bootcampIntensifYear,
+      fans: Object.assign({}, defaults.fans, parsed.fans), // v1.18.1 — humeur des fans (backfill mood:100 pour les vieilles saves)
       aiRosters: parsed.aiRosters || defaults.aiRosters,
       aiMatchHistory: parsed.aiMatchHistory || defaults.aiMatchHistory,
       careerLog: parsed.careerLog || defaults.careerLog,
@@ -426,6 +428,7 @@ async function cloudImport() {
     ensureRosterAges();       // migration âge (v1.8.4)
     ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
     cleanupPhantomPlayerJournalEntries(state); // v1.15.4 : purge les fausses entrées retraite/arrivée
+    ensureFans(); // v1.18.1 : humeur des fans (les imports court-circuitent loadGame)
     saveGame();
     updateResourceBar();
     showView('home');
@@ -514,6 +517,7 @@ function importSave(file) {
       ensureRosterAges();       // migration âge (v1.8.4)
       ensureAIRosterAges(state.aiRosters); // v1.15.3 : idem pour les effectifs IA
     cleanupPhantomPlayerJournalEntries(state); // v1.15.4 : purge les fausses entrées retraite/arrivée
+      ensureFans(); // v1.18.1 : humeur des fans (les imports court-circuitent loadGame)
       saveGame();
       updateResourceBar();
       showView('home');
@@ -4740,14 +4744,64 @@ function getFanTier(prestige) {
 
 function fanTierLabel(id) { return t('fans.tier.' + id); }
 
+// v1.18.1 — Humeur des fans (0-100). Défensif : recrée l'objet si absent (vieilles
+// saves / imports court-circuitant loadGame).
+function ensureFans() {
+  if (!state.fans || typeof state.fans.mood !== 'number') state.fans = { mood: 100 };
+  return state.fans;
+}
+function getFanMood() { return ensureFans().mood; }
+
+// Facteur multiplicateur du dividende selon l'humeur (linéaire par morceaux,
+// convexe : la sanction s'accentue quand l'humeur chute). 100→×1.0, 70→×0.9,
+// 40→×0.75, 10→×0.5, plancher 0.5.
+function fanMoodFactor(mood) {
+  if (mood >= 100) return 1.0;
+  if (mood >= 70) return 0.9 + (mood - 70) / 30 * 0.10;
+  if (mood >= 40) return 0.75 + (mood - 40) / 30 * 0.15;
+  if (mood >= 10) return 0.5 + (mood - 10) / 30 * 0.25;
+  return 0.5;
+}
+
 // Montant du dividende de ferveur pour une fin de compétition donnée
-// (compType ∈ 'split'|'msi'|'worlds'). 0 si aucun palier atteint.
+// (compType ∈ 'split'|'msi'|'worlds'). 0 si aucun palier atteint. Modulé par
+// l'humeur des fans (v1.18.1).
 function fanDividendAmount(compType) {
   const tier = getFanTier(state.resources.prestige);
   if (!tier) return 0;
   const mult = FAN_DIVIDEND_MULT[compType] || 1;
-  return Math.round(tier.dividend * mult);
+  return Math.round(tier.dividend * mult * fanMoodFactor(getFanMood()));
 }
+
+// v1.18.1 — Réaction des fans à l'issue d'un vrai match de compétition (série
+// terminée, hors scrims). gap = force du joueur − force de l'adversaire
+// (teamPowerRating). Une défaite « upset » (joueur largement favori) fâche les
+// fans : petite perte de prestige plafonnée (−1 à −4) + forte chute d'humeur.
+// Sinon effets doux. Renvoie le détail pour l'affichage (toast d'upset).
+function applyFanReaction(won, opponentId) {
+  const fans = ensureFans();
+  const gap = teamPowerRating('player') - teamPowerRating(opponentId);
+  let moodDelta = 0;
+  let prestigeDelta = 0;
+  let upset = false;
+  if (won) {
+    moodDelta = gap <= -5 ? 10 : 5; // victoire sur plus fort = fans galvanisés
+  } else if (gap >= 5) {
+    upset = true; // défaite face à plus faible : plus l'écart est grand, plus les fans enragent
+    if (gap >= 20)      { prestigeDelta = -4; moodDelta = -20; }
+    else if (gap >= 15) { prestigeDelta = -3; moodDelta = -16; }
+    else if (gap >= 10) { prestigeDelta = -2; moodDelta = -13; }
+    else                { prestigeDelta = -1; moodDelta = -10; }
+  } else {
+    moodDelta = -3; // défaite attendue : légère déception
+  }
+  fans.mood = clamp(fans.mood + moodDelta, 0, 100);
+  if (prestigeDelta) state.resources.prestige = Math.max(0, state.resources.prestige + prestigeDelta);
+  return { moodDelta, prestigeDelta, upset, gap };
+}
+
+// Clé de classe/libellé d'humeur pour l'UI selon le niveau.
+function fanMoodClass(mood) { return mood >= 70 ? 'high' : (mood >= 40 ? 'mid' : 'low'); }
 
 // Crédite le dividende de ferveur au budget et journalise dans le log fourni.
 // Renvoie le montant versé (0 si aucun palier atteint).
@@ -7650,9 +7704,19 @@ function finishMatch() {
     resolveInternationalSeries(rt);
   }
 
+  // v1.18.1 — réaction des fans à l'issue d'un vrai match de compétition (série
+  // terminée, hors scrims amicaux dont le contexte vaut 'Scrim').
+  let fanReaction = null;
+  if (rt.seriesEvent && rt.seriesEvent.type === 'done' && series && series.context && series.context !== 'Scrim') {
+    fanReaction = applyFanReaction(rt.seriesEvent.won, series.opponentTeamId);
+  }
+
   saveGame();
   updateResourceBar();
   renderMatchEvent(win ? t('match.win') : t('match.loss'), 'dramatic');
+  if (fanReaction && fanReaction.upset && typeof showToast === 'function') {
+    showToast(t('fans.upsetToast', { amount: -fanReaction.prestigeDelta }), 'error');
+  }
 
   const pauseBtn = document.getElementById('btn-pause-match');
   if (pauseBtn) {
@@ -9637,6 +9701,17 @@ function renderFansView() {
     progressHtml = `<p class="fans-progress__label">${t('fans.maxTier')}</p>`;
   }
 
+  // v1.18.1 — jauge d'humeur des fans
+  const mood = getFanMood();
+  const moodCls = fanMoodClass(mood);
+  const moodPct = Math.round(fanMoodFactor(mood) * 100);
+  const moodHtml = `
+    <div class="fans-mood">
+      <p class="fans-mood__title">${t('fans.moodTitle')} — ${mood}/100</p>
+      <div class="fans-mood__track"><div class="fans-mood__fill fans-mood__fill--${moodCls}" style="width:${mood}%"></div></div>
+      <p class="fans-mood__label">${t('fans.moodState.' + moodCls)} · ${t('fans.moodFactor', { pct: moodPct })}</p>
+    </div>`;
+
   const dividendHtml = current ? `
     <div class="fans-dividend">
       <p class="fans-dividend__title">${t('fans.dividendTitle')}</p>
@@ -9645,6 +9720,7 @@ function renderFansView() {
         <div class="fans-dividend__item"><span class="fans-dividend__amt">+${fanDividendAmount('msi')}</span><span class="fans-dividend__lbl">${t('fans.perMsi')}</span></div>
         <div class="fans-dividend__item"><span class="fans-dividend__amt">+${fanDividendAmount('worlds')}</span><span class="fans-dividend__lbl">${t('fans.perWorlds')}</span></div>
       </div>
+      <p class="fans-dividend__note">${t('fans.dividendMoodNote')}</p>
     </div>` : `<p class="fans-empty">${t('fans.firstTierHint', { threshold: FAN_TIERS[0].threshold, remaining: FAN_TIERS[0].threshold - prestige })}</p>`;
 
   const ladderRows = FAN_TIERS.map((tier, i) => {
@@ -9674,6 +9750,7 @@ function renderFansView() {
         <span class="fans-summary__prestige">${prestige} ${t('fans.prestigeUnit')}</span>
       </div>
       ${progressHtml}
+      ${moodHtml}
       ${dividendHtml}
     </div>
     <div class="panel fans-ladder">
@@ -9681,6 +9758,7 @@ function renderFansView() {
       ${ladderRows}
     </div>
     <p class="fans-note">${t('fans.note')}</p>
+    <p class="fans-note">${t('fans.moodHint')}</p>
   `;
 }
 

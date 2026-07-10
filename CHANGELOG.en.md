@@ -5,6 +5,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.18.1] — 2026-07-10
+
+### Added — Fanbase fervor: fan mood
+
+Second step of the Fervor feature: your fans now have a **mood** (0-100 gauge) that reacts to your results and **modulates your fervor dividend**.
+
+- **Mood rises** when you win (even more when beating a stronger team) and **drops** when you disappoint.
+- **Upset loss** (you lose a real competitive match to a clearly weaker team): your fans get angry — big mood drop and a **small prestige loss** (−1 to −4 depending on the skill gap, capped, never a brutal tier drop).
+- **The lower the mood, the smaller the dividend** (ticket and merch sales slump): from ×1 at full mood down to ×0.5 when fans are furious.
+- The mood gauge and its impact on the dividend are shown on the Fanbase screen.
+
+Friendly matches (Match screen) don't affect mood: only real competitive matches count. The next step will add more varied tier rewards.
+
+---
+
 ## [1.18.0] — 2026-07-10
 
 ### Added — Fanbase fervor: the prestige ladder

@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.18.1] — 10/07/2026
+
+### Ajouté — Ferveur des fans : l'humeur des fans
+
+Deuxième étape du chantier Ferveur : vos fans ont maintenant une **humeur** (jauge de 0 à 100) qui réagit à vos résultats et **module votre dividende de ferveur**.
+
+- **L'humeur monte** quand vous gagnez (davantage encore en battant une équipe plus forte que vous) et **baisse** quand vous décevez.
+- **Défaite « upset »** (vous perdez un vrai match de compétition face à une équipe nettement plus faible) : vos fans sont en colère — grosse chute d'humeur et **petite perte de prestige** (−1 à −4 selon l'écart de niveau, plafonnée, jamais de chute de palier brutale).
+- **Plus l'humeur est basse, plus le dividende est réduit** (billetterie et merchandising en berne) : de ×1 à humeur pleine jusqu'à ×0,5 quand les fans sont furieux.
+- La jauge d'humeur et son impact sur le dividende sont affichés sur l'écran Ferveur.
+
+Les matchs amicaux (écran Match) n'affectent pas l'humeur : seuls les vrais matchs de compétition comptent. La prochaine étape ajoutera des récompenses plus variées aux paliers.
+
+---
+
 ## [1.18.0] — 10/07/2026
 
 ### Ajouté — Ferveur des fans : l'échelle de prestige

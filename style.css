@@ -3158,8 +3158,23 @@ table.history-table th {
 }
 .fans-progress__label { font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 6px; }
 
+.fans-mood { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
+.fans-mood__title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
+.fans-mood__track {
+  height: 8px;
+  background: var(--color-surface-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.fans-mood__fill { height: 100%; border-radius: 999px; transition: width .3s ease; }
+.fans-mood__fill--high { background: var(--color-success); }
+.fans-mood__fill--mid { background: var(--color-warning); }
+.fans-mood__fill--low { background: var(--color-danger); }
+.fans-mood__label { font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 6px; }
+
 .fans-dividend { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
 .fans-dividend__title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 10px; }
+.fans-dividend__note { font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 8px; font-style: italic; }
 .fans-dividend__grid { display: flex; gap: 10px; flex-wrap: wrap; }
 .fans-dividend__item {
   flex: 1 1 90px;
