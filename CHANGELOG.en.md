@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.17.4] — 2026-07-08
+
+### Added — Sponsor: renewal/termination conditions always visible
+
+The Sponsor screen now permanently shows, on your active sponsor (not just at renewal time):
+
+- **Signature sponsors**: the 3 renewal conditions (all objectives met, partially met, none met), each with the **concrete budget amount** at stake (not just the percentage) — computed from the contract's current bonus/stake.
+- **Result sponsors**: the breach clause, if the contract has one (premium tier only).
+
+---
+
 ## [1.17.3] — 2026-07-08
 
 ### Added — Changelog: search and accordion

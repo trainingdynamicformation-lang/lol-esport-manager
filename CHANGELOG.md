@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.4] — 08/07/2026
+
+### Ajouté — Sponsor : conditions de renouvellement/résiliation toujours visibles
+
+L'écran Sponsor affiche désormais, en permanence sur votre sponsor actif (pas seulement au moment du renouvellement) :
+
+- **Sponsors signature** : les 3 conditions de renouvellement (objectifs tous atteints, partiellement atteints, aucun atteint), avec pour chacune le **budget concret** en jeu (pas seulement le pourcentage) — calculé sur le bonus/enjeu actuel du contrat.
+- **Sponsors résultat** : la clause de rupture, si le contrat en a une (réservé aux paliers premium).
+
+---
+
 ## [1.17.3] — 08/07/2026
 
 ### Ajouté — Changelog : recherche et accordéon

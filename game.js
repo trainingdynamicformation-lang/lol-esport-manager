@@ -9561,6 +9561,41 @@ function renderSponsorView() {
   wireSponsorViewEvents();
 }
 
+// v1.17.4 — Bloc des 3 clauses de renouvellement/résiliation d'un sponsor
+// signature, avec le montant de budget concret (pas juste le %), calculé à
+// partir de baseAmount (le bonus/enjeu courant : contract.signingBonus tant
+// que le sponsor n'a jamais été renouvelé, ou current.amount une fois signé).
+// Réutilisé à la fois dans la fiche d'offre/renouvellement (showSponsorDetail)
+// et dans le panneau du sponsor actif (renderSponsorCurrentBlock).
+function sponsorClausesHtml(contract, baseAmount) {
+  const successAmount = Math.round(baseAmount * (1 + contract.successPct));
+  const partialAmount = Math.round(baseAmount * (1 - contract.failurePct));
+  return `
+    <p class="sponsor-detail__section-title">${t('sponsor.detail.clauses')}</p>
+    <div class="sponsor-clause sponsor-clause--success">
+      <span>${t('sponsor.clause.success')}</span><span>${t('sponsor.clause.successValue', { pct: Math.round(contract.successPct * 100), amount: successAmount })}</span>
+    </div>
+    <div class="sponsor-clause sponsor-clause--warning">
+      <span>${t('sponsor.clause.partial')}</span><span>${t('sponsor.clause.partialValue', { pct: Math.round(contract.failurePct * 100), amount: partialAmount })}</span>
+    </div>
+    <div class="sponsor-clause sponsor-clause--danger">
+      <span>${t('sponsor.clause.failure')}</span><span>${t('sponsor.clause.failureValue', { amount: Math.round(baseAmount) })}</span>
+    </div>
+  `;
+}
+
+// Clause de rupture d'un sponsor résultat, si elle existe (paliers premium
+// uniquement) — chaîne vide sinon (rien à afficher, pas de clause).
+function sponsorBreachClauseHtml(contract) {
+  if (!contract.breach) return '';
+  return `
+    <p class="sponsor-detail__section-title">${t('sponsor.detail.clauses')}</p>
+    <div class="sponsor-clause sponsor-clause--danger">
+      <span>${t('sponsor.detail.breachLabel')}</span><span>${sponsorBreachLabel(contract.breach)}</span>
+    </div>
+  `;
+}
+
 function renderSponsorCurrentBlock() {
   const current = state.sponsor.current;
   if (!current) {
@@ -9584,6 +9619,8 @@ function renderSponsorCurrentBlock() {
         ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
       </div>
       ${contract && contract.type === 'signature' ? sponsorObjectiveChecklistHtml(contract) : ''}
+      ${contract && contract.type === 'signature' ? sponsorClausesHtml(contract, current.amount) : ''}
+      ${contract && contract.type === 'result' ? sponsorBreachClauseHtml(contract) : ''}
     </div>
   `;
 }
@@ -9674,16 +9711,7 @@ function showSponsorDetail(contractId, isRenewal) {
       <ul class="sponsor-detail__objectives">
         ${contract.objectives.map((o) => `<li>${objectiveGroupLabel(o)}</li>`).join('')}
       </ul>
-      <p class="sponsor-detail__section-title">${t('sponsor.detail.clauses')}</p>
-      <div class="sponsor-clause sponsor-clause--success">
-        <span>${t('sponsor.clause.success')}</span><span>${t('sponsor.clause.successValue', { pct: Math.round(contract.successPct * 100) })}</span>
-      </div>
-      <div class="sponsor-clause sponsor-clause--warning">
-        <span>${t('sponsor.clause.partial')}</span><span>${t('sponsor.clause.partialValue', { pct: Math.round(contract.failurePct * 100) })}</span>
-      </div>
-      <div class="sponsor-clause sponsor-clause--danger">
-        <span>${t('sponsor.clause.failure')}</span><span>${t('sponsor.clause.failureValue')}</span>
-      </div>
+      ${sponsorClausesHtml(contract, amount)}
     `;
   } else {
     body += `
@@ -9692,7 +9720,7 @@ function showSponsorDetail(contractId, isRenewal) {
         ${sponsorPayoutStatHtml(t('sponsor.detail.domesticWeight'), contract.domesticWeight)}
         ${sponsorPayoutStatHtml(t('sponsor.detail.intlWeight'), contract.intlWeight)}
       </div>
-      ${contract.breach ? `<p class="sponsor-detail__warning">${sponsorBreachLabel(contract.breach)}</p>` : ''}
+      ${sponsorBreachClauseHtml(contract)}
     `;
   }
 
