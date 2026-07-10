@@ -5,6 +5,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.0] — 2026-07-10
+
+### Added — Strategic directives
+
+At the end of the draft, on the summary screen, choose **one strategic directive** for your team before launching the game.
+
+- **5 directives**: 🐉 Neutral objectives, ⚔️ Aggression, 🏰 Siege / towers, 🛡️ Teamfights, 🧘 Patience / scaling. Each one influences the match's events — the frequency and outcome of contests in its category — without ever touching how often neutral objectives spawn.
+- **The assistant coach recommends** a directive based on this draft's actual matchup (your picks against the opponent's), shown up front but always changeable.
+- **New option: "Let the team decide"** — you delegate the choice to the team. The quality of its decision depends on its game intelligence (shotcalling + mental): a smart team reads the matchup almost as well as a coach would, a younger or less sharp team simply plays its comfort zone, with a reduced bonus as a result.
+- The active directive is shown as a small badge in the match arena.
+
+---
+
 ## [1.18.4] — 2026-07-10
 
 ### Changed — Fan feed: pagination, varied team names, no timestamps

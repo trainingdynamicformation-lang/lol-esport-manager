@@ -3590,6 +3590,9 @@ function finalizeDraft() {
   const draft = state.draft;
   draft.status = 'done';
   draft.result = computeDraftScore(draft);
+  // v1.19.0 — consigne stratégique par défaut = recommandation du coach (le
+  // joueur peut la changer sur l'écran de synthèse avant de lancer le match).
+  draft.directive = state.matchSeries ? getCoachDirectiveRecommendation(draft) : null;
   draft.log.push(t('draft.logDone'));
 
   if (state.matchSeries && state.matchSeries.fearlessMode === 'on') {
@@ -3679,6 +3682,157 @@ function computeDraftScore(draft) {
     teamComfortScore, matchupScore, compositionScore, sideBonus, scoutingBonus, riskPenalty,
     total, comfortDetails, matchupDetails, synergyTags
   };
+}
+
+/* ─── Consignes stratégiques (v1.19.0) ───────────────────────────────────────
+   Après la draft, le joueur choisit UNE consigne qui influence les
+   événements du match : bonus de puissance (teamEventPower) + fréquence
+   (poids des templates, weightedChoice) sur la catégorie ciblée — jamais les
+   timers des objectifs neutres. Option "Laisser l'équipe décider" : le choix
+   et l'ampleur du bonus dépendent de l'intelligence du roster (shotcalling
+   + mental) — bonne lecture du matchup si intelligente, zone de confort sinon.
+*/
+const STRATEGIC_DIRECTIVES = [
+  { id: 'objectives', icon: '🐉', categories: ['objective'] },
+  { id: 'aggression', icon: '⚔️', categories: ['lane', 'jungle'] },
+  { id: 'siege',       icon: '🏰', categories: ['macro'] },
+  { id: 'teamfight',   icon: '🛡️', categories: ['teamfight'] },
+  { id: 'scaling',     icon: '🧘', categories: [] } // défensive : ralentit le jeu, pas de bonus de catégorie
+];
+const DIRECTIVE_POWER_BONUS = 1.4;          // même ordre de grandeur que matchupBonus (1.5)
+const DIRECTIVE_WEIGHT_MULT = 1.35;         // fréquence des events de la catégorie ciblée
+const DIRECTIVE_SCALING_KILL_MULT = 0.85;   // ralentit early/mid quand la consigne est "prudence/scaling"
+const DIRECTIVE_SCALING_SNOWBALL_SOFTEN = 0.6; // atténue un déficit d'or pour le joueur
+
+function directiveLabel(id) { return t('directive.' + id + '.label'); }
+function directiveDesc(id) { return t('directive.' + id + '.desc'); }
+
+// Profil de puissance moyen d'une équipe SUR SES PICKS RÉELS de cette draft
+// (phasePower/objectivePower moyens + décompte de tags), utilisé pour la
+// recommandation du coach et le choix auto de l'équipe.
+function draftTeamPowerProfile(picks) {
+  let early = 0, mid = 0, late = 0, obj = 0, n = 0;
+  const tagCounts = {};
+  Object.values(picks || {}).forEach((name) => {
+    if (!name) return;
+    const c = getChampionByName(name);
+    if (!c || !c.phasePower) return;
+    early += c.phasePower.early; mid += c.phasePower.mid; late += c.phasePower.late; obj += c.objectivePower || 0;
+    n++;
+    (c.synergyTags || []).concat(c.tags || []).forEach((tag) => { tagCounts[tag] = (tagCounts[tag] || 0) + 1; });
+  });
+  if (!n) return { early: 5, mid: 5, late: 5, obj: 2, tags: {} };
+  return { early: early / n, mid: mid / n, late: late / n, obj: obj / n, tags: tagCounts };
+}
+
+// Score de "bonne lecture du matchup" par consigne (tient compte de l'adversaire) —
+// utilisé pour la recommandation du coach ET le choix auto de l'équipe si son
+// intelligence est haute.
+function directiveMatchupFitScore(id, my, opp) {
+  switch (id) {
+    case 'objectives': return my.obj - opp.obj;
+    case 'aggression': return my.early - opp.early;
+    case 'siege':      return (my.mid - opp.mid) + (my.tags.siege || 0) * 0.4 + (my.tags.splitpush || 0) * 0.4;
+    case 'teamfight':  return ((my.mid + my.late) / 2 - (opp.mid + opp.late) / 2) + (my.tags.teamfight || 0) * 0.4;
+    case 'scaling':    return (my.late - my.early) - (opp.late - opp.early);
+    default: return 0;
+  }
+}
+
+// Score de "zone de confort" par consigne (SANS tenir compte de l'adversaire) —
+// utilisé par le choix auto de l'équipe si son intelligence est basse.
+function directiveComfortScore(id, my) {
+  const avgStat = (key) => state.roster.length ? state.roster.reduce((s, p) => s + (p[key] || 0), 0) / state.roster.length : 50;
+  switch (id) {
+    case 'objectives': return my.obj * 10;
+    case 'aggression': return avgStat('laning');
+    case 'siege':      return avgStat('shotcalling');
+    case 'teamfight':  return avgStat('teamfight');
+    case 'scaling':    return (my.late - my.early) * 10;
+    default: return 0;
+  }
+}
+
+function bestDirectiveByScore(scoreFn, ...args) {
+  let best = null;
+  STRATEGIC_DIRECTIVES.forEach((d) => {
+    const score = scoreFn(d.id, ...args);
+    if (!best || score > best.score) best = { id: d.id, score };
+  });
+  return best.id;
+}
+
+// Recommandation du coach affichée sur l'écran de synthèse post-draft — la
+// consigne dont la lecture du matchup est la plus favorable.
+function getCoachDirectiveRecommendation(draft) {
+  const my = draftTeamPowerProfile(draft[draft.playerSide + 'Picks']);
+  const opp = draftTeamPowerProfile(draft[aiSide(draft) + 'Picks']);
+  return bestDirectiveByScore(directiveMatchupFitScore, my, opp);
+}
+
+// Intelligence de jeu du roster (0-100), moyenne de shotcalling+mental.
+function rosterIntelligence() {
+  if (!state.roster.length) return 50;
+  const vals = state.roster.map((p) => ((p.shotcalling || 0) + (p.mental || 0)) / 2);
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+// v1.19.0 — Choix auto de l'équipe quand le joueur délègue ("laisser l'équipe
+// décider") : plus le roster est intelligent, plus il a de chances de lire le
+// matchup comme le ferait un coach (bonus plein) ; sinon il joue sa zone de
+// confort, sans tenir compte de l'adversaire (bonus réduit). smartFactor
+// module À LA FOIS le choix (probabilité) ET l'ampleur du bonus obtenu.
+function resolveTeamAutoDirective(draft) {
+  const my = draftTeamPowerProfile(draft[draft.playerSide + 'Picks']);
+  const opp = draftTeamPowerProfile(draft[aiSide(draft) + 'Picks']);
+  const intelligence = rosterIntelligence();
+  const smartFactor = clamp((intelligence - 45) / 40, 0, 1);
+  const fitId = bestDirectiveByScore(directiveMatchupFitScore, my, opp);
+  const comfortId = bestDirectiveByScore(directiveComfortScore, my);
+  const id = Math.random() < smartFactor ? fitId : comfortId;
+  const bonusFactor = 0.5 + 0.5 * smartFactor;
+  return { id, bonusFactor, smart: id === fitId, intelligence, smartFactor };
+}
+
+// Résout la consigne finale d'un match à partir du choix fait sur l'écran de
+// synthèse post-draft (id de consigne, ou 'team' pour déléguer à l'équipe).
+function resolveMatchDirective(draft) {
+  if (!draft || !draft.directive) return null;
+  if (draft.directive === 'team') {
+    const auto = resolveTeamAutoDirective(draft);
+    return { id: auto.id, bonusFactor: auto.bonusFactor, source: 'team' };
+  }
+  return { id: draft.directive, bonusFactor: 1, source: 'coach' };
+}
+
+// Panneau de sélection de la consigne, affiché sur l'écran de synthèse
+// post-draft (uniquement s'il y a un match à lancer ensuite).
+function renderDirectiveSelectorHtml(draft) {
+  if (!state.matchSeries) return '';
+  const recommended = getCoachDirectiveRecommendation(draft);
+  const selected = draft.directive || recommended;
+  const cards = STRATEGIC_DIRECTIVES.map((d) => {
+    const isSel = selected === d.id;
+    const isRec = recommended === d.id;
+    return `
+      <button class="directive-card ${isSel ? 'directive-card--selected' : ''}" data-directive="${d.id}">
+        <span class="directive-card__icon">${d.icon}</span>
+        <span class="directive-card__name">${directiveLabel(d.id)}${isRec ? ` <span class="directive-card__reco">${t('directive.recommended')}</span>` : ''}</span>
+        <span class="directive-card__desc">${directiveDesc(d.id)}</span>
+      </button>`;
+  }).join('');
+  const teamCard = `
+    <button class="directive-card directive-card--team ${selected === 'team' ? 'directive-card--selected' : ''}" data-directive="team">
+      <span class="directive-card__icon">🧠</span>
+      <span class="directive-card__name">${t('directive.team.label')}</span>
+      <span class="directive-card__desc">${t('directive.team.desc')}</span>
+    </button>`;
+  return `
+    <div class="panel-subsection directive-panel">
+      <h3 class="panel-title">${t('directive.title')}</h3>
+      <p class="card__count directive-panel__hint">${t('directive.hint')}</p>
+      <div class="directive-grid">${cards}${teamCard}</div>
+    </div>`;
 }
 
 // ---- Assistant Coach de draft (v1.12.1) ----
@@ -4160,6 +4314,7 @@ function renderDraft() {
           ${r.comfortDetails.map((d) => `<p>${d}</p>`).join('')}
           ${r.matchupDetails.map((d) => `<p>${d}</p>`).join('')}
         </div>
+        ${renderDirectiveSelectorHtml(draft)}
         <div class="training-form__actions">
           ${state.matchSeries
             ? `<button class="btn-primary" id="btn-launch-match">${t('draft.launchMatch')}</button>`
@@ -4314,6 +4469,15 @@ function renderDraft() {
       renderDraft();
     });
   }
+
+  // v1.19.0 — sélection de la consigne stratégique sur l'écran de synthèse post-draft
+  document.querySelectorAll('[data-directive]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.draft.directive = btn.dataset.directive;
+      saveGame();
+      renderDraft();
+    });
+  });
 
   const launchMatchBtn = document.getElementById('btn-launch-match');
   if (launchMatchBtn) {
@@ -7228,7 +7392,8 @@ function startMatch(opponentTeamId) {
     speed: state.settings.speed || 2,
     paused: false,
     finished: false,
-    timer: null
+    timer: null,
+    directive: resolveMatchDirective(state.draft) // v1.19.0 — consigne stratégique choisie après la draft
   };
 
   renderMatchArena();
@@ -7315,7 +7480,13 @@ function teamEventPower(side, category, role) {
   const enemySide = side === 'blue' ? 'red' : 'blue';
   const goldLead = rt.gold[side] - rt.gold[enemySide];
   const snowballFactor = rt.scenarioCfg ? rt.scenarioCfg.snowballFactor : 1;
-  total += clamp(goldLead / 3000, -4, 4) * snowballFactor;
+  let snowballTerm = clamp(goldLead / 3000, -4, 4) * snowballFactor;
+  // v1.19.0 — consigne "prudence/scaling" : atténue un déficit d'or pour le
+  // joueur (on temporise plutôt que de subir le boule-de-neige adverse).
+  if (isPlayer && rt.directive && rt.directive.id === 'scaling' && snowballTerm < 0) {
+    snowballTerm *= 1 - (1 - DIRECTIVE_SCALING_SNOWBALL_SOFTEN) * rt.directive.bonusFactor;
+  }
+  total += snowballTerm;
 
   const variance = BALANCE_CONFIG.events.matchVariance;
   total += randomFloat(-variance, variance) * varianceMultiplier;
@@ -7323,6 +7494,15 @@ function teamEventPower(side, category, role) {
   // v1.18.2 — Soutien du public : léger avantage de puissance pour le joueur en
   // match de compétition (perk de ferveur palier 5+, modulé par l'humeur).
   if (isPlayer) total += fanMatchBonus();
+
+  // v1.19.0 — Consigne stratégique : bonus de puissance sur la catégorie ciblée
+  // (jamais sur les timers de spawn, uniquement sur qui remporte l'event).
+  if (isPlayer && rt.directive) {
+    const dir = STRATEGIC_DIRECTIVES.find((d) => d.id === rt.directive.id);
+    if (dir && dir.categories.includes(category)) {
+      total += DIRECTIVE_POWER_BONUS * rt.directive.bonusFactor;
+    }
+  }
   return total;
 }
 
@@ -7486,6 +7666,17 @@ function simulateTick() {
     }
     // Tours en late / nexus imminent
     if (e.id === 'tower' && (nexusImminent || rt.phase === 'late')) w *= nexusImminent ? 5 : 2;
+    // v1.19.0 — consigne stratégique : fréquence des events de la catégorie ciblée
+    // (jamais sur les timers de spawn, uniquement sur la sélection parmi les
+    // candidats déjà éligibles à ce tick). "Prudence/scaling" ralentit les kills.
+    if (rt.directive) {
+      const dir = STRATEGIC_DIRECTIVES.find((d) => d.id === rt.directive.id);
+      if (dir && dir.categories.includes(e.category)) {
+        w *= 1 + (DIRECTIVE_WEIGHT_MULT - 1) * rt.directive.bonusFactor;
+      } else if (rt.directive.id === 'scaling' && ['lane', 'jungle', 'teamfight'].includes(e.category)) {
+        w *= 1 - (1 - DIRECTIVE_SCALING_KILL_MULT) * rt.directive.bonusFactor;
+      }
+    }
     return { ...e, weight: Math.max(0.1, w) };
   });
 
@@ -8174,6 +8365,19 @@ function renderMatchArena() {
       seriesLabelEl.textContent = `${series.format} - Game ${series.gameNumber} · ${myShort} ${series.scoreFor} - ${series.scoreAgainst} ${oppShort}`;
     } else {
       seriesLabelEl.textContent = '';
+    }
+  }
+
+  // v1.19.0 — badge de la consigne stratégique active pour cette game
+  const directiveLabelEl = document.getElementById('match-directive-label');
+  if (directiveLabelEl) {
+    if (rt.directive) {
+      const dir = STRATEGIC_DIRECTIVES.find((d) => d.id === rt.directive.id);
+      const sourceKey = rt.directive.source === 'team' ? 'directive.source.team' : 'directive.source.coach';
+      directiveLabelEl.textContent = `${dir ? dir.icon : ''} ${t('directive.activeLabel', { name: directiveLabel(rt.directive.id), source: t(sourceKey) })}`;
+      directiveLabelEl.style.display = '';
+    } else {
+      directiveLabelEl.style.display = 'none';
     }
   }
 

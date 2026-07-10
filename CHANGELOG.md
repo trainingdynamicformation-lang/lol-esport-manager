@@ -5,6 +5,19 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.0] — 10/07/2026
+
+### Ajouté — Consignes stratégiques
+
+À la fin de la draft, sur l'écran de synthèse, choisissez désormais **une consigne stratégique** pour votre équipe avant de lancer la game.
+
+- **5 consignes** : 🐉 Objectifs neutres, ⚔️ Agressivité, 🏰 Siège / tours, 🛡️ Combats d'équipe, 🧘 Prudence / scaling. Chacune influence les événements du match — la fréquence et l'issue des contestations de sa catégorie — sans jamais toucher au rythme d'apparition des objectifs neutres.
+- **L'assistant coach recommande** une consigne selon le matchup réel de cette draft (vos picks contre ceux de l'adversaire), affichée en priorité mais toujours modifiable.
+- **Nouvelle option : « Laisser l'équipe décider »** — vous déléguez le choix à l'équipe. La qualité de sa décision dépend de son intelligence de jeu (shotcalling + mental) : une équipe intelligente lit le matchup presque aussi bien qu'un coach, une équipe plus jeune ou moins affûtée joue simplement sa zone de confort, avec un bonus réduit en conséquence.
+- La consigne active est rappelée par un badge discret dans l'arène de match.
+
+---
+
 ## [1.18.4] — 10/07/2026
 
 ### Modifié — Fil des fans : pagination, noms d'équipe variés, sans horodatage
