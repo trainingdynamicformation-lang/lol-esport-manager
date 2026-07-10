@@ -3175,6 +3175,30 @@ table.history-table th {
 .fans-dividend { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
 .fans-dividend__title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 10px; }
 .fans-dividend__note { font-size: var(--fs-label); color: var(--color-text-muted); margin-top: 8px; font-style: italic; }
+
+.fans-perks { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.fans-perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+}
+.fans-perk__icon { font-size: 1.1rem; flex-shrink: 0; }
+.fans-perk__body { display: flex; flex-direction: column; min-width: 0; }
+.fans-perk__label { font-weight: 700; color: var(--color-text); font-size: var(--fs-body); }
+.fans-perk__val { font-size: var(--fs-label); color: var(--color-gold); }
+.fans-tier__unlock {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--color-seafoam);
+}
 .fans-dividend__grid { display: flex; gap: 10px; flex-wrap: wrap; }
 .fans-dividend__item {
   flex: 1 1 90px;

@@ -5,6 +5,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.18.2] — 2026-07-10
+
+### Added — Fanbase fervor: tier perks
+
+Final step of the Fervor feature: each tier now unlocks **varied perks** beyond the budget dividend alone. Like it, the atmosphere-related ones are modulated by fan mood.
+
+- **🎯 Coaching dividend** (from tier 2): coaching points paid on top of the budget dividend at every competition end.
+- **😴 Fan energy** (from tier 3): your players recover more fatigue after each competitive match (fixed perk, independent of mood).
+- **📈 Home crowd support** (from tier 5): the atmosphere lifts your team — a slight power bonus in your competitive matches.
+
+Each perk's amounts and impact are shown on the Fanbase screen, and the ladder now indicates what each tier unlocks. Friendly matches get none of these perks: only real competitive matches count.
+
+---
+
 ## [1.18.1] — 2026-07-10
 
 ### Added — Fanbase fervor: fan mood

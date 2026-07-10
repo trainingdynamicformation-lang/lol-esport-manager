@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.18.2] — 10/07/2026
+
+### Ajouté — Ferveur des fans : les avantages de palier
+
+Dernière étape du chantier Ferveur : chaque palier débloque désormais des **avantages variés**, au-delà du seul dividende de budget. Comme lui, ceux liés à l'ambiance sont modulés par l'humeur des fans.
+
+- **🎯 Dividende coaching** (dès le palier 2) : des points de coaching versés en plus du dividende de budget à chaque fin de compétition.
+- **😴 Énergie des fans** (dès le palier 3) : vos joueurs récupèrent davantage de fatigue après chaque match de compétition (avantage fixe, indépendant de l'humeur).
+- **📈 Soutien du public** (dès le palier 5) : l'ambiance porte votre équipe — léger bonus de puissance dans vos matchs de compétition.
+
+Les montants et l'impact de chaque avantage sont affichés sur l'écran Ferveur, et l'échelle indique désormais ce que chaque palier débloque. Les matchs amicaux ne bénéficient d'aucun de ces avantages : seuls les vrais matchs de compétition comptent.
+
+---
+
 ## [1.18.1] — 10/07/2026
 
 ### Ajouté — Ferveur des fans : l'humeur des fans

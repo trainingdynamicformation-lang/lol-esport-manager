@@ -4714,14 +4714,19 @@ function placementLabel(placement) {
    ×1.5 aux Worlds. Humeur des fans + perks avancés = versions ultérieures.
 */
 const FAN_TIERS = [
-  { id: 'spark',       threshold: 50,   dividend: 20 },
-  { id: 'local',       threshold: 120,  dividend: 30 },
-  { id: 'regional',    threshold: 250,  dividend: 45 },
-  { id: 'continental', threshold: 500,  dividend: 60 },
-  { id: 'intl',        threshold: 900,  dividend: 80 },
-  { id: 'dynasty',     threshold: 1500, dividend: 105 },
-  { id: 'legend',      threshold: 2500, dividend: 140 },
-  { id: 'icon',        threshold: 4000, dividend: 180 }
+  // v1.18.2 — perks avancés répartis par palier (déblocages échelonnés) :
+  //   coach      = dividende coaching versé avec le dividende budget (palier 2+)
+  //   rest       = fatigue en moins après chaque match de compétition (palier 3+)
+  //   matchBoost = bonus de puissance d'équipe en match de compétition (palier 5+)
+  // dividend/coach/matchBoost sont modulés par l'humeur ; rest est fixe.
+  { id: 'spark',       threshold: 50,   dividend: 20,  coach: 0,  rest: 0,  matchBoost: 0 },
+  { id: 'local',       threshold: 120,  dividend: 30,  coach: 10, rest: 0,  matchBoost: 0 },
+  { id: 'regional',    threshold: 250,  dividend: 45,  coach: 14, rest: 4,  matchBoost: 0 },
+  { id: 'continental', threshold: 500,  dividend: 60,  coach: 18, rest: 5,  matchBoost: 0 },
+  { id: 'intl',        threshold: 900,  dividend: 80,  coach: 24, rest: 6,  matchBoost: 0.6 },
+  { id: 'dynasty',     threshold: 1500, dividend: 105, coach: 32, rest: 7,  matchBoost: 0.9 },
+  { id: 'legend',      threshold: 2500, dividend: 140, coach: 42, rest: 8,  matchBoost: 1.2 },
+  { id: 'icon',        threshold: 4000, dividend: 180, coach: 56, rest: 10, matchBoost: 1.5 }
 ];
 
 // Multiplicateurs de dividende par type de compétition (formule utilisateur).
@@ -4803,15 +4808,58 @@ function applyFanReaction(won, opponentId) {
 // Clé de classe/libellé d'humeur pour l'UI selon le niveau.
 function fanMoodClass(mood) { return mood >= 70 ? 'high' : (mood >= 40 ? 'mid' : 'low'); }
 
-// Crédite le dividende de ferveur au budget et journalise dans le log fourni.
-// Renvoie le montant versé (0 si aucun palier atteint).
-function applyFanDividend(compType, log) {
-  const amount = fanDividendAmount(compType);
-  if (amount <= 0) return 0;
-  state.resources.budget += amount;
+// v1.18.2 — Dividende coaching (perk palier 2+), même logique/mult/humeur que le
+// dividende budget. 0 si le palier ne le débloque pas.
+function fanCoachDividendAmount(compType) {
   const tier = getFanTier(state.resources.prestige);
-  if (log) log.unshift({ k: 'log.fanDividend', p: { amount, tier: fanTierLabel(tier.id) } });
-  return amount;
+  if (!tier || !tier.coach) return 0;
+  const mult = FAN_DIVIDEND_MULT[compType] || 1;
+  return Math.round(tier.coach * mult * fanMoodFactor(getFanMood()));
+}
+
+// v1.18.2 — Bonus de puissance d'équipe en match de compétition (perk palier 5+),
+// modulé par l'humeur. 0 hors compétition (scrims amicaux exclus) ou palier trop bas.
+function fanMatchBonus() {
+  const series = state.matchSeries;
+  if (!series || !series.context || series.context === 'Scrim') return 0;
+  const tier = getFanTier(state.resources.prestige);
+  if (!tier || !tier.matchBoost) return 0;
+  return tier.matchBoost * fanMoodFactor(getFanMood());
+}
+
+// v1.18.2 — Fatigue en moins après chaque match de compétition (perk palier 3+).
+// Valeur fixe (non modulée par l'humeur : le soin de l'équipe reste constant).
+function fanRestBonus() {
+  const tier = getFanTier(state.resources.prestige);
+  return tier ? (tier.rest || 0) : 0;
+}
+
+// v1.18.2 — Perk NOUVELLEMENT débloqué à l'index de palier i (par rapport au
+// précédent), pour l'étiquette « Débloque » de l'échelle. null si rien de neuf.
+function fanTierUnlockKey(i) {
+  const cur = FAN_TIERS[i];
+  const prev = i > 0 ? FAN_TIERS[i - 1] : { dividend: 0, coach: 0, rest: 0, matchBoost: 0 };
+  if (i === 0) return 'budget';
+  if (cur.matchBoost && !prev.matchBoost) return 'match';
+  if (cur.rest && !prev.rest) return 'rest';
+  if (cur.coach && !prev.coach) return 'coach';
+  return null;
+}
+
+// Crédite les dividendes de ferveur (budget + coaching) et journalise dans le log
+// fourni. Renvoie les montants versés.
+function applyFanDividend(compType, log) {
+  const budget = fanDividendAmount(compType);
+  const coach = fanCoachDividendAmount(compType);
+  if (budget <= 0 && coach <= 0) return { budget: 0, coach: 0 };
+  if (budget > 0) state.resources.budget += budget;
+  if (coach > 0) state.resources.coachingPoints = clamp(state.resources.coachingPoints + coach, 0, 999);
+  const tier = getFanTier(state.resources.prestige);
+  if (log) {
+    if (coach > 0) log.unshift({ k: 'log.fanDividendFull', p: { amount: budget, coach, tier: fanTierLabel(tier.id) } });
+    else log.unshift({ k: 'log.fanDividend', p: { amount: budget, tier: fanTierLabel(tier.id) } });
+  }
+  return { budget, coach };
 }
 
 function finishSeason() {
@@ -7140,6 +7188,10 @@ function teamEventPower(side, category, role) {
 
   const variance = BALANCE_CONFIG.events.matchVariance;
   total += randomFloat(-variance, variance) * varianceMultiplier;
+
+  // v1.18.2 — Soutien du public : léger avantage de puissance pour le joueur en
+  // match de compétition (perk de ferveur palier 5+, modulé par l'humeur).
+  if (isPlayer) total += fanMatchBonus();
   return total;
 }
 
@@ -7636,9 +7688,11 @@ function finishMatch() {
   state.scouting[rt.opponent.id].confidence = clamp(state.scouting[rt.opponent.id].confidence + VIDEO_REVIEW_CONFIDENCE_GAIN, 0, 100);
   revealScoutedTeam(rt.opponent.id); // v1.15.3 : ce match découvre les joueurs inconnus de l'adversaire
 
-  // Garde-fou CDC 13.1.2 : le repos post-match attenue la fatigué accumulee
+  // Garde-fou CDC 13.1.2 : le repos post-match attenue la fatigué accumulee.
+  // v1.18.2 — Énergie des fans : récupération bonus en match de compétition (perk palier 3+).
+  const fanRest = (series && series.context && series.context !== 'Scrim') ? fanRestBonus() : 0;
   state.roster.forEach((player) => {
-    player.fatigue = clamp(player.fatigue - BALANCE_CONFIG.fatigue.matchRecovery, 0, 100);
+    player.fatigue = clamp(player.fatigue - BALANCE_CONFIG.fatigue.matchRecovery - fanRest, 0, 100);
   });
 
   state.matchHistory.unshift({
@@ -9723,17 +9777,30 @@ function renderFansView() {
       <p class="fans-dividend__note">${t('fans.dividendMoodNote')}</p>
     </div>` : `<p class="fans-empty">${t('fans.firstTierHint', { threshold: FAN_TIERS[0].threshold, remaining: FAN_TIERS[0].threshold - prestige })}</p>`;
 
+  // v1.18.2 — autres avantages débloqués par le palier courant (coaching / soutien / énergie)
+  const otherPerks = [];
+  if (current && current.coach) otherPerks.push({ icon: '🎯', label: t('fans.perkCoach'), val: t('fans.perkCoachValue', { split: fanCoachDividendAmount('split'), msi: fanCoachDividendAmount('msi'), worlds: fanCoachDividendAmount('worlds') }) });
+  if (current && current.rest) otherPerks.push({ icon: '😴', label: t('fans.perkRest'), val: t('fans.perkRestValue', { val: current.rest }) });
+  if (current && current.matchBoost) otherPerks.push({ icon: '📈', label: t('fans.perkMatch'), val: t('fans.perkMatchValue', { val: (current.matchBoost * fanMoodFactor(mood)).toFixed(1) }) });
+  const perksHtml = otherPerks.length ? `
+    <div class="fans-perks">
+      ${otherPerks.map((p) => `<div class="fans-perk"><span class="fans-perk__icon">${p.icon}</span><div class="fans-perk__body"><span class="fans-perk__label">${p.label}</span><span class="fans-perk__val">${p.val}</span></div></div>`).join('')}
+    </div>` : '';
+
   const ladderRows = FAN_TIERS.map((tier, i) => {
     const reached = prestige >= tier.threshold;
     const isCurrent = i === idx;
     const stateCls = isCurrent ? 'fans-tier--current' : (reached ? 'fans-tier--reached' : 'fans-tier--locked');
     const statusIcon = reached ? '✓' : '🔒';
+    const unlockKey = fanTierUnlockKey(i);
+    const unlockHtml = unlockKey ? `<span class="fans-tier__unlock">${t('fans.unlockPrefix')} ${t('fans.unlock.' + unlockKey)}</span>` : '';
     return `
       <div class="fans-tier ${stateCls}">
         <div class="fans-tier__rank">${i + 1}</div>
         <div class="fans-tier__body">
           <p class="fans-tier__name">${fanTierLabel(tier.id)} <span class="fans-tier__status">${statusIcon}</span></p>
           <p class="fans-tier__desc">${t('fans.tierDesc.' + tier.id)}</p>
+          ${unlockHtml}
         </div>
         <div class="fans-tier__meta">
           <span class="fans-tier__threshold">${tier.threshold} ${t('fans.prestigeUnit')}</span>
@@ -9752,6 +9819,7 @@ function renderFansView() {
       ${progressHtml}
       ${moodHtml}
       ${dividendHtml}
+      ${perksHtml}
     </div>
     <div class="panel fans-ladder">
       <p class="fans-ladder__title">${t('fans.ladderTitle')}</p>
