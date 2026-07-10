@@ -14,6 +14,8 @@ The Sponsor screen now permanently shows, on your active sponsor (not just at re
 - **Signature sponsors**: the 3 renewal conditions (all objectives met, partially met, none met), each with the **concrete budget amount** at stake (not just the percentage) — computed from the contract's current bonus/stake.
 - **Result sponsors**: the breach clause, if the contract has one (premium tier only).
 
+The signing bonus received when you signed also now shows in the top-right corner of your active sponsor's tile, for signature sponsors.
+
 ---
 
 ## [1.17.3] — 2026-07-08

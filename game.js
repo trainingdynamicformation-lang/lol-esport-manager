@@ -9616,7 +9616,10 @@ function renderSponsorCurrentBlock() {
             ${sponsorTypeLabel(current.type)} &middot; ${t('sponsor.current.signedYear', { year: current.signedYear })}
           </p>
         </div>
-        ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
+        <div class="sponsor-current__actions">
+          ${contract && contract.type === 'signature' ? `<span class="sponsor-current__signing-bonus">${t('sponsor.card.signingBonus', { amount: contract.signingBonus })}</span>` : ''}
+          ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
+        </div>
       </div>
       ${contract && contract.type === 'signature' ? sponsorObjectiveChecklistHtml(contract) : ''}
       ${contract && contract.type === 'signature' ? sponsorClausesHtml(contract, current.amount) : ''}

@@ -14,6 +14,8 @@ L'écran Sponsor affiche désormais, en permanence sur votre sponsor actif (pas 
 - **Sponsors signature** : les 3 conditions de renouvellement (objectifs tous atteints, partiellement atteints, aucun atteint), avec pour chacune le **budget concret** en jeu (pas seulement le pourcentage) — calculé sur le bonus/enjeu actuel du contrat.
 - **Sponsors résultat** : la clause de rupture, si le contrat en a une (réservé aux paliers premium).
 
+Le gain touché à la signature s'affiche aussi désormais en haut à droite de la tuile de votre sponsor actif, pour les sponsors signature.
+
 ---
 
 ## [1.17.3] — 08/07/2026

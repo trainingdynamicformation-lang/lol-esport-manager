@@ -2996,6 +2996,17 @@ table.history-table th {
 .sponsor-current__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .sponsor-current__brand { font-family: var(--font-title); font-size: var(--fs-h3); font-weight: 700; color: var(--color-text); }
 .sponsor-current__meta { font-size: var(--fs-label); color: var(--color-text-muted); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.sponsor-current__actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.sponsor-current__signing-bonus {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--color-gold);
+  background: rgba(212,175,55,.1);
+  border: 1px solid rgba(212,175,55,.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
 
 .sponsor-current__objectives { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border); }
 .sponsor-current__objectives-title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
