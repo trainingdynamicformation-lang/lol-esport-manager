@@ -4960,7 +4960,7 @@ function generateFanFeedPosts(cat, vars) {
     const author = generateFanAuthor(persona);
     const eng = fanEngagement(cat);
     const postVars = Object.assign({}, vars, { team: (teamShort && Math.random() < 0.5) ? teamShort : teamFull });
-    fans.feed.unshift({ cat, ti, vars: postVars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, mins: randomInt(2, 90) });
+    fans.feed.unshift({ cat, ti, vars: postVars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts });
   });
   if (fans.feed.length > 40) fans.feed.length = 40;
 }
@@ -9845,9 +9845,8 @@ function sponsorObjectiveChecklistHtml(contract) {
 }
 
 // v1.18.3 — helpers d'affichage du fil social
-function fanFeedTimeLabel(mins) {
-  return mins < 60 ? t('fans.feedTime.min', { n: mins }) : t('fans.feedTime.hour', { n: Math.floor(mins / 60) });
-}
+let fanFeedPage = 0; // v1.18.4 — page courante du fil (10 posts/page), transitoire
+const FAN_FEED_PAGE_SIZE = 10;
 function fanFeedCount(n) {
   return n >= 1000 ? (n / 1000).toFixed(1).replace('.0', '') + 'k' : String(n);
 }
@@ -9861,7 +9860,12 @@ function renderFanFeedHtml() {
   if (!fans.feed.length) {
     return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p><p class="fans-empty">${t('fans.feedEmpty')}</p></div>`;
   }
-  const posts = fans.feed.slice(0, 10).map((p) => { // v1.18.4 — affiche les 10 plus récents (feed newest-first)
+  // v1.18.4 — pagination 10 par 10, du plus récent au plus ancien (feed newest-first)
+  const totalPages = Math.ceil(fans.feed.length / FAN_FEED_PAGE_SIZE);
+  const page = clamp(fanFeedPage, 0, totalPages - 1);
+  fanFeedPage = page;
+  const start = page * FAN_FEED_PAGE_SIZE;
+  const posts = fans.feed.slice(start, start + FAN_FEED_PAGE_SIZE).map((p) => {
     const text = t('fanpost.' + p.cat + '.' + p.ti, p.vars);
     return `
       <div class="fans-post">
@@ -9869,7 +9873,7 @@ function renderFanFeedHtml() {
         <div class="fans-post__body">
           <div class="fans-post__head">
             <span class="fans-post__name">${p.name}</span>
-            <span class="fans-post__handle">${p.handle} &middot; ${fanFeedTimeLabel(p.mins)}</span>
+            <span class="fans-post__handle">${p.handle}</span>
             <span class="fans-post__tag fans-post__tag--${p.cat}">${t('fans.feedTag.' + p.cat)}</span>
           </div>
           <p class="fans-post__text">${text}</p>
@@ -9877,7 +9881,13 @@ function renderFanFeedHtml() {
         </div>
       </div>`;
   }).join('');
-  return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p>${posts}</div>`;
+  const pager = totalPages > 1 ? `
+    <div class="fans-feed__pager">
+      <button class="btn-secondary" id="btn-fanfeed-prev"${page === 0 ? ' disabled' : ''}>${t('fans.feedPrev')}</button>
+      <span class="fans-feed__page">${t('fans.feedPage', { n: page + 1, total: totalPages })}</span>
+      <button class="btn-secondary" id="btn-fanfeed-next"${page >= totalPages - 1 ? ' disabled' : ''}>${t('fans.feedNext')}</button>
+    </div>` : '';
+  return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p>${posts}${pager}</div>`;
 }
 
 // v1.18.0 — Écran Ferveur des fans : résumé du palier courant + progression vers
@@ -9979,6 +9989,11 @@ function renderFansView() {
     <p class="fans-note">${t('fans.note')}</p>
     <p class="fans-note">${t('fans.moodHint')}</p>
   `;
+  // v1.18.4 — pagination du fil : boutons précédent / suivant
+  const prevBtn = document.getElementById('btn-fanfeed-prev');
+  if (prevBtn) prevBtn.addEventListener('click', () => { fanFeedPage = Math.max(0, fanFeedPage - 1); renderFansView(); });
+  const nextBtn = document.getElementById('btn-fanfeed-next');
+  if (nextBtn) nextBtn.addEventListener('click', () => { fanFeedPage = fanFeedPage + 1; renderFansView(); });
 }
 
 function renderSponsorView() {

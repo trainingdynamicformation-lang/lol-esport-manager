@@ -7,10 +7,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [1.18.4] — 2026-07-10
 
-### Changed — Fan feed: lighter display and varied team names
+### Changed — Fan feed: pagination, varied team names, no timestamps
 
-- The **fan feed** now only shows the **10 most recent posts** (newest to oldest), for a cleaner screen. Older posts stay in memory but are no longer displayed.
+- The **fan feed** now displays in **pages of 10 posts** (newest to oldest), with Previous / Next buttons. The feed still keeps the 40 most recent posts.
 - Posts now alternate between your team's **full name** and its **acronym**, instead of always showing the full name — more natural, like real social media.
+- Removed the **post timestamp** ("1 h ago") on posts, which quickly became inconsistent over the seasons.
 
 ---
 

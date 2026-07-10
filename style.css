@@ -3296,6 +3296,18 @@ table.history-table th {
 .fans-post__tag--regionalTitle, .fans-post__tag--intlTitle { color: var(--color-gold); }
 .fans-post__text { margin: 4px 0 6px; color: var(--color-text); line-height: 1.5; font-size: var(--fs-body); }
 .fans-post__meta { display: flex; gap: 16px; font-size: var(--fs-label); color: var(--color-text-muted); }
+.fans-feed__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+.fans-feed__pager .btn-secondary { padding: 4px 14px; }
+.fans-feed__pager .btn-secondary[disabled] { opacity: .4; cursor: default; }
+.fans-feed__page { font-size: var(--fs-label); color: var(--color-text-muted); }
 
 /* ─── Visite guidée (v1.15.1) ────────────────────────────────────────────── */
 .tutorial-block {

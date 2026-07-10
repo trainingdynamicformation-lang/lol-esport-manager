@@ -7,10 +7,11 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [1.18.4] — 10/07/2026
 
-### Modifié — Fil des fans : affichage allégé et noms d'équipe variés
+### Modifié — Fil des fans : pagination, noms d'équipe variés, sans horodatage
 
-- Le **fil des fans** n'affiche plus que les **10 publications les plus récentes** (du plus récent au plus ancien), pour un écran plus lisible. Les posts plus anciens restent en mémoire mais ne sont plus affichés.
+- Le **fil des fans** s'affiche désormais **par pages de 10 publications** (du plus récent au plus ancien), avec des boutons Précédent / Suivant. Le fil conserve toujours les 40 posts les plus récents.
 - Les publications alternent désormais entre le **nom complet** de votre équipe et son **acronyme**, au lieu de toujours afficher le nom complet — plus naturel, façon vrais réseaux sociaux.
+- Suppression de l'**heure de publication** (« il y a 1 h ») sur les posts, qui devenait vite incohérente au fil des saisons.
 
 ---
 
