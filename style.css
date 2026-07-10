@@ -1459,7 +1459,7 @@ img { max-width: 100%; height: auto; }
 }
 
 /* Consignes stratégiques (v1.19.0) */
-.directive-panel { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
+.directive-panel { margin-top: 16px; margin-bottom: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
 .directive-panel__hint { color: var(--color-text-muted); line-height: 1.5; margin-bottom: 12px; }
 .directive-grid {
   display: grid;
