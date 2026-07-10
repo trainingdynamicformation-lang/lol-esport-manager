@@ -5,6 +5,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.18.3] — 2026-07-10
+
+### Added — Fanbase fervor: the fan feed
+
+A simulated **social media feed** appears on the Fanbase screen: your fans, journalists and critics react live to your results.
+
+- **The tone adapts to the result** based on the skill gap with the opponent: an upset win over a stronger team sparks euphoria, a loss to a weaker team unleashes fury, a regional or international title triggers fervor.
+- **Personalized posts** with your team name, the opponent, the competition and the score, drawn from a large bank (50+ templates) to avoid repetition.
+- **Varied personas** — supporter, hater, analyst, media — each with its own avatar, tone and a **generated social-media handle**.
+- Only real competitive matches and titles feed the stream; friendly matches don't appear.
+
+The finishing touch of the Fervor feature: pure lore, with no impact on the game.
+
+---
+
 ## [1.18.2] — 2026-07-10
 
 ### Added — Fanbase fervor: tier perks

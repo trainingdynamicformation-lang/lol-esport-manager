@@ -5,6 +5,21 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.18.3] — 10/07/2026
+
+### Ajouté — Ferveur des fans : le fil des fans
+
+Un **fil de réseau social** simulé apparaît sur l'écran Ferveur : vos fans, journalistes et détracteurs réagissent en direct à vos résultats.
+
+- **Le ton s'adapte au résultat** selon l'écart de niveau avec l'adversaire : une victoire surprise face à plus fort déclenche l'euphorie, une défaite face à une équipe plus faible déchaîne la colère, un titre régional ou international provoque la ferveur.
+- **Publications personnalisées** avec le nom de votre équipe, de l'adversaire, de la compétition et le score, piochées dans une large banque (plus de 50 modèles) pour éviter la répétition.
+- **Personas variés** — supporter, détracteur, analyste, média — chacun avec son avatar, son ton et un **pseudo généré** façon réseaux sociaux.
+- Seuls les vrais matchs de compétition et les titres alimentent le fil ; les matchs amicaux n'y figurent pas.
+
+C'est la touche finale du chantier Ferveur : du lore pur, sans aucun impact sur le jeu.
+
+---
+
 ## [1.18.2] — 10/07/2026
 
 ### Ajouté — Ferveur des fans : les avantages de palier

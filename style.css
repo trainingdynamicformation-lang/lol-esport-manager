@@ -3252,6 +3252,51 @@ table.history-table th {
 .fans-tier__dividend { font-size: var(--fs-label); font-weight: 700; color: var(--color-gold); white-space: nowrap; }
 .fans-note { font-size: var(--fs-label); color: var(--color-text-muted); line-height: 1.5; margin-top: 12px; }
 
+/* Fil des fans (v1.18.3) */
+.fans-post {
+  display: flex;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+}
+.fans-post:first-of-type { border-top: none; }
+.fans-post__avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--fs-label);
+  color: var(--color-ocean);
+}
+.fans-post__avatar--supporter { background: var(--color-success); }
+.fans-post__avatar--hater { background: var(--color-danger); }
+.fans-post__avatar--analyst { background: var(--color-seafoam); }
+.fans-post__avatar--media { background: var(--color-gold); }
+.fans-post__body { flex: 1 1 auto; min-width: 0; }
+.fans-post__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+.fans-post__name { font-weight: 700; color: var(--color-text); font-size: var(--fs-body); }
+.fans-post__handle { font-size: var(--fs-label); color: var(--color-text-muted); }
+.fans-post__tag {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  padding: 1px 7px;
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+}
+.fans-post__tag--upsetWin, .fans-post__tag--win { color: var(--color-success); }
+.fans-post__tag--upsetLoss, .fans-post__tag--intlFlop { color: var(--color-danger); }
+.fans-post__tag--regionalTitle, .fans-post__tag--intlTitle { color: var(--color-gold); }
+.fans-post__text { margin: 4px 0 6px; color: var(--color-text); line-height: 1.5; font-size: var(--fs-body); }
+.fans-post__meta { display: flex; gap: 16px; font-size: var(--fs-label); color: var(--color-text-muted); }
+
 /* ─── Visite guidée (v1.15.1) ────────────────────────────────────────────── */
 .tutorial-block {
   position: fixed;

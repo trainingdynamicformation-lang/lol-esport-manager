@@ -149,7 +149,7 @@ function createDefaultState() {
     bootcampUsedGap: null,    // valeur de compEndSeq du dernier trou où un bootcamp a été fait (1 par trou)
     bootcampEliteYear: null,  // année du dernier bootcamp Élite (1 par an)
     bootcampIntensifYear: null, // année du dernier bootcamp Intensif (1 par an)
-    fans: { mood: 100 },      // v1.18.1 — humeur des fans (0-100) : module le dividende de ferveur
+    fans: { mood: 100, feed: [] }, // v1.18.1 humeur (0-100) ; v1.18.3 fil social des fans (posts)
     aiRosters: {},
     aiMatchHistory: {},
     careerLog: [],
@@ -4752,7 +4752,8 @@ function fanTierLabel(id) { return t('fans.tier.' + id); }
 // v1.18.1 — Humeur des fans (0-100). Défensif : recrée l'objet si absent (vieilles
 // saves / imports court-circuitant loadGame).
 function ensureFans() {
-  if (!state.fans || typeof state.fans.mood !== 'number') state.fans = { mood: 100 };
+  if (!state.fans || typeof state.fans.mood !== 'number') state.fans = { mood: 100, feed: [] };
+  if (!Array.isArray(state.fans.feed)) state.fans.feed = []; // v1.18.3 — fil social
   return state.fans;
 }
 function getFanMood() { return ensureFans().mood; }
@@ -4862,6 +4863,103 @@ function applyFanDividend(compType, log) {
   return { budget, coach };
 }
 
+/* ─── Fil social des fans (v1.18.3) ──────────────────────────────────────────
+   Un fil de « réseau social » fictif : à chaque résultat notable, on pioche
+   des templates de posts (banque i18n `fanpost.<cat>.<i>`) selon la catégorie
+   déduite de l'écart de force, on les personnalise ({team}/{opp}/{comp}/{score})
+   et on génère un auteur (persona + pseudo procédural). Cosmétique/lore pur.
+   Le texte est résolu à l'affichage via t() → bascule FR/EN propre.
+*/
+// Persona associé à chaque template (aligné sur l'index i de fanpost.<cat>.<i>).
+const FAN_POST_PERSONAS = {
+  upsetWin:      ['supporter', 'supporter', 'supporter', 'supporter', 'media', 'media', 'analyst', 'hater'],
+  win:           ['supporter', 'supporter', 'supporter', 'analyst', 'analyst', 'analyst', 'media', 'media'],
+  loss:          ['supporter', 'supporter', 'supporter', 'analyst', 'analyst', 'analyst', 'media', 'hater'],
+  upsetLoss:     ['hater', 'hater', 'hater', 'hater', 'supporter', 'supporter', 'media', 'media'],
+  regionalTitle: ['supporter', 'supporter', 'supporter', 'supporter', 'media', 'media', 'media', 'analyst'],
+  intlTitle:     ['supporter', 'supporter', 'supporter', 'media', 'media', 'media', 'analyst', 'hater'],
+  intlFlop:      ['hater', 'hater', 'hater', 'media', 'media', 'media', 'supporter', 'analyst']
+};
+// Catégories qui déclenchent 2-3 posts (moments forts) ; les autres, 1 seul.
+const FAN_POST_NOTABLE = ['upsetWin', 'upsetLoss', 'regionalTitle', 'intlTitle'];
+
+// Banques de mots pour les pseudos procéduraux (esport gamer-speak, neutre FR/EN).
+const FAN_HANDLE_BANKS = {
+  supporterWord: ['Ultra', 'Nation', 'Army', 'Fam', 'Fanatic', 'Believer', 'Legion', 'Faithful', 'Diehard', 'ForLife'],
+  haterWord:     ['tilt', 'rage', 'malding', 'cope', 'ff15', 'flame', 'salt', 'doomer', 'boomer', 'washed'],
+  haterTail:     ['lord', 'king', 'andy', 'enjoyer', 'merchant', 'diff', 'main', 'ttv'],
+  analystHead:   ['Macro', 'Draft', 'Tempo', 'Vision', 'Meta', 'Wave', 'Rotation', 'Sidelane', 'Coinflip'],
+  analystTail:   ['Mind', 'Notes', 'Desk', 'Diff', 'Report', 'Brain', 'Takes', 'Analytics'],
+  mediaHead:     ['Rift', 'Nexus', 'Baron', 'Summoner', 'Rune', 'Inhib', 'Fog', 'Drake', 'Herald'],
+  mediaTail:     ['Report', 'Daily', 'Buzz', 'Wire', 'Central', 'Watch', 'HQ', 'Feed', 'Post']
+};
+
+function fanPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fanMaybeNum() { return Math.random() < 0.4 ? String(randomInt(2, 99)) : ''; }
+
+// Génère un auteur (nom affiché + pseudo @) selon le persona. Les fans
+// (supporter/hater) ont un pseudo pleinement assemblé ; l'analyste est
+// semi-généré ; le média est une marque fictive.
+function generateFanAuthor(persona) {
+  const tag = String(getTeamShortName('player') || 'TEAM').replace(/[^A-Za-z0-9]/g, '') || 'TEAM';
+  const B = FAN_HANDLE_BANKS;
+  let name, handle;
+  if (persona === 'supporter') {
+    const w = fanPick(B.supporterWord);
+    name = `${tag} ${w}`;
+    handle = `@${tag.toLowerCase()}${w.toLowerCase()}${fanMaybeNum()}`;
+  } else if (persona === 'hater') {
+    const w = fanPick(B.haterWord), tl = fanPick(B.haterTail);
+    name = `${w}${tl}`;
+    handle = `@${w}_${tl}${fanMaybeNum()}`;
+  } else if (persona === 'analyst') {
+    const h = fanPick(B.analystHead), tl = fanPick(B.analystTail);
+    name = `${h} ${tl}`;
+    handle = `@${h.toLowerCase()}${tl.toLowerCase()}`;
+  } else { // media
+    const h = fanPick(B.mediaHead), tl = fanPick(B.mediaTail);
+    name = `${h} ${tl}`;
+    handle = `@${h}${tl}`;
+  }
+  return { name, handle };
+}
+
+// Nombre d'interactions (likes/reposts) façonné par la catégorie, figé à la création.
+function fanEngagement(cat) {
+  let base;
+  if (cat === 'intlTitle') base = randomInt(6000, 12000);
+  else if (cat === 'regionalTitle') base = randomInt(3000, 8000);
+  else if (cat === 'upsetWin') base = randomInt(2500, 7000);
+  else if (cat === 'upsetLoss') base = randomInt(1200, 4000);
+  else if (cat === 'intlFlop') base = randomInt(800, 3000);
+  else base = randomInt(150, 1500);
+  return { likes: base, reposts: Math.round(base / (3 + Math.random() * 2)) };
+}
+
+// Catégorie de post pour un résultat de match, selon l'écart de force (gap).
+function matchPostCategory(won, gap) {
+  if (won) return gap <= -5 ? 'upsetWin' : 'win';
+  return gap >= 5 ? 'upsetLoss' : 'loss';
+}
+
+// Pioche des templates distincts de la catégorie, génère les posts et les
+// empile dans le fil (plafonné à 40). vars = { team, opp, comp, score } (selon cat).
+function generateFanFeedPosts(cat, vars) {
+  const personas = FAN_POST_PERSONAS[cat];
+  if (!personas) return;
+  const fans = ensureFans();
+  const count = Math.min(FAN_POST_NOTABLE.includes(cat) ? randomInt(2, 3) : 1, personas.length);
+  const pool = personas.map((_, i) => i);
+  for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); const tmp = pool[k]; pool[k] = pool[j]; pool[j] = tmp; }
+  pool.slice(0, count).forEach((ti) => {
+    const persona = personas[ti];
+    const author = generateFanAuthor(persona);
+    const eng = fanEngagement(cat);
+    fans.feed.unshift({ cat, ti, vars, persona, name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, mins: randomInt(2, 90) });
+  });
+  if (fans.feed.length > 40) fans.feed.length = 40;
+}
+
 function finishSeason() {
   const season = state.season;
   season.phase = 'done';
@@ -4878,6 +4976,8 @@ function finishSeason() {
   if (placement === 1) {
     state.progress.titlesEarned.push(`Champion ${splitLabel(season.split)} ${season.year} (${season.region})`);
     ensurePalmares().regionalTitles++;
+    // v1.18.3 — fil social : posts de célébration du titre régional
+    generateFanFeedPosts('regionalTitle', { team: state.teamName || t('match.yourTeam'), comp: `${regionDisplayName(season.region)} ${splitLabel(season.split)}` });
   }
   season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
   applyFanDividend('split', season.log); // v1.18.0 — dividende de ferveur (fin de split)
@@ -5753,6 +5853,9 @@ function finishInternational() {
       state.progress.titlesEarned.push(`Champion ${eventLabel(intl)} ${intl.year}`);
       pal.titles++;
     }
+    // v1.18.3 — fil social : sacre international, ou déception si élimination précoce (hors top 6)
+    if (placement === 1) generateFanFeedPosts('intlTitle', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) });
+    else if (placement >= 7) generateFanFeedPosts('intlFlop', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) });
     intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
     applyFanDividend(intl.event, intl.log); // v1.18.0 — dividende de ferveur (fin de MSI/Worlds)
     // v1.15.0 — sponsors : accumulateur annuel + paiement en continu des sponsors résultat.
@@ -7763,6 +7866,12 @@ function finishMatch() {
   let fanReaction = null;
   if (rt.seriesEvent && rt.seriesEvent.type === 'done' && series && series.context && series.context !== 'Scrim') {
     fanReaction = applyFanReaction(rt.seriesEvent.won, series.opponentTeamId);
+    // v1.18.3 — fil social : posts de fans réagissant au résultat
+    generateFanFeedPosts(matchPostCategory(rt.seriesEvent.won, fanReaction.gap), {
+      team: state.teamName || t('match.yourTeam'),
+      opp: getTeamName(series.opponentTeamId),
+      score: `${rt.seriesEvent.scoreFor}-${rt.seriesEvent.scoreAgainst}`
+    });
   }
 
   saveGame();
@@ -9730,6 +9839,42 @@ function sponsorObjectiveChecklistHtml(contract) {
   `;
 }
 
+// v1.18.3 — helpers d'affichage du fil social
+function fanFeedTimeLabel(mins) {
+  return mins < 60 ? t('fans.feedTime.min', { n: mins }) : t('fans.feedTime.hour', { n: Math.floor(mins / 60) });
+}
+function fanFeedCount(n) {
+  return n >= 1000 ? (n / 1000).toFixed(1).replace('.0', '') + 'k' : String(n);
+}
+function fanInitials(name) {
+  const parts = String(name).replace('@', '').split(/[\s_]+/).filter(Boolean);
+  const s = (parts[0] ? parts[0][0] : '') + (parts[1] ? parts[1][0] : (parts[0] && parts[0][1] ? parts[0][1] : ''));
+  return s.toUpperCase() || '?';
+}
+function renderFanFeedHtml() {
+  const fans = ensureFans();
+  if (!fans.feed.length) {
+    return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p><p class="fans-empty">${t('fans.feedEmpty')}</p></div>`;
+  }
+  const posts = fans.feed.map((p) => {
+    const text = t('fanpost.' + p.cat + '.' + p.ti, p.vars);
+    return `
+      <div class="fans-post">
+        <div class="fans-post__avatar fans-post__avatar--${p.persona}">${fanInitials(p.name)}</div>
+        <div class="fans-post__body">
+          <div class="fans-post__head">
+            <span class="fans-post__name">${p.name}</span>
+            <span class="fans-post__handle">${p.handle} &middot; ${fanFeedTimeLabel(p.mins)}</span>
+            <span class="fans-post__tag fans-post__tag--${p.cat}">${t('fans.feedTag.' + p.cat)}</span>
+          </div>
+          <p class="fans-post__text">${text}</p>
+          <div class="fans-post__meta"><span>&hearts; ${fanFeedCount(p.likes)}</span><span>&#8635; ${fanFeedCount(p.reposts)}</span></div>
+        </div>
+      </div>`;
+  }).join('');
+  return `<div class="panel fans-feed"><p class="fans-ladder__title">${t('fans.feedTitle')}</p>${posts}</div>`;
+}
+
 // v1.18.0 — Écran Ferveur des fans : résumé du palier courant + progression vers
 // le suivant + dividende versé par type de compétition, puis l'échelle complète.
 function renderFansView() {
@@ -9825,6 +9970,7 @@ function renderFansView() {
       <p class="fans-ladder__title">${t('fans.ladderTitle')}</p>
       ${ladderRows}
     </div>
+    ${renderFanFeedHtml()}
     <p class="fans-note">${t('fans.note')}</p>
     <p class="fans-note">${t('fans.moodHint')}</p>
   `;
