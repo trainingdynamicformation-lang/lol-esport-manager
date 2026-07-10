@@ -1463,8 +1463,14 @@ img { max-width: 100%; height: auto; }
 .directive-panel__hint { color: var(--color-text-muted); line-height: 1.5; margin-bottom: 12px; }
 .directive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* v1.19.0 — matrice 3x2 (6 cartes : 5 consignes + « laisser l'équipe décider ») */
   gap: 10px;
+}
+@media (max-width: 640px) {
+  .directive-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 641px) and (max-width: 900px) {
+  .directive-grid { grid-template-columns: repeat(2, 1fr); }
 }
 .directive-card {
   display: flex;
