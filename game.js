@@ -9596,6 +9596,18 @@ function sponsorBreachClauseHtml(contract) {
   `;
 }
 
+// v1.17.5 — Les deux pastilles de récompense par compétition (national/international)
+// d'un sponsor résultat, affichées en haut à droite de sa tuile (miroir du badge de
+// bonus à la signature des sponsors signature).
+function sponsorResultBadgesHtml(contract) {
+  const domesticPct = Math.round(contract.domesticWeight * 100);
+  const intlPct = Math.round(contract.intlWeight * 100);
+  return `
+    <span class="sponsor-current__badge">${t('sponsor.current.domesticBadge', { pct: domesticPct })}</span>
+    <span class="sponsor-current__badge">${t('sponsor.current.intlBadge', { pct: intlPct })}</span>
+  `;
+}
+
 function renderSponsorCurrentBlock() {
   const current = state.sponsor.current;
   if (!current) {
@@ -9617,13 +9629,14 @@ function renderSponsorCurrentBlock() {
           </p>
         </div>
         <div class="sponsor-current__actions">
-          ${contract && contract.type === 'signature' ? `<span class="sponsor-current__signing-bonus">${t('sponsor.card.signingBonus', { amount: contract.signingBonus })}</span>` : ''}
+          ${contract && contract.type === 'signature' ? `<span class="sponsor-current__badge">${t('sponsor.card.signingBonus', { amount: contract.signingBonus })}</span>` : ''}
+          ${contract && contract.type === 'result' ? sponsorResultBadgesHtml(contract) : ''}
           ${canRenew ? `<button class="btn-primary" id="btn-sponsor-renew">${t('sponsor.current.renewBtn', { year: nextYear })}</button>` : ''}
         </div>
       </div>
       ${contract && contract.type === 'signature' ? sponsorObjectiveChecklistHtml(contract) : ''}
-      ${contract && contract.type === 'signature' ? sponsorClausesHtml(contract, current.amount) : ''}
-      ${contract && contract.type === 'result' ? sponsorBreachClauseHtml(contract) : ''}
+      ${contract && contract.type === 'signature' ? `<div class="sponsor-current__section">${sponsorClausesHtml(contract, current.amount)}</div>` : ''}
+      ${contract && contract.type === 'result' && contract.breach ? `<div class="sponsor-current__section">${sponsorBreachClauseHtml(contract)}</div>` : ''}
     </div>
   `;
 }

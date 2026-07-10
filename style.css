@@ -2997,7 +2997,7 @@ table.history-table th {
 .sponsor-current__brand { font-family: var(--font-title); font-size: var(--fs-h3); font-weight: 700; color: var(--color-text); }
 .sponsor-current__meta { font-size: var(--fs-label); color: var(--color-text-muted); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .sponsor-current__actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.sponsor-current__signing-bonus {
+.sponsor-current__badge {
   font-size: var(--fs-label);
   font-weight: 700;
   color: var(--color-gold);
@@ -3008,7 +3008,8 @@ table.history-table th {
   white-space: nowrap;
 }
 
-.sponsor-current__objectives { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border); }
+.sponsor-current__objectives,
+.sponsor-current__section { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border); }
 .sponsor-current__objectives-title { font-size: var(--fs-label); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
 .sponsor-objective-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .sponsor-objective-row { display: flex; align-items: flex-start; gap: 8px; font-size: var(--fs-body); color: var(--color-text); }

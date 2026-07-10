@@ -5,6 +5,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.17.5] — 2026-07-08
+
+### Added — Sponsor: per-competition rewards on the result sponsor tile
+
+Your active sponsor's tile now shows, in the top-right corner, the two per-competition rewards for result sponsors (domestic and international competition weights), mirroring the signing-bonus badge already shown for signature sponsors.
+
+### Fixed — Sponsor: spacing between the tile and the renewal clause
+
+The renewal/termination conditions block (signature clauses or result breach clause) was displayed cramped against the rest of the active sponsor's tile. Spacing was added above this block, for both signature and result sponsors.
+
+---
+
 ## [1.17.4] — 2026-07-08
 
 ### Added — Sponsor: renewal/termination conditions always visible

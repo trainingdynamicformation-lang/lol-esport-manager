@@ -5,6 +5,18 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.17.5] — 08/07/2026
+
+### Ajouté — Sponsor : récompenses par compétition sur la tuile du sponsor résultat
+
+La tuile de votre sponsor actif affiche désormais, en haut à droite, les deux récompenses par compétition pour les sponsors résultat (poids sur les compétitions régulières et sur les compétitions internationales), en miroir du badge de gain à la signature déjà présent pour les sponsors signature.
+
+### Corrigé — Sponsor : espacement entre la tuile et la clause de renouvellement
+
+Le bloc des conditions de renouvellement/résiliation (clauses signature ou clause de rupture résultat) était affiché collé au reste de la tuile du sponsor actif. Un espacement a été ajouté au-dessus de ce bloc, pour les sponsors signature comme pour les sponsors résultat.
+
+---
+
 ## [1.17.4] — 08/07/2026
 
 ### Ajouté — Sponsor : conditions de renouvellement/résiliation toujours visibles
