@@ -11,6 +11,10 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 Sur smartphone en portrait, les tuiles trophée n'occupaient qu'une fraction de la largeur de l'écran au lieu de s'étendre correctement. Corrigé : les tuiles prennent désormais toute la largeur disponible sur mobile, sans déformer les images des trophées.
 
+### Modifié — Palmarès : nouvelles images de trophées + intégration visuelle
+
+Les images des trophées ont été remplacées par de nouvelles versions avec des effets lumineux plus spectaculaires. Comme ces effets touchent parfois le bord carré de l'image, un léger fondu en dégradé a été ajouté sur les bords des trophées pour casser ce contour carré et mieux les intégrer visuellement à leur tuile.
+
 ---
 
 ## [1.19.1] — 11/07/2026

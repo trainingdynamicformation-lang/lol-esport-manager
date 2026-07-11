@@ -11,6 +11,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 On mobile in portrait mode, the trophy tiles only used a fraction of the screen width instead of spanning it properly. Fixed: tiles now take the full available width on mobile, without distorting the trophy images.
 
+### Changed — Honours: new trophy images + visual integration
+
+The trophy images were replaced with new versions featuring more spectacular light effects. Since these effects sometimes reach the square edge of the image, a soft gradient fade was added at the trophy edges to break up that square outline and blend them more naturally into their tile.
+
 ---
 
 ## [1.19.1] — 2026-07-11
