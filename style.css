@@ -1026,6 +1026,59 @@ img { max-width: 100%; height: auto; }
 
 .stat-card__label { color: var(--color-text-muted); font-size: var(--fs-label); margin-top: 4px; }
 
+/* Palmarès en 3 colonnes avec trophées (v1.19.1) */
+.palmares-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .palmares-columns { grid-template-columns: 1fr; }
+}
+.palmares-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius);
+  padding: 14px 10px;
+}
+.palmares-col__trophy {
+  width: 100%;
+  max-width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  /* Fond noir du PNG fondu dans le fond sombre de la tuile, sans retoucher le fichier */
+  mix-blend-mode: screen;
+}
+.palmares-col__label { color: var(--color-text-muted); font-size: var(--fs-label); }
+.palmares-col__count {
+  font-family: var(--font-title);
+  font-size: clamp(20px, 4vw, 26px);
+  color: var(--color-gold);
+  font-weight: 900;
+  margin-top: 2px;
+}
+.palmares-col__extra {
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.palmares-col__stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-label);
+  color: var(--color-text);
+}
+.palmares-col__stat span:first-child { color: var(--color-text-muted); }
+
 /* ------------------------------------------------------------
    Entrainement & scrims
    ------------------------------------------------------------ */

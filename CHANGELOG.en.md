@@ -5,6 +5,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.1] — 2026-07-11
+
+### Added — Honours: trophies in 3 columns
+
+The Progression screen now shows your honours as **3 illustrated columns** (MSI, regional title, Worlds) instead of a plain grid of numbers.
+
+- Each column is topped with the matching **trophy image**, with the title count just below.
+- MSI and Worlds still show qualifications and best result reached.
+- The regional column shows the trophy for **your own region** and its title count.
+
+---
+
 ## [1.19.0] — 2026-07-10
 
 ### Added — Strategic directives

@@ -9890,6 +9890,43 @@ function showWelcomeLanguageModal(onDone) {
   });
 }
 
+// v1.19.1 — Palmarès en 3 colonnes (MSI | titre régional | Worlds), chacune
+// coiffée de l'image du trophée. Le fond noir des PNG (img/trophies/) se fond
+// dans le fond sombre de l'interface via mix-blend-mode (CSS), sans retoucher
+// les fichiers. La colonne régionale n'affiche que le compteur de titres (pas
+// de qualifs/meilleur résultat, non pertinent : on est toujours dans sa région).
+function renderPalmaresColumnsHtml(pal) {
+  const regionTrophyName = state.region ? regionDisplayName(state.region) : null;
+  const regionTrophySrc = regionTrophyName ? `img/trophies/${regionTrophyName}.png` : '';
+  return `
+    <div class="palmares-columns">
+      <div class="palmares-col">
+        <img class="palmares-col__trophy" src="img/trophies/MSI.png" alt="MSI" onerror="this.style.visibility='hidden'">
+        <p class="palmares-col__label">${t('prog.msiTitles')}</p>
+        <p class="palmares-col__count">${pal.msi.titles}</p>
+        <div class="palmares-col__extra">
+          <div class="palmares-col__stat"><span>${t('prog.msiQualifs')}</span><span>${pal.msi.qualified}</span></div>
+          <div class="palmares-col__stat"><span>${t('prog.msiBest')}</span><span>${intlBestResultLabel(pal.msi.bestPlacement)}</span></div>
+        </div>
+      </div>
+      <div class="palmares-col">
+        ${regionTrophySrc ? `<img class="palmares-col__trophy" src="${regionTrophySrc}" alt="${regionTrophyName}" onerror="this.style.visibility='hidden'">` : `<div class="palmares-col__trophy"></div>`}
+        <p class="palmares-col__label">${t('prog.regionalTitles')}</p>
+        <p class="palmares-col__count">${pal.regionalTitles}</p>
+      </div>
+      <div class="palmares-col">
+        <img class="palmares-col__trophy" src="img/trophies/WORLDS.png" alt="Worlds" onerror="this.style.visibility='hidden'">
+        <p class="palmares-col__label">${t('prog.worldsTitles')}</p>
+        <p class="palmares-col__count">${pal.worlds.titles}</p>
+        <div class="palmares-col__extra">
+          <div class="palmares-col__stat"><span>${t('prog.worldsQualifs')}</span><span>${pal.worlds.qualified}</span></div>
+          <div class="palmares-col__stat"><span>${t('prog.worldsBest')}</span><span>${intlBestResultLabel(pal.worlds.bestPlacement)}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderProgression() {
   const p = state.progress;
   const winRate = p.matchesPlayed > 0 ? Math.round((p.wins / p.matchesPlayed) * 100) : 0;
@@ -9903,17 +9940,7 @@ function renderProgression() {
 
   const pal = ensurePalmares();
   const palmaresEl = document.getElementById('progression-palmares');
-  if (palmaresEl) {
-    palmaresEl.innerHTML = `
-      <div class="stat-card"><div class="stat-card__value">${pal.regionalTitles}</div><div class="stat-card__label">${t('prog.regionalTitles')}</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.msi.qualified}</div><div class="stat-card__label">${t('prog.msiQualifs')}</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.msi.titles}</div><div class="stat-card__label">${t('prog.msiTitles')}</div></div>
-      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.msi.bestPlacement)}</div><div class="stat-card__label">${t('prog.msiBest')}</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.worlds.qualified}</div><div class="stat-card__label">${t('prog.worldsQualifs')}</div></div>
-      <div class="stat-card"><div class="stat-card__value">${pal.worlds.titles}</div><div class="stat-card__label">${t('prog.worldsTitles')}</div></div>
-      <div class="stat-card"><div class="stat-card__value stat-card__value--text">${intlBestResultLabel(pal.worlds.bestPlacement)}</div><div class="stat-card__label">${t('prog.worldsBest')}</div></div>
-    `;
-  }
+  if (palmaresEl) palmaresEl.innerHTML = renderPalmaresColumnsHtml(pal);
 
   const historyEl = document.getElementById('progression-history');
   historyEl.innerHTML = state.matchHistory.slice(0, 10).map((m) => {

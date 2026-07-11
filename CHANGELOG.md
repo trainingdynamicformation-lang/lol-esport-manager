@@ -5,6 +5,18 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.1] — 11/07/2026
+
+### Ajouté — Palmarès : trophées en 3 colonnes
+
+L'écran Progression affiche désormais le palmarès en **3 colonnes illustrées** (MSI, titre régional, Worlds) au lieu d'une simple grille de chiffres.
+
+- Chaque colonne est coiffée de l'**image du trophée** correspondant, avec le nombre de titres obtenus juste en dessous.
+- MSI et Worlds conservent en plus les qualifications et le meilleur résultat atteint.
+- La colonne régionale affiche le trophée de **votre propre région** et son nombre de titres.
+
+---
+
 ## [1.19.0] — 10/07/2026
 
 ### Ajouté — Consignes stratégiques
