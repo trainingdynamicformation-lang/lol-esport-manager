@@ -1031,8 +1031,14 @@ img { max-width: 100%; height: auto; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  width: 100%;
 }
 @media (max-width: 640px) {
+  /* v1.19.2 — #progression-palmares porte la classe .stats-grid (auto-fit,
+     minmax(120px,1fr)) : sur mobile étroit elle crée des pistes fantômes qui
+     n'accordent qu'une fraction de la largeur à .palmares-columns. On neutralise
+     cette grille externe pour que les tuiles prennent bien toute la largeur. */
+  #progression-palmares { display: block; }
   .palmares-columns { grid-template-columns: 1fr; }
 }
 .palmares-col {
@@ -1044,6 +1050,8 @@ img { max-width: 100%; height: auto; }
   background: var(--color-surface-alt);
   border-radius: var(--radius);
   padding: 14px 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .palmares-col__trophy {
   width: 100%;

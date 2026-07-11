@@ -5,6 +5,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.2] — 11/07/2026
+
+### Corrigé — Palmarès : largeur des tuiles trophée sur mobile
+
+Sur smartphone en portrait, les tuiles trophée n'occupaient qu'une fraction de la largeur de l'écran au lieu de s'étendre correctement. Corrigé : les tuiles prennent désormais toute la largeur disponible sur mobile, sans déformer les images des trophées.
+
+---
+
 ## [1.19.1] — 11/07/2026
 
 ### Ajouté — Palmarès : trophées en 3 colonnes

@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.2] — 2026-07-11
+
+### Fixed — Honours: trophy tile width on mobile
+
+On mobile in portrait mode, the trophy tiles only used a fraction of the screen width instead of spanning it properly. Fixed: tiles now take the full available width on mobile, without distorting the trophy images.
+
+---
+
 ## [1.19.1] — 2026-07-11
 
 ### Added — Honours: trophies in 3 columns
