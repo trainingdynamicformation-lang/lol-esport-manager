@@ -5,6 +5,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.3] — 2026-07-11
+
+### Added — Fan feed: official sponsor posts
+
+Your active sponsor now publishes a post in the fan feed at the end of every regional split, and at the end of every international competition (MSI/Worlds) if your team took part.
+
+- The tone adapts to the result: a positive message for a qualification/title, a composed and reassuring one for an underwhelming result.
+- The message style adapts to your **sponsor's tier** (Secure, Standard, Premium) — 32 different phrasings in total to keep posts varied.
+- One post per occasion, only if a sponsor is under contract.
+
+---
+
 ## [1.19.2] — 2026-07-11
 
 ### Fixed — Honours: trophy tile width on mobile

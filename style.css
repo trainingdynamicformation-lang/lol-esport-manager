@@ -3391,6 +3391,7 @@ table.history-table th {
 .fans-post__avatar--hater { background: var(--color-danger); }
 .fans-post__avatar--analyst { background: var(--color-seafoam); }
 .fans-post__avatar--media { background: var(--color-gold); }
+.fans-post__avatar--sponsor { background: var(--color-surface); border: 2px solid var(--color-gold); color: var(--color-gold); }
 .fans-post__body { flex: 1 1 auto; min-width: 0; }
 .fans-post__head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
 .fans-post__name { font-weight: 700; color: var(--color-text); font-size: var(--fs-body); }
@@ -3409,6 +3410,8 @@ table.history-table th {
 .fans-post__tag--upsetWin, .fans-post__tag--win { color: var(--color-success); }
 .fans-post__tag--upsetLoss, .fans-post__tag--intlFlop { color: var(--color-danger); }
 .fans-post__tag--regionalTitle, .fans-post__tag--intlTitle { color: var(--color-gold); }
+.fans-post__tag--sponsorRegionalWin, .fans-post__tag--sponsorRegionalLoss,
+.fans-post__tag--sponsorIntlWin, .fans-post__tag--sponsorIntlLoss { color: var(--color-gold); }
 .fans-post__ctx { margin: 3px 0 2px; font-weight: 700; font-size: var(--fs-label); color: var(--color-gold); }
 .fans-post__text { margin: 4px 0 6px; color: var(--color-text); line-height: 1.5; font-size: var(--fs-body); }
 .fans-post__meta { display: flex; gap: 16px; font-size: var(--fs-label); color: var(--color-text-muted); }

@@ -5,6 +5,18 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.3] — 11/07/2026
+
+### Ajouté — Fil des fans : posts officiels du sponsor
+
+Votre sponsor actif publie désormais un post dans le fil des fans à la fin de chaque split régional, et à la fin de chaque compétition internationale (MSI/Worlds) si votre équipe y a participé.
+
+- Le ton s'adapte au résultat : un message positif en cas de qualification/titre, un message posé et rassurant en cas de contre-performance.
+- Le style du message est adapté au **palier de votre sponsor** (Secure, Standard, Premium) — 32 formulations différentes au total pour varier les publications.
+- Un seul post par occasion, uniquement si un sponsor est sous contrat.
+
+---
+
 ## [1.19.2] — 11/07/2026
 
 ### Corrigé — Palmarès : largeur des tuiles trophée sur mobile

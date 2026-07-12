@@ -5152,6 +5152,41 @@ function generateFanFeedPosts(cat, vars, ctx) {
   if (fans.feed.length > 40) fans.feed.length = 40;
 }
 
+// v1.19.3 — Auteur d'un post sponsor : identité fixe (nom de la marque), pas
+// de persona/pseudo aléatoire comme les fans (le sponsor est une entité connue).
+function sponsorFeedAuthor(brand) {
+  return { name: brand, handle: '@' + String(brand).replace(/[^A-Za-z0-9]/g, '') };
+}
+
+// v1.19.3 — Répartition des templates fanpost.sponsor* par palier de sponsor.
+// Même mapping pour les 4 catégories (chacune a 8 templates : 3 Premium/3
+// Standard/2 Secure, dans cet ordre d'indices).
+const SPONSOR_POST_TIER_INDICES = { premium: [0, 1, 5], standard: [2, 3, 6], secure: [4, 7] };
+
+// v1.19.3 — Post du sponsor actif en fin de split régional ou d'international
+// (uniquement si l'équipe y a participé — appelant responsable de ce filtre).
+// Un seul post, piochant dans la banque du palier RÉEL du sponsor actif, avec
+// le ton adapté au résultat (positif/négatif). Aucun post si pas de sponsor actif.
+function generateSponsorFeedPost(scope, positive, comp) {
+  const current = state.sponsor.current;
+  if (!current) return;
+  const contract = getSponsorContract(current.contractId);
+  const brand = contract ? contract.brand : current.contractId;
+  const cat = scope === 'regional'
+    ? (positive ? 'sponsorRegionalWin' : 'sponsorRegionalLoss')
+    : (positive ? 'sponsorIntlWin' : 'sponsorIntlLoss');
+  const pool = SPONSOR_POST_TIER_INDICES[current.tier] || SPONSOR_POST_TIER_INDICES.standard;
+  const ti = fanPick(pool);
+  const fans = ensureFans();
+  const teamFull = state.teamName || t('match.yourTeam');
+  const teamShort = (state.teamShortName && String(state.teamShortName).trim()) ? String(state.teamShortName).trim() : null;
+  const team = (teamShort && Math.random() < 0.5) ? teamShort : teamFull;
+  const author = sponsorFeedAuthor(brand);
+  const eng = fanEngagement(cat);
+  fans.feed.unshift({ cat, ti, vars: { sponsor: brand, team, comp }, persona: 'sponsor', name: author.name, handle: author.handle, likes: eng.likes, reposts: eng.reposts, ctx: null });
+  if (fans.feed.length > 40) fans.feed.length = 40;
+}
+
 function finishSeason() {
   const season = state.season;
   season.phase = 'done';
@@ -5171,6 +5206,8 @@ function finishSeason() {
     // v1.18.3 — fil social : posts de célébration du titre régional
     generateFanFeedPosts('regionalTitle', { team: state.teamName || t('match.yourTeam'), comp: `${regionDisplayName(season.region)} ${splitLabel(season.split)}` }, { comp: `${splitLabel(season.split)} ${season.year}`, stage: t('fans.feedStageChampion') });
   }
+  // v1.19.3 — le sponsor actif réagit en fin de split (positif = qualification playoffs)
+  generateSponsorFeedPost('regional', placement <= 6, `${splitLabel(season.split)} ${season.year}`);
   season.log.unshift({ k: 'log.seasonEnd', p: { placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
   applyFanDividend('split', season.log); // v1.18.0 — dividende de ferveur (fin de split)
   // v1.15.0 — sponsors : accumulateur annuel + paiement en continu / clause de rupture des sponsors résultat.
@@ -6048,6 +6085,9 @@ function finishInternational() {
     // v1.18.3 — fil social : sacre international, ou déception si élimination précoce (hors top 6)
     if (placement === 1) generateFanFeedPosts('intlTitle', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) }, { comp: `${eventLabel(intl)} ${intl.year}`, stage: t('fans.feedStageChampion') });
     else if (placement >= 7) generateFanFeedPosts('intlFlop', { team: state.teamName || t('match.yourTeam'), comp: eventLabel(intl) }, { comp: `${eventLabel(intl)} ${intl.year}`, stage: t('fans.feedStageEliminated') });
+    // v1.19.3 — le sponsor actif réagit en fin d'international, uniquement si l'équipe y a participé
+    // (on est ici dans la branche placement !== null → qualifié). Positif = parcours en bracket (≤5).
+    generateSponsorFeedPost('intl', placement <= 5, `${eventLabel(intl)} ${intl.year}`);
     intl.log.unshift({ k: 'log.intlEnd', p: { event: eventLabel(intl), placement, coaching: rewards.coaching, budget: rewards.budget, prestige: rewards.prestige } });
     applyFanDividend(intl.event, intl.log); // v1.18.0 — dividende de ferveur (fin de MSI/Worlds)
     // v1.15.0 — sponsors : accumulateur annuel + paiement en continu des sponsors résultat.
