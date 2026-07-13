@@ -8170,6 +8170,59 @@ function finishMatch() {
    ------------------------------------------------------------ */
 
 // Nombre de tours détruits par un camp = tours du camp adverse tombées.
+/* ─── Dégâts par joueur (v1.19.4) ────────────────────────────────────────────
+   Statistique COSMÉTIQUE affichée dans l'écran de récap (au-dessus de la courbe
+   d'or) : aucun impact sur le résultat du match. Calculée une seule fois en fin
+   de match à partir de données existantes — mécanique du joueur (player.mechanics)
+   et « niveau » du champion (phasePower + tags), pondérées par le rôle, la durée
+   et la performance de l'équipe. Aucun nouvel état (rt.recap = runtime).
+*/
+const ROLE_DAMAGE_WEIGHT = { TOP: 0.72, JUNGLE: 0.62, MID: 0.95, ADC: 1.00, SUPPORT: 0.40 };
+const DAMAGE_HIGH_TAGS = ['poke', 'scaling', 'splitpush', 'dive', 'pick'];
+const DAMAGE_LOW_TAGS = ['protect', 'engage', 'disengage'];
+const DAMAGE_BASE_K = 820; // calibré pour ~7k (support) à ~45k (carry) sur 30-37 min
+
+// Facteur « dégâts » d'un champion : profil (tags) × puissance de la phase atteinte.
+function championDamageFactor(champName, phase) {
+  const c = getChampionByName(champName);
+  if (!c) return 1;
+  const tags = c.tags || [];
+  let tagF = 1;
+  if (tags.some((tg) => DAMAGE_HIGH_TAGS.includes(tg))) tagF += 0.15;
+  if (tags.some((tg) => DAMAGE_LOW_TAGS.includes(tg))) tagF -= 0.20;
+  if (tags.includes('teamfight')) tagF += 0.05;
+  tagF = clamp(tagF, 0.7, 1.25);
+  const pp = c.phasePower || { early: 6, mid: 6, late: 6 };
+  const power = pp[phase] != null ? pp[phase] : (pp.early + pp.mid + pp.late) / 3;
+  return tagF * clamp(power / 7, 0.75, 1.25);
+}
+
+// Dégâts des 5 joueurs d'un côté (ordre DRAFT_ROLES) : [{ role, champName, damage }].
+function computeSideDamage(rt, side, durationMin, killShare) {
+  const roster = side === rt.picks.playerSide ? state.roster : rt.opponent.roster;
+  const picks = rt.picks[side] || {};
+  const teamF = 1 + (killShare - 0.5) * 0.6;
+  return DRAFT_ROLES.map((role) => {
+    const champName = picks[role] || null;
+    const player = (roster || []).find((p) => p.role === role);
+    const mechF = 0.55 + 0.45 * ((player ? player.mechanics : 70) / 100);
+    const champF = championDamageFactor(champName, rt.phase || 'late');
+    const dmg = Math.round(DAMAGE_BASE_K * durationMin * (ROLE_DAMAGE_WEIGHT[role] || 0.7) * champF * mechF * teamF * randomFloat(0.9, 1.1));
+    return { role, champName, damage: Math.max(500, dmg) };
+  });
+}
+
+// Synthèse des dégâts des deux équipes, figée dans le récap en fin de match.
+function computeMatchDamage(rt) {
+  const durationMin = Math.max(8, rt.gameClock / 60);
+  const totalKills = rt.score.blue + rt.score.red;
+  const blueShare = totalKills > 0 ? rt.score.blue / totalKills : 0.5;
+  return {
+    blue: computeSideDamage(rt, 'blue', durationMin, blueShare),
+    red: computeSideDamage(rt, 'red', durationMin, 1 - blueShare)
+  };
+}
+
 function buildMatchRecapData(rt, series, win) {
   const draft = state.draft;
   const playerMapSide = rt.picks.playerSide;
@@ -8199,6 +8252,7 @@ function buildMatchRecapData(rt, series, win) {
       blue: draft ? (draft.blueBans || []).slice() : [],
       red: draft ? (draft.redBans || []).slice() : []
     },
+    playersDamage: computeMatchDamage(rt), // v1.19.4 — dégâts par joueur (les deux équipes)
     goldSeries
   };
 }
@@ -8314,6 +8368,37 @@ function showMatchRecap() {
   const leaderName = finalDiff >= 0 ? recap.blueName : recap.redName;
   const leaderClass = finalDiff >= 0 ? 'blue' : 'red';
 
+  // v1.19.4 — bloc « dégâts infligés » (mirroir bleu/rouge), au-dessus de la courbe
+  const dmg = recap.playersDamage;
+  const fmtDmg = (n) => (n / 1000).toFixed(1) + 'k';
+  let damageHtml = '';
+  if (dmg && Array.isArray(dmg.blue) && Array.isArray(dmg.red)) {
+    const maxDmg = Math.max(1, ...dmg.blue.concat(dmg.red).map((d) => d.damage));
+    const rows = dmg.blue.map((b, i) => {
+      const r = dmg.red[i] || { damage: 0, champName: null };
+      const bPct = Math.round((b.damage / maxDmg) * 100);
+      const rPct = Math.round((r.damage / maxDmg) * 100);
+      return `
+        <div class="match-recap-dmg__row">
+          <span class="match-recap-dmg__portrait">${championPortraitHtml(b.champName, 'match-recap-dmg__portrait-inner')}</span>
+          <div class="match-recap-dmg__side">
+            <span class="match-recap-dmg__val match-recap-dmg__val--blue">${fmtDmg(b.damage)}</span>
+            <div class="match-recap-dmg__track"><div class="match-recap-dmg__bar match-recap-dmg__bar--blue" style="width:${bPct}%"></div></div>
+          </div>
+          <div class="match-recap-dmg__side match-recap-dmg__side--red">
+            <div class="match-recap-dmg__track"><div class="match-recap-dmg__bar match-recap-dmg__bar--red" style="width:${rPct}%"></div></div>
+            <span class="match-recap-dmg__val match-recap-dmg__val--red">${fmtDmg(r.damage)}</span>
+          </div>
+          <span class="match-recap-dmg__portrait">${championPortraitHtml(r.champName, 'match-recap-dmg__portrait-inner')}</span>
+        </div>`;
+    }).join('');
+    damageHtml = `
+      <div class="match-recap-dmg">
+        <div class="match-recap-dmg__title">${t('match.recapDamage')}</div>
+        ${rows}
+      </div>`;
+  }
+
   let overlay = document.getElementById('match-recap-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -8341,6 +8426,7 @@ function showMatchRecap() {
         </div>
       </div>
       <div class="match-recap-band">${compLabel}</div>
+      ${damageHtml}
       <div class="match-recap-body">
         <div class="match-recap-col">
           ${statRow('match.turrets', recap.stats.turrets)}

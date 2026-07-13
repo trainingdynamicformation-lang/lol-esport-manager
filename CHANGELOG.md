@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.4] — 11/07/2026
+
+### Ajouté — Récap de match : dégâts infligés par joueur
+
+L'écran de récap de fin de match affiche désormais, **au-dessus de la courbe d'or**, une synthèse des **dégâts infligés par chaque joueur**, façon post-game officiel : les 10 joueurs en miroir (votre équipe en bleu à gauche, l'adversaire en rouge à droite), avec portrait, valeur (« 34,3k ») et barre proportionnelle.
+
+- Le calcul tient compte du **niveau mécanique du joueur** et du **champion joué** (sa puissance et son profil), pondérés par le rôle, la durée du match et la performance de l'équipe.
+- Il s'agit d'une statistique purement visuelle : elle n'a **aucun impact sur le résultat** des matchs.
+
+---
+
 ## [1.19.3] — 11/07/2026
 
 ### Ajouté — Fil des fans : posts officiels du sponsor

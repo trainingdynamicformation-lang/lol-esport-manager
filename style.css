@@ -1982,6 +1982,56 @@ table.history-table th {
   text-transform: uppercase;
 }
 
+/* Dégâts par joueur — miroir bleu/rouge, au-dessus de la courbe (v1.19.4) */
+.match-recap-dmg { width: 100%; max-width: 860px; margin: 0 auto clamp(14px, 1.8vw, 24px); }
+.match-recap-dmg__title {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-text-muted);
+  font-size: clamp(11px, 1.1vw, 14px);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.match-recap-dmg__row {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  align-items: center;
+  gap: clamp(6px, 0.9vw, 12px);
+  margin-bottom: clamp(5px, 0.7vw, 9px);
+}
+.match-recap-dmg__portrait { flex-shrink: 0; }
+.match-recap-dmg__portrait-inner {
+  display: block;
+  width: clamp(26px, 3vw, 36px);
+  height: clamp(26px, 3vw, 36px);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+}
+.match-recap-dmg__portrait-inner img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.match-recap-dmg__side { display: flex; align-items: center; gap: clamp(6px, 0.8vw, 10px); min-width: 0; }
+.match-recap-dmg__val {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: clamp(14px, 1.7vw, 22px);
+  white-space: nowrap;
+  min-width: clamp(42px, 4.5vw, 62px);
+}
+.match-recap-dmg__val--blue { color: var(--color-seafoam); }
+.match-recap-dmg__val--red { color: var(--color-danger); text-align: right; }
+.match-recap-dmg__track {
+  flex: 1 1 auto;
+  display: flex;
+  height: clamp(8px, 1vw, 12px);
+  background: rgba(255, 255, 255, .06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.match-recap-dmg__bar { height: 100%; border-radius: 3px; }
+.match-recap-dmg__bar--blue { background: var(--color-seafoam); }
+.match-recap-dmg__bar--red { background: var(--color-danger); margin-left: auto; }
+
 .match-recap-body {
   display: grid;
   grid-template-columns: 1fr 1fr;

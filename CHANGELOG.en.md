@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.4] — 2026-07-11
+
+### Added — Match recap: per-player damage dealt
+
+The end-of-match recap now shows, **above the gold curve**, a summary of the **damage dealt by each player**, in the style of an official post-game screen: all 10 players mirrored (your team in blue on the left, the opponent in red on the right), with portrait, value ("34.3k") and a proportional bar.
+
+- The calculation factors in the **player's mechanical skill** and the **champion played** (its power and profile), weighted by role, match duration and team performance.
+- This is a purely visual stat: it has **no impact on match results**.
+
+---
+
 ## [1.19.3] — 2026-07-11
 
 ### Added — Fan feed: official sponsor posts

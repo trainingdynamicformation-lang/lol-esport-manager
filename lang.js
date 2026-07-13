@@ -88,6 +88,7 @@ const I18N = {
     'match.heralds': 'Hérauts',
     'match.bans': 'Bans',
     'match.goldOverTime': "Écart d'or dans le temps",
+    'match.recapDamage': 'Dégâts infligés aux champions',
     'match.recapAdvantage': 'Avantage {team}',
     'match.recapNoGold': "Données d'or indisponibles.",
 
@@ -1377,6 +1378,7 @@ const I18N = {
     'match.heralds': 'Rift Heralds',
     'match.bans': 'Bans',
     'match.goldOverTime': 'Gold difference over time',
+    'match.recapDamage': 'Damage dealt to champions',
     'match.recapAdvantage': '{team} advantage',
     'match.recapNoGold': 'Gold data unavailable.',
 
