@@ -8426,7 +8426,6 @@ function showMatchRecap() {
         </div>
       </div>
       <div class="match-recap-band">${compLabel}</div>
-      ${damageHtml}
       <div class="match-recap-body">
         <div class="match-recap-col">
           ${statRow('match.turrets', recap.stats.turrets)}
@@ -8444,6 +8443,7 @@ function showMatchRecap() {
           </div>
         </div>
         <div class="match-recap-col">
+          ${damageHtml}
           <div class="match-recap-chart__label">${t('match.goldOverTime')}</div>
           ${renderGoldChartSvg(recap.goldSeries)}
           <div class="match-recap-chart__legend match-recap-chart__legend--${leaderClass}">${t('match.recapAdvantage', { team: leaderName })}</div>
