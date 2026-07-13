@@ -2051,7 +2051,12 @@ table.history-table th {
 .match-recap-stat__red { color: var(--color-danger); font-weight: 700; font-size: clamp(18px, 1.7vw, 28px); text-align: right; }
 .match-recap-stat__label { color: var(--color-text-muted); text-transform: uppercase; font-size: clamp(12px, 1.05vw, 16px); letter-spacing: 1px; }
 
-.match-recap-bans { margin-top: clamp(14px, 1.6vw, 26px); }
+/* v1.19.4 — colonne gauche en flex : les objectifs restent en haut, les bans
+   sont poussés en bas pour que le contenu s'étende sur toute la hauteur (les
+   deux colonnes paraissent ainsi de même hauteur). Sur mobile (col empilée en
+   hauteur auto), margin-top:auto vaut 0 → le padding-top garde l'espacement. */
+.match-recap-col:first-child { display: flex; flex-direction: column; }
+.match-recap-bans { margin-top: auto; padding-top: clamp(14px, 1.6vw, 26px); }
 .match-recap-bans__label { font-size: clamp(11px, 0.85vw, 15px); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 .match-recap-bans__wrap { display: flex; justify-content: space-between; gap: clamp(10px, 1.4vw, 28px); }
 .match-recap-bans__row { display: flex; gap: clamp(5px, 0.6vw, 10px); }
