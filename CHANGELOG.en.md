@@ -5,6 +5,16 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.5] — 2026-07-11
+
+### Fixed — Calendar: manual transition to playoffs/bracket
+
+At the end of the group stage (both regular season and international), the game automatically switched to playoffs/bracket without giving you time to check the final standings.
+
+- A new **"Proceed to playoffs"** (regional) and **"Proceed to bracket"** (international) button now lets you continue whenever you're ready, after reviewing the final group results.
+
+---
+
 ## [1.19.4] — 2026-07-11
 
 ### Added — Match recap: per-player damage dealt

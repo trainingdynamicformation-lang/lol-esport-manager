@@ -5,6 +5,16 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.5] — 11/07/2026
+
+### Corrigé — Calendrier : bascule manuelle vers les playoffs/bracket
+
+En fin de phase de poules (saison régulière comme international), le jeu basculait automatiquement vers les playoffs/le bracket sans laisser le temps de consulter le classement final.
+
+- Un nouveau bouton **« Passer aux playoffs »** (régional) et **« Passer au bracket »** (international) permet désormais de continuer quand vous le souhaitez, après avoir regardé les résultats finaux des poules.
+
+---
+
 ## [1.19.4] — 11/07/2026
 
 ### Ajouté — Récap de match : dégâts infligés par joueur

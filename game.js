@@ -5760,6 +5760,10 @@ function processInternationalGroupMatchday(startGroup, startPairing) {
   // points d'entrée du démarrage (rendu du calendrier + bouton « C'est parti ! »)
   // faisaient jouer deux fois la même journée aux groupes 100 % IA.
   if (startGroup == null && intl.pendingMatch) return;
+  // v1.19.5 — poules déjà terminées (en attente du bouton manuel « Passer au
+  // bracket ») : ne rien resimuler si le rendu du calendrier réappelle cette
+  // fonction (elle le fait tant qu'il n'y a pas de pendingMatch).
+  if (startGroup == null && intl.groupMatchday > intl.totalGroupRounds) return;
   const gStart = startGroup || 0;
   for (let g = gStart; g < intl.groups.length; g++) {
     const rounds = intl.groupSchedules[g];
@@ -5781,7 +5785,11 @@ function processInternationalGroupMatchday(startGroup, startPairing) {
   intl.log.unshift({ k: 'log.intlMatchdayDone', p: { event: eventLabel(intl), d: intl.groupMatchday, total: intl.totalGroupRounds } });
   intl.groupMatchday++;
   if (intl.groupMatchday > intl.totalGroupRounds) {
-    finishGroupStage();
+    // v1.19.5 — ne bascule plus automatiquement vers le bracket : le joueur
+    // consulte le classement final des poules puis clique « Passer au bracket »
+    // (renderInternationalGroups affiche ce bouton dès que groupMatchday dépasse
+    // totalGroupRounds — finishGroupStage() est alors appelée depuis ce bouton).
+    saveGame();
     return;
   }
   processInternationalGroupMatchday();
@@ -6229,9 +6237,10 @@ function resolveSeasonSeries(rt) {
 
     season.pendingMatch = null;
     season.matchday++;
-    if (season.matchday > season.schedule.length) {
-      startPlayoffs();
-    }
+    // v1.19.5 — ne bascule plus automatiquement en playoffs : season.matchday
+    // dépasse simplement season.schedule.length, et renderRegularSeasonCalendar
+    // affiche alors le classement final + un bouton « Passer aux playoffs »
+    // (le joueur a ainsi le temps de consulter le résultat de la saison régulière).
   } else if (pm.type === 'playoff') {
     const po = season.playoffs;
     const m = po.matches[pm.matchKey];
@@ -6341,7 +6350,11 @@ function buildMatchdayScheduleHtml(season) {
 function renderRegularSeasonCalendar(el, season) {
   const totalMatchdays = season.schedule.length;
   const ranked = getSortedStandings();
-  const fixture = getPlayerFixture(season.matchday);
+  // v1.19.5 — la saison régulière est terminée (toutes les journées jouées) mais
+  // n'a pas encore basculé en playoffs : on laisse le joueur consulter le
+  // classement final avant qu'il ne clique pour continuer.
+  const seasonComplete = season.matchday > totalMatchdays;
+  const fixture = seasonComplete ? null : getPlayerFixture(season.matchday);
 
   const standingsRows = ranked.map((id, i) => {
     const s = season.standings[id];
@@ -6358,7 +6371,9 @@ function renderRegularSeasonCalendar(el, season) {
   }).join('');
 
   let fixtureLabel;
-  if (fixture) {
+  if (seasonComplete) {
+    fixtureLabel = t('cal.regularComplete');
+  } else if (fixture) {
     const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
     fixtureLabel = t('cal.matchday', { d: season.matchday, total: totalMatchdays, home: getTeamName('player'), away: getTeamName(opponentId) });
   } else {
@@ -6367,7 +6382,10 @@ function renderRegularSeasonCalendar(el, season) {
 
   let actionLabel;
   let actionType;
-  if (season.pendingMatch) {
+  if (seasonComplete) {
+    actionLabel = t('cal.proceedToPlayoffs');
+    actionType = 'playoffs';
+  } else if (season.pendingMatch) {
     actionLabel = t('cal.resume');
     actionType = 'resume';
   } else if (fixture) {
@@ -6408,7 +6426,12 @@ function renderRegularSeasonCalendar(el, season) {
   const actionBtn = document.getElementById('btn-calendar-action');
   if (actionBtn) {
     actionBtn.addEventListener('click', () => {
-      if (actionType === 'resume') {
+      if (actionType === 'playoffs') {
+        // v1.19.5 — bascule manuelle vers les playoffs, une fois le classement final consulté
+        startPlayoffs();
+        saveGame();
+        renderCalendar();
+      } else if (actionType === 'resume') {
         showView('match');
       } else if (actionType === 'play') {
         const opponentId = fixture.home === 'player' ? fixture.away : fixture.home;
@@ -6428,7 +6451,7 @@ function renderRegularSeasonCalendar(el, season) {
           season.log.unshift({ k: 'log.seasonAiResult', p: { d: season.matchday, winnerId: res.winner, loserId: res.loser, score: `${res.scoreA}-${res.scoreB}` } });
         });
         season.matchday++;
-        if (season.matchday > totalMatchdays) startPlayoffs();
+        // v1.19.5 — plus de bascule automatique ici non plus : voir seasonComplete plus haut
         saveGame();
         renderCalendar();
       }
@@ -6891,6 +6914,32 @@ function renderInternationalGroups(el, intl) {
   }).join('');
 
   const logHtml = intl.log.slice(0, 8).map((l) => `<div class="result-chip">${logChip(l)}</div>`).join('');
+
+  // v1.19.5 — phase de groupes terminée : classement final consultable, bascule
+  // manuelle vers le bracket via un bouton (au lieu d'un basculement automatique
+  // qui empêchait de voir ce classement final).
+  if (intl.groupMatchday > intl.totalGroupRounds) {
+    el.innerHTML = `
+      <h3 class="panel-title">${t('intl.groupsTitle', { event: eventLabel(intl), year: intl.year, d: intl.totalGroupRounds, total: intl.totalGroupRounds })}</h3>
+      <p class="card__count">${t('intl.groupsComplete')}</p>
+      <div class="training-form__actions">
+        <button class="btn-primary" id="btn-international-bracket">${t('intl.proceedToBracket')}</button>
+      </div>
+      ${groupsHtml}
+      <h3 class="panel-title">${t('cal.recentResults')}</h3>
+      <div class="recent-results">${logHtml || `<p class="card__count">${t('cal.noResults')}</p>`}</div>
+    `;
+    const bracketBtn = document.getElementById('btn-international-bracket');
+    if (bracketBtn) {
+      bracketBtn.addEventListener('click', () => {
+        finishGroupStage();
+        saveGame();
+        renderCalendar();
+      });
+    }
+    return;
+  }
+
   const pm = intl.pendingMatch;
   if (!pm) { processInternationalGroupMatchday(); renderCalendar(); return; }
   const actionLabel = pm.started ? t('cal.resume') : t('intl.playMatch');
