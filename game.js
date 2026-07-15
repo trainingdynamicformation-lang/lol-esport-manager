@@ -4130,7 +4130,7 @@ function renderInternationalDraftBroadcast(draft) {
     const out = [];
     for (let i = 0; i < 5; i++) {
       const c = bans[i] || null;
-      out.push(`<span class="draft-broadcast__ban draft-broadcast__ban--${side} ${c ? 'draft-broadcast__ban--filled' : ''}">${championPortraitHtml(c, 'draft-broadcast__ban-portrait')}</span>`);
+      out.push(`<span class="draft-broadcast__ban draft-broadcast__ban--${side} ${c ? 'draft-broadcast__ban--filled' : ''}" ${c ? `title="${c}"` : ''}>${championPortraitHtml(c, 'draft-broadcast__ban-portrait')}</span>`);
     }
     return out.join('');
   };
