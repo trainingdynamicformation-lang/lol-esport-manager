@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.8] — 2026-07-15
+
+### Changed — Broadcast draft: stacked layout on phone portrait
+
+On smartphones in portrait orientation, the international draft banner (MSI/Worlds) squeezed 10 bans and 10 picks side by side into a narrow width: tiny slots, hard to read.
+
+- The banner now displays **stacked by team**: team 1's bans then picks, then team 2's, each spanning the full screen width — slots become roughly twice as large.
+- Unchanged on tablet and desktop (still side by side as before).
+
+---
+
 ## [1.19.7] — 2026-07-15
 
 ### Changed — Broadcast draft: display tweaks

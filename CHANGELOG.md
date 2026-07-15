@@ -5,6 +5,17 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.8] — 15/07/2026
+
+### Modifié — Draft broadcast : bandeau empilé sur smartphone portrait
+
+Sur smartphone en orientation portrait, le bandeau de draft internationale (MSI/Worlds) affichait 10 bans et 10 picks côte à côte sur une largeur trop étroite : slots minuscules, rendu peu lisible.
+
+- Le bandeau s'affiche désormais **empilé par équipe** : bans puis picks de l'équipe 1, puis de l'équipe 2, chacun sur toute la largeur de l'écran — les slots deviennent environ deux fois plus grands.
+- Comportement inchangé sur tablette et ordinateur (bandeau côte à côte comme avant).
+
+---
+
 ## [1.19.7] — 15/07/2026
 
 ### Modifié — Draft broadcast : affichage

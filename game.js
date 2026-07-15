@@ -4126,17 +4126,17 @@ function renderInternationalDraftBroadcast(draft) {
   const blueInfo = infoForMapSide('blue');
   const redInfo = infoForMapSide('red');
 
-  const banSlots = (bans, side) => {
+  const banRow = (bans, side) => {
     const out = [];
     for (let i = 0; i < 5; i++) {
       const c = bans[i] || null;
       out.push(`<span class="draft-broadcast__ban draft-broadcast__ban--${side} ${c ? 'draft-broadcast__ban--filled' : ''}" ${c ? `title="${c}"` : ''}>${championPortraitHtml(c, 'draft-broadcast__ban-portrait')}</span>`);
     }
-    return out.join('');
+    return `<div class="draft-broadcast__ban-row draft-broadcast__ban-row--${side}">${out.join('')}</div>`;
   };
 
-  const pickSlots = (info, side) => {
-    return DRAFT_ROLES.map((role) => {
+  const pickRow = (info, side) => {
+    const slots = DRAFT_ROLES.map((role) => {
       const champName = info.picks[role];
       const player = info.roster.find((p) => p.role === role);
       const label = player ? player.name : ROLE_NAMES[role];
@@ -4146,24 +4146,24 @@ function renderInternationalDraftBroadcast(draft) {
           <span class="draft-broadcast__pick-name">${label}</span>
         </div>`;
     }).join('');
+    return `<div class="draft-broadcast__pick-row draft-broadcast__pick-row--${side}">${slots}</div>`;
   };
 
+  // v1.19.8 — structure en grille plate (pas de wrappers bans/picks imbriqués) :
+  // permet à la seule CSS (grid-template-areas) de réorganiser le bandeau en
+  // empilé par équipe sur mobile portrait, sans dupliquer le markup.
   return `
     <div class="draft-broadcast">
-      <div class="draft-broadcast__bans">
-        <div class="draft-broadcast__ban-group">${banSlots(blueInfo.bans, 'blue')}</div>
-        <span class="draft-broadcast__bans-label">${t('draft.bansShort')}</span>
-        <div class="draft-broadcast__ban-group">${banSlots(redInfo.bans, 'red')}</div>
+      ${banRow(blueInfo.bans, 'blue')}
+      <span class="draft-broadcast__bans-label">${t('draft.bansShort')}</span>
+      ${banRow(redInfo.bans, 'red')}
+      ${pickRow(blueInfo, 'blue')}
+      <div class="draft-broadcast__center">
+        <span class="draft-broadcast__team draft-broadcast__team--blue">${blueInfo.short}</span>
+        <img class="draft-broadcast__trophy" src="img/trophies/${trophyName}.png" alt="${trophyName}" onerror="this.style.visibility='hidden'">
+        <span class="draft-broadcast__team draft-broadcast__team--red">${redInfo.short}</span>
       </div>
-      <div class="draft-broadcast__picks">
-        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--blue">${pickSlots(blueInfo, 'blue')}</div>
-        <div class="draft-broadcast__center">
-          <span class="draft-broadcast__team draft-broadcast__team--blue">${blueInfo.short}</span>
-          <img class="draft-broadcast__trophy" src="img/trophies/${trophyName}.png" alt="${trophyName}" onerror="this.style.visibility='hidden'">
-          <span class="draft-broadcast__team draft-broadcast__team--red">${redInfo.short}</span>
-        </div>
-        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--red">${pickSlots(redInfo, 'red')}</div>
-      </div>
+      ${pickRow(redInfo, 'red')}
     </div>
   `;
 }
