@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.7] — 2026-07-15
+
+### Changed — Broadcast draft: display tweaks
+
+- On large screens, the **ban** squares and **pick** slots in the broadcast banner scale up to make use of the available space.
+- A **thin team-colored line** (blue or red) now separates each picked champion in the banner.
+
+---
+
 ## [1.19.6] — 2026-07-11
 
 ### Added — International draft: broadcast-style screen

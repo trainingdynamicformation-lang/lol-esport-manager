@@ -5,6 +5,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.7] — 15/07/2026
+
+### Modifié — Draft broadcast : affichage
+
+- Sur grand écran, les carrés de **bans** et les zones de **picks** du bandeau broadcast s'agrandissent pour profiter de la place disponible.
+- Un **fin liseré** de la couleur de l'équipe (bleu ou rouge) sépare désormais chaque champion picked dans le bandeau.
+
+---
+
 ## [1.19.6] — 11/07/2026
 
 ### Ajouté — Draft internationale : écran façon broadcast
