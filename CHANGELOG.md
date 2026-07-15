@@ -11,6 +11,7 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 - Sur grand écran, les carrés de **bans** et les zones de **picks** du bandeau broadcast s'agrandissent pour profiter de la place disponible.
 - Un **fin liseré** de la couleur de l'équipe (bleu ou rouge) sépare désormais chaque champion picked dans le bandeau.
+- Sur petit écran, bans et picks s'adaptent désormais fluidement à la largeur disponible : plus d'ascenseur horizontal.
 
 ---
 

@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - On large screens, the **ban** squares and **pick** slots in the broadcast banner scale up to make use of the available space.
 - A **thin team-colored line** (blue or red) now separates each picked champion in the banner.
+- On small screens, bans and picks now scale fluidly to the available width: no more horizontal scrollbar.
 
 ---
 
