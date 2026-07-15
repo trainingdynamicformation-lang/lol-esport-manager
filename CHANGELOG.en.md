@@ -5,6 +5,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.19.6] — 2026-07-11
+
+### Added — International draft: broadcast-style screen
+
+During international competitions (MSI and Worlds), the draft screen adopts an official esport-broadcast look:
+
+- A bottom banner gathers the **picks at an angle** (large slanted portraits), with the **bans** shown smaller just above.
+- In the center of the banner, both teams' **acronyms** (in blue and red) frame the **trophy image** of the current competition (MSI or Worlds).
+- The assistant coach advice and the champion selection grid stay visible above, as before.
+
+The regional draft screen (3 columns) is unchanged.
+
+---
+
 ## [1.19.5] — 2026-07-11
 
 ### Fixed — Calendar: manual transition to playoffs/bracket

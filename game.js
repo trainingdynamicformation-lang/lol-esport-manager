@@ -4095,6 +4095,64 @@ function renderCurrentBans(draft) {
   `;
 }
 
+// v1.19.6 — Bandeau de draft « broadcast » pour les compétitions internationales
+// (MSI/Worlds uniquement) : bans (petits) au-dessus des picks (grands, en biais),
+// acronymes d'équipe bleu/rouge encadrant le trophée de la compétition au centre.
+// Ne remplace QUE la présentation des bans/picks/équipes ; le panneau assistant
+// coach et la grille de sélection restent affichés au-dessus (dans actionHtml).
+function renderInternationalDraftBroadcast(draft) {
+  const intl = state.international;
+  const trophyName = (intl && intl.event === 'worlds') ? 'WORLDS' : 'MSI';
+  const opponent = getOpponentTeam(draft);
+  const oppShort = opponent ? opponent.shortName : '';
+  const playerShort = state.teamShortName || 'YOU';
+  const blueShort = draft.playerSide === 'blue' ? playerShort : oppShort;
+  const redShort = draft.playerSide === 'red' ? playerShort : oppShort;
+
+  const banSlots = (bans, side) => {
+    const out = [];
+    for (let i = 0; i < 5; i++) {
+      const c = bans[i] || null;
+      out.push(`<span class="draft-broadcast__ban draft-broadcast__ban--${side} ${c ? 'draft-broadcast__ban--filled' : ''}">${championPortraitHtml(c, 'draft-broadcast__ban-portrait')}</span>`);
+    }
+    return out.join('');
+  };
+
+  const pickSlots = (side) => {
+    const picks = draft[side + 'Picks'];
+    const roster = side === draft.playerSide ? state.roster : (opponent && opponent.roster ? opponent.roster : []);
+    return DRAFT_ROLES.map((role) => {
+      const champName = picks[role];
+      const player = roster.find((p) => p.role === role);
+      const label = player ? player.name : ROLE_NAMES[role];
+      return `
+        <div class="draft-broadcast__pick draft-broadcast__pick--${side} ${champName ? 'draft-broadcast__pick--filled' : ''}">
+          <div class="draft-broadcast__pick-frame">${championPortraitHtml(champName, 'draft-broadcast__pick-portrait')}</div>
+          <span class="draft-broadcast__pick-name">${label}</span>
+        </div>`;
+    }).join('');
+  };
+
+  return `
+    <div class="draft-broadcast">
+      <div class="draft-broadcast__bans">
+        <div class="draft-broadcast__ban-group">${banSlots(draft.blueBans, 'blue')}</div>
+        <span class="draft-broadcast__bans-label">${t('draft.bansShort')}</span>
+        <div class="draft-broadcast__ban-group">${banSlots(draft.redBans, 'red')}</div>
+      </div>
+      <div class="draft-broadcast__picks">
+        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--blue">${pickSlots('blue')}</div>
+        <div class="draft-broadcast__center">
+          <span class="draft-broadcast__team draft-broadcast__team--blue">${blueShort}</span>
+          <img class="draft-broadcast__trophy" src="img/trophies/${trophyName}.png" alt="${trophyName}" onerror="this.style.visibility='hidden'">
+          <span class="draft-broadcast__team draft-broadcast__team--red">${redShort}</span>
+        </div>
+        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--red">${pickSlots('red')}</div>
+      </div>
+    </div>
+  `;
+}
+
 /**
  * Picks des games précédentes du set (série BO3/BO5) : ce que chaque équipe
  * a pické lors des games déjà jouées. Bien plus utile que les bans (v1.16.5,
@@ -4377,9 +4435,13 @@ function renderDraft() {
   const whoFirst = draft.playerSide === 'blue' ? `(${t('common.you')})` : `(${opponent.shortName})`;
   const whoLast = draft.playerSide === 'red' ? `(${t('common.you')})` : `(${opponent.shortName})`;
 
-  el.innerHTML = `
-    <div class="panel draft-arena">
-      <h3 class="panel-title">${t('draft.vsTitle', { opp: opponent.name, side: sideLabel(draft.mapSide || draft.playerSide), pickOrder })}${seriesLabel}</h3>
+  const titleHtml = `<h3 class="panel-title">${t('draft.vsTitle', { opp: opponent.name, side: sideLabel(draft.mapSide || draft.playerSide), pickOrder })}${seriesLabel}</h3>`;
+  // v1.19.6 — en compétition internationale (MSI/Worlds), la présentation des
+  // bans/picks/équipes passe en bandeau « broadcast » ; le coach + la grille de
+  // sélection (actionHtml) restent au-dessus. Sinon, écran de draft 3 colonnes.
+  const arenaBody = state.international
+    ? `${actionHtml}${renderInternationalDraftBroadcast(draft)}`
+    : `
       <div class="draft-arena-layout">
         <div class="draft-team-column">
           <h4>${t('draft.colFirst', { who: whoFirst })}</h4>
@@ -4394,6 +4456,12 @@ function renderDraft() {
         </div>
       </div>
       ${renderCurrentBans(draft)}
+    `;
+
+  el.innerHTML = `
+    <div class="panel draft-arena ${state.international ? 'draft-arena--broadcast' : ''}">
+      ${titleHtml}
+      ${arenaBody}
       ${renderPickHistorySection(draft)}
     </div>
     <div class="panel">

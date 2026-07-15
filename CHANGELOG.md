@@ -5,6 +5,20 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ---
 
+## [1.19.6] — 11/07/2026
+
+### Ajouté — Draft internationale : écran façon broadcast
+
+Pendant les compétitions internationales (MSI et Worlds), l'écran de draft adopte une présentation façon retransmission esport officielle :
+
+- Un bandeau en bas d'écran regroupe les **picks en biais** (grands portraits inclinés), avec les **bans** en plus petit juste au-dessus.
+- Au centre du bandeau, les **acronymes des deux équipes** (en bleu et rouge) encadrent l'**image du trophée** de la compétition en cours (MSI ou Worlds).
+- Les conseils de l'assistant coach et la grille de sélection restent affichés au-dessus, comme avant.
+
+L'écran de draft régional (3 colonnes) reste inchangé.
+
+---
+
 ## [1.19.5] — 11/07/2026
 
 ### Corrigé — Calendrier : bascule manuelle vers les playoffs/bracket
