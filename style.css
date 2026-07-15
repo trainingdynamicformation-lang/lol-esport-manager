@@ -1269,6 +1269,7 @@ img { max-width: 100%; height: auto; }
   padding: 0 12px 12px;
 }
 .draft-broadcast__ban-group { display: flex; flex: 1; gap: 6px; min-width: 0; }
+.draft-broadcast__ban-group:first-child { justify-content: flex-end; }
 .draft-broadcast__bans-label { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--color-text-muted); flex-shrink: 0; }
 .draft-broadcast__ban {
   width: auto;
