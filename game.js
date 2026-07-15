@@ -4106,8 +4106,25 @@ function renderInternationalDraftBroadcast(draft) {
   const opponent = getOpponentTeam(draft);
   const oppShort = opponent ? opponent.shortName : '';
   const playerShort = state.teamShortName || 'YOU';
-  const blueShort = draft.playerSide === 'blue' ? playerShort : oppShort;
-  const redShort = draft.playerSide === 'red' ? playerShort : oppShort;
+  const playerMapSide = draft.mapSide || draft.playerSide;
+
+  // v1.19.6.1 — le bandeau suit le CÔTÉ DE CARTE (mapSide, bleu à gauche / rouge
+  // à droite), pas l'ordre de pick : le joueur reste du bon côté même en last
+  // pick. draft.bluePicks/redPicks/blueBans/redBans sont indexés par ORDRE DE
+  // PICK, on les re-clé ici par côté de carte (pickKey = ordre de pick de
+  // l'équipe qui occupe ce côté). L'écran de match, lui, gère déjà le mapSide.
+  const infoForMapSide = (mapSide) => {
+    const isPlayer = mapSide === playerMapSide;
+    const pickKey = isPlayer ? draft.playerSide : aiSide(draft);
+    return {
+      picks: draft[pickKey + 'Picks'],
+      bans: draft[pickKey + 'Bans'],
+      roster: isPlayer ? state.roster : (opponent && opponent.roster ? opponent.roster : []),
+      short: isPlayer ? playerShort : oppShort
+    };
+  };
+  const blueInfo = infoForMapSide('blue');
+  const redInfo = infoForMapSide('red');
 
   const banSlots = (bans, side) => {
     const out = [];
@@ -4118,12 +4135,10 @@ function renderInternationalDraftBroadcast(draft) {
     return out.join('');
   };
 
-  const pickSlots = (side) => {
-    const picks = draft[side + 'Picks'];
-    const roster = side === draft.playerSide ? state.roster : (opponent && opponent.roster ? opponent.roster : []);
+  const pickSlots = (info, side) => {
     return DRAFT_ROLES.map((role) => {
-      const champName = picks[role];
-      const player = roster.find((p) => p.role === role);
+      const champName = info.picks[role];
+      const player = info.roster.find((p) => p.role === role);
       const label = player ? player.name : ROLE_NAMES[role];
       return `
         <div class="draft-broadcast__pick draft-broadcast__pick--${side} ${champName ? 'draft-broadcast__pick--filled' : ''}">
@@ -4136,18 +4151,18 @@ function renderInternationalDraftBroadcast(draft) {
   return `
     <div class="draft-broadcast">
       <div class="draft-broadcast__bans">
-        <div class="draft-broadcast__ban-group">${banSlots(draft.blueBans, 'blue')}</div>
+        <div class="draft-broadcast__ban-group">${banSlots(blueInfo.bans, 'blue')}</div>
         <span class="draft-broadcast__bans-label">${t('draft.bansShort')}</span>
-        <div class="draft-broadcast__ban-group">${banSlots(draft.redBans, 'red')}</div>
+        <div class="draft-broadcast__ban-group">${banSlots(redInfo.bans, 'red')}</div>
       </div>
       <div class="draft-broadcast__picks">
-        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--blue">${pickSlots('blue')}</div>
+        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--blue">${pickSlots(blueInfo, 'blue')}</div>
         <div class="draft-broadcast__center">
-          <span class="draft-broadcast__team draft-broadcast__team--blue">${blueShort}</span>
+          <span class="draft-broadcast__team draft-broadcast__team--blue">${blueInfo.short}</span>
           <img class="draft-broadcast__trophy" src="img/trophies/${trophyName}.png" alt="${trophyName}" onerror="this.style.visibility='hidden'">
-          <span class="draft-broadcast__team draft-broadcast__team--red">${redShort}</span>
+          <span class="draft-broadcast__team draft-broadcast__team--red">${redInfo.short}</span>
         </div>
-        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--red">${pickSlots('red')}</div>
+        <div class="draft-broadcast__pick-group draft-broadcast__pick-group--red">${pickSlots(redInfo, 'red')}</div>
       </div>
     </div>
   `;
