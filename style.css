@@ -3087,6 +3087,26 @@ table.history-table th {
   .rest-panel .btn-secondary { flex: 1 1 100%; }
 
   .training-form { grid-template-columns: 1fr; }
+
+  /* Draft broadcast (v1.19.7) : largeurs fluides pour tenir dans l'écran sans ascenseur horizontal */
+  .draft-broadcast { overflow-x: hidden; }
+  .draft-broadcast__bans { gap: 4px; padding: 0 8px 8px; }
+  .draft-broadcast__ban-group { flex: 1; gap: 4px; }
+  .draft-broadcast__ban {
+    width: auto;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 38px;
+  }
+  .draft-broadcast__bans-label { font-size: 8px; flex-shrink: 0; }
+  .draft-broadcast__pick { width: auto; flex: 1 1 0; min-width: 0; }
+  .draft-broadcast__pick-frame { height: auto; aspect-ratio: 3 / 4; }
+  .draft-broadcast__pick-name { font-size: 8px; margin-top: 3px; padding-bottom: 4px; }
+  .draft-broadcast__center { padding: 0 4px 12px; gap: 4px; }
+  .draft-broadcast__team { font-size: 11px; padding: 3px 6px; }
+  .draft-broadcast__trophy { width: 24px; height: 30px; }
 }
 
 @media (max-width: 480px) {
